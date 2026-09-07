@@ -58,7 +58,7 @@ jobs:
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGN_IDENTITY="" \
-            build 2>&1 | tee ../build-logs/watch-build.log
+            clean build 2>&1 | tee ../build-logs/watch-build.log
 
       - name: Build iPhone app
         run: |
@@ -73,16 +73,20 @@ jobs:
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGN_IDENTITY="" \
-            build 2>&1 | tee ../build-logs/iphone-build.log
+            clean build 2>&1 | tee ../build-logs/iphone-build.log
 
-            - name: Package unsigned IPA
+      - name: Package unsigned IPA
         run: |
           set -euo pipefail
+
           LUMA_APP="../build/iphone/Build/Products/Debug-iphoneos/Luma.app"
+
           test -f "$LUMA_APP/Luma"
           test -f "$LUMA_APP/Watch/Luma Watch.app/Luma Watch"
+
           mkdir -p ../dist/Payload
           ditto "$LUMA_APP" ../dist/Payload/Luma.app
+
           (
             cd ../dist
             zip -q -r -y Luma-unsigned.ipa Payload
@@ -96,7 +100,7 @@ jobs:
           archive: false
           if-no-files-found: error
           retention-days: 7
-          
+
       - name: Save build logs
         if: always()
         uses: actions/upload-artifact@v7
