@@ -17,15 +17,12 @@ jobs:
     name: Test and build Luma
     runs-on: macos-15
     timeout-minutes: 30
-
     env:
       DEVELOPER_DIR: /Applications/Xcode_16.4.app/Contents/Developer
-
     defaults:
       run:
         shell: bash
         working-directory: Luma
-
     steps:
       - name: Download source code
         uses: actions/checkout@v7
@@ -34,6 +31,7 @@ jobs:
 
       - name: Check project and tools
         run: |
+          set -euo pipefail
           mkdir -p ../build-logs
           test -f Package.swift
           test -f Luma.xcodeproj/project.pbxproj
@@ -42,12 +40,12 @@ jobs:
 
       - name: Run core tests
         run: |
-          set -o pipefail
+          set -euo pipefail
           swift test 2>&1 | tee ../build-logs/core-tests.log
 
       - name: Build Apple Watch app
         run: |
-          set -o pipefail
+          set -euo pipefail
           xcodebuild \
             -project Luma.xcodeproj \
             -scheme "Luma Watch" \
@@ -62,7 +60,7 @@ jobs:
 
       - name: Build iPhone app
         run: |
-          set -o pipefail
+          set -euo pipefail
           xcodebuild \
             -project Luma.xcodeproj \
             -scheme Luma \
@@ -78,15 +76,14 @@ jobs:
       - name: Package unsigned IPA
         run: |
           set -euo pipefail
-
           LUMA_APP="../build/iphone/Build/Products/Debug-iphoneos/Luma.app"
-
           test -f "$LUMA_APP/Luma"
           test -f "$LUMA_APP/Watch/Luma Watch.app/Luma Watch"
-
+          test -f "$LUMA_APP/Manrope-Regular.ttf"
+          test -f "$LUMA_APP/Watch/Luma Watch.app/Manrope-Regular.ttf"
+          test -f "$LUMA_APP/luma-tone-8.wav"
           mkdir -p ../dist/Payload
           ditto "$LUMA_APP" ../dist/Payload/Luma.app
-
           (
             cd ../dist
             zip -q -r -y Luma-unsigned.ipa Payload
