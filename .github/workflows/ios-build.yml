@@ -18,7 +18,7 @@ jobs:
     runs-on: macos-15
     timeout-minutes: 30
     env:
-      DEVELOPER_DIR: /Applications/Xcode_16.4.app/Contents/Developer
+      DEVELOPER_DIR: /Applications/Xcode_26.3.app/Contents/Developer
     defaults:
       run:
         shell: bash
@@ -37,11 +37,17 @@ jobs:
           test -f Luma.xcodeproj/project.pbxproj
           xcodebuild -version
           swift --version
+          test "$(xcrun --sdk iphoneos --show-sdk-version | cut -d. -f1)" -ge 26
 
       - name: Run core tests
         run: |
           set -euo pipefail
           swift test 2>&1 | tee ../build-logs/core-tests.log
+
+      - name: Verify audio import with AVFoundation
+        run: |
+          set -euo pipefail
+          bash scripts/check-audio-on-mac.sh 2>&1 | tee ../build-logs/audio-import.log
 
       - name: Build Apple Watch app
         run: |
