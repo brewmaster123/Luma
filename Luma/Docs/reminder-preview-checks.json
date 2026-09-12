@@ -1,0 +1,22 @@
+{
+  "kind": "browser-preview-only",
+  "nativeBuildRun": false,
+  "checks": [
+    {
+      "w": 320,
+      "h": 568,
+      "width": 318,
+      "scrollWidth": 318,
+      "height": 528,
+      "scrollHeight": 796
+    },
+    {
+      "w": 390,
+      "h": 844,
+      "width": 388,
+      "scrollWidth": 388,
+      "height": 705,
+      "scrollHeight": 705
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+PASS: all Swift source files parse. Apple SDK type checking was not run.
