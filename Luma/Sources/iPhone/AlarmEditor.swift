@@ -70,7 +70,9 @@ struct AlarmEditor: View {
           ).font(LumaStyle.font(12)).foregroundStyle(LumaStyle.secondary)
           LumaCard { SignalEditor(signal: $alarm.signal, voices: model.state.voices) }
           if alarm.signal.output.phoneEnabled {
-            Text("Звук уведомления проиграет один раз и затихнет сам.")
+            Text(alarm.signal.output == .both
+              ? "Во время ночи с микрофоном iPhone проиграет звук напрямую, а часы получат отдельный сигнал. Оба закончатся сами."
+              : "Звук уведомления проиграет один раз и затихнет сам.")
               .font(LumaStyle.font(12)).foregroundStyle(LumaStyle.secondary)
           }
           if let saveError { Text(saveError).font(LumaStyle.font(12)).foregroundStyle(LumaStyle.amber) }
@@ -89,7 +91,7 @@ struct AlarmEditor: View {
       .sheet(isPresented: $showReadiness, onDismiss: {
         if readyToSave { readyToSave = false; saveAlarm() }
       }) {
-        SignalReadinessView(continueTitle: "Сохранить будильник") { readyToSave = true }
+        SignalReadinessView(continueTitle: "Сохранить будильник", signalOutput: alarm.signal.output) { readyToSave = true }
           .environmentObject(model)
       }
       .interactiveDismissDisabled(saving)

@@ -65,6 +65,8 @@ enum WatchPermissionAction: Equatable { case notifications, health }
     @Published private(set) var phoneNotificationsReady = false
     @Published private(set) var phonePreviewRunning = false
     private var previewReset: Task<Void, Never>?
+    private var previewGeneration = UUID()
+    private var attemptedPairedAlarms = Set<String>()
     private var cueExclusions: [DateInterval] = []
     private var audioChanges: AnyCancellable?
   #else
@@ -129,9 +131,17 @@ enum WatchPermissionAction: Equatable { case notifications, health }
     bridge.onPacket = { [weak self] in self?.receive($0) }
     health.onChange = { [weak self] in await self?.refreshSensors() }
     #if os(iOS)
+      bridge.onCueFailure = { [weak self] packet in
+        guard let self else { return }
+        if let id = packet.episodeID {
+          self.result(id, watch: "Пропущен: сообщение не дошло до часов"); self.save()
+        } else if packet.id == self.previewGeneration {
+          self.message = "Часы не получили пробу. Откройте Luma на Apple Watch и повторите."
+        }
+      }
       audioChanges = audio.objectWillChange.sink { [weak self] _ in self?.objectWillChange.send() }
-      // Let the OS play the same finite sound in foreground and background.
-      // Never start a second AVAudioPlayer for a delivered notification.
+      // Phone-only cues and paired fallbacks keep their system sound.
+      // Never start a second player in response to a notification delivery.
       notifications.onForeground = { [weak self] id in
         guard id.hasPrefix("luma.") else { return }
         self?.excludeCue(at: Date(), duration: 28)
@@ -175,6 +185,15 @@ enum WatchPermissionAction: Equatable { case notifications, health }
   var sortedAlarms: [LumaAlarm] { AlarmPlanner.sorted(state.alarms, after: alarmOrderDate) }
   #if os(iOS)
     var newAlarmDelivery: PhoneAlarmDelivery { .shortCue }
+    var pairedNightReady: Bool {
+      activeSession?.status == .running && activeSession?.source.usesMicrophone == true && audio.hasLiveInput
+    }
+    var hasPairedAlarms: Bool { state.alarms.contains { $0.enabled && $0.signal.output == .both } }
+    var pairedNightSummary: String {
+      pairedNightReady ? "Микрофон активен · звук iPhone напрямую"
+        : "Для двух сигналов ночью запустите сеанс с микрофоном"
+    }
+    private var livePhoneRuntimeAvailable: Bool { isForeground || pairedNightReady }
     func refreshPhoneNotificationAccess() async {
       let access = await notifications.access()
       phoneNotificationSummary = access.summary
@@ -253,6 +272,10 @@ enum WatchPermissionAction: Equatable { case notifications, health }
     #endif
   }
   private func tick() async {
+    #if os(iOS)
+    audio.checkInputLiveness()
+    if !rebuilding { playDuePairedAlarm() }
+    #endif
     if Date().timeIntervalSince(alarmOrderDate) >= 30 { alarmOrderDate = Date() }
     if Date().timeIntervalSince(lastRefresh) >= 30
       && (isForeground || activeSession?.status == .running)
@@ -453,6 +476,9 @@ enum WatchPermissionAction: Equatable { case notifications, health }
     defer { busy = false }
     #if os(iOS)
       do {
+        if state.signal.output == .both && !state.source.usesMicrophone {
+          throw AppError.message("Для совместных сигналов ночью выберите «Часы + микрофон» в настройках. Микрофон анализирует звуки сна; ночная запись не сохраняется.")
+        }
         if state.source.usesWatch || state.signal.output.watchEnabled {
           guard watchInstalled else {
             throw AppError.message("Откройте Luma на часах или выберите «Только iPhone».")
@@ -482,19 +508,26 @@ enum WatchPermissionAction: Equatable { case notifications, health }
   }
   func resumeSession() async {
     guard let i = activeIndex, state.sessions[i].status == .paused, !busy else { return }
+    let session = state.sessions[i]
     busy = true
     defer { busy = false }
     #if os(iOS)
       do {
-        if state.sessions[i].signal.output.phoneEnabled { try await preparePhoneSignals() }
-        if state.sessions[i].source.usesMicrophone { try await audio.startMonitoring() }
-        state.sessions[i].status = .running
-        resetStreak()
-        try persist()
-        syncConfiguration()
+        if session.signal.output == .both && !session.source.usesMicrophone {
+          throw AppError.message("Этот сеанс запущен без микрофона. Завершите его и начните новый с источником «Часы + микрофон», чтобы звук iPhone работал вместе с Watch ночью.")
+        }
+        if session.signal.output.phoneEnabled { try await preparePhoneSignals() }
+        guard activeSession?.id == session.id, activeSession?.status == .paused else { return }
+        if session.source.usesMicrophone { try await audio.startMonitoring() }
+        guard let index = activeIndex, state.sessions[index].id == session.id,
+          state.sessions[index].status == .paused else { audio.stopMonitoring(); return }
+        state.sessions[index].status = .running
+        resetStreak(); try persist(); syncConfiguration()
       } catch {
         audio.stopMonitoring()
-        state.sessions[i].status = .paused
+        if let index = state.sessions.firstIndex(where: { $0.id == session.id && $0.status != .ended }) {
+          state.sessions[index].status = .paused
+        }
         message = error.localizedDescription
       }
     #endif
@@ -504,6 +537,7 @@ enum WatchPermissionAction: Equatable { case notifications, health }
       guard let i = activeIndex else { return }
       state.sessions[i].status = .ended
       state.sessions[i].endedAt = Date()
+      previewGeneration = UUID()
       previewReset?.cancel(); phonePreviewRunning = false
       await notifications.cancelPrefix("luma.preview.")
       resetStreak()
@@ -533,33 +567,45 @@ enum WatchPermissionAction: Equatable { case notifications, health }
     #if os(iOS)
       guard !phonePreviewRunning, !audio.recording else { return }
       phonePreviewRunning = true
-      var duration: TimeInterval = state.signal.output.watchEnabled ? Double(state.signal.count.rawValue) * 1.5 + 2 : 2
+      let signal = state.signal.validated()
+      let generation = UUID(); previewGeneration = generation
+      var cueDate: Date?
+      var duration: TimeInterval = signal.output.watchEnabled ? Double(signal.count.rawValue) * 1.5 + 3 : 2
       do {
-        if state.signal.output.phoneEnabled {
+        if signal.output.phoneEnabled {
           try await preparePhoneSignals()
-          let sound = try audio.notificationSound(state.signal, clips: state.voices)
-          duration = max(duration, sound.duration + 2)
+          let sound = try audio.notificationSound(signal, clips: state.voices)
+          duration = max(duration, sound.duration + 3)
           await notifications.cancelPrefix("luma.preview.")
-          try await notifications.phoneCue(id: "luma.preview.\(UUID().uuidString)",
-            title: "Проба сигнала · Luma", sound: sound.name)
-          excludeCue(at: Date().addingTimeInterval(2), duration: sound.duration)
+          guard generation == previewGeneration else { return }
+          if signal.output == .both {
+            cueDate = Date().addingTimeInterval(PairedCuePolicy.cueLeadTime)
+            try audio.playCue(signal, clips: state.voices, at: cueDate, vibrate: state.vibratesOnPhone)
+          } else {
+            try await notifications.phoneCue(id: "luma.preview.\(generation.uuidString)",
+              title: "Проба сигнала · Luma", sound: sound.name)
+            guard generation == previewGeneration else {
+              await notifications.cancelPrefix("luma.preview.\(generation.uuidString)"); return
+            }
+          }
+          excludeCue(at: cueDate ?? Date().addingTimeInterval(2), duration: sound.duration)
         }
-        if state.signal.output.watchEnabled {
+        if signal.output.watchEnabled {
           var p = WirePacket(kind: .cue)
-          p.signal = state.signal
-          p.message = "preview"
+          p.id = generation; p.signal = signal; p.cueDate = cueDate; p.message = "preview"
           if !bridge.send(p) { message = "Для пробы вибрации откройте Luma на часах." }
         }
-        excludedUntil = Date().addingTimeInterval(120)
-        resetStreak()
-        // UI cooldown only; notification audio is finite without this task running.
+        excludedUntil = Date().addingTimeInterval(120); resetStreak()
+        // UI cooldown only; player and notification sounds finish independently.
         previewReset?.cancel()
         previewReset = Task { [weak self] in
           do { try await Task.sleep(nanoseconds: UInt64(duration * 1_000_000_000)) }
           catch { return }
-          self?.phonePreviewRunning = false
+          if self?.previewGeneration == generation { self?.phonePreviewRunning = false }
         }
-      } catch { phonePreviewRunning = false; message = error.localizedDescription }
+      } catch {
+        if generation == previewGeneration { phonePreviewRunning = false; message = error.localizedDescription }
+      }
     #else
       motion.stopUpdates()
       excludedUntil = Date().addingTimeInterval(Double(state.signal.count.rawValue) * 1.5 + 90)
@@ -627,18 +673,28 @@ enum WatchPermissionAction: Equatable { case notifications, health }
       guard save(), let e = event else { return }
       excludedUntil = now.addingTimeInterval(
         max(120, Double(session.signal.count.rawValue * session.signal.gapSeconds + 90)))
+      var sharedCueDate: Date?
       if session.signal.output.phoneEnabled {
         do {
           try legacyAlarms.removeRemainingAlarms()
           let sound = try audio.notificationSound(session.signal, clips: state.voices)
-          let id = "luma.rem.\(e.id.uuidString)"
-          try await notifications.phoneCue(id: id, title: "REM · Luma", sound: sound.name)
-          guard activeSession?.id == session.id, activeSession?.status == .running else {
-            await notifications.cancelPrefix(id)
-            return
+          if session.signal.output == .both && livePhoneRuntimeAvailable {
+            let start = Date().addingTimeInterval(PairedCuePolicy.cueLeadTime)
+            try audio.playCue(session.signal, clips: state.voices, at: start, vibrate: state.vibratesOnPhone)
+            sharedCueDate = start
+            excludeCue(at: start, duration: sound.duration)
+            result(e.id, phone: "Конечный звук iPhone подготовлен напрямую; слышимость не подтверждена")
+          } else {
+            let id = "luma.rem.\(e.id.uuidString)"
+            try await notifications.phoneCue(id: id, title: "REM · Luma", sound: sound.name)
+            guard activeSession?.id == session.id, activeSession?.status == .running else {
+              await notifications.cancelPrefix(id); return
+            }
+            excludeCue(at: Date().addingTimeInterval(2), duration: sound.duration)
+            result(e.id, phone: session.signal.output == .both
+              ? "Резервное уведомление: совместный звук недоступен"
+              : "Уведомление запланировано; звучание не подтверждено")
           }
-          excludeCue(at: Date().addingTimeInterval(2), duration: sound.duration)
-          result(e.id, phone: "Уведомление запланировано; звучание не подтверждено")
         } catch { result(e.id, phone: error.localizedDescription) }
       }
       guard activeSession?.id == session.id, activeSession?.status == .running else { return }
@@ -646,6 +702,7 @@ enum WatchPermissionAction: Equatable { case notifications, health }
         var p = WirePacket(kind: .cue)
         p.sessionID = session.id
         p.signal = session.signal
+        p.cueDate = sharedCueDate
         p.episodeID = e.id
         result(e.id, watch: bridge.send(p) ? "Ожидаем ответ часов" : "Пропущен: часы недоступны")
       }
@@ -741,6 +798,40 @@ enum WatchPermissionAction: Equatable { case notifications, health }
       } catch { message = error.localizedDescription }
     }
   #endif
+  #if os(iOS)
+    private func playDuePairedAlarm() {
+      guard livePhoneRuntimeAvailable, !audio.recording, !audio.playing else { return }
+      let now = Date()
+      let completed = Set(state.completedAlarmIDs).union(attemptedPairedAlarms)
+      guard let a = occurrences.first(where: {
+        PairedCuePolicy.canPlayAlarm($0, now: now, runtimeAvailable: true, completedIDs: completed)
+          && queuedAlarmIDs.contains($0.alarmID)
+      }) else { return }
+      guard let current = state.alarms.first(where: { $0.id == a.alarmID && $0.enabled }),
+        current.signal.validated() == a.signal,
+        AlarmPlanner.occurrences([current], after: a.date.addingTimeInterval(-0.01), limit: 1).first?.id == a.id
+      else { return }
+      attemptedPairedAlarms.insert(a.id)
+      if attemptedPairedAlarms.count > 512 { attemptedPairedAlarms = [a.id] }
+      do {
+        let sound = try audio.notificationSound(a.signal, clips: state.voices)
+        try audio.playCue(a.signal, clips: state.voices, vibrate: state.vibratesOnPhone)
+        let previous = state.completedAlarmIDs
+        state.completedAlarmIDs.append(a.id)
+        state.completedAlarmIDs = Array(state.completedAlarmIDs.suffix(512))
+        guard save() else {
+          state.completedAlarmIDs = previous; audio.stopPlayback(); return
+        }
+        // Live window is 0–2 sec; fallback is +5 sec. Cancel only after playback
+        // was accepted and persisted, never before attempting the actual sound.
+        notifications.remove(ids: [a.id + ".0"])
+        excludeCue(at: now, duration: sound.duration)
+        excludedUntil = now.addingTimeInterval(sound.duration + 90); resetStreak()
+      } catch {
+        message = "Звук iPhone не запущен: \(error.localizedDescription) Резервное уведомление сохранено."
+      }
+    }
+  #endif
   private func rebuildAlarms() async {
     if rebuilding {
       rebuildAgain = true
@@ -757,7 +848,8 @@ enum WatchPermissionAction: Equatable { case notifications, health }
         #if os(iOS)
         try legacyAlarms.removeRemainingAlarms()
         #endif
-        queuedAlarmIDs = try await notifications.rebuildAlarms(occurrences) { s in
+        queuedAlarmIDs = try await notifications.rebuildAlarms(occurrences,
+          completedPhoneIDs: Set(state.completedAlarmIDs)) { s in
           #if os(iOS)
             return try audio.notificationSound(s, clips: state.voices).name
           #else
@@ -772,7 +864,7 @@ enum WatchPermissionAction: Equatable { case notifications, health }
       for occurrence in occurrences where queuedAlarmIDs.contains(occurrence.alarmID)
         && occurrence.signal.output.phoneEnabled {
         let duration = (try? audio.notificationSound(occurrence.signal, clips: state.voices).duration) ?? 28
-        excludeCue(at: occurrence.date, duration: duration)
+        excludeCue(at: occurrence.date, duration: duration + (occurrence.signal.output == .both ? PairedCuePolicy.fallbackDelay : 0))
       }
       await refreshPhoneNotificationAccess()
       #endif
@@ -814,6 +906,8 @@ enum WatchPermissionAction: Equatable { case notifications, health }
         if let id = p.episodeID {
           result(id, watch: p.message)
           save()
+        } else if p.replyTo == previewGeneration, Date().timeIntervalSince(p.sentAt) <= 20 {
+          if let text = p.message, text != "Проба запущена" { message = "Apple Watch: " + text }
         } else if p.revision == state.configurationRevision {
           watchStatus = p.message ?? "Настройки подтверждены"
         }
@@ -875,12 +969,16 @@ enum WatchPermissionAction: Equatable { case notifications, health }
       guard save() else { return }
       var ack = WirePacket(kind: .acknowledgement)
       ack.episodeID = p.episodeID
+      ack.replyTo = p.id
       do {
         if p.message == "preview" {
-          if let e = haptics.preview(count: s.count.rawValue) { throw AppError.message(e) }
+          if let date = p.cueDate, PairedCuePolicy.watchStart(requested: date, now: Date()) == nil {
+            throw AppError.message("Проба опоздала и пропущена.")
+          }
+          if let e = haptics.preview(count: s.count.rawValue, at: p.cueDate) { throw AppError.message(e) }
           ack.message = "Проба запущена"
         } else {
-          try await notifications.watchBurst(id: "luma.rem.\(p.id.uuidString)", signal: s)
+          try await notifications.watchBurst(id: "luma.rem.\(p.id.uuidString)", signal: s, at: p.cueDate)
           guard remoteSessionID == p.sessionID else {
             await notifications.cancelPrefix("luma.rem.")
             return

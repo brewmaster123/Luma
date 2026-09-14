@@ -4,6 +4,7 @@ import WatchConnectivity
 @MainActor final class WatchBridge: NSObject, WCSessionDelegate {
   var onPacket: ((WirePacket) -> Void)?
   var onStatus: ((Bool, Bool) -> Void)?
+  var onCueFailure: ((WirePacket) -> Void)?
   private let session: WCSession? = WCSession.isSupported() ? .default : nil
   private var configuration: WirePacket?
   override init() {
@@ -25,7 +26,10 @@ import WatchConnectivity
     if p.kind == .acknowledgement { session.transferUserInfo(["lumaV2": data]) }
     // Never enqueue time-critical cues for delayed delivery.
     guard session.isReachable else { return p.kind == .acknowledgement }
-    session.sendMessageData(data, replyHandler: nil, errorHandler: nil)
+    session.sendMessageData(data, replyHandler: nil) { [weak self] _ in
+      guard p.kind == .cue else { return }
+      Task { @MainActor in self?.onCueFailure?(p) }
+    }
     return true
   }
   private func decode(_ d: Data) {

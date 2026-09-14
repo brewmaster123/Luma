@@ -303,6 +303,8 @@ public struct WirePacket: Codable, Sendable {
   public var motion: [MotionEpoch]?
   public var episodeID: UUID?
   public var replyTo: UUID?
+  /// Optional target time; preserves decoding of old version-2 packets.
+  public var cueDate: Date?
   public var message: String?
   public init(kind: WireKind) { self.kind = kind }
 }

@@ -8,6 +8,8 @@ struct SignalReadinessView: View {
   @Environment(\.dismiss) private var dismiss
   @Environment(\.scenePhase) private var phase
   let continueTitle: String
+  var signalOutput: SignalOutput = .phone
+  var startsSession = false
   var requiresPermission = true
   var onReady: () -> Void = {}
   @State private var working = false
@@ -24,15 +26,40 @@ struct SignalReadinessView: View {
             Image(systemName: "xmark").frame(width: 44, height: 44).contentShape(Rectangle())
           }.buttonStyle(.plain).accessibilityLabel("Закрыть памятку").disabled(working)
         }
-        Text("Чтобы сигнал прозвучал").font(LumaStyle.font(24, "Medium", relativeTo: .title2))
-        Text("Звук уведомления затихнет сам. Перед сном:")
+        Text(signalOutput == .both ? "Сигналы на двух устройствах" : "Чтобы сигнал прозвучал")
+          .font(LumaStyle.font(24, "Medium", relativeTo: .title2))
+        Text("Короткий сигнал затихнет сам. Перед сном:")
           .font(LumaStyle.font(13)).foregroundStyle(LumaStyle.secondary)
         LumaCard {
           VStack(alignment: .leading, spacing: 20) {
-            step(1, "Выключите беззвучный режим", "Проверьте громкость «Звонок и уведомления».")
-            step(2, "Включите фокусирование «Сон»", "Чтобы приглушить звонки и лишние уведомления.")
+            if signalOutput == .both {
+              step(1, "Проверьте громкость iPhone", "Здесь используется громкость мультимедиа. Отключите наушники; для пробы откройте Luma на часах.")
+              step(2, "Запустите ночь с микрофоном", "Выберите «Часы + микрофон» и нажмите «Начать ночь». Микрофон анализирует звуки сна без сохранения разговоров. Не закрывайте Luma принудительно.")
+            } else {
+              step(1, "Выключите беззвучный режим", "Проверьте громкость «Звонок и уведомления».")
+              step(2, "Включите фокусирование «Сон»", "Чтобы приглушить звонки и лишние уведомления.")
+            }
             step(3, "Разрешите уведомления от Luma", "Настройки → Фокусирование → Сон → Приложения → Разрешить уведомления от → Luma.")
           }
+        }
+        if signalOutput == .both {
+          Text("iPhone проигрывает звук напрямую, часы получают отдельную серию. Если Luma не работает в этот момент, остаётся резервное уведомление будильника через 5 секунд: оно может уйти только на часы.")
+            .font(LumaStyle.font(12)).foregroundStyle(LumaStyle.secondary)
+            .accessibilityIdentifier("signal.pairedConditions")
+          if startsSession && !model.hasPlan && !model.state.source.usesMicrophone {
+            Button("Использовать часы и микрофон") { model.setSource(.combined) }
+              .font(LumaStyle.font(13, "Medium")).frame(minHeight: 44)
+              .accessibilityIdentifier("signal.selectMicrophone")
+          }
+        } else {
+          Label {
+            Text("Если Apple Watch на руке, обычное уведомление может прийти только на часы. Для отдельного звука телефона выберите «iPhone + Watch» и запустите ночь с микрофоном.")
+              .fixedSize(horizontal: false, vertical: true)
+          } icon: {
+            Image(systemName: "applewatch").foregroundStyle(LumaStyle.lavender)
+          }
+          .font(LumaStyle.font(12)).foregroundStyle(LumaStyle.secondary)
+          .accessibilityIdentifier("signal.watchRouting")
         }
         Text(model.phoneNotificationSummary)
           .font(LumaStyle.font(12))

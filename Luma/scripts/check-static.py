@@ -77,7 +77,7 @@ for catalog in (ROOT/'Resources').glob('*.xcassets'):
 notifications=(ROOT/'Sources/Platform/NotificationService.swift').read_text()
 check(bool(re.search(r'repeats:\s*false', notifications)) and not re.search(r'repeats:\s*true', notifications),'Notification triggers are non-repeating in source')
 core='\n'.join(p.read_text() for p in (ROOT/'Tests/LumaCoreTests').glob('*.swift'))
-check(len(re.findall(r'func test\w+\(',core))==51,'51 XCTest scenarios are present (not executed by this script)')
+check(len(re.findall(r'func test\w+\(',core))==59,'59 XCTest scenarios are present (not executed by this script)')
 preview=(ROOT/'Design/Interface-preview.html').read_text()
 check(not re.search(r'<(?:script|link)[^>]+(?:src|href)=["\']https?://',preview),'Design preview has no remote scripts or stylesheets')
 check('data:font/woff;base64,' in preview, 'Preview bundles its own Manrope font')

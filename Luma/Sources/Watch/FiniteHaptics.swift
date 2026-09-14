@@ -9,7 +9,7 @@ final class FiniteHaptics {
   var onProgress: ((Int, Int) -> Void)?
   var onFinished: ((Bool) -> Void)?
   /// Foreground preview only. All nighttime cues use finite notification requests.
-  func preview(count: Int) -> String? {
+  func preview(count: Int, at start: Date? = nil) -> String? {
     guard CueCount(rawValue: count) != nil else { return "Неверное число сигналов." }
     guard WKExtension.shared().applicationState == .active else {
       return "Оставьте Luma открытой на часах для пробы."
@@ -27,6 +27,10 @@ final class FiniteHaptics {
           self?.task = nil
           self?.onFinished?(!finished)
         }
+      }
+      if let start, start > Date() {
+        do { try await Task.sleep(nanoseconds: UInt64(max(0, min(10, start.timeIntervalSinceNow)) * 1_000_000_000)) }
+        catch { return }
       }
       for index in 0..<count {
         guard !Task.isCancelled, WKExtension.shared().applicationState == .active else { break }

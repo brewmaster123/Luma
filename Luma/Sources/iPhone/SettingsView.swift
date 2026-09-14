@@ -53,9 +53,11 @@ struct SettingsView: View {
               else { Task { await model.preview() } }
             } label: {
               Label("Послушать и почувствовать", systemImage: "play.circle")
-            }.frame(maxWidth: .infinity, minHeight: 44).disabled(model.audio.recording || model.phonePreviewRunning)
+            }.frame(maxWidth: .infinity, minHeight: 44).disabled(model.audio.recording || model.audio.playing || model.phonePreviewRunning)
             Text(
-              "Каждое звуковое уведомление проигрывает дорожку один раз. Выключите беззвучный режим iPhone."
+              model.state.signal.output == .both
+                ? "iPhone проиграет звук один раз. Для двух сигналов ночью запустите сеанс с источником «Часы + микрофон»."
+                : "Каждое звуковое уведомление проигрывает дорожку один раз. Выключите беззвучный режим iPhone."
             ).font(LumaStyle.font(11)).foregroundStyle(LumaStyle.secondary)
           }
         }
@@ -104,6 +106,7 @@ struct SettingsView: View {
         if readyToPreview { readyToPreview = false; Task { await model.preview() } }
       }) {
         SignalReadinessView(continueTitle: wantsPreview ? "Проверить сигнал" : "Понятно",
+          signalOutput: model.state.signal.output,
           requiresPermission: wantsPreview) { readyToPreview = wantsPreview }
           .environmentObject(model)
       }
@@ -148,8 +151,11 @@ struct SignalEditor: View {
             LumaStyle.secondary)
         }
       }
-      if signal.output.phoneEnabled {
-        Text("Вибрацией уведомлений iPhone управляет iOS. При заблокированном телефоне система может перенаправлять уведомления на Apple Watch; проверьте доставку перед сном.")
+      if signal.output == .both {
+        Text("Звук iPhone идёт напрямую, вибрация Watch — отдельно. На ночь запустите сеанс с микрофоном: без работающей Luma остаётся резервное уведомление через 5 секунд, которое iOS может направить на часы.")
+          .font(LumaStyle.font(11)).foregroundStyle(LumaStyle.secondary)
+      } else if signal.output.phoneEnabled {
+        Text("Обычное уведомление может уйти на надетые часы. Для отдельного звука телефона выберите «iPhone + Watch» и ночь с микрофоном. Вибрацией уведомлений управляет iOS.")
           .font(LumaStyle.font(11)).foregroundStyle(LumaStyle.secondary)
       }
       if signal.output.watchEnabled {

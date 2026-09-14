@@ -29,6 +29,7 @@ struct NightView: View {
   @State private var showingREMHelp = false
   @State private var signalAction: SignalAction?
   @State private var preparedAction: SignalAction?
+  @State private var preparedOutput: SignalOutput = .phone
   private enum SignalAction: Identifiable {
     case begin, resume, enable(UUID)
     var id: String {
@@ -39,7 +40,7 @@ struct NightView: View {
     }
   }
   private func prepare(_ action: SignalAction, signal: SignalSettings) {
-    if signal.output.phoneEnabled { signalAction = action }
+    if signal.output.phoneEnabled { preparedOutput = signal.output; signalAction = action }
     else { Task { await perform(action) } }
   }
   private func perform(_ action: SignalAction) async {
@@ -83,7 +84,8 @@ struct NightView: View {
       preparedAction = nil
       Task { await perform(action) }
     }) { action in
-      SignalReadinessView(continueTitle: action.title) { preparedAction = action }
+      SignalReadinessView(continueTitle: action.title, signalOutput: preparedOutput,
+        startsSession: action.id == "begin") { preparedAction = action }
         .environmentObject(model)
     }
     .sheet(item: $alarm) { AlarmEditor(alarm: $0).environmentObject(model) }
@@ -112,10 +114,11 @@ struct NightView: View {
         .font(LumaStyle.font(27, "Medium", relativeTo: .title))
         .multilineTextAlignment(.center)
         .fixedSize(horizontal: false, vertical: true)
-      Text("Мягкий сигнал. Больше осознанности.")
+      Text("Осознанные Сновидения и Выход из Тела")
         .font(LumaStyle.font(13))
         .foregroundStyle(LumaStyle.secondary)
         .multilineTextAlignment(.center)
+        .fixedSize(horizontal: false, vertical: true)
     }
   }
 
@@ -169,6 +172,12 @@ struct NightView: View {
           }
           .buttonStyle(PrimaryButtonStyle())
           .disabled(model.busy)
+        }
+        if model.activeSession?.signal.output == .both || model.hasPairedAlarms {
+          Text(model.pairedNightSummary)
+            .font(LumaStyle.font(11)).foregroundStyle(LumaStyle.secondary)
+            .fixedSize(horizontal: false, vertical: true)
+            .accessibilityIdentifier("night.pairedAudioStatus")
         }
       }
     }

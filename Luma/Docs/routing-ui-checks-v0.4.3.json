@@ -1,0 +1,54 @@
+{
+  "release": "0.4.3 (7)",
+  "kind": "browser-preview-only",
+  "nativeBuildRun": false,
+  "deviceTestsRun": false,
+  "viewports": [
+    {
+      "w": 320,
+      "h": 568,
+      "height": 452,
+      "content": 452,
+      "width": 320,
+      "contentWidth": 320
+    },
+    {
+      "w": 375,
+      "h": 667,
+      "height": 551,
+      "content": 551,
+      "width": 375,
+      "contentWidth": 375
+    },
+    {
+      "w": 390,
+      "h": 844,
+      "height": 728,
+      "content": 728,
+      "width": 390,
+      "contentWidth": 390
+    },
+    {
+      "w": 430,
+      "h": 932,
+      "height": 816,
+      "content": 816,
+      "width": 430,
+      "contentWidth": 430
+    },
+    {
+      "w": 1440,
+      "h": 1000,
+      "height": 734,
+      "content": 734,
+      "width": 400,
+      "contentWidth": 400
+    }
+  ],
+  "checks": [
+    "At 320px: readiness text, Continue reachable, no horizontal overflow, cancel does not start, routing limitation in Settings",
+    "At 390px: readiness text, Continue reachable, no horizontal overflow, cancel does not start, routing limitation in Settings",
+    "Exact subtitle, normal wrapping, empty Night stays one viewport at five sizes; JavaScript syntax valid"
+  ],
+  "errors": []
+}

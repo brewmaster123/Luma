@@ -36,6 +36,12 @@
       "path": "MultimodalEstimator.swift",
       "sourceTree": "<group>"
     },
+    "0F60E7AB549E3C49CA860EA3": {
+      "isa": "PBXFileReference",
+      "lastKnownFileType": "sourcecode.swift",
+      "path": "PairedCuePolicy.swift",
+      "sourceTree": "<group>"
+    },
     "CC31BD96AF6D75999F0A337C": {
       "isa": "PBXFileReference",
       "lastKnownFileType": "sourcecode.swift",
@@ -51,6 +57,7 @@
         "3118CCAE5937C526FD34A783",
         "FFAA0F37C08B0572009406ED",
         "6C270176EBD01586D160B953",
+        "0F60E7AB549E3C49CA860EA3",
         "CC31BD96AF6D75999F0A337C"
       ],
       "name": "Core",
@@ -552,6 +559,10 @@
       "isa": "PBXBuildFile",
       "fileRef": "6C270176EBD01586D160B953"
     },
+    "C8D78A02CA3E81B15CA24803": {
+      "isa": "PBXBuildFile",
+      "fileRef": "0F60E7AB549E3C49CA860EA3"
+    },
     "A01950427884A6B834992B92": {
       "isa": "PBXBuildFile",
       "fileRef": "CC31BD96AF6D75999F0A337C"
@@ -638,6 +649,7 @@
         "6235EDF3ACD08C1D9F1323D3",
         "B0DD5EFFD8F5FA6F1079A9F2",
         "09B706F8318D00DB80E41480",
+        "C8D78A02CA3E81B15CA24803",
         "A01950427884A6B834992B92",
         "48643513935B34C74676EF85",
         "2D7C59F5B6C4970D7DCF55F3",
@@ -683,6 +695,10 @@
     "0BFF7E12B88FD3C8DC2FDEA6": {
       "isa": "PBXBuildFile",
       "fileRef": "6C270176EBD01586D160B953"
+    },
+    "AF187DD79997AD65D4E95AC0": {
+      "isa": "PBXBuildFile",
+      "fileRef": "0F60E7AB549E3C49CA860EA3"
     },
     "93D596FC40F8DE62839FF65B": {
       "isa": "PBXBuildFile",
@@ -742,6 +758,7 @@
         "630AB367A04C531CF6A873E6",
         "78095E615F5D59139F7307CB",
         "0BFF7E12B88FD3C8DC2FDEA6",
+        "AF187DD79997AD65D4E95AC0",
         "93D596FC40F8DE62839FF65B",
         "1BDE2A55ACCD1BB26E268CF5",
         "BDFB35FF9880AD76760E1CB8",

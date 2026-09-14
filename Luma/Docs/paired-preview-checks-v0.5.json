@@ -1,0 +1,9 @@
+{
+  "kind": "paired-ui-browser-only",
+  "nativeBuildRun": false,
+  "checks": [
+    "320px: paired mic/media/fallback instructions; readable scrolling; cancel does not arm; explicit mic selection; draft phone-only route gets its own reminder; mock never starts night capture",
+    "390px: paired mic/media/fallback instructions; readable scrolling; cancel does not arm; explicit mic selection; draft phone-only route gets its own reminder; mock never starts night capture"
+  ],
+  "errors": []
+}

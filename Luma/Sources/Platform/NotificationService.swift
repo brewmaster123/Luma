@@ -41,16 +41,18 @@ import UserNotifications
       throw AppError.message("Разрешите уведомления и звуки Luma. Проверьте фокусирование «Сон».")
     }
   }
-  func rebuildAlarms(_ all: [AlarmOccurrence], soundName: (SignalSettings) throws -> String)
+  func rebuildAlarms(_ all: [AlarmOccurrence], completedPhoneIDs: Set<String> = [],
+    soundName: (SignalSettings) throws -> String)
     async throws -> Set<UUID>
   {
     #if os(watchOS)
       let items = all.filter { $0.signal.output.watchEnabled }
     #else
-      let items = all.filter { $0.signal.output.phoneEnabled }
+      let items = all.filter { $0.signal.output.phoneEnabled && !completedPhoneIDs.contains($0.id) }
     #endif
     let previous = await center.pendingNotificationRequests().filter { $0.identifier.hasPrefix("luma.alarm.") }
     let previousIDs = Set(previous.map(\.identifier))
+    let deliveredIDs = Set(await center.deliveredNotifications().map { $0.request.identifier })
     guard !items.isEmpty else { remove(ids: Array(previousIDs)); return [] }
     var budget = 48
     var ids = Set<UUID>()
@@ -61,15 +63,17 @@ import UserNotifications
         #if os(watchOS)
           let count = a.signal.count.rawValue
           let name = ""
+          let firstDate = a.date
         #else
           let count = 1
           let name = try soundName(a.signal)
+          let firstDate = PairedCuePolicy.phoneNotificationDate(a)
         #endif
         // Keep an imminent pending request when returning from Settings; do not
         // cancel and recreate the whole queue in the second before it fires.
         let remaining = (0..<count).map { index in
-          (id: a.id + ".\(index)", date: a.date.addingTimeInterval(Double(index * a.signal.gapSeconds)))
-        }.filter { $0.date > Date() || previousIDs.contains($0.id) }
+          (id: a.id + ".\(index)", date: firstDate.addingTimeInterval(Double(index * a.signal.gapSeconds)))
+        }.filter { !deliveredIDs.contains($0.id) && ($0.date > Date() || previousIDs.contains($0.id)) }
         guard !remaining.isEmpty else { continue }
         guard budget >= remaining.count else { break }
         for item in remaining {
@@ -88,17 +92,20 @@ import UserNotifications
     remove(ids: Array(previousIDs.subtracting(keep)))
     return ids
   }
-  func watchBurst(id: String, signal: SignalSettings) async throws {
+  func watchBurst(id: String, signal: SignalSettings, at requested: Date? = nil) async throws {
     try await checkPermission()
     let pending = await center.pendingNotificationRequests()
     guard pending.count + signal.count.rawValue <= 60 else {
       throw AppError.message("Очередь сигналов часов заполнена.")
     }
+    guard let start = PairedCuePolicy.watchStart(requested: requested, now: Date()) else {
+      throw AppError.message("Подсказка опоздала и пропущена.")
+    }
     do {
       for i in 0..<signal.count.rawValue {
         try await add(
           id: id + ".\(i)", title: "Подсказка Luma",
-          at: Date().addingTimeInterval(2 + Double(i * signal.validated().gapSeconds)), sound: "")
+          at: start.addingTimeInterval(Double(i * signal.validated().gapSeconds)), sound: "")
       }
     } catch {
       await cancelPrefix(id)

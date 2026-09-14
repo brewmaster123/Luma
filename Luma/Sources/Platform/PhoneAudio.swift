@@ -33,6 +33,17 @@
     private var tap = false
     private var excludedUntil = Date.distantPast
     private var cueExclusions: [DateInterval] = []
+    private var monitoringGeneration = UUID()
+    private var monitoringStarted: Date?
+    private var lastInput: Date?
+    var hasLiveInput: Bool {
+      monitoring && engine.isRunning && PairedCuePolicy.microphoneIsFresh(lastInput: lastInput, now: Date())
+    }
+    func checkInputLiveness() {
+      guard monitoring, let started = monitoringStarted,
+        Date().timeIntervalSince(started) > 4, !hasLiveInput else { return }
+      interrupt()
+    }
     func excludeFromDetection(from start: Date, until end: Date) {
       guard end > start else { return }
       cueExclusions.removeAll { $0.end < Date().addingTimeInterval(-900) }
@@ -55,7 +66,9 @@
         NotificationCenter.default.addObserver(
           forName: .AVAudioEngineConfigurationChange, object: engine, queue: .main
         ) { [weak self] _ in
-          Task { @MainActor in if self?.monitoring == true { self?.interrupt() } }
+          Task { @MainActor in
+            if let self, self.monitoring, !self.engine.isRunning { self.interrupt() }
+          }
         })
     }
     func soundsDirectory() throws -> URL {
@@ -123,13 +136,22 @@
         throw AppError.message("Микрофон недоступен.")
       }
       let accumulator = EnvelopeAccumulator(rate: format.sampleRate)
+      let generation = UUID()
+      monitoringGeneration = generation; monitoringStarted = Date(); lastInput = nil
       input.installTap(onBus: 0, bufferSize: 4096, format: format) { [weak self] b, _ in
         guard let data = b.floatChannelData?[0] else { return }
-        accumulator.append(data, count: Int(b.frameLength)) { values, start, end in
+        accumulator.append(data, count: Int(b.frameLength), pulse: { date in
+          Task { @MainActor in
+            guard let self, self.monitoring, self.monitoringGeneration == generation else { return }
+            let first = self.lastInput == nil
+            self.lastInput = date
+            if first { self.objectWillChange.send() }
+          }
+        }) { values, start, end in
           guard let epoch = AcousticFeatures.extract(envelope: values, start: start, end: end)
           else { return }
           Task { @MainActor in
-            guard let self, self.monitoring else { return }
+            guard let self, self.monitoring, self.monitoringGeneration == generation else { return }
             var e = epoch
             e.contaminated = e.start < self.excludedUntil
               || self.cueExclusions.contains { $0.start < e.end && $0.end > e.start }
@@ -147,6 +169,7 @@
       }
     }
     func stopMonitoring() {
+      monitoringGeneration = UUID(); monitoringStarted = nil; lastInput = nil
       monitoring = false
       engine.stop()
       if tap {
@@ -240,18 +263,33 @@
       guard !recording, !monitoring else { throw AppError.message("Завершите запись или ночной сеанс перед прослушиванием.") }
       try playFile(journalURL(voice), id: voice.id, vibrate: false)
     }
-    private func playFile(_ url: URL, id: UUID?, vibrate: Bool) throws {
+    /// Real finite playback independent of notification mirroring; no background wake-up.
+    func playCue(_ signal: SignalSettings, clips: [VoiceClip], at start: Date? = nil,
+      vibrate: Bool = false) throws {
+      guard !recording, !playing else { throw AppError.message("Другой звук или запись уже выполняется.") }
+      _ = try notificationSound(signal, clips: clips)
+      if let start, !(-2...10).contains(start.timeIntervalSinceNow) {
+        throw AppError.message("Время совместного сигнала прошло.")
+      }
+      guard AVAudioSession.sharedInstance().outputVolume > 0 else {
+        throw AppError.message("Поднимите громкость мультимедиа iPhone и повторите пробу.")
+      }
+      try playFile(soundURL(signal, clips: clips), id: signal.voiceID, vibrate: vibrate, at: start)
+    }
+    private func playFile(_ url: URL, id: UUID?, vibrate: Bool, at start: Date? = nil) throws {
       stopPlayback()
       // Bridges a sensor callback into genuine audio playback; does not create background wake-ups.
       backgroundTask = UIApplication.shared.beginBackgroundTask(withName: "Luma sound") { [weak self] in
-        Task { @MainActor in self?.endBackgroundTask() }
+        Task { @MainActor in self?.stopPlayback() }
       }
       do {
         if !monitoring { try activate(record: false) }
         let next = try AVAudioPlayer(contentsOf: url)
         next.numberOfLoops = 0; next.delegate = self; player = next
-        excludedUntil = Date().addingTimeInterval(next.duration + 90)
-        guard next.play() else { throw AppError.message("Не удалось воспроизвести звук.") }
+        let delay = max(0, start?.timeIntervalSinceNow ?? 0)
+        excludedUntil = Date().addingTimeInterval(delay + next.duration + 90)
+        let accepted = delay > 0 ? next.play(atTime: next.deviceCurrentTime + delay) : next.play()
+        guard accepted else { throw AppError.message("Не удалось воспроизвести звук.") }
         playbackID = id; playbackSeconds = 0; playing = true
         playbackTimer = Timer.scheduledTimer(withTimeInterval: 0.25, repeats: true) { [weak self] _ in
           Task { @MainActor in self?.playbackSeconds = self?.player?.currentTime ?? 0 }
@@ -259,9 +297,13 @@
         if vibrate {
           let duration = min(28, next.duration)
           hapticTask = Task { @MainActor [weak self] in
+            if delay > 0 {
+              do { try await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000)) }
+              catch { return }
+            }
             let end = Date().addingTimeInterval(duration)
             while !Task.isCancelled, self?.playing == true, Date() < end {
-              AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
+              if UIApplication.shared.applicationState == .active { AudioServicesPlaySystemSound(kSystemSoundID_Vibrate) }
               do { try await Task.sleep(nanoseconds: 2_000_000_000) } catch { return }
             }
           }
@@ -324,7 +366,8 @@
       values.reserveCapacity(600)
     }
     func append(
-      _ data: UnsafePointer<Float>, count length: Int, emit: ([Double], Date, Date) -> Void
+      _ data: UnsafePointer<Float>, count length: Int, pulse: (Date) -> Void,
+      emit: ([Double], Date, Date) -> Void
     ) {
       for i in 0..<length {
         let x = Double(data[i])
@@ -334,6 +377,7 @@
           values.append(sqrt(energy / Double(count)))
           count = 0
           energy = 0
+          if values.count % 10 == 0 { pulse(Date()) }
           if values.count == 600 {
             let end = Date()
             emit(values, start, end)
