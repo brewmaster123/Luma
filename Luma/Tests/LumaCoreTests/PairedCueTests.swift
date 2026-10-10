@@ -40,7 +40,7 @@ final class PairedCueTests: XCTestCase {
     }
   }
   func testDelayedWatchMessageIsRejectedAndFutureTargetIsPreserved() {
-    XCTAssertEqual(PairedCuePolicy.watchStart(requested: date.addingTimeInterval(2.5), now: date), date.addingTimeInterval(2.5))
+    XCTAssertEqual(PairedCuePolicy.watchStart(requested: date.addingTimeInterval(PairedCuePolicy.cueLeadTime), now: date), date.addingTimeInterval(PairedCuePolicy.cueLeadTime))
     XCTAssertNil(PairedCuePolicy.watchStart(requested: date.addingTimeInterval(-2.01), now: date))
     XCTAssertNil(PairedCuePolicy.watchStart(requested: date.addingTimeInterval(10.1), now: date))
     XCTAssertEqual(PairedCuePolicy.watchStart(requested: date, now: date), date.addingTimeInterval(1.1))

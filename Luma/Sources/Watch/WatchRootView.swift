@@ -2,6 +2,7 @@ import SwiftUI
 
 struct WatchRootView: View {
   @EnvironmentObject private var model: AppModel
+  @State private var researchConsent = false
   private let lavender = Color(red: 0.80, green: 0.74, blue: 0.96)
   var body: some View {
     ScrollView {
@@ -52,7 +53,21 @@ struct WatchRootView: View {
           identifier: "watch.health"
         ) { Task { await model.requestWatchHealth() } }
 
-        if model.watchSessionCanResume {
+        if model.researchNightAvailable {
+          actionButton(model.researchRunning ? "Завершить REM · тест" : "Начать REM · тест",
+            subtitle: model.researchStatus, icon: model.researchRunning ? "stop.fill" : "heart.fill",
+            color: lavender, busy: model.researchStarting, disabled: model.researchStarting,
+            identifier: "watch.research.start") {
+              if model.researchRunning { Task { await model.endSession() } }
+              else { researchConsent = true }
+            }
+          if model.researchRunning {
+            actionButton("Проба через 60 секунд", subtitle: "После нажатия погасите оба экрана",
+              icon: "timer", color: lavender, identifier: "watch.research.test") {
+                model.testResearchNight()
+              }
+          }
+        } else if model.watchSessionCanResume {
           actionButton("Возобновить на часах", subtitle: "Продолжить текущую ночь",
             icon: "play.fill", color: lavender, busy: model.watchSessionActionRunning,
             disabled: model.watchSessionActionRunning, identifier: "watch.resume"
@@ -64,7 +79,7 @@ struct WatchRootView: View {
           ) { Task { await model.endSession() } }
         }
 
-        Text("Начните ночь на iPhone. Часы подключатся к сеансу автоматически. Проба вибрации работает при открытой Luma на часах.")
+        Text("REM Lab: начните ночь на iPhone, затем запустите тест на часах. Распознавание выполняется здесь; точность ещё не измерена.")
           .font(.custom("Manrope-Regular", size: 10, relativeTo: .caption2))
           .foregroundStyle(.secondary)
           .multilineTextAlignment(.center)
@@ -75,6 +90,12 @@ struct WatchRootView: View {
       .frame(maxWidth: .infinity)
       .padding(.horizontal, 8)
       .padding(.vertical, 10)
+    }
+    .confirmationDialog("Исследовательский режим", isPresented: $researchConsent, titleVisibility: .visible) {
+      Button("Запустить тест датчиков") { Task { await model.startResearchNight() } }
+      Button("Отмена", role: .cancel) { }
+    } message: {
+      Text("Для непрерывных измерений будет запущена системная сессия тренировки. Вы будете спать, а не тренироваться: это технический эксперимент. Он может повлиять на кольца «Активности» и расходует заряд. Точность REM не проверена.")
     }
     .alert("Luma", isPresented: Binding(
       get: { model.message != nil },

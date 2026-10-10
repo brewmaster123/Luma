@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>ru</string>
 	<key>CFBundleDisplayName</key>
-	<string>Luma</string>
+	<string>Luma Lab</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -25,7 +25,7 @@
 	<key>NSHealthShareUsageDescription</key>
 	<string>Luma использует пульс, дыхание и историю сна с Apple Watch для экспериментальной оценки сна и дневника.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Микрофон нужен для голосовых подсказок, локальных заметок о снах и анализа признаков звука во время ночного сеанса.</string>
+	<string>Микрофон нужен для голосовых подсказок, локальных заметок о снах, анализа признаков звука во время REM-сеанса и для поддержания независимого короткого сигнала iPhone вместе с Apple Watch при заблокированном iPhone. Аудио ночи не сохраняется.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Manrope-Regular.ttf</string>
@@ -51,5 +51,7 @@
 	<string>Dark</string>
 	<key>NSAlarmKitUsageDescription</key>
 	<string>Luma отменяет системные будильники предыдущей версии при переходе на короткие уведомления.</string>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>Исследовательский режим Luma использует системную тренировочную сессию для проверки непрерывных датчиков во сне. Она может влиять на показатели «Активности». Итоговая тренировка не сохраняется приложением.</string>
 </dict>
 </plist>

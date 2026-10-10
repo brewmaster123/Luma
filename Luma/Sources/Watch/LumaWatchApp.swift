@@ -1,9 +1,11 @@
 import SwiftUI
 import WatchKit
+import HealthKit
 
 @main
 @MainActor
 struct LumaWatchApp: App {
+  @WKApplicationDelegateAdaptor(ResearchWatchDelegate.self) private var delegate
   @StateObject private var model: AppModel
   @Environment(\.scenePhase) private var phase
   init() {
@@ -19,6 +21,18 @@ struct LumaWatchApp: App {
         .onChange(of: phase) { _, next in
           if next == .active { Task { await model.resume() } } else { model.suspend() }
         }
+    }
+  }
+}
+
+/// Fail closed after a crash: don't leave an unobserved sensor workout running.
+/// A new user-started run recalibrates instead of replaying a previous REM event.
+final class ResearchWatchDelegate: NSObject, WKApplicationDelegate {
+  private let health = HKHealthStore()
+  func handleActiveWorkoutRecovery() {
+    health.recoverActiveWorkoutSession { session, _ in
+      session?.end()
+      session?.associatedWorkoutBuilder().discardWorkout()
     }
   }
 }

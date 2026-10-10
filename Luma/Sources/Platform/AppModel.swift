@@ -20,6 +20,10 @@ enum WatchPermissionAction: Equatable { case notifications, health }
   @Published private(set) var alarmOrderDate = Date()
   @Published var message: String?
   @Published var showOnboarding = false
+  @Published private(set) var researchStatus = "REM Lab · требуется запуск на часах"
+  @Published private(set) var researchRunning = false
+  @Published private(set) var researchStarting = false
+  @Published private(set) var researchLastUpdate: Date?
   #if os(watchOS)
     @Published private(set) var watchPermissionAction: WatchPermissionAction?
     @Published private(set) var watchNotificationSummary = "Проверяем настройки…"
@@ -35,8 +39,9 @@ enum WatchPermissionAction: Equatable { case notifications, health }
     private var refreshingWatchPermissions = false
     private var watchPermissionRevision = 0
     private var enablingWatchHealthUpdates = false
-    var watchSessionRunning: Bool { remoteSessionID != nil }
+    var watchSessionRunning: Bool { researchRunning }
     var watchSessionCanResume: Bool { offeredWatchSessionID != nil && remoteSessionID == nil }
+    var researchNightAvailable: Bool { offeredWatchSessionID != nil && state.source.usesWatch }
   #endif
   private let health = HealthService()
   private let notifications = NotificationService()
@@ -60,6 +65,8 @@ enum WatchPermissionAction: Equatable { case notifications, health }
   private var processing = false
   #if os(iOS)
     let audio = PhoneAudio()
+    private let researchPhone = ResearchPhoneLink()
+    private let researchLog = ResearchLog()
     private let legacyAlarms = LegacyAlarmCleanup()
     @Published private(set) var phoneNotificationSummary = "Проверяем уведомления…"
     @Published private(set) var phoneNotificationsReady = false
@@ -67,11 +74,15 @@ enum WatchPermissionAction: Equatable { case notifications, health }
     private var previewReset: Task<Void, Never>?
     private var previewGeneration = UUID()
     private var attemptedPairedAlarms = Set<String>()
+    private var pairedAlarmWake: Task<Void, Never>?
+    private var pairedAlarmWakeID: String?
+    private var pairedAlarmRuntimeStarting = false
     private var cueExclusions: [DateInterval] = []
     private var audioChanges: AnyCancellable?
   #else
     private let motion = MotionService()
     private let haptics = FiniteHaptics()
+    private let researchWatch = ResearchWatchRuntime()
   #endif
   init() {
     #if os(watchOS)
@@ -116,7 +127,8 @@ enum WatchPermissionAction: Equatable { case notifications, health }
       #if os(iOS)
       state.useNotificationDelivery()
       #endif
-      for i in state.sessions.indices where state.sessions[i].status == .running {
+      for i in state.sessions.indices where state.sessions[i].status == .running
+        && state.sessions[i].watchResearch != true {
         state.sessions[i].status = .paused
       }
     } catch {
@@ -129,6 +141,17 @@ enum WatchPermissionAction: Equatable { case notifications, health }
       self?.watchReachable = reachable
     }
     bridge.onPacket = { [weak self] in self?.receive($0) }
+    #if os(watchOS)
+      researchWatch.onPacket = { [weak self] p in self?.bridge.send(p) }
+      researchWatch.onStatus = { [weak self] text, running in
+        self?.researchStatus = text; self?.researchRunning = running
+        self?.watchStatus = running ? "Ночной тест работает на часах" : text
+      }
+    #else
+      researchPhone.onPacket = { [weak self] in self?.receive($0) }
+      researchPhone.onStatus = { [weak self] in self?.researchStatus = $0 }
+      if let s = activeSession, s.watchResearch == true { researchLog.start(s.id) }
+    #endif
     health.onChange = { [weak self] in await self?.refreshSensors() }
     #if os(iOS)
       bridge.onCueFailure = { [weak self] packet in
@@ -160,11 +183,19 @@ enum WatchPermissionAction: Equatable { case notifications, health }
       }
       audio.onError = { [weak self] in self?.message = $0 }
       audio.onInterruption = { [weak self] text in
-        guard let self, let i = self.activeIndex else { return }
-        self.state.sessions[i].status = .paused
-        self.resetStreak()
-        self.save()
-        self.syncConfiguration()
+        guard let self else { return }
+        self.pairedAlarmWake?.cancel(); self.pairedAlarmWake = nil; self.pairedAlarmWakeID = nil
+        if self.activeSession?.watchResearch == true {
+          self.researchStatus = "Аудио iPhone прервано; часы продолжают свой тест. \(text)"
+          self.message = text
+          return
+        }
+        if let i = self.activeIndex, self.state.sessions[i].status == .running {
+          self.state.sessions[i].status = .paused
+          self.resetStreak()
+          self.save()
+          self.syncConfiguration()
+        }
         self.message = text
       }
     #endif
@@ -173,27 +204,50 @@ enum WatchPermissionAction: Equatable { case notifications, health }
   var activeSession: NightSession? { activeIndex.map { state.sessions[$0] } }
   var hasPlan: Bool { activeIndex != nil }
   var stateTitle: String {
-    activeSession.map { $0.status == .paused ? "Сеанс на паузе" : "Наблюдаем за сном" }
+    if let s = activeSession, s.watchResearch == true, s.status == .running {
+      return researchRunning && researchLastUpdate.map({ Date().timeIntervalSince($0) < 90 }) == true
+        ? "Ночной тест на часах" : "Ждём данные Apple Watch"
+    }
+    return activeSession.map { $0.status == .paused ? "Сеанс на паузе" : "Наблюдаем за сном" }
       ?? "Ночь начинается с вас"
+  }
+  var researchLogURL: URL? {
+    #if os(iOS)
+      return researchLog.fileURL
+    #else
+      return researchWatch.logURL
+    #endif
   }
   var personalizationCount: Int { Personalization.examples(state: state).count }
   var versionLabel: String {
-    let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "—"
-    let build = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "—"
-    return "Luma \(version) (\(build))"
+    let version = (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String) ?? "—"
+    let buildNumber = (Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String) ?? "—"
+    return "Luma \(version) (\(buildNumber))"
   }
   var sortedAlarms: [LumaAlarm] { AlarmPlanner.sorted(state.alarms, after: alarmOrderDate) }
   #if os(iOS)
     var newAlarmDelivery: PhoneAlarmDelivery { .shortCue }
+    var hasPairedAlarms: Bool {
+      state.alarms.contains {
+        $0.enabled && $0.signal.output == .both
+          && $0.next(after: Date().addingTimeInterval(-PairedCuePolicy.maximumAlarmLateness)) != nil
+      }
+    }
     var pairedNightReady: Bool {
-      activeSession?.status == .running && activeSession?.source.usesMicrophone == true && audio.hasLiveInput
+      audio.hasLiveInput && ((activeSession?.status == .running && activeSession?.signal.output == .both)
+        || hasPairedAlarms)
     }
-    var hasPairedAlarms: Bool { state.alarms.contains { $0.enabled && $0.signal.output == .both } }
     var pairedNightSummary: String {
-      pairedNightReady ? "Микрофон активен · звук iPhone напрямую"
-        : "Для двух сигналов ночью запустите сеанс с микрофоном"
+      if activeSession?.watchResearch == true {
+        return "REM Lab · отдельный звук iPhone по команде часов. Проверьте пробой с погашенными экранами."
+      }
+      if pairedNightReady && hasPairedAlarms && activeSession?.signal.output != .both {
+        return "Парный будильник готов · iPhone и Watch подадут независимые сигналы"
+      }
+      return pairedNightReady ? "Микрофон активен · звук iPhone напрямую"
+        : "Для двух сигналов оставьте Luma запущенной перед сном"
     }
-    private var livePhoneRuntimeAvailable: Bool { isForeground || pairedNightReady }
+    private var livePhoneRuntimeAvailable: Bool { isForeground || audio.hasLiveInput || researchPhone.running }
     func refreshPhoneNotificationAccess() async {
       let access = await notifications.access()
       phoneNotificationSummary = access.summary
@@ -217,6 +271,31 @@ enum WatchPermissionAction: Equatable { case notifications, health }
       let interval = DateInterval(start: date.addingTimeInterval(-2), end: end)
       if !cueExclusions.contains(interval) { cueExclusions.append(interval) }
       audio.excludeFromDetection(from: date.addingTimeInterval(-2), until: end)
+    }
+    private var pairedAlarmRuntimeNeeded: Bool {
+      let completed = Set(state.completedAlarmIDs).union(attemptedPairedAlarms)
+      return PairedCuePolicy.needsPhoneRuntime(occurrences, now: Date(), completedIDs: completed)
+    }
+    /// A standalone iPhone+Watch alarm must keep a real iPhone audio session alive
+    /// before the screen locks. This runtime is independent from REM detection.
+    /// The same microphone engine is reference-counted with the REM owner so ending
+    /// one feature never silently disables the other.
+    private func refreshPairedAlarmRuntime() async {
+      guard !pairedAlarmRuntimeStarting else { return }
+      guard pairedAlarmRuntimeNeeded else {
+        audio.stopMonitoring(owner: .pairedAlarm)
+        armNextPairedAlarm()
+        return
+      }
+      pairedAlarmRuntimeStarting = true
+      defer { pairedAlarmRuntimeStarting = false }
+      do {
+        try await audio.startMonitoring(owner: .pairedAlarm)
+        armNextPairedAlarm()
+      } catch {
+        pairedAlarmWake?.cancel(); pairedAlarmWake = nil; pairedAlarmWakeID = nil
+        message = "Для будильника «iPhone + Watch» нужен активный фоновый аудиосеанс iPhone. \(error.localizedDescription)"
+      }
     }
   #endif
   func start() async {
@@ -259,6 +338,9 @@ enum WatchPermissionAction: Equatable { case notifications, health }
     await refreshWatchPermissions()
     #endif
     await rebuildAlarms()
+    #if os(iOS)
+    await refreshPairedAlarmRuntime()
+    #endif
     if archive.onboardingComplete {
       await refreshSensors()
       await refreshSleep()
@@ -269,11 +351,18 @@ enum WatchPermissionAction: Equatable { case notifications, health }
     #if os(watchOS)
       motion.stopUpdates()
       haptics.cancel()
+      // ResearchWatchRuntime owns its own motion stream and finite cue task.
+      // A lowered wrist must not stop the active sensor experiment.
     #endif
   }
   private func tick() async {
     #if os(iOS)
     audio.checkInputLiveness()
+    if activeSession?.watchResearch == true,
+      researchLastUpdate.map({ Date().timeIntervalSince($0) > 90 }) == true {
+      researchRunning = false
+      researchStatus = "Нет свежего ответа часов · наблюдение не подтверждено"
+    }
     if !rebuilding { playDuePairedAlarm() }
     #endif
     if Date().timeIntervalSince(alarmOrderDate) >= 30 { alarmOrderDate = Date() }
@@ -310,6 +399,17 @@ enum WatchPermissionAction: Equatable { case notifications, health }
     #endif
   }
   #if os(watchOS)
+    func startResearchNight() async {
+      guard let id = offeredWatchSessionID, state.source.usesWatch, !researchStarting else { return }
+      researchStarting = true
+      defer { researchStarting = false }
+      state.mutedWatchSessions.removeAll { $0 == id }
+      remoteSessionID = id
+      guard save() else { return }
+      do { try await researchWatch.start(id: id, signal: state.signal) }
+      catch { message = error.localizedDescription }
+    }
+    func testResearchNight() { researchWatch.scheduleTest() }
     func refreshWatchPermissions() async {
       guard !refreshingWatchPermissions, watchPermissionAction == nil else { return }
       refreshingWatchPermissions = true
@@ -448,7 +548,11 @@ enum WatchPermissionAction: Equatable { case notifications, health }
     if let i = state.alarms.firstIndex(where: { $0.id == alarm.id }) { state.alarms[i] = alarm }
     else { state.alarms.append(alarm) }
     guard save() else { state = old; return false }
-    alarmOrderDate = Date(); await rebuildAlarms(); syncConfiguration()
+    alarmOrderDate = Date(); await rebuildAlarms()
+    #if os(iOS)
+    await refreshPairedAlarmRuntime()
+    #endif
+    syncConfiguration()
     return true
   }
   func toggleAlarm(_ id: UUID) async {
@@ -468,6 +572,9 @@ enum WatchPermissionAction: Equatable { case notifications, health }
     state.alarms.removeAll { $0.id == id }
     guard save() else { state = old; return }
     await rebuildAlarms()
+    #if os(iOS)
+    await refreshPairedAlarmRuntime()
+    #endif
     syncConfiguration()
   }
   func beginSession() async {
@@ -476,9 +583,7 @@ enum WatchPermissionAction: Equatable { case notifications, health }
     defer { busy = false }
     #if os(iOS)
       do {
-        if state.signal.output == .both && !state.source.usesMicrophone {
-          throw AppError.message("Для совместных сигналов ночью выберите «Часы + микрофон» в настройках. Микрофон анализирует звуки сна; ночная запись не сохраняется.")
-        }
+        if state.source.usesWatch { try await researchPhone.authorize() }
         if state.source.usesWatch || state.signal.output.watchEnabled {
           guard watchInstalled else {
             throw AppError.message("Откройте Luma на часах или выберите «Только iPhone».")
@@ -486,20 +591,27 @@ enum WatchPermissionAction: Equatable { case notifications, health }
         }
         if state.signal.output.phoneEnabled {
           _ = try audio.notificationSound(state.signal, clips: state.voices)
-          try await preparePhoneSignals()
+          if state.source.usesWatch { try legacyAlarms.removeRemainingAlarms() }
+          else { try await preparePhoneSignals() }
         }
-        if state.source.usesMicrophone { try await audio.startMonitoring() }
-        let s = NightSession(source: state.source, signal: state.signal)
+        if !state.source.usesWatch && state.source.usesMicrophone { try await audio.startMonitoring(owner: .rem) }
+        var s = NightSession(source: state.source.usesWatch ? .watch : state.source, signal: state.signal)
+        s.watchResearch = state.source.usesWatch
+        if s.watchResearch == true {
+          researchLog.start(s.id); researchRunning = false; researchLastUpdate = nil
+          researchStatus = "Откройте Luma на часах и нажмите «Начать REM · тест»"
+        }
         state.sessions.insert(s, at: 0)
         state.episodeMemory = EpisodeMemory()
         acoustic = []
         excludedUntil = .distantPast
         do { try persist() } catch {
           state.sessions.removeAll { $0.id == s.id }
-          audio.stopMonitoring()
+          audio.stopMonitoring(owner: .rem)
           throw error
         }
         syncConfiguration()
+        armNextPairedAlarm()
         await refreshSensors()
       } catch { message = error.localizedDescription }
     #else
@@ -513,18 +625,22 @@ enum WatchPermissionAction: Equatable { case notifications, health }
     defer { busy = false }
     #if os(iOS)
       do {
-        if session.signal.output == .both && !session.source.usesMicrophone {
-          throw AppError.message("Этот сеанс запущен без микрофона. Завершите его и начните новый с источником «Часы + микрофон», чтобы звук iPhone работал вместе с Watch ночью.")
+        if session.source.usesWatch { try await researchPhone.authorize() }
+        if session.signal.output.phoneEnabled {
+          if session.source.usesWatch { try legacyAlarms.removeRemainingAlarms() }
+          else { try await preparePhoneSignals() }
         }
-        if session.signal.output.phoneEnabled { try await preparePhoneSignals() }
         guard activeSession?.id == session.id, activeSession?.status == .paused else { return }
-        if session.source.usesMicrophone { try await audio.startMonitoring() }
+        if !session.source.usesWatch && session.source.usesMicrophone { try await audio.startMonitoring(owner: .rem) }
         guard let index = activeIndex, state.sessions[index].id == session.id,
-          state.sessions[index].status == .paused else { audio.stopMonitoring(); return }
+          state.sessions[index].status == .paused else { audio.stopMonitoring(owner: .rem); return }
         state.sessions[index].status = .running
-        resetStreak(); try persist(); syncConfiguration()
+        state.sessions[index].watchResearch = session.source.usesWatch
+        researchRunning = false; researchLastUpdate = nil
+        researchStatus = "Возобновите ночной тест на Apple Watch"
+        resetStreak(); try persist(); syncConfiguration(); armNextPairedAlarm()
       } catch {
-        audio.stopMonitoring()
+        audio.stopMonitoring(owner: .rem)
         if let index = state.sessions.firstIndex(where: { $0.id == session.id && $0.status != .ended }) {
           state.sessions[index].status = .paused
         }
@@ -535,20 +651,29 @@ enum WatchPermissionAction: Equatable { case notifications, health }
   func endSession() async {
     #if os(iOS)
       guard let i = activeIndex else { return }
+      if state.sessions[i].watchResearch == true {
+        var p = WirePacket(kind: .researchStop); p.sessionID = state.sessions[i].id
+        p.researchRunID = state.sessions[i].watchResearchRunID
+        researchPhone.send(p); bridge.send(p)
+        researchRunning = false; researchStatus = "Ночной тест завершён"
+      }
       state.sessions[i].status = .ended
       state.sessions[i].endedAt = Date()
       previewGeneration = UUID()
       previewReset?.cancel(); phonePreviewRunning = false
       await notifications.cancelPrefix("luma.preview.")
       resetStreak()
-      audio.stopMonitoring()
+      pairedAlarmWake?.cancel(); pairedAlarmWake = nil; pairedAlarmWakeID = nil
+      audio.stopMonitoring(owner: .rem)
       audio.stopPlayback()
       save()
       syncConfiguration()
+      await refreshPairedAlarmRuntime()
     #else
       guard let id = remoteSessionID, !watchSessionActionRunning else { return }
       watchSessionActionRunning = true
       defer { watchSessionActionRunning = false }
+      researchWatch.stop()
       state.mutedWatchSessions.append(id)
       state.mutedWatchSessions = Array(state.mutedWatchSessions.suffix(100))
       save()
@@ -625,6 +750,7 @@ enum WatchPermissionAction: Equatable { case notifications, health }
     defer { refreshing = false }
     let now = Date()
     #if os(watchOS)
+      if state.source.usesWatch { return } // REM is evaluated locally by the live sensor runtime.
       guard remoteSessionID != nil, now >= excludedUntil else { return }
       if isForeground { motion.startUpdates() }
       do {
@@ -638,6 +764,12 @@ enum WatchPermissionAction: Equatable { case notifications, health }
       p.motion = motion.epochs
       bridge.send(p)
     #else
+      if activeSession?.watchResearch == true {
+        if researchLastUpdate.map({ now.timeIntervalSince($0) > 90 }) ?? true {
+          evidence = .unavailable("Ожидаем свежие измерения и запуск ночного теста на часах")
+        }
+        return
+      }
       if activeSession?.source.usesWatch == true
         || (activeSession == nil && archive.onboardingComplete)
       {
@@ -799,22 +931,60 @@ enum WatchPermissionAction: Equatable { case notifications, health }
     }
   #endif
   #if os(iOS)
-    private func playDuePairedAlarm() {
+    /// Arms the next paired alarm whenever the shared phone audio runtime is alive.
+    /// That runtime may belong to REM, a standalone paired alarm, or both. The
+    /// +5 s local notification remains the final fallback.
+    private func armNextPairedAlarm() {
+      pairedAlarmWake?.cancel()
+      pairedAlarmWake = nil
+      pairedAlarmWakeID = nil
+      guard audio.monitoring, !audio.recording else { return }
+      let now = Date()
+      let completed = Set(state.completedAlarmIDs).union(attemptedPairedAlarms)
+      guard let next = occurrences.filter({ occurrence in
+        occurrence.signal.output == .both && queuedAlarmIDs.contains(occurrence.alarmID)
+          && !completed.contains(occurrence.id)
+          && occurrence.date >= now.addingTimeInterval(-PairedCuePolicy.maximumAlarmLateness)
+      }).min(by: { $0.date < $1.date }) else { return }
+      pairedAlarmWakeID = next.id
+      let delay = max(0, next.date.timeIntervalSince(now))
+      pairedAlarmWake = Task { @MainActor [weak self] in
+        if delay > 0 {
+          do { try await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000)) }
+          catch { return }
+        }
+        guard let self, !Task.isCancelled, self.pairedAlarmWakeID == next.id else { return }
+        self.pairedAlarmWake = nil
+        self.pairedAlarmWakeID = nil
+        self.playDuePairedAlarm(preferredID: next.id)
+      }
+    }
+    private func playDuePairedAlarm(preferredID: String? = nil) {
       guard livePhoneRuntimeAvailable, !audio.recording, !audio.playing else { return }
       let now = Date()
       let completed = Set(state.completedAlarmIDs).union(attemptedPairedAlarms)
-      guard let a = occurrences.first(where: {
-        PairedCuePolicy.canPlayAlarm($0, now: now, runtimeAvailable: true, completedIDs: completed)
-          && queuedAlarmIDs.contains($0.alarmID)
-      }) else { return }
+      guard let a = occurrences.first(where: { occurrence in
+        (preferredID == nil || occurrence.id == preferredID)
+          && PairedCuePolicy.canPlayAlarm(occurrence, now: now, runtimeAvailable: true, completedIDs: completed)
+          && queuedAlarmIDs.contains(occurrence.alarmID)
+      }) else {
+        if preferredID != nil { armNextPairedAlarm() }
+        return
+      }
       guard let current = state.alarms.first(where: { $0.id == a.alarmID && $0.enabled }),
         current.signal.validated() == a.signal,
         AlarmPlanner.occurrences([current], after: a.date.addingTimeInterval(-0.01), limit: 1).first?.id == a.id
-      else { return }
+      else { armNextPairedAlarm(); return }
       attemptedPairedAlarms.insert(a.id)
       if attemptedPairedAlarms.count > 512 { attemptedPairedAlarms = [a.id] }
+      defer {
+        armNextPairedAlarm()
+        Task { @MainActor [weak self] in await self?.refreshPairedAlarmRuntime() }
+      }
       do {
         let sound = try audio.notificationSound(a.signal, clips: state.voices)
+        // PhoneAudio uses the already-active background playAndRecord session here,
+        // so the iPhone sound is independent of notification forwarding to Apple Watch.
         try audio.playCue(a.signal, clips: state.voices, vibrate: state.vibratesOnPhone)
         let previous = state.completedAlarmIDs
         state.completedAlarmIDs.append(a.id)
@@ -822,9 +992,9 @@ enum WatchPermissionAction: Equatable { case notifications, health }
         guard save() else {
           state.completedAlarmIDs = previous; audio.stopPlayback(); return
         }
-        // Live window is 0–2 sec; fallback is +5 sec. Cancel only after playback
-        // was accepted and persisted, never before attempting the actual sound.
-        notifications.remove(ids: [a.id + ".0"])
+        // Watch has its own pre-scheduled local burst. Cancel the delayed phone
+        // notification only after the direct iPhone player was accepted + persisted.
+        notifications.completePhoneAlarm(a.id)
         excludeCue(at: now, duration: sound.duration)
         excludedUntil = now.addingTimeInterval(sound.duration + 90); resetStreak()
       } catch {
@@ -867,6 +1037,7 @@ enum WatchPermissionAction: Equatable { case notifications, health }
         excludeCue(at: occurrence.date, duration: duration + (occurrence.signal.output == .both ? PairedCuePolicy.fallbackDelay : 0))
       }
       await refreshPhoneNotificationAccess()
+      armNextPairedAlarm()
       #endif
     } while rebuildAgain
   }
@@ -893,7 +1064,92 @@ enum WatchPermissionAction: Equatable { case notifications, health }
       }
     }
   }
+  #if os(iOS)
+    private func receiveResearch(_ p: WirePacket) {
+      guard p.version == 2, let i = activeIndex, state.sessions[i].watchResearch == true,
+        p.sessionID == state.sessions[i].id,
+        (-2...120).contains(Date().timeIntervalSince(p.sentAt)) else { return }
+      if state.sessions[i].status == .paused {
+        // Only a newly user-started Watch run may resume a paused night.
+        guard p.kind == .researchStatus, p.researchRunning == true,
+          let run = p.researchRunID, run != state.sessions[i].watchResearchRunID,
+          researchLastUpdate.map({ p.sentAt > $0 }) ?? true else { return }
+        state.sessions[i].status = .running
+      }
+      guard state.sessions[i].status == .running else { return }
+      let id = state.sessions[i].id
+      if p.kind == .researchStatus {
+        guard researchLastUpdate.map({ p.sentAt > $0 }) ?? true else { return }
+        guard let run = p.researchRunID else { return }
+        if state.sessions[i].watchResearchRunID != run {
+          state.sessions[i].watchResearchRunID = run; save()
+        }
+        researchLastUpdate = p.sentAt; researchRunning = p.researchRunning == true
+        researchStatus = p.message ?? "Сбор данных на часах"
+        heart = mergeHeart(heart + (p.heart ?? []), now: Date())
+        if let f = p.researchSample {
+          evidence = REMEvidence(kind: f.score.map({ $0 >= 0.72 ? .candidate : .unlikely }) ?? .insufficient,
+            heuristicScore: f.score, latestSampleAt: p.heart?.last?.date,
+            explanation: researchStatus)
+          if f.date.timeIntervalSince(state.sessions[i].samples.last?.date ?? .distantPast) >= 55 {
+            state.sessions[i].samples.append(f)
+            state.sessions[i].samples = Array(state.sessions[i].samples.suffix(1440))
+            save()
+          }
+        }
+        researchLog.append(p)
+      } else if p.kind == .researchStopped {
+        guard p.researchRunID == state.sessions[i].watchResearchRunID else { return }
+        guard researchLastUpdate.map({ p.sentAt >= $0 }) ?? true else { return }
+        researchRunning = false; researchStatus = p.message ?? "Сбор на часах остановлен"
+        state.sessions[i].status = .paused
+        audio.stopMonitoring(owner: .rem); audio.stopPlayback()
+        researchLog.append(p); save()
+      } else if p.kind == .researchReceipt {
+        guard p.researchRunID == state.sessions[i].watchResearchRunID else { return }
+        if let episode = p.episodeID { result(episode, watch: p.message) }
+        researchLog.append(p); save()
+      } else if p.kind == .researchCue {
+        guard p.researchRunID == state.sessions[i].watchResearchRunID,
+          p.researchRunID != nil else { return }
+        guard ResearchCuePolicy.accepts(p, sessionID: id, now: Date(), processed: state.processedEvents),
+          var episode = p.researchEpisode else { return }
+        state.processedEvents.append(p.id)
+        state.processedEvents = Array(state.processedEvents.suffix(256))
+        episode.watchResult = "Решение принято на часах; конечная серия запрошена"
+        if p.researchTest != true { state.sessions[i].episodes.append(episode) }
+        // Reserve before any playback. The second transport must never replay this cue.
+        guard save() else { return }
+        researchLog.append(p)
+        var receipt = WirePacket(kind: .researchReceipt)
+        receipt.researchRunID = p.researchRunID
+        receipt.sessionID = id; receipt.episodeID = episode.id; receipt.replyTo = p.id
+        if state.sessions[i].signal.output.phoneEnabled {
+          do {
+            let signal = state.sessions[i].signal
+            try audio.playCue(signal, clips: state.voices, at: p.cueDate, vibrate: state.vibratesOnPhone)
+            excludeCue(at: p.cueDate ?? Date(), duration: 28)
+            receipt.message = "iPhone: проигрыватель принял короткий сигнал без повтора"
+          } catch {
+            receipt.message = "iPhone: сигнал не запущен — \(error.localizedDescription)"
+          }
+        } else { receipt.message = "Звук iPhone выключен в настройках сеанса" }
+        result(episode.id, phone: receipt.message)
+        researchStatus = (p.researchTest == true ? "Проба. " : "") + (receipt.message ?? "")
+        researchLog.append(receipt); save()
+        researchPhone.send(receipt); bridge.send(receipt)
+      }
+    }
+  #endif
   private func receive(_ p: WirePacket) {
+    if [.researchStatus, .researchCue, .researchStopped, .researchStop, .researchReceipt].contains(p.kind) {
+      #if os(iOS)
+        receiveResearch(p)
+      #else
+        researchWatch.receive(p)
+      #endif
+      return
+    }
     #if os(iOS)
       if p.kind == .sensors, let id = p.sessionID, id == activeSession?.id,
         activeSession?.status == .running, Date().timeIntervalSince(p.sentAt) < 90
@@ -935,18 +1191,22 @@ enum WatchPermissionAction: Equatable { case notifications, health }
       state.configurationRevision = rev
       state.alarms = p.alarms ?? []
       state.signal = p.signal?.validated() ?? SignalSettings()
+      state.source = p.source ?? .watch
       offeredWatchSessionID = p.sessionID
+      if researchWatch.sessionID != nil && researchWatch.sessionID != p.sessionID {
+        researchWatch.stop(reason: "Конфигурация ночного сеанса изменена")
+      }
       remoteSessionID = p.sessionID.flatMap { state.mutedWatchSessions.contains($0) ? nil : $0 }
       if remoteSessionID == nil {
         motion.stopUpdates()
         haptics.cancel()
         await notifications.cancelPrefix("luma.rem.")
-      } else if isForeground {
+      } else if isForeground && !state.source.usesWatch {
         motion.startUpdates()
       }
       guard save() else { return }
       await rebuildAlarms()
-      watchStatus = remoteSessionID != nil ? "Сеанс подключён к iPhone"
+      watchStatus = remoteSessionID != nil ? (researchRunning ? "Ночной тест работает" : "Нажмите «Начать REM · тест»")
         : (offeredWatchSessionID == nil ? "Начните ночь в Luma на iPhone" : "Сеанс на часах приостановлен")
       let total = state.alarms.filter { $0.enabled && $0.signal.output.watchEnabled }.count
       var ack = WirePacket(kind: .acknowledgement)

@@ -5,6 +5,8 @@ import UserNotifications
   private let center = UNUserNotificationCenter.current()
   struct Sound { let name: String; let duration: TimeInterval }
   var onForeground: ((String) -> Void)?
+  private var completedPhoneAlarmIDs = Set<String>()
+  private var completedPhoneAlarmOrder: [String] = []
   override init() {
     super.init()
     center.delegate = self
@@ -48,6 +50,7 @@ import UserNotifications
     #if os(watchOS)
       let items = all.filter { $0.signal.output.watchEnabled }
     #else
+      completedPhoneAlarmIDs = completedPhoneIDs.union(completedPhoneAlarmOrder)
       let items = all.filter { $0.signal.output.phoneEnabled && !completedPhoneIDs.contains($0.id) }
     #endif
     let previous = await center.pendingNotificationRequests().filter { $0.identifier.hasPrefix("luma.alarm.") }
@@ -77,8 +80,16 @@ import UserNotifications
         guard !remaining.isEmpty else { continue }
         guard budget >= remaining.count else { break }
         for item in remaining {
+          #if os(iOS)
+          guard !completedPhoneAlarmIDs.contains(a.id) else { continue }
+          #endif
           if item.date.timeIntervalSinceNow >= 1 {
             try await add(id: item.id, title: a.title, at: item.date, sound: name)
+            #if os(iOS)
+            // Completing direct playback can interleave with the await above.
+            // Purge a fallback that an older queue rebuild just recreated.
+            if completedPhoneAlarmIDs.contains(a.id) { remove(ids: [item.id]); continue }
+            #endif
             keep.insert(item.id)
           } else if previousIDs.contains(item.id) { keep.insert(item.id) }
         }
@@ -143,6 +154,13 @@ import UserNotifications
     center.removePendingNotificationRequests(withIdentifiers: ids)
     center.removeDeliveredNotifications(withIdentifiers: ids)
   }
+  func completePhoneAlarm(_ id: String) {
+    completedPhoneAlarmIDs.insert(id)
+    completedPhoneAlarmOrder.removeAll { $0 == id }
+    completedPhoneAlarmOrder.append(id)
+    completedPhoneAlarmOrder = Array(completedPhoneAlarmOrder.suffix(512))
+    remove(ids: [id + ".0"])
+  }
   func cancelPrefix(_ prefix: String) async {
     let p = await center.pendingNotificationRequests()
     let d = await center.deliveredNotifications()
@@ -156,6 +174,11 @@ import UserNotifications
   ) {
     let id = notification.request.identifier
     Task { @MainActor [weak self] in
+      if id.hasPrefix("luma.alarm."), id.hasSuffix(".0"),
+        self?.completedPhoneAlarmIDs.contains(String(id.dropLast(2))) == true {
+        completion([])
+        return
+      }
       self?.onForeground?(id)
       completion([.banner, .sound])
     }

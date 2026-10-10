@@ -18,18 +18,49 @@ import WatchConnectivity
     }
     if p.kind == .configuration { configuration = p }
     guard session.activationState == .activated else { return false }
+    if [.researchCue, .researchStatus, .researchStopped, .researchStop, .researchReceipt].contains(p.kind) {
+      // Watch-to-phone sendMessageData may wake iOS. Do not reject it merely
+      // because reachability was false before that wake-up.
+      #if os(watchOS)
+        session.sendMessageData(data, replyHandler: nil, errorHandler: nil)
+      #else
+        if session.isReachable { session.sendMessageData(data, replyHandler: nil, errorHandler: nil) }
+      #endif
+      // Never queue a cue for later delivery. Stopping a matching session remains useful later.
+      if p.kind == .researchStop || p.kind == .researchStopped {
+        session.transferUserInfo(["lumaV2": data])
+      }
+      return true // Transport attempted, not proof of delivery.
+    }
     if p.kind == .configuration {
       do { try session.updateApplicationContext(["lumaV2": data]) } catch { return false }
       if session.isReachable { session.sendMessageData(data, replyHandler: nil, errorHandler: nil) }
       return true
     }
-    if p.kind == .acknowledgement { session.transferUserInfo(["lumaV2": data]) }
-    // Never enqueue time-critical cues for delayed delivery.
-    guard session.isReachable else { return p.kind == .acknowledgement }
-    session.sendMessageData(data, replyHandler: nil) { [weak self] _ in
-      guard p.kind == .cue else { return }
-      Task { @MainActor in self?.onCueFailure?(p) }
+    if p.kind == .acknowledgement {
+      session.transferUserInfo(["lumaV2": data])
+      if !session.isReachable { return true }
     }
+    if p.kind == .cue {
+      // REM cues get two independent transport attempts. Live messaging gives the
+      // near-simultaneous path; transferUserInfo can wake/deliver to the Watch app
+      // in the background if live reachability disappears after the screen sleeps.
+      // The packet UUID is de-duplicated on Watch. Foreground previews are excluded
+      // so an old preview can never arrive later as a surprise vibration.
+      let queuedFallback = p.message != "preview"
+      if queuedFallback { session.transferUserInfo(["lumaV2": data]) }
+      guard session.isReachable else {
+        if !queuedFallback { onCueFailure?(p) }
+        return queuedFallback
+      }
+      session.sendMessageData(data, replyHandler: nil) { [weak self] _ in
+        guard p.kind == .cue, !queuedFallback else { return }
+        Task { @MainActor in self?.onCueFailure?(p) }
+      }
+      return true
+    }
+    guard session.isReachable else { return p.kind == .acknowledgement }
+    session.sendMessageData(data, replyHandler: nil, errorHandler: nil)
     return true
   }
   private func decode(_ d: Data) {

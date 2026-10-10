@@ -3,8 +3,14 @@ import SwiftUI
 @main
 @MainActor
 struct LumaApp: App {
-  @StateObject private var model = AppModel()
+  @StateObject private var model: AppModel
   @Environment(\.scenePhase) private var phase
+  init() {
+    let instance = AppModel()
+    _model = StateObject(wrappedValue: instance)
+    // Register session mirroring and wire handlers on background launches too.
+    Task { await instance.start() }
+  }
   var body: some Scene {
     WindowGroup {
       PhoneRootView()

@@ -40,7 +40,9 @@ struct NightView: View {
     }
   }
   private func prepare(_ action: SignalAction, signal: SignalSettings) {
-    if signal.output.phoneEnabled { preparedOutput = signal.output; signalAction = action }
+    if signal.output.phoneEnabled || (action.id == "begin" || action.id == "resume") && model.state.source.usesWatch {
+      preparedOutput = signal.output; signalAction = action
+    }
     else { Task { await perform(action) } }
   }
   private func perform(_ action: SignalAction) async {
@@ -85,7 +87,8 @@ struct NightView: View {
       Task { await perform(action) }
     }) { action in
       SignalReadinessView(continueTitle: action.title, signalOutput: preparedOutput,
-        startsSession: action.id == "begin") { preparedAction = action }
+        startsSession: action.id == "begin" || action.id == "resume",
+        requiresPermission: preparedOutput.phoneEnabled) { preparedAction = action }
         .environmentObject(model)
     }
     .sheet(item: $alarm) { AlarmEditor(alarm: $0).environmentObject(model) }
@@ -152,6 +155,14 @@ struct NightView: View {
           .font(LumaStyle.font(13))
           .foregroundStyle(LumaStyle.secondary)
         if let session = model.activeSession {
+          if session.watchResearch == true {
+            Text(model.researchStatus).font(LumaStyle.font(12))
+              .foregroundStyle(LumaStyle.lavender).fixedSize(horizontal: false, vertical: true)
+            if let url = model.researchLogURL {
+              ShareLink(item: url) { Label("Журнал проверки", systemImage: "square.and.arrow.up") }
+                .font(LumaStyle.font(12)).frame(minHeight: 44)
+            }
+          }
           Text(
             "\(session.episodes.count) предполагаемых эпизодов · с \(session.startedAt.formatted(date: .omitted, time: .shortened))"
           ).font(LumaStyle.font(12))
@@ -186,7 +197,7 @@ struct NightView: View {
   private var alarmsSection: some View {
     LazyVStack(spacing: 12) {
       HStack {
-        Text("Будильники").font(LumaStyle.font(21, "Medium"))
+        Text("Умный Будильник").font(LumaStyle.font(21, "Medium"))
         Spacer()
         Button {
           var item = LumaAlarm()

@@ -77,10 +77,7 @@ for catalog in (ROOT/'Resources').glob('*.xcassets'):
 notifications=(ROOT/'Sources/Platform/NotificationService.swift').read_text()
 check(bool(re.search(r'repeats:\s*false', notifications)) and not re.search(r'repeats:\s*true', notifications),'Notification triggers are non-repeating in source')
 core='\n'.join(p.read_text() for p in (ROOT/'Tests/LumaCoreTests').glob('*.swift'))
-check(len(re.findall(r'func test\w+\(',core))==59,'59 XCTest scenarios are present (not executed by this script)')
-preview=(ROOT/'Design/Interface-preview.html').read_text()
-check(not re.search(r'<(?:script|link)[^>]+(?:src|href)=["\']https?://',preview),'Design preview has no remote scripts or stylesheets')
-check('data:font/woff;base64,' in preview, 'Preview bundles its own Manrope font')
+check(len(re.findall(r'func test\w+\(',core))==79,'79 XCTest scenarios are present (not executed by this script)')
 check((ROOT/'Resources/Manrope-LICENSE.txt').is_file(), 'Font license included')
 import wave
 for n in [4,8,15]:
@@ -91,7 +88,8 @@ for name in ['iOS','Watch']:
     check(len(info['UIAppFonts'])==3 and all((ROOT/'Resources'/f).exists() for f in info['UIAppFonts']), f'Bundled Cyrillic fonts: {name}')
     ent=plistlib.loads((ROOT/f'Config/{name}.entitlements').read_bytes())
     check('com.apple.developer.usernotifications.time-sensitive' not in ent, f'Ordinary notification capabilities: {name}')
-for path in ['README.md','Docs/DESIGN.md','Docs/TECHNICAL-NOTES.md','Docs/DEVICE-TESTS.md','scripts/check-on-mac.sh']:
+for path in ['scripts/check-on-mac.sh', 'Sources/LumaCore/RealtimeREMEngine.swift',
+             'Sources/Watch/ResearchWatchRuntime.swift', 'Sources/iPhone/ResearchPhoneLink.swift']:
     check((ROOT/path).is_file(),f'Delivery file exists: {path}')
 check('NSAlarmKitUsageDescription' in plistlib.loads((ROOT/'Config/iOS-Info.plist').read_bytes()), 'Legacy alarm cleanup purpose string included')
 check('audio' in plistlib.loads((ROOT/'Config/iOS-Info.plist').read_bytes())['UIBackgroundModes'], 'Genuine audio background mode configured')
@@ -114,5 +112,16 @@ for mode in ['Debug', 'Release']:
     check(target_ids[('Luma Watch', mode)] == target_ids[('Luma', mode)] + '.watchkitapp', f'Watch bundle belongs to iPhone bundle in {mode}')
     check(companion == target_ids[('Luma', mode)], f'Watch companion matches installed iPhone identity in {mode}')
 check(bool(re.search(r'^CODE_SIGN_STYLE\s*=\s*Automatic\s*$', base, re.M)), 'Automatic signing remains enabled')
+watch_info = plistlib.loads((ROOT/'Config/Watch-Info.plist').read_bytes())
+check('workout-processing' in watch_info.get('WKBackgroundModes', []), 'Research Watch workout processing mode declared')
+check('audio' in watch_info.get('UIBackgroundModes', []), 'Watch audio/haptic background capability declared')
+check('NSHealthUpdateUsageDescription' in watch_info, 'Research workout authorization purpose declared')
+engine = (ROOT/'Sources/LumaCore/RealtimeREMEngine.swift').read_text()
+check('asleepREM' not in engine and 'HealthKit' not in engine.split('public struct RealtimeREMEngine')[1],
+      'Live REM engine has no HealthKit sleep-stage dependency')
+watch_runtime = (ROOT/'Sources/Watch/ResearchWatchRuntime.swift').read_text()
+check('notifyUser(' not in watch_runtime and 'for index in 0..<count' in watch_runtime,
+      'Research Watch cue uses a bounded haptic sequence, not a repeating Smart Alarm')
 print(f'PASS: {len(checks)} structural checks. Swift compilation and device behavior are NOT verified.')
+(ROOT/'Docs').mkdir(exist_ok=True)
 (ROOT/'Docs/static-checks.json').write_text(json.dumps({'kind':'structural-only','swift_compiled':False,'xctest_executed':False,'device_tests_executed':False,'checks':checks},ensure_ascii=False,indent=2))

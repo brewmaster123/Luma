@@ -220,3 +220,45 @@ final class V2Tests: XCTestCase {
     XCTAssertEqual(Personalization.examples(state: state).count, 1)
   }
 }
+
+extension V2Tests {
+  func testStandalonePairedAlarmNeedsPhoneRuntimeWithoutREMSession() {
+    var alarm = LumaAlarm()
+    alarm.onceAt = origin.addingTimeInterval(300)
+    alarm.signal.output = .both
+    let occurrences = AlarmPlanner.occurrences([alarm], after: origin, limit: 4)
+    XCTAssertTrue(PairedCuePolicy.needsPhoneRuntime(occurrences, now: origin, completedIDs: []))
+  }
+
+  func testPairedAlarmRuntimeIgnoresPhoneOnlyCompletedAndFarFutureAlarms() throws {
+    var phone = LumaAlarm()
+    phone.onceAt = origin.addingTimeInterval(300)
+    phone.signal.output = .phone
+    let phoneOccurrence = try XCTUnwrap(AlarmPlanner.occurrences([phone], after: origin, limit: 1).first)
+    XCTAssertFalse(PairedCuePolicy.needsPhoneRuntime([phoneOccurrence], now: origin, completedIDs: []))
+
+    var paired = LumaAlarm()
+    paired.onceAt = origin.addingTimeInterval(300)
+    paired.signal.output = .both
+    let pairedOccurrence = try XCTUnwrap(AlarmPlanner.occurrences([paired], after: origin, limit: 1).first)
+    XCTAssertFalse(PairedCuePolicy.needsPhoneRuntime([pairedOccurrence], now: origin,
+      completedIDs: [pairedOccurrence.id]))
+
+    paired.onceAt = origin.addingTimeInterval(PairedCuePolicy.phoneRuntimeHorizon + 60)
+    let farOccurrence = try XCTUnwrap(AlarmPlanner.occurrences([paired], after: origin, limit: 1).first)
+    XCTAssertFalse(PairedCuePolicy.needsPhoneRuntime([farOccurrence], now: origin, completedIDs: []))
+  }
+
+  func testPairedAlarmDirectPlaybackWindowRemainsFinite() throws {
+    var alarm = LumaAlarm()
+    alarm.onceAt = origin
+    alarm.signal.output = .both
+    let occurrence = AlarmOccurrence(id: "paired", alarmID: alarm.id, date: origin,
+      title: alarm.title, signal: alarm.signal)
+    XCTAssertTrue(PairedCuePolicy.canPlayAlarm(occurrence, now: origin.addingTimeInterval(1),
+      runtimeAvailable: true, completedIDs: []))
+    XCTAssertFalse(PairedCuePolicy.canPlayAlarm(occurrence,
+      now: origin.addingTimeInterval(PairedCuePolicy.maximumAlarmLateness + 0.1),
+      runtimeAvailable: true, completedIDs: []))
+  }
+}

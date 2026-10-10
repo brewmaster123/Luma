@@ -196,6 +196,9 @@ public struct NightSession: Codable, Identifiable, Equatable, Sendable {
   public var status: SessionStatus = .running
   public var episodes: [REMEpisode] = []
   public var samples: [FeatureSnapshot] = []
+  /// Explicit research build using a user-started Watch workout runtime.
+  public var watchResearch: Bool?
+  public var watchResearchRunID: UUID?
   public init(source: SensorSource, signal: SignalSettings) {
     self.source = source
     self.signal = signal.validated()
@@ -287,6 +290,7 @@ public struct EpisodeMemory: Codable, Equatable, Sendable {
 }
 public enum WireKind: String, Codable, Sendable {
   case configuration, acknowledgement, sensors, cue
+  case researchStatus, researchCue, researchStopped, researchStop, researchReceipt
 }
 public struct WirePacket: Codable, Sendable {
   public var version = 2
@@ -306,5 +310,10 @@ public struct WirePacket: Codable, Sendable {
   /// Optional target time; preserves decoding of old version-2 packets.
   public var cueDate: Date?
   public var message: String?
+  public var researchEpisode: REMEpisode?
+  public var researchSample: FeatureSnapshot?
+  public var researchRunning: Bool?
+  public var researchTest: Bool?
+  public var researchRunID: UUID?
   public init(kind: WireKind) { self.kind = kind }
 }

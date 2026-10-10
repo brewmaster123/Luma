@@ -1,0 +1,59 @@
+{
+  "base_archive": "Luma-iPhone-AppleWatch-v0.6.0-REM-Lab.zip",
+  "base_sha256": "03bcaeb6ad4243f763bf6278c369b56f87acb70cf297e3abecb88f9d08648f14",
+  "changes": [
+    {
+      "file": "Luma/Config/Base.xcconfig",
+      "change": "modified"
+    },
+    {
+      "file": "Luma/Luma.xcodeproj/project.pbxproj",
+      "change": "modified"
+    },
+    {
+      "file": "Luma/Sources/LumaCore/CuePlaybackStopper.swift",
+      "change": "added"
+    },
+    {
+      "file": "Luma/Sources/Platform/AppModel.swift",
+      "change": "modified"
+    },
+    {
+      "file": "Luma/Sources/Platform/NotificationService.swift",
+      "change": "modified"
+    },
+    {
+      "file": "Luma/Sources/Platform/PhoneAudio.swift",
+      "change": "modified"
+    },
+    {
+      "file": "Luma/Sources/iPhone/PhoneRootView.swift",
+      "change": "modified"
+    },
+    {
+      "file": "Luma/Tests/LumaCoreTests/CuePlaybackStopperTests.swift",
+      "change": "added"
+    },
+    {
+      "file": "Luma/scripts/check-static.py",
+      "change": "modified"
+    },
+    {
+      "file": "Luma/scripts/project-graph.json",
+      "change": "modified"
+    }
+  ],
+  "checks": {
+    "structural_checks_passed": 99,
+    "swift_files_parsed": 45,
+    "xctest_methods_present": 79,
+    "new_stop_guard_tests_present": 7,
+    "xctest_executed": false,
+    "swift_compilation": false,
+    "native_xcode_build": false,
+    "physical_device_tests": false
+  },
+  "root_cause_status": "Source weaknesses addressed. The specific reported fifth-signal failure has not been reproduced on a device.",
+  "device_bug_resolution_confirmed": false,
+  "production_ready": false
+}

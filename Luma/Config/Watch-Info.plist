@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>ru</string>
 	<key>CFBundleDisplayName</key>
-	<string>Luma</string>
+	<string>Luma Lab</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -36,5 +36,15 @@
 	<string>$(LUMA_BUNDLE_PREFIX)</string>
 	<key>WKRunsIndependentlyOfCompanionApp</key>
 	<true/>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>Исследовательский режим Luma использует системную тренировочную сессию для проверки непрерывных датчиков во сне. Она может влиять на показатели «Активности». Итоговая тренировка не сохраняется приложением.</string>
+	<key>WKBackgroundModes</key>
+	<array>
+		<string>workout-processing</string>
+	</array>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>audio</string>
+	</array>
 </dict>
 </plist>

@@ -4,6 +4,12 @@
   import Combine
   import UIKit
   import AudioToolbox
+
+  enum AudioMonitoringOwner: Hashable {
+    case rem
+    case pairedAlarm
+  }
+
   @MainActor
   final class PhoneAudio: NSObject, ObservableObject, AVAudioRecorderDelegate, AVAudioPlayerDelegate
   {
@@ -18,6 +24,8 @@
     private var journalCompletion: ((JournalVoice) -> Void)?
     private var hapticTask: Task<Void, Never>?
     private var playbackTimer: Timer?
+    private var playbackStopper: CuePlaybackStopper?
+    private var playbackGeneration = UUID()
     private var backgroundTask: UIBackgroundTaskIdentifier = .invalid
     var onEpoch: ((AudioEpoch) -> Void)?
     var onClip: ((VoiceClip) -> Void)?
@@ -36,6 +44,7 @@
     private var monitoringGeneration = UUID()
     private var monitoringStarted: Date?
     private var lastInput: Date?
+    private var monitoringOwners = Set<AudioMonitoringOwner>()
     var hasLiveInput: Bool {
       monitoring && engine.isRunning && PairedCuePolicy.microphoneIsFresh(lastInput: lastInput, now: Date())
     }
@@ -70,12 +79,33 @@
             if let self, self.monitoring, !self.engine.isRunning { self.interrupt() }
           }
         })
+      observers.append(
+        NotificationCenter.default.addObserver(
+          forName: AVAudioSession.routeChangeNotification, object: nil, queue: .main
+        ) { [weak self] note in
+          Task { @MainActor in
+            guard let self, self.monitoring else { return }
+            let raw = note.userInfo?[AVAudioSessionRouteChangeReasonKey] as? UInt
+            guard raw != AVAudioSession.RouteChangeReason.categoryChange.rawValue else { return }
+            // The recording engine already owns an active background audio session.
+            // Re-activating a nonmixable session after lock can fail with
+            // AVAudioSession.ErrorCode.cannotInterruptOthers (!int / 560557684).
+            // Preserve the live session and only reassert the built-in speaker route.
+            if self.engine.isRunning {
+              try? AVAudioSession.sharedInstance().overrideOutputAudioPort(.speaker)
+            } else {
+              self.interrupt()
+            }
+          }
+        })
     }
     func soundsDirectory() throws -> URL {
       var d = try FileManager.default.url(
         for: .libraryDirectory, in: .userDomainMask, appropriateFor: nil, create: true
       ).appendingPathComponent("Sounds")
       try FileManager.default.createDirectory(at: d, withIntermediateDirectories: true)
+      try FileManager.default.setAttributes(
+        [.protectionKey: FileProtectionType.completeUntilFirstUserAuthentication], ofItemAtPath: d.path)
       var values = URLResourceValues()
       values.isExcludedFromBackup = true
       try d.setResourceValues(values)
@@ -90,6 +120,10 @@
         guard FileManager.default.fileExists(atPath: url.path) else {
           throw AppError.message("Файл дорожки не найден.")
         }
+        // Preparation happens before the night starts. Imported/recorded cues
+        // must remain readable after the phone locks, just like session state.
+        try FileManager.default.setAttributes(
+          [.protectionKey: FileProtectionType.completeUntilFirstUserAuthentication], ofItemAtPath: url.path)
         return url
       }
       guard
@@ -117,16 +151,28 @@
       let s = AVAudioSession.sharedInstance()
       try s.setCategory(
         record ? .playAndRecord : .playback, mode: .default,
-        options: record ? [.defaultToSpeaker] : [])
+        options: record ? [.defaultToSpeaker, .mixWithOthers] : [.mixWithOthers])
       try s.setActive(true)
       if record {
         try s.setAllowHapticsAndSystemSoundsDuringRecording(true)
         try s.overrideOutputAudioPort(.speaker)
       }
     }
-    func startMonitoring() async throws {
+    /// Prepare phone playback for a cue without reactivating an already-live
+    /// background play-and-record session.
+    private func activateForCue() throws {
+      // If the microphone engine is running, its playAndRecord session is already
+      // active and eligible for background audio. Do not call setActive(true) again
+      // while the app is locked/backgrounded: iOS can reject that with !int.
+      if monitoring && engine.isRunning { return }
+      try activate(record: false)
+    }
+    func startMonitoring(owner: AudioMonitoringOwner) async throws {
       guard !recording, !preparingCapture else { throw AppError.message("Сначала завершите запись.") }
-      guard !monitoring else { return }
+      if monitoring {
+        monitoringOwners.insert(owner)
+        return
+      }
       try await permission()
       guard !recording, !preparingCapture else { throw AppError.message("Сначала завершите запись.") }
       try activate(record: true)
@@ -160,15 +206,23 @@
         }
       }
       tap = true
+      monitoringOwners.insert(owner)
       do {
         try engine.start()
         monitoring = true
       } catch {
-        stopMonitoring()
+        monitoringOwners.remove(owner)
+        stopAllMonitoring()
         throw error
       }
     }
-    func stopMonitoring() {
+    func stopMonitoring(owner: AudioMonitoringOwner) {
+      monitoringOwners.remove(owner)
+      guard monitoringOwners.isEmpty else { return }
+      stopAllMonitoring()
+    }
+    func stopAllMonitoring() {
+      monitoringOwners.removeAll()
       monitoringGeneration = UUID(); monitoringStarted = nil; lastInput = nil
       monitoring = false
       engine.stop()
@@ -257,7 +311,9 @@
     }
     func play(_ signal: SignalSettings, clips: [VoiceClip], vibrate: Bool = false) throws {
       if recording { finishRecording() }
-      try playFile(soundURL(signal, clips: clips), id: signal.voiceID, vibrate: vibrate)
+      let sound = try notificationSound(signal, clips: clips)
+      try playFile(soundURL(signal, clips: clips), id: signal.voiceID, vibrate: vibrate,
+        cueDuration: sound.duration)
     }
     func playJournal(_ voice: JournalVoice) throws {
       guard !recording, !monitoring else { throw AppError.message("Завершите запись или ночной сеанс перед прослушиванием.") }
@@ -267,30 +323,55 @@
     func playCue(_ signal: SignalSettings, clips: [VoiceClip], at start: Date? = nil,
       vibrate: Bool = false) throws {
       guard !recording, !playing else { throw AppError.message("Другой звук или запись уже выполняется.") }
-      _ = try notificationSound(signal, clips: clips)
+      let sound = try notificationSound(signal, clips: clips)
       if let start, !(-2...10).contains(start.timeIntervalSinceNow) {
         throw AppError.message("Время совместного сигнала прошло.")
       }
       guard AVAudioSession.sharedInstance().outputVolume > 0 else {
         throw AppError.message("Поднимите громкость мультимедиа iPhone и повторите пробу.")
       }
-      try playFile(soundURL(signal, clips: clips), id: signal.voiceID, vibrate: vibrate, at: start)
+      try playFile(soundURL(signal, clips: clips), id: signal.voiceID, vibrate: vibrate,
+        at: start, cueDuration: sound.duration)
     }
-    private func playFile(_ url: URL, id: UUID?, vibrate: Bool, at start: Date? = nil) throws {
+    private func playFile(_ url: URL, id: UUID?, vibrate: Bool, at start: Date? = nil,
+      cueDuration: TimeInterval? = nil) throws {
       stopPlayback()
+      let generation = UUID(); playbackGeneration = generation
       // Bridges a sensor callback into genuine audio playback; does not create background wake-ups.
       backgroundTask = UIApplication.shared.beginBackgroundTask(withName: "Luma sound") { [weak self] in
-        Task { @MainActor in self?.stopPlayback() }
+        Task { @MainActor in
+          guard let self, self.playbackGeneration == generation else { return }
+          self.stopPlayback()
+        }
       }
       do {
-        if !monitoring { try activate(record: false) }
+        // If monitoring is alive, use that already-active background session.
+        // Re-activating it here after lock caused !int / cannotInterruptOthers in 0.5.1.
+        try activateForCue()
         let next = try AVAudioPlayer(contentsOf: url)
-        next.numberOfLoops = 0; next.delegate = self; player = next
+        next.numberOfLoops = 0; next.volume = 1; next.delegate = self
+        next.enableRate = false
+        guard next.duration.isFinite, next.duration > 0 else {
+          throw AppError.message("Не удалось определить длительность звука.")
+        }
+        guard next.prepareToPlay() else { throw AppError.message("Не удалось подготовить звук iPhone.") }
+        player = next
         let delay = max(0, start?.timeIntervalSinceNow ?? 0)
         excludedUntil = Date().addingTimeInterval(delay + next.duration + 90)
         let accepted = delay > 0 ? next.play(atTime: next.deviceCurrentTime + delay) : next.play()
         guard accepted else { throw AppError.message("Не удалось воспроизвести звук.") }
         playbackID = id; playbackSeconds = 0; playing = true
+        if let cueDuration {
+          // The audio stop runs on a separate queue even if the player delegate or
+          // UI run loop is delayed. Capture this player, never whichever plays next.
+          playbackStopper = try CuePlaybackStopper(duration: cueDuration, startDelay: delay) { [weak self] in
+            next.stop()
+            Task { @MainActor in
+              guard let self, self.playbackGeneration == generation, self.player === next else { return }
+              self.stopPlayback()
+            }
+          }
+        }
         playbackTimer = Timer.scheduledTimer(withTimeInterval: 0.25, repeats: true) { [weak self] _ in
           Task { @MainActor in self?.playbackSeconds = self?.player?.currentTime ?? 0 }
         }
@@ -311,6 +392,8 @@
       } catch { stopPlayback(); throw error }
     }
     func stopPlayback() {
+      playbackGeneration = UUID()
+      playbackStopper?.cancel(); playbackStopper = nil
       hapticTask?.cancel(); hapticTask = nil; player?.stop(); player = nil
       playbackTimer?.invalidate(); playbackTimer = nil
       playing = false; playbackID = nil; playbackSeconds = 0
@@ -328,7 +411,7 @@
     }
     private func interrupt() {
       let active = monitoring
-      stopMonitoring()
+      stopAllMonitoring()
       stopPlayback()
       finishRecording()
       if active {

@@ -14,6 +14,7 @@ struct SignalReadinessView: View {
   var onReady: () -> Void = {}
   @State private var working = false
   @State private var error: String?
+  private var research: Bool { startsSession && model.state.source.usesWatch }
 
   var body: some View {
     ScrollView {
@@ -32,17 +33,26 @@ struct SignalReadinessView: View {
           .font(LumaStyle.font(13)).foregroundStyle(LumaStyle.secondary)
         LumaCard {
           VStack(alignment: .leading, spacing: 20) {
-            if signalOutput == .both {
+            if research {
+              step(1, "REM Lab · исследовательская версия", "Часы используют системную тренировочную сессию для непрерывных датчиков. Это может повлиять на «Активность» и расходует заряд. Точность REM пока не измерена.")
+              step(2, "Запустите тест на часах", "После начала ночи откройте Luma на Apple Watch и нажмите «Начать REM · тест». Решения принимают часы; микрофон для этого теста не нужен.")
+              step(3, "Проверьте сигнал с погашенными экранами", "На часах нажмите «Проба через 60 секунд». Заблокируйте iPhone и опустите руку. Сигналы должны завершиться сами. На iPhone нужна слышимая громкость мультимедиа.")
+            } else if signalOutput == .both {
               step(1, "Проверьте громкость iPhone", "Здесь используется громкость мультимедиа. Отключите наушники; для пробы откройте Luma на часах.")
               step(2, "Запустите ночь с микрофоном", "Выберите «Часы + микрофон» и нажмите «Начать ночь». Микрофон анализирует звуки сна без сохранения разговоров. Не закрывайте Luma принудительно.")
             } else {
               step(1, "Выключите беззвучный режим", "Проверьте громкость «Звонок и уведомления».")
               step(2, "Включите фокусирование «Сон»", "Чтобы приглушить звонки и лишние уведомления.")
             }
-            step(3, "Разрешите уведомления от Luma", "Настройки → Фокусирование → Сон → Приложения → Разрешить уведомления от → Luma.")
+            if !research {
+              step(3, "Разрешите уведомления от Luma", "Настройки → Фокусирование → Сон → Приложения → Разрешить уведомления от → Luma.")
+            }
           }
         }
-        if signalOutput == .both {
+        if research {
+          Text("Это проверка технического пути на ваших устройствах. Успешная проба сигнала не доказывает точность определения REM или непрерывность работы всю ночь.")
+            .font(LumaStyle.font(12)).foregroundStyle(LumaStyle.secondary)
+        } else if signalOutput == .both {
           Text("iPhone проигрывает звук напрямую, часы получают отдельную серию. Если Luma не работает в этот момент, остаётся резервное уведомление будильника через 5 секунд: оно может уйти только на часы.")
             .font(LumaStyle.font(12)).foregroundStyle(LumaStyle.secondary)
             .accessibilityIdentifier("signal.pairedConditions")
@@ -61,27 +71,31 @@ struct SignalReadinessView: View {
           .font(LumaStyle.font(12)).foregroundStyle(LumaStyle.secondary)
           .accessibilityIdentifier("signal.watchRouting")
         }
-        Text(model.phoneNotificationSummary)
+        if !research {
+          Text(model.phoneNotificationSummary)
           .font(LumaStyle.font(12))
           .foregroundStyle(model.phoneNotificationsReady ? LumaStyle.secondary : LumaStyle.amber)
           .accessibilityIdentifier("signal.permissionStatus")
+        }
         if let error {
           Text(error).font(LumaStyle.font(12)).foregroundStyle(LumaStyle.amber)
         }
-        Button { Task { await openNotificationSettings() } } label: {
-          Label("Настройки уведомлений Luma", systemImage: "arrow.up.forward.square")
-            .font(LumaStyle.font(13, "Medium"))
-            .frame(maxWidth: .infinity, minHeight: 48).contentShape(Rectangle())
-        }.buttonStyle(.plain).foregroundStyle(LumaStyle.lavender).disabled(working)
-          .accessibilityIdentifier("signal.settings")
-        Text("Кнопка откроет уведомления Luma. Исключение для «Сна» добавьте по пути выше. В разделе «Люди» можно ограничить звонки.")
-          .font(LumaStyle.font(11)).foregroundStyle(LumaStyle.secondary)
+        if !research {
+          Button { Task { await openNotificationSettings() } } label: {
+            Label("Настройки уведомлений Luma", systemImage: "arrow.up.forward.square")
+              .font(LumaStyle.font(13, "Medium"))
+              .frame(maxWidth: .infinity, minHeight: 48).contentShape(Rectangle())
+          }.buttonStyle(.plain).foregroundStyle(LumaStyle.lavender).disabled(working)
+            .accessibilityIdentifier("signal.settings")
+          Text("Кнопка откроет уведомления Luma. Исключение для «Сна» добавьте по пути выше. В разделе «Люди» можно ограничить звонки.")
+            .font(LumaStyle.font(11)).foregroundStyle(LumaStyle.secondary)
+        }
         Button {
           working = true
           Task { @MainActor in
             defer { working = false }
             do {
-              if requiresPermission { try await model.preparePhoneSignals() }
+              if requiresPermission && !research { try await model.preparePhoneSignals() }
               onReady()
               dismiss()
             } catch { self.error = error.localizedDescription }
@@ -89,7 +103,7 @@ struct SignalReadinessView: View {
         } label: {
           HStack {
             if working { ProgressView().tint(LumaStyle.background) }
-            Text(working ? "Проверяем уведомления…" : continueTitle)
+            Text(working ? "Подготавливаем…" : continueTitle)
           }
         }.buttonStyle(PrimaryButtonStyle()).disabled(working)
           .accessibilityIdentifier("signal.continue")
