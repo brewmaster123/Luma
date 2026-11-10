@@ -1,0 +1,284 @@
+Building for debugging...
+[0/13] Write sources
+[2/13] Write swift-version-4A26726B77C26934.txt
+[4/21] Emitting module LumaCore
+[5/27] Compiling LumaCore MultimodalEstimator.swift
+[6/27] Compiling LumaCore PairedCuePolicy.swift
+[7/27] Compiling LumaCore REMEstimator.swift
+[8/27] Compiling LumaCore RealtimeREMEngine.swift
+[9/27] Compiling LumaCore SystemAlarmPlan.swift
+[10/27] Compiling LumaCore iPhoneOnlyMigration.swift
+[11/27] Compiling LumaCore AcousticFeatures.swift
+[12/27] Compiling LumaCore AlarmStopWindow.swift
+[13/27] Compiling LumaCore CueEngine.swift
+[14/27] Compiling LumaCore CuePlaybackStopper.swift
+[15/27] Compiling LumaCore IndirectMethod.swift
+[16/27] Compiling LumaCore LumaV2.swift
+[17/27] Compiling LumaCore Models.swift
+[18/28] Wrapping AST for LumaCore for debugging
+[20/35] Emitting module LumaCoreTests
+[21/35] Compiling LumaCoreTests AlarmStopWindowTests.swift
+[22/35] Compiling LumaCoreTests AudioAndAlarmTests.swift
+[23/35] Compiling LumaCoreTests CoreSafetyTests.swift
+[24/35] Compiling LumaCoreTests CuePlaybackStopperTests.swift
+[25/35] Compiling LumaCoreTests IndirectMethodTests.swift
+[26/35] Compiling LumaCoreTests NotificationMigrationTests.swift
+[27/40] Compiling LumaCoreTests PairedCueTests.swift
+[28/40] Compiling LumaCoreTests RealtimeREMTests.swift
+[29/40] Compiling LumaCoreTests SystemAlarmPlanTests.swift
+[30/40] Compiling LumaCoreTests V2Tests.swift
+[31/40] Compiling LumaCoreTests iPhoneOnlyMigrationTests.swift
+[32/41] /workspace/scratch/6097ce6bb81a/Luma-ci-fix/source/Luma/.build/x86_64-unknown-linux-gnu/debug/LumaCorePackageDiscoveredTests.derived/all-discovered-tests.swift
+[33/41] Write sources
+[34/41] Wrapping AST for LumaCoreTests for debugging
+[36/43] Compiling LumaCorePackageDiscoveredTests LumaCoreTests.swift
+[37/43] Emitting module LumaCorePackageDiscoveredTests
+[38/44] Compiling LumaCorePackageDiscoveredTests all-discovered-tests.swift
+[39/45] /workspace/scratch/6097ce6bb81a/Luma-ci-fix/source/Luma/.build/x86_64-unknown-linux-gnu/debug/LumaCorePackageTests.derived/runner.swift
+[40/45] Write sources
+[41/45] Wrapping AST for LumaCorePackageDiscoveredTests for debugging
+[43/47] Emitting module LumaCorePackageTests
+[44/47] Compiling LumaCorePackageTests runner.swift
+[45/48] Wrapping AST for LumaCorePackageTests for debugging
+[46/48] Write Objects.LinkFileList
+[47/48] Linking LumaCorePackageTests.xctest
+Build complete! (7.36s)
+Test Suite 'All tests' started at 2026-11-10 10:24:24.730
+Test Suite 'debug.xctest' started at 2026-11-10 10:24:24.731
+Test Suite 'AlarmStopWindowTests' started at 2026-11-10 10:24:24.731
+Test Case 'AlarmStopWindowTests.testCorruptedStoredDurationFailsDecoding' started at 2026-11-10 10:24:24.731
+Test Case 'AlarmStopWindowTests.testCorruptedStoredDurationFailsDecoding' passed (0.001 seconds)
+Test Case 'AlarmStopWindowTests.testDisabledAlarmHasNoPreviousFiring' started at 2026-11-10 10:24:24.732
+Test Case 'AlarmStopWindowTests.testDisabledAlarmHasNoPreviousFiring' passed (0.0 seconds)
+Test Case 'AlarmStopWindowTests.testInvalidDurationsAreRejected' started at 2026-11-10 10:24:24.733
+Test Case 'AlarmStopWindowTests.testInvalidDurationsAreRejected' passed (0.0 seconds)
+Test Case 'AlarmStopWindowTests.testLateResumeNeverRestartsFullDuration' started at 2026-11-10 10:24:24.733
+Test Case 'AlarmStopWindowTests.testLateResumeNeverRestartsFullDuration' passed (0.0 seconds)
+Test Case 'AlarmStopWindowTests.testOneShotHistoryIsNotMovedToTomorrow' started at 2026-11-10 10:24:24.733
+Test Case 'AlarmStopWindowTests.testOneShotHistoryIsNotMovedToTomorrow' passed (0.0 seconds)
+Test Case 'AlarmStopWindowTests.testPersistedWindowKeepsItsOriginalDeadline' started at 2026-11-10 10:24:24.733
+Test Case 'AlarmStopWindowTests.testPersistedWindowKeepsItsOriginalDeadline' passed (0.1 seconds)
+Test Case 'AlarmStopWindowTests.testVoiceLengthDeterminesDeadline' started at 2026-11-10 10:24:24.834
+Test Case 'AlarmStopWindowTests.testVoiceLengthDeterminesDeadline' passed (0.0 seconds)
+Test Case 'AlarmStopWindowTests.testWeeklyPreviousAndNextOccurrenceStraddleNow' started at 2026-11-10 10:24:24.834
+Test Case 'AlarmStopWindowTests.testWeeklyPreviousAndNextOccurrenceStraddleNow' passed (0.0 seconds)
+Test Suite 'AlarmStopWindowTests' passed at 2026-11-10 10:24:24.834
+	 Executed 8 tests, with 0 failures (0 unexpected) in 0.103 (0.103) seconds
+Test Suite 'AudioAndAlarmTests' started at 2026-11-10 10:24:24.834
+Test Case 'AudioAndAlarmTests.testDisabledAndExpiredFollowUpcoming' started at 2026-11-10 10:24:24.834
+Test Case 'AudioAndAlarmTests.testDisabledAndExpiredFollowUpcoming' passed (0.0 seconds)
+Test Case 'AudioAndAlarmTests.testFeedbackAndImportedMelodyRoundTrip' started at 2026-11-10 10:24:24.834
+Test Case 'AudioAndAlarmTests.testFeedbackAndImportedMelodyRoundTrip' passed (0.001 seconds)
+Test Case 'AudioAndAlarmTests.testInsertionOrderDoesNotDetermineAlarmOrder' started at 2026-11-10 10:24:24.836
+Test Case 'AudioAndAlarmTests.testInsertionOrderDoesNotDetermineAlarmOrder' passed (0.0 seconds)
+Test Case 'AudioAndAlarmTests.testJournalFileCannotEscapeDirectory' started at 2026-11-10 10:24:24.836
+Test Case 'AudioAndAlarmTests.testJournalFileCannotEscapeDirectory' passed (0.0 seconds)
+Test Case 'AudioAndAlarmTests.testLegacyArchiveMissingNewFieldsDecodes' started at 2026-11-10 10:24:24.836
+Test Case 'AudioAndAlarmTests.testLegacyArchiveMissingNewFieldsDecodes' passed (0.001 seconds)
+Test Case 'AudioAndAlarmTests.testNextDateTakesPriorityOverClockAcrossMidnight' started at 2026-11-10 10:24:24.837
+Test Case 'AudioAndAlarmTests.testNextDateTakesPriorityOverClockAcrossMidnight' passed (0.0 seconds)
+Test Case 'AudioAndAlarmTests.testRepeatWeekdaySortsByActualNextOccurrence' started at 2026-11-10 10:24:24.838
+Test Case 'AudioAndAlarmTests.testRepeatWeekdaySortsByActualNextOccurrence' passed (0.1 seconds)
+Test Case 'AudioAndAlarmTests.testThreeSecondGapSurvivesAndLegacyTwentyMigrates' started at 2026-11-10 10:24:24.938
+Test Case 'AudioAndAlarmTests.testThreeSecondGapSurvivesAndLegacyTwentyMigrates' passed (0.0 seconds)
+Test Case 'AudioAndAlarmTests.testTiesRemainDeterministic' started at 2026-11-10 10:24:24.938
+Test Case 'AudioAndAlarmTests.testTiesRemainDeterministic' passed (0.0 seconds)
+Test Case 'AudioAndAlarmTests.testVoiceOnlyDreamRoundTrips' started at 2026-11-10 10:24:24.939
+Test Case 'AudioAndAlarmTests.testVoiceOnlyDreamRoundTrips' passed (0.0 seconds)
+Test Suite 'AudioAndAlarmTests' passed at 2026-11-10 10:24:24.939
+	 Executed 10 tests, with 0 failures (0 unexpected) in 0.105 (0.105) seconds
+Test Suite 'CoreSafetyTests' started at 2026-11-10 10:24:24.939
+Test Case 'CoreSafetyTests.testConflictingHistoricalStagesAreUnknown' started at 2026-11-10 10:24:24.939
+Test Case 'CoreSafetyTests.testConflictingHistoricalStagesAreUnknown' passed (0.0 seconds)
+Test Case 'CoreSafetyTests.testDuplicatesAndNonfiniteValuesCannotManufactureEnoughMeasurements' started at 2026-11-10 10:24:24.939
+Test Case 'CoreSafetyTests.testDuplicatesAndNonfiniteValuesCannotManufactureEnoughMeasurements' passed (0.0 seconds)
+Test Case 'CoreSafetyTests.testEstimatorAbstainsWithMissingMotionDespiteLotsOfHeartData' started at 2026-11-10 10:24:24.939
+Test Case 'CoreSafetyTests.testEstimatorAbstainsWithMissingMotionDespiteLotsOfHeartData' passed (0.0 seconds)
+Test Case 'CoreSafetyTests.testEveryAllowedCountProducesExactlyThatManyFiniteUniqueRequests' started at 2026-11-10 10:24:24.940
+Test Case 'CoreSafetyTests.testEveryAllowedCountProducesExactlyThatManyFiniteUniqueRequests' passed (0.0 seconds)
+Test Case 'CoreSafetyTests.testLateScheduledCommandNeverReschedulesOrFiresImmediately' started at 2026-11-10 10:24:24.940
+Test Case 'CoreSafetyTests.testLateScheduledCommandNeverReschedulesOrFiresImmediately' passed (0.0 seconds)
+Test Case 'CoreSafetyTests.testMixingSensorsCannotManufactureOneDenseStream' started at 2026-11-10 10:24:24.940
+Test Case 'CoreSafetyTests.testMixingSensorsCannotManufactureOneDenseStream' passed (0.0 seconds)
+Test Case 'CoreSafetyTests.testNeverSchedulesOutsideWindowOrAClippedSeries' started at 2026-11-10 10:24:24.940
+Test Case 'CoreSafetyTests.testNeverSchedulesOutsideWindowOrAClippedSeries' passed (0.0 seconds)
+Test Case 'CoreSafetyTests.testNextPlanHandlesMidnightAndDSTWithoutFixed86400Assumption' started at 2026-11-10 10:24:24.940
+Test Case 'CoreSafetyTests.testNextPlanHandlesMidnightAndDSTWithoutFixed86400Assumption' passed (0.0 seconds)
+Test Case 'CoreSafetyTests.testOnlyOneBurstSurvivesSerializationAndRepeatedUpdates' started at 2026-11-10 10:24:24.940
+Test Case 'CoreSafetyTests.testOnlyOneBurstSurvivesSerializationAndRepeatedUpdates' passed (0.0 seconds)
+Test Case 'CoreSafetyTests.testReevaluatingOneMeasurementDoesNotCreateAStreak' started at 2026-11-10 10:24:24.941
+Test Case 'CoreSafetyTests.testReevaluatingOneMeasurementDoesNotCreateAStreak' passed (0.0 seconds)
+Test Case 'CoreSafetyTests.testScheduledTimeIsNotProofOfDeliveryOrREM' started at 2026-11-10 10:24:24.941
+Test Case 'CoreSafetyTests.testScheduledTimeIsNotProofOfDeliveryOrREM' passed (0.0 seconds)
+Test Case 'CoreSafetyTests.testStaleUnknownAndFutureEvidenceNeverTriggers' started at 2026-11-10 10:24:24.941
+Test Case 'CoreSafetyTests.testStaleUnknownAndFutureEvidenceNeverTriggers' passed (0.0 seconds)
+Test Case 'CoreSafetyTests.testSuspensionGapRequiresNewSustainedEvidence' started at 2026-11-10 10:24:24.941
+Test Case 'CoreSafetyTests.testSuspensionGapRequiresNewSustainedEvidence' passed (0.0 seconds)
+Test Suite 'CoreSafetyTests' passed at 2026-11-10 10:24:24.941
+	 Executed 13 tests, with 0 failures (0 unexpected) in 0.002 (0.002) seconds
+Test Suite 'CuePlaybackStopperTests' started at 2026-11-10 10:24:24.941
+Test Case 'CuePlaybackStopperTests.testCancelAfterExpiryCannotInvokeStopAgain' started at 2026-11-10 10:24:24.941
+Test Case 'CuePlaybackStopperTests.testCancelAfterExpiryCannotInvokeStopAgain' passed (0.272 seconds)
+Test Case 'CuePlaybackStopperTests.testCancelledOldDeadlineCannotStopReplacement' started at 2026-11-10 10:24:25.213
+Test Case 'CuePlaybackStopperTests.testCancelledOldDeadlineCannotStopReplacement' passed (0.801 seconds)
+Test Case 'CuePlaybackStopperTests.testDeadlineStillStopsAudioWhileCallingThreadIsBlocked' started at 2026-11-10 10:24:26.013
+Test Case 'CuePlaybackStopperTests.testDeadlineStillStopsAudioWhileCallingThreadIsBlocked' passed (0.27 seconds)
+Test Case 'CuePlaybackStopperTests.testRejectsUnboundedOrInvalidCueTiming' started at 2026-11-10 10:24:26.284
+Test Case 'CuePlaybackStopperTests.testRejectsUnboundedOrInvalidCueTiming' passed (0.0 seconds)
+Test Case 'CuePlaybackStopperTests.testRepeatedCuesStopWhenEveryFifthCompletionIsMissing' started at 2026-11-10 10:24:26.284
+Test Case 'CuePlaybackStopperTests.testRepeatedCuesStopWhenEveryFifthCompletionIsMissing' passed (0.281 seconds)
+Test Case 'CuePlaybackStopperTests.testScheduledStartDoesNotUsePreparationTimeAsPlaybackTime' started at 2026-11-10 10:24:26.565
+Test Case 'CuePlaybackStopperTests.testScheduledStartDoesNotUsePreparationTimeAsPlaybackTime' passed (0.881 seconds)
+Test Case 'CuePlaybackStopperTests.testStopsCueWhenPlayerCompletionNeverArrives' started at 2026-11-10 10:24:27.445
+Test Case 'CuePlaybackStopperTests.testStopsCueWhenPlayerCompletionNeverArrives' passed (0.281 seconds)
+Test Suite 'CuePlaybackStopperTests' passed at 2026-11-10 10:24:27.726
+	 Executed 7 tests, with 0 failures (0 unexpected) in 2.785 (2.785) seconds
+Test Suite 'IndirectMethodTests' started at 2026-11-10 10:24:27.726
+Test Case 'IndirectMethodTests.testCadenceDoesNotDriftWithSoundDuration' started at 2026-11-10 10:24:27.726
+Test Case 'IndirectMethodTests.testCadenceDoesNotDriftWithSoundDuration' passed (0.0 seconds)
+Test Case 'IndirectMethodTests.testEveryIntegerIntervalBetweenTenAndSixtyIsAvailable' started at 2026-11-10 10:24:27.726
+Test Case 'IndirectMethodTests.testEveryIntegerIntervalBetweenTenAndSixtyIsAvailable' passed (0.0 seconds)
+Test Case 'IndirectMethodTests.testIntervalBoundsAndDefault' started at 2026-11-10 10:24:27.726
+Test Case 'IndirectMethodTests.testIntervalBoundsAndDefault' passed (0.0 seconds)
+Test Case 'IndirectMethodTests.testMissedSignalsAreSkippedRatherThanReplayedTogether' started at 2026-11-10 10:24:27.727
+Test Case 'IndirectMethodTests.testMissedSignalsAreSkippedRatherThanReplayedTogether' passed (0.0 seconds)
+Test Case 'IndirectMethodTests.testOldStateAndSavedSelectionRemainReadable' started at 2026-11-10 10:24:27.727
+Test Case 'IndirectMethodTests.testOldStateAndSavedSelectionRemainReadable' passed (0.001 seconds)
+Test Suite 'IndirectMethodTests' passed at 2026-11-10 10:24:27.728
+	 Executed 5 tests, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'NotificationMigrationTests' started at 2026-11-10 10:24:27.728
+Test Case 'NotificationMigrationTests.testRepeatedMigrationDoesNotDuplicateAlarmsOrChangeTheirNextDates' started at 2026-11-10 10:24:27.728
+Test Case 'NotificationMigrationTests.testRepeatedMigrationDoesNotDuplicateAlarmsOrChangeTheirNextDates' passed (0.112 seconds)
+Test Case 'NotificationMigrationTests.testUpdatingAlarmKitArchivePreservesUserDataAndSoundReferences' started at 2026-11-10 10:24:27.840
+Test Case 'NotificationMigrationTests.testUpdatingAlarmKitArchivePreservesUserDataAndSoundReferences' passed (0.001 seconds)
+Test Suite 'NotificationMigrationTests' passed at 2026-11-10 10:24:27.841
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.113 (0.113) seconds
+Test Suite 'PairedCueTests' started at 2026-11-10 10:24:27.841
+Test Case 'PairedCueTests.testCannotPlayFromSuspensionOrBeforeDueTime' started at 2026-11-10 10:24:27.841
+Test Case 'PairedCueTests.testCannotPlayFromSuspensionOrBeforeDueTime' passed (0.0 seconds)
+Test Case 'PairedCueTests.testCompletedOccurrenceSurvivesReloadWithoutRepeatingPlayback' started at 2026-11-10 10:24:27.841
+Test Case 'PairedCueTests.testCompletedOccurrenceSurvivesReloadWithoutRepeatingPlayback' passed (0.0 seconds)
+Test Case 'PairedCueTests.testCueTargetIsOptionalInOldVersionTwoPackets' started at 2026-11-10 10:24:27.842
+Test Case 'PairedCueTests.testCueTargetIsOptionalInOldVersionTwoPackets' passed (0.101 seconds)
+Test Case 'PairedCueTests.testDelayedWatchMessageIsRejectedAndFutureTargetIsPreserved' started at 2026-11-10 10:24:27.942
+Test Case 'PairedCueTests.testDelayedWatchMessageIsRejectedAndFutureTargetIsPreserved' passed (0.0 seconds)
+Test Case 'PairedCueTests.testFallbackLeavesRoomForLivePlaybackAndPreservesOtherRoutes' started at 2026-11-10 10:24:27.943
+Test Case 'PairedCueTests.testFallbackLeavesRoomForLivePlaybackAndPreservesOtherRoutes' passed (0.0 seconds)
+Test Case 'PairedCueTests.testLateReturnCannotRaceTheFallbackOrReplayOldAlarm' started at 2026-11-10 10:24:27.943
+Test Case 'PairedCueTests.testLateReturnCannotRaceTheFallbackOrReplayOldAlarm' passed (0.0 seconds)
+Test Case 'PairedCueTests.testMicrophoneFlagAloneDoesNotProveLiveBackgroundInput' started at 2026-11-10 10:24:27.943
+Test Case 'PairedCueTests.testMicrophoneFlagAloneDoesNotProveLiveBackgroundInput' passed (0.0 seconds)
+Test Case 'PairedCueTests.testPhoneOnlyAndWatchOnlyNeverStartSecondPlayer' started at 2026-11-10 10:24:27.943
+Test Case 'PairedCueTests.testPhoneOnlyAndWatchOnlyNeverStartSecondPlayer' passed (0.0 seconds)
+Test Suite 'PairedCueTests' passed at 2026-11-10 10:24:27.943
+	 Executed 8 tests, with 0 failures (0 unexpected) in 0.102 (0.102) seconds
+Test Suite 'RealtimeREMTests' started at 2026-11-10 10:24:27.943
+Test Case 'RealtimeREMTests.testCueExclusionCannotCreateAnExit' started at 2026-11-10 10:24:27.943
+Test Case 'RealtimeREMTests.testCueExclusionCannotCreateAnExit' passed (0.067 seconds)
+Test Case 'RealtimeREMTests.testCueTransportRejectsDuplicatesExpiredAndWrongSession' started at 2026-11-10 10:24:28.010
+Test Case 'RealtimeREMTests.testCueTransportRejectsDuplicatesExpiredAndWrongSession' passed (0.001 seconds)
+Test Case 'RealtimeREMTests.testExecutionGapResetsConfirmation' started at 2026-11-10 10:24:28.011
+Test Case 'RealtimeREMTests.testExecutionGapResetsConfirmation' passed (0.007 seconds)
+Test Case 'RealtimeREMTests.testExitAndCooldownAllowAnotherEpisode' started at 2026-11-10 10:24:28.018
+Test Case 'RealtimeREMTests.testExitAndCooldownAllowAnotherEpisode' passed (0.053 seconds)
+Test Case 'RealtimeREMTests.testFreshDataNeedsSustainedEvidenceAndCuesOnce' started at 2026-11-10 10:24:28.071
+Test Case 'RealtimeREMTests.testFreshDataNeedsSustainedEvidenceAndCuesOnce' passed (0.039 seconds)
+Test Case 'RealtimeREMTests.testInsufficientDataNeverBecomesREM' started at 2026-11-10 10:24:28.110
+Test Case 'RealtimeREMTests.testInsufficientDataNeverBecomesREM' passed (0.101 seconds)
+Test Case 'RealtimeREMTests.testOldSessionAndWireFormatStillDecode' started at 2026-11-10 10:24:28.211
+Test Case 'RealtimeREMTests.testOldSessionAndWireFormatStillDecode' passed (0.0 seconds)
+Test Case 'RealtimeREMTests.testRepeatedSameSampleDoesNotConfirmOnset' started at 2026-11-10 10:24:28.211
+Test Case 'RealtimeREMTests.testRepeatedSameSampleDoesNotConfirmOnset' passed (0.056 seconds)
+Test Case 'RealtimeREMTests.testStaleHeartAndOverlappingMotionAreRejected' started at 2026-11-10 10:24:28.267
+Test Case 'RealtimeREMTests.testStaleHeartAndOverlappingMotionAreRejected' passed (0.001 seconds)
+Test Case 'RealtimeREMTests.testWarmupAndMotionAreRequired' started at 2026-11-10 10:24:28.268
+Test Case 'RealtimeREMTests.testWarmupAndMotionAreRequired' passed (0.001 seconds)
+Test Suite 'RealtimeREMTests' passed at 2026-11-10 10:24:28.269
+	 Executed 10 tests, with 0 failures (0 unexpected) in 0.325 (0.325) seconds
+Test Suite 'SystemAlarmPlanTests' started at 2026-11-10 10:24:28.269
+Test Case 'SystemAlarmPlanTests.testCancellationIntentSurvivesBeforeDaemonCancellation' started at 2026-11-10 10:24:28.269
+Test Case 'SystemAlarmPlanTests.testCancellationIntentSurvivesBeforeDaemonCancellation' passed (0.001 seconds)
+Test Case 'SystemAlarmPlanTests.testEveryIntervalKeepsCadenceAfterLateResume' started at 2026-11-10 10:24:28.269
+Test Case 'SystemAlarmPlanTests.testEveryIntervalKeepsCadenceAfterLateResume' passed (0.001 seconds)
+Test Case 'SystemAlarmPlanTests.testIndirectAlwaysHasPhoneSoundAndPreservesVoiceReference' started at 2026-11-10 10:24:28.270
+Test Case 'SystemAlarmPlanTests.testIndirectAlwaysHasPhoneSoundAndPreservesVoiceReference' passed (0.0 seconds)
+Test Case 'SystemAlarmPlanTests.testLedgerReservationAndHandledKeysSurviveRelaunch' started at 2026-11-10 10:24:28.270
+Test Case 'SystemAlarmPlanTests.testLedgerReservationAndHandledKeysSurviveRelaunch' passed (0.0 seconds)
+Test Case 'SystemAlarmPlanTests.testLedgerWithoutNewCancellationFieldsRemainsReadable' started at 2026-11-10 10:24:28.271
+Test Case 'SystemAlarmPlanTests.testLedgerWithoutNewCancellationFieldsRemainsReadable' passed (0.0 seconds)
+Test Case 'SystemAlarmPlanTests.testQueueIsFiniteAndDoesNotCatchUpMissedSignals' started at 2026-11-10 10:24:28.271
+Test Case 'SystemAlarmPlanTests.testQueueIsFiniteAndDoesNotCatchUpMissedSignals' passed (0.0 seconds)
+Test Case 'SystemAlarmPlanTests.testQueueSkipsPastHandledDuplicatesAndSortsGlobally' started at 2026-11-10 10:24:28.271
+Test Case 'SystemAlarmPlanTests.testQueueSkipsPastHandledDuplicatesAndSortsGlobally' passed (0.0 seconds)
+Test Case 'SystemAlarmPlanTests.testStopIsSeparateFromFileEndAndUsesOriginalDeadline' started at 2026-11-10 10:24:28.271
+Test Case 'SystemAlarmPlanTests.testStopIsSeparateFromFileEndAndUsesOriginalDeadline' passed (0.0 seconds)
+Test Suite 'SystemAlarmPlanTests' passed at 2026-11-10 10:24:28.271
+	 Executed 8 tests, with 0 failures (0 unexpected) in 0.002 (0.002) seconds
+Test Suite 'V2Tests' started at 2026-11-10 10:24:28.271
+Test Case 'V2Tests.testAmbiguousMultiCueAndSameNightFeedbackCannotOverweightLearning' started at 2026-11-10 10:24:28.271
+Test Case 'V2Tests.testAmbiguousMultiCueAndSameNightFeedbackCannotOverweightLearning' passed (0.0 seconds)
+Test Case 'V2Tests.testCombinedDoesNotSilentlyBecomePhoneOnly' started at 2026-11-10 10:24:28.272
+Test Case 'V2Tests.testCombinedDoesNotSilentlyBecomePhoneOnly' passed (0.0 seconds)
+Test Case 'V2Tests.testContinuousEpisodeOnlySignalsOnceForTwelveHours' started at 2026-11-10 10:24:28.272
+Test Case 'V2Tests.testContinuousEpisodeOnlySignalsOnceForTwelveHours' passed (0.0 seconds)
+Test Case 'V2Tests.testCooldownAfterRealExit' started at 2026-11-10 10:24:28.272
+Test Case 'V2Tests.testCooldownAfterRealExit' passed (0.0 seconds)
+Test Case 'V2Tests.testCorruptAudioWindowsAreRejected' started at 2026-11-10 10:24:28.272
+Test Case 'V2Tests.testCorruptAudioWindowsAreRejected' passed (0.0 seconds)
+Test Case 'V2Tests.testDisabledAlarmsAndInvalidWeekdaysAreNotScheduled' started at 2026-11-10 10:24:28.272
+Test Case 'V2Tests.testDisabledAlarmsAndInvalidWeekdaysAreNotScheduled' passed (0.0 seconds)
+Test Case 'V2Tests.testExpiredOneShotNeverReappearsTomorrow' started at 2026-11-10 10:24:28.272
+Test Case 'V2Tests.testExpiredOneShotNeverReappearsTomorrow' passed (0.0 seconds)
+Test Case 'V2Tests.testMissingDataDoesNotMeanExit' started at 2026-11-10 10:24:28.272
+Test Case 'V2Tests.testMissingDataDoesNotMeanExit' passed (0.0 seconds)
+Test Case 'V2Tests.testOldArchiveKeepsDreamEntriesWithoutV2Key' started at 2026-11-10 10:24:28.273
+Test Case 'V2Tests.testOldArchiveKeepsDreamEntriesWithoutV2Key' passed (0.0 seconds)
+Test Case 'V2Tests.testOwnCueAndNoiseDoNotProducePhoneCandidate' started at 2026-11-10 10:24:28.273
+Test Case 'V2Tests.testOwnCueAndNoiseDoNotProducePhoneCandidate' passed (0.0 seconds)
+Test Case 'V2Tests.testPairedAlarmDirectPlaybackWindowRemainsFinite' started at 2026-11-10 10:24:28.273
+Test Case 'V2Tests.testPairedAlarmDirectPlaybackWindowRemainsFinite' passed (0.0 seconds)
+Test Case 'V2Tests.testPairedAlarmRuntimeIgnoresPhoneOnlyCompletedAndFarFutureAlarms' started at 2026-11-10 10:24:28.273
+Test Case 'V2Tests.testPairedAlarmRuntimeIgnoresPhoneOnlyCompletedAndFarFutureAlarms' passed (0.0 seconds)
+Test Case 'V2Tests.testPeriodicAcousticFixtureYieldsFiniteFeatures' started at 2026-11-10 10:24:28.273
+Test Case 'V2Tests.testPeriodicAcousticFixtureYieldsFiniteFeatures' passed (0.001 seconds)
+Test Case 'V2Tests.testPersonalizationRequiresManyNightsAndExplicitOptIn' started at 2026-11-10 10:24:28.274
+Test Case 'V2Tests.testPersonalizationRequiresManyNightsAndExplicitOptIn' passed (0.0 seconds)
+Test Case 'V2Tests.testShortExitAndDuplicateSamplesCannotRetrigger' started at 2026-11-10 10:24:28.274
+Test Case 'V2Tests.testShortExitAndDuplicateSamplesCannotRetrigger' passed (0.0 seconds)
+Test Case 'V2Tests.testSilenceCannotManufactureBreathing' started at 2026-11-10 10:24:28.274
+Test Case 'V2Tests.testSilenceCannotManufactureBreathing' passed (0.0 seconds)
+Test Case 'V2Tests.testStandalonePairedAlarmNeedsPhoneRuntimeWithoutREMSession' started at 2026-11-10 10:24:28.275
+Test Case 'V2Tests.testStandalonePairedAlarmNeedsPhoneRuntimeWithoutREMSession' passed (0.0 seconds)
+Test Case 'V2Tests.testThousandSavedAlarmsUseBoundedOrderedQueue' started at 2026-11-10 10:24:28.275
+Test Case 'V2Tests.testThousandSavedAlarmsUseBoundedOrderedQueue' passed (0.02 seconds)
+Test Case 'V2Tests.testThreeOutputRoutesAreIndependentOfSensors' started at 2026-11-10 10:24:28.295
+Test Case 'V2Tests.testThreeOutputRoutesAreIndependentOfSensors' passed (0.0 seconds)
+Test Case 'V2Tests.testTwentySeparateEpisodesHaveNoSessionCapAndSurviveRestore' started at 2026-11-10 10:24:28.295
+Test Case 'V2Tests.testTwentySeparateEpisodesHaveNoSessionCapAndSurviveRestore' passed (0.0 seconds)
+Test Case 'V2Tests.testWeekdayAlarmCrossesSpringDSTUsingCalendar' started at 2026-11-10 10:24:28.296
+Test Case 'V2Tests.testWeekdayAlarmCrossesSpringDSTUsingCalendar' passed (0.0 seconds)
+Test Suite 'V2Tests' passed at 2026-11-10 10:24:28.296
+	 Executed 21 tests, with 0 failures (0 unexpected) in 0.024 (0.024) seconds
+Test Suite 'iPhoneOnlyMigrationTests' started at 2026-11-10 10:24:28.296
+Test Case 'iPhoneOnlyMigrationTests.testActiveSystemQueueAndStopDeadlinesArePreserved' started at 2026-11-10 10:24:28.296
+Test Case 'iPhoneOnlyMigrationTests.testActiveSystemQueueAndStopDeadlinesArePreserved' passed (0.0 seconds)
+Test Case 'iPhoneOnlyMigrationTests.testAllNewIndirectSessionsUseTheSingleSystemRoute' started at 2026-11-10 10:24:28.296
+Test Case 'iPhoneOnlyMigrationTests.testAllNewIndirectSessionsUseTheSingleSystemRoute' passed (0.0 seconds)
+Test Case 'iPhoneOnlyMigrationTests.testArchiveKeepsDiaryVoiceNotesFeedbackAndCompletedSessions' started at 2026-11-10 10:24:28.296
+Test Case 'iPhoneOnlyMigrationTests.testArchiveKeepsDiaryVoiceNotesFeedbackAndCompletedSessions' passed (0.0 seconds)
+Test Case 'iPhoneOnlyMigrationTests.testDisabledAndExpiredWatchAlarmsAreNotResurrected' started at 2026-11-10 10:24:28.296
+Test Case 'iPhoneOnlyMigrationTests.testDisabledAndExpiredWatchAlarmsAreNotResurrected' passed (0.0 seconds)
+Test Case 'iPhoneOnlyMigrationTests.testEveryLegacyOutputBecomesAnAlarmKitAlarmWithoutChangingSchedule' started at 2026-11-10 10:24:28.296
+Test Case 'iPhoneOnlyMigrationTests.testEveryLegacyOutputBecomesAnAlarmKitAlarmWithoutChangingSchedule' passed (0.0 seconds)
+Test Case 'iPhoneOnlyMigrationTests.testLegacyLiveSessionsEndOnceAndMigrationIsIdempotent' started at 2026-11-10 10:24:28.297
+Test Case 'iPhoneOnlyMigrationTests.testLegacyLiveSessionsEndOnceAndMigrationIsIdempotent' passed (0.0 seconds)
+Test Suite 'iPhoneOnlyMigrationTests' passed at 2026-11-10 10:24:28.297
+	 Executed 6 tests, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'debug.xctest' passed at 2026-11-10 10:24:28.297
+	 Executed 98 tests, with 0 failures (0 unexpected) in 3.564 (3.564) seconds
+Test Suite 'All tests' passed at 2026-11-10 10:24:28.297
+	 Executed 98 tests, with 0 failures (0 unexpected) in 3.564 (3.564) seconds
+◇ Test run started.
+↳ Testing Library Version: 6.2.4 (5ee435b15ad40ec)
+↳ Target Platform: x86_64-unknown-linux-gnu
+✔ Test run with 0 tests in 0 suites passed after 0.001 seconds.

@@ -59,7 +59,7 @@ final class iPhoneOnlyMigrationTests: XCTestCase {
     XCTAssertEqual(state.alarms[1].onceAt, expired.onceAt)
     XCTAssertEqual(AlarmPlanner.occurrences(state.alarms, after: now).map(\.alarmID), [future.id])
   }
-  func testLegacyLiveSessionsEndOnceAndMigrationIsIdempotent() {
+  func testLegacyLiveSessionsEndOnceAndMigrationIsIdempotent() throws {
     var state = LumaState()
     var session = NightSession(source: .combined, signal: .init())
     session.watchResearch = true; session.watchResearchRunID = UUID()
@@ -68,9 +68,13 @@ final class iPhoneOnlyMigrationTests: XCTestCase {
     XCTAssertEqual(state.sessions[0].status, .ended)
     XCTAssertEqual(state.sessions[0].endedAt, now)
     XCTAssertEqual(state.sessions[0].watchResearchRunID, session.watchResearchRunID)
-    let first = state
+    // Compare the complete persisted state. LumaState deliberately does not
+    // require Equatable just for this migration regression check.
+    let encoder = JSONEncoder()
+    encoder.outputFormatting = [.sortedKeys]
+    let first = try encoder.encode(state)
     state.migrateToiPhoneOnly(now: now.addingTimeInterval(86400))
-    XCTAssertEqual(state, first)
+    XCTAssertEqual(try encoder.encode(state), first)
   }
   func testActiveSystemQueueAndStopDeadlinesArePreserved() {
     var session = IndirectAlarmSession(settings: .init(intervalMinutes: 17), signal: .init(), startedAt: now)

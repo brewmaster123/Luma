@@ -1,7 +1,15 @@
 {
-  "base_archive": "Luma-iPhone-AppleWatch-v0.8.0-AlarmKit-Test.zip",
-  "base_sha256": "648708da973a6628df5448efdc2433173e9477365917a6cfc09432fc0e38fc42",
-  "version": "0.9.0 (16) iPhone-only AlarmKit",
+  "base_archive": "Luma-iPhone-v0.9.0-AlarmKit.zip",
+  "base_sha256": "b25be0cc06aff6b96f60a61833a02be80e8e5dea6facc9c88b62ceb504e0fa4d",
+  "version": "0.9.1 (17) GitHub build fix",
+  "reported_error": {
+    "input_log": "logs_115903748511.zip",
+    "step": "Run core tests",
+    "file": "Tests/LumaCoreTests/iPhoneOnlyMigrationTests.swift",
+    "line": 73,
+    "error": "XCTAssertEqual requires LumaState to conform to Equatable",
+    "fix": "Compare deterministic sorted-key encoded state; keep full idempotency regression coverage without changing production state conformance"
+  },
   "changes": [
     {
       "file": ".github/workflows/ios-build.yml",
@@ -12,174 +20,45 @@
       "change": "modified"
     },
     {
-      "file": "Luma/Config/Watch-Info.plist",
-      "change": "removed"
-    },
-    {
-      "file": "Luma/Config/Watch.entitlements",
-      "change": "removed"
-    },
-    {
-      "file": "Luma/Config/iOS-Info.plist",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Config/iOS.entitlements",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Docs/AlarmKit-blocker.json",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Docs/static-checks.json",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Docs/syntax-checks.json",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Luma.xcodeproj/project.pbxproj",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Luma.xcodeproj/xcshareddata/xcschemes/Luma Watch.xcscheme",
-      "change": "removed"
-    },
-    {
-      "file": "Luma/Package.swift",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Resources/WatchAssets.xcassets/AppIcon.appiconset/AppIcon.png",
-      "change": "removed"
-    },
-    {
-      "file": "Luma/Resources/WatchAssets.xcassets/AppIcon.appiconset/Contents.json",
-      "change": "removed"
-    },
-    {
-      "file": "Luma/Resources/WatchAssets.xcassets/Contents.json",
-      "change": "removed"
-    },
-    {
-      "file": "Luma/Sources/LumaCore/SystemAlarmPlan.swift",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Sources/LumaCore/iPhoneOnlyMigration.swift",
+      "file": "Luma/Docs/core-tests-linux.log",
       "change": "added"
     },
     {
-      "file": "Luma/Sources/Platform/AppModel.swift",
-      "change": "modified"
+      "file": "Luma/Docs/core-tests-result.json",
+      "change": "added"
     },
     {
-      "file": "Luma/Sources/Platform/HealthService.swift",
-      "change": "modified"
+      "file": "Luma/Docs/swift-ios-parse.json",
+      "change": "added"
     },
     {
-      "file": "Luma/Sources/Platform/NotificationService.swift",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Sources/Platform/ResearchLog.swift",
-      "change": "removed"
-    },
-    {
-      "file": "Luma/Sources/Platform/WatchBridge.swift",
-      "change": "removed"
-    },
-    {
-      "file": "Luma/Sources/Watch/FiniteHaptics.swift",
-      "change": "removed"
-    },
-    {
-      "file": "Luma/Sources/Watch/LumaWatchApp.swift",
-      "change": "removed"
-    },
-    {
-      "file": "Luma/Sources/Watch/MotionService.swift",
-      "change": "removed"
-    },
-    {
-      "file": "Luma/Sources/Watch/ResearchWatchRuntime.swift",
-      "change": "removed"
-    },
-    {
-      "file": "Luma/Sources/Watch/WatchRootView.swift",
-      "change": "removed"
-    },
-    {
-      "file": "Luma/Sources/iPhone/AlarmEditor.swift",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Sources/iPhone/IndirectMethodView.swift",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Sources/iPhone/LumaApp.swift",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Sources/iPhone/PhoneRootView.swift",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Sources/iPhone/ResearchPhoneLink.swift",
-      "change": "removed"
-    },
-    {
-      "file": "Luma/Sources/iPhone/SettingsView.swift",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Sources/iPhone/SignalReadinessView.swift",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Sources/iPhone/SystemAlarmService.swift",
-      "change": "modified"
+      "file": "Luma/Docs/swift-ios-parse.log",
+      "change": "added"
     },
     {
       "file": "Luma/Tests/LumaCoreTests/iPhoneOnlyMigrationTests.swift",
-      "change": "added"
-    },
-    {
-      "file": "Luma/scripts/check-on-mac.sh",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/scripts/check-static.py",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/scripts/generate_project.py",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/scripts/project-graph.json",
       "change": "modified"
     }
   ],
   "checks": {
     "structural_checks_passed": 94,
-    "swift_files_parsed": 45,
-    "swift_parser_errors": 0,
-    "xctest_methods_present": 98,
-    "xctest_executed": false,
-    "native_build_executed": false,
+    "core_tests_compiled": true,
+    "core_tests_executed": 98,
+    "core_test_failures": 0,
+    "swift_version": "6.2.4",
+    "core_test_platform": "Linux x86_64",
+    "ios_source_files_parsed_by_swift": 33,
+    "ios_parse_target": "arm64-apple-ios17.0",
+    "ios_parse_exit_code": 0,
+    "yaml_parsed": true,
+    "shell_syntax_passed": true,
+    "native_iOS_build_executed": false,
     "device_tests_executed": false
   },
-  "swift_typechecked": false,
-  "native_targets": 1,
-  "embedded_watch_app": false,
-  "watch_connectivity_used": false,
-  "system_watch_forwarding": "Apple-managed AlarmKit presentation",
-  "old_data_migration_tests_added": 6,
-  "old_data_migration_tests_executed": false,
-  "background_auto_stop_guaranteed": false,
+  "full_native_build_verified": false,
+  "signed_ipa_generated_here": false,
+  "unsigned_ipa_generated_here": false,
+  "CI_ipa_path": "dist/Luma-unsigned.ipa",
+  "mandatory_checks_not_bypassed": true,
   "production_ready": false
 }

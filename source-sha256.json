@@ -1,10 +1,14 @@
 {
-  ".github/workflows/ios-build.yml": "0764d4d08d5235c8b08a9beec0835680ac3542b1cf3f17aa6706ea1ee66af497",
-  "Luma/Config/Base.xcconfig": "11e4f07a3717ee6325183c1053c0ca63eb2f5543ce73b3cfc7ace56d8c694dcc",
+  ".github/workflows/ios-build.yml": "6ff59d93490f1478def668220029b3103b9f0fbc4c0e04b42ef4f5ae4c9258e4",
+  "Luma/Config/Base.xcconfig": "a86777b586e1d671e39b858fa8ea698192471d4f13dfd214dd68eb30f4d4302d",
   "Luma/Config/iOS-Info.plist": "a076a090108e370b4e4b2e1ae5f598661343febb9350c75693475c331b16ddb1",
   "Luma/Config/iOS.entitlements": "e82a7f6e130b0fe65a40214c15b4116c5245125329c63954d9ccdd9cc80f039e",
   "Luma/Docs/AlarmKit-blocker.json": "247edd32a20568afdd4ef0a444c943ebc7b298c5b9baf5a0d62b73855ecc944b",
+  "Luma/Docs/core-tests-linux.log": "b87a17b9df8d0b319031da37574607b1a7fcb42c383e2e72f30f3e754addc651",
+  "Luma/Docs/core-tests-result.json": "0947e8bb80fa71d2839e07357298785aeec61c9a2af71d5e649f9043d2ae4384",
   "Luma/Docs/static-checks.json": "17169f299d5746009bff08008e6267fae41170a9c909e4a545284b3b8e6d0239",
+  "Luma/Docs/swift-ios-parse.json": "6a6554e440575d6090552f3fc8ed0114c8f7c3ad1efa39eafa4443e0895d6225",
+  "Luma/Docs/swift-ios-parse.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
   "Luma/Docs/swift-source-syntax.json": "4712725a0a9017312fc6db0cbe750f947df569960a3d33e63db145610ed37ed6",
   "Luma/Docs/syntax-checks.json": "57066cab78048c48b6eee0ab03a7accf27f44d7f220a059ba3fc83f94d57c57d",
   "Luma/Luma.xcodeproj/project.pbxproj": "02c2ebc48f0e207c4532ad3cb1e50bb78021b7080994fdd1781cf6f48bffa12e",
@@ -65,13 +69,13 @@
   "Luma/Tests/LumaCoreTests/RealtimeREMTests.swift": "77797503906418695a9cf3e6b18e962f8354b1999cfc41f9a5af53c68a20f40b",
   "Luma/Tests/LumaCoreTests/SystemAlarmPlanTests.swift": "1d36eb5a615bae85939b67fa89337294328593fa442d3d7e2895590d058e581f",
   "Luma/Tests/LumaCoreTests/V2Tests.swift": "b9b4b8b4597eaa42cbaf5f191dbdf02cb951364bc3d4f41ce0fa210f94f8f1db",
-  "Luma/Tests/LumaCoreTests/iPhoneOnlyMigrationTests.swift": "704ddc5c8a7ba6cc50965e697bddc4b53157dac50ebb49ce83ebed7d8ff7af63",
+  "Luma/Tests/LumaCoreTests/iPhoneOnlyMigrationTests.swift": "41d7498e1538a39075deefc958135d1d43ae8a81fe1ff9ccbc7e451d75d0aef1",
   "Luma/scripts/check-audio-on-mac.sh": "6770fed963a7b5738dc672f709f1adca4bbb49c87d80e064e019a2110a3a1f19",
   "Luma/scripts/check-audio-on-mac.swift": "a32d49644a48fa67b92496e432b86f721209fc32d736c5c457a2edfa8b81af10",
   "Luma/scripts/check-on-mac.sh": "98daddde655894f42013f4faa6a5015848db38e1dfcc583d440857e3433c8f46",
   "Luma/scripts/check-static.py": "b19df3510e11b2c6d1242e49724139f3c5264f06f3657c8447d5181086ba263a",
   "Luma/scripts/generate_project.py": "f85fd7de56d588f237b8cdb0892f307ff77cf3d5e605e830ad6e5330bb2bb4c7",
   "Luma/scripts/project-graph.json": "571ab76210eeed06a64002387e4045535c763393149fae5d78b58b89a4110544",
-  "PROGRESS.json": "415ef8ecb231cf6021fffed2b47fec5079840679e90511baabad5e97577e70fe",
-  "verification.json": "55302d582b309e461e30a399fb10a6d663b6be7a5359f021646e2c36af4fd511"
+  "PROGRESS.json": "55228d08276a2e69fa3a3ba84c1b10aa12ce593d317517911a90e8391a880f15",
+  "verification.json": "f45aa6cc866a3ea5ee4fa18b9b9628af143a5bd586631b59c2412705c90f931c"
 }
