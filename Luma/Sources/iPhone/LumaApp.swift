@@ -8,7 +8,7 @@ struct LumaApp: App {
   init() {
     let instance = AppModel()
     _model = StateObject(wrappedValue: instance)
-    // Register session mirroring and wire handlers on background launches too.
+    // Recover the system alarm ledger before the first screen is shown.
     Task { await instance.start() }
   }
   var body: some Scene {

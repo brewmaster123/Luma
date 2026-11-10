@@ -1,142 +1,79 @@
 import SwiftUI
 import UIKit
 
-/// A reminder before arming phone audio. Neither Silent Mode nor Focus membership
-/// has a public readiness check; only actual notification permission is displayed.
+/// Actual authorization and a concrete disclosure before an experimental system
+/// alarm is armed. No claim that four-second audio disables AlarmKit looping.
 struct SignalReadinessView: View {
   @EnvironmentObject private var model: AppModel
   @Environment(\.dismiss) private var dismiss
-  @Environment(\.scenePhase) private var phase
   let continueTitle: String
-  var signalOutput: SignalOutput = .phone
-  var startsSession = false
   var requiresPermission = true
   var onReady: () -> Void = {}
   @State private var working = false
   @State private var error: String?
-  private var research: Bool { startsSession && model.state.source.usesWatch }
-
   var body: some View {
     ScrollView {
       VStack(alignment: .leading, spacing: 20) {
         HStack {
-          Image(systemName: "bell.badge").foregroundStyle(LumaStyle.lavender)
-            .font(.system(size: 24, weight: .light))
+          Image(systemName: "alarm.waves.left.and.right").font(.system(size: 25))
+            .foregroundStyle(LumaStyle.lavender)
           Spacer()
           Button { dismiss() } label: {
             Image(systemName: "xmark").frame(width: 44, height: 44).contentShape(Rectangle())
-          }.buttonStyle(.plain).accessibilityLabel("Закрыть памятку").disabled(working)
+          }.buttonStyle(.plain).accessibilityLabel("Закрыть").disabled(working)
         }
-        Text(signalOutput == .both ? "Сигналы на двух устройствах" : "Чтобы сигнал прозвучал")
-          .font(LumaStyle.font(24, "Medium", relativeTo: .title2))
-        Text("Короткий сигнал затихнет сам. Перед сном:")
-          .font(LumaStyle.font(13)).foregroundStyle(LumaStyle.secondary)
+        Text("Системные сигналы Luma").font(LumaStyle.font(24, "Medium"))
         LumaCard {
-          VStack(alignment: .leading, spacing: 20) {
-            if research {
-              step(1, "REM Lab · исследовательская версия", "Часы используют системную тренировочную сессию для непрерывных датчиков. Это может повлиять на «Активность» и расходует заряд. Точность REM пока не измерена.")
-              step(2, "Запустите тест на часах", "После начала ночи откройте Luma на Apple Watch и нажмите «Начать REM · тест». Решения принимают часы; микрофон для этого теста не нужен.")
-              step(3, "Проверьте сигнал с погашенными экранами", "На часах нажмите «Проба через 60 секунд». Заблокируйте iPhone и опустите руку. Сигналы должны завершиться сами. На iPhone нужна слышимая громкость мультимедиа.")
-            } else if signalOutput == .both {
-              step(1, "Проверьте громкость iPhone", "Здесь используется громкость мультимедиа. Отключите наушники; для пробы откройте Luma на часах.")
-              step(2, "Запустите ночь с микрофоном", "Выберите «Часы + микрофон» и нажмите «Начать ночь». Микрофон анализирует звуки сна без сохранения разговоров. Не закрывайте Luma принудительно.")
-            } else {
-              step(1, "Выключите беззвучный режим", "Проверьте громкость «Звонок и уведомления».")
-              step(2, "Включите фокусирование «Сон»", "Чтобы приглушить звонки и лишние уведомления.")
-            }
-            if !research {
-              step(3, "Разрешите уведомления от Luma", "Настройки → Фокусирование → Сон → Приложения → Разрешить уведомления от → Luma.")
-            }
+          VStack(alignment: .leading, spacing: 18) {
+            step("1", "Через AlarmKit", "Системные сигналы iPhone проходят через беззвучный режим и фокусирование. Нужны iOS 26 или новее и разрешение на будильники.")
+            step("2", "Четырёхсекундный звук", "Luma готовит отдельную копию мелодии или вашей записи длиной 4 секунды и отправляет команду остановки AlarmKit через 4 секунды.")
+            step("3", "Сначала проверьте с блокировкой", "В настройках есть проба через 60 секунд. Заблокируйте iPhone и проверьте, затих ли сигнал без прикосновений.")
           }
         }
-        if research {
-          Text("Это проверка технического пути на ваших устройствах. Успешная проба сигнала не доказывает точность определения REM или непрерывность работы всю ночь.")
+        Text("Автоостановка пока проверяется. Если iOS приостановит Luma, команда остановки может опоздать, а AlarmKit — повторить звук. Тогда понадобится остановить сигнал вручную. Короткий файл сам по себе этого не предотвращает.")
+          .font(LumaStyle.font(13)).foregroundStyle(LumaStyle.amber).lineSpacing(4)
+          .accessibilityIdentifier("alarmkit.stopLimitation")
+        Group {
+          Text("Система может показывать сигнал AlarmKit на Apple Watch, связанных с iPhone. Отдельное приложение Luma на часах не требуется. Проверьте звук и вибрацию на вашей паре устройств.")
             .font(LumaStyle.font(12)).foregroundStyle(LumaStyle.secondary)
-        } else if signalOutput == .both {
-          Text("iPhone проигрывает звук напрямую, часы получают отдельную серию. Если Luma не работает в этот момент, остаётся резервное уведомление будильника через 5 секунд: оно может уйти только на часы.")
-            .font(LumaStyle.font(12)).foregroundStyle(LumaStyle.secondary)
-            .accessibilityIdentifier("signal.pairedConditions")
-          if startsSession && !model.hasPlan && !model.state.source.usesMicrophone {
-            Button("Использовать часы и микрофон") { model.setSource(.combined) }
-              .font(LumaStyle.font(13, "Medium")).frame(minHeight: 44)
-              .accessibilityIdentifier("signal.selectMicrophone")
-          }
-        } else {
-          Label {
-            Text("Если Apple Watch на руке, обычное уведомление может прийти только на часы. Для отдельного звука телефона выберите «iPhone + Watch» и запустите ночь с микрофоном.")
-              .fixedSize(horizontal: false, vertical: true)
-          } icon: {
-            Image(systemName: "applewatch").foregroundStyle(LumaStyle.lavender)
-          }
-          .font(LumaStyle.font(12)).foregroundStyle(LumaStyle.secondary)
-          .accessibilityIdentifier("signal.watchRouting")
         }
-        if !research {
-          Text(model.phoneNotificationSummary)
-          .font(LumaStyle.font(12))
-          .foregroundStyle(model.phoneNotificationsReady ? LumaStyle.secondary : LumaStyle.amber)
-          .accessibilityIdentifier("signal.permissionStatus")
-        }
-        if let error {
-          Text(error).font(LumaStyle.font(12)).foregroundStyle(LumaStyle.amber)
-        }
-        if !research {
-          Button { Task { await openNotificationSettings() } } label: {
-            Label("Настройки уведомлений Luma", systemImage: "arrow.up.forward.square")
-              .font(LumaStyle.font(13, "Medium"))
-              .frame(maxWidth: .infinity, minHeight: 48).contentShape(Rectangle())
-          }.buttonStyle(.plain).foregroundStyle(LumaStyle.lavender).disabled(working)
-            .accessibilityIdentifier("signal.settings")
-          Text("Кнопка откроет уведомления Luma. Исключение для «Сна» добавьте по пути выше. В разделе «Люди» можно ограничить звонки.")
-            .font(LumaStyle.font(11)).foregroundStyle(LumaStyle.secondary)
-        }
+        Text(model.systemAlarms.summary).font(LumaStyle.font(12)).foregroundStyle(LumaStyle.secondary)
+        if let error { Text(error).font(LumaStyle.font(12)).foregroundStyle(LumaStyle.amber) }
         Button {
+          if let url = URL(string: UIApplication.openSettingsURLString) { UIApplication.shared.open(url) }
+        } label: {
+          Label("Настройки Luma в iPhone", systemImage: "arrow.up.forward.square")
+            .font(LumaStyle.font(13, "Medium")).frame(minHeight: 44)
+        }.buttonStyle(.plain).foregroundStyle(LumaStyle.lavender)
+        Button {
+          guard !working else { return }
           working = true
           Task { @MainActor in
             defer { working = false }
             do {
-              if requiresPermission && !research { try await model.preparePhoneSignals() }
-              onReady()
-              dismiss()
+              if requiresPermission { try await model.preparePhoneSignals(acceptLimitations: true) }
+              onReady(); dismiss()
             } catch { self.error = error.localizedDescription }
           }
         } label: {
-          HStack {
-            if working { ProgressView().tint(LumaStyle.background) }
-            Text(working ? "Подготавливаем…" : continueTitle)
-          }
-        }.buttonStyle(PrimaryButtonStyle()).disabled(working)
+          HStack { if working { ProgressView() }; Text(working ? "Подготавливаем…" : continueTitle) }
+        }.buttonStyle(PrimaryButtonStyle()).disabled(working || !model.systemAlarms.supported)
           .accessibilityIdentifier("signal.continue")
       }.padding(24)
-    }
-    .background(LumaStyle.background).foregroundStyle(LumaStyle.text)
-    .presentationDetents([.large])
-    .presentationDragIndicator(.visible)
-    .presentationCornerRadius(28)
-    .interactiveDismissDisabled(working)
-    .task { await model.refreshPhoneNotificationAccess() }
-    .onChange(of: phase) { _, value in
-      if value == .active { Task { await model.refreshPhoneNotificationAccess() } }
-    }
+    }.foregroundStyle(LumaStyle.text).background(LumaStyle.background)
+      .presentationDetents([.large]).presentationDragIndicator(.visible)
+      .presentationCornerRadius(28).interactiveDismissDisabled(working)
+      .task { await model.refreshAlarmAccess() }
   }
-
-  private func step(_ number: Int, _ title: String, _ detail: String) -> some View {
+  private func step(_ number: String, _ title: String, _ detail: String) -> some View {
     HStack(alignment: .top, spacing: 12) {
-      Text("\(number)").font(LumaStyle.font(12, "SemiBold"))
+      Text(number).font(LumaStyle.font(12, "SemiBold"))
         .foregroundStyle(LumaStyle.lavender).frame(width: 26, height: 26)
-        .background(LumaStyle.lavender.opacity(0.1), in: Circle()).accessibilityHidden(true)
+        .background(LumaStyle.lavender.opacity(0.1), in: Circle())
       VStack(alignment: .leading, spacing: 6) {
         Text(title).font(LumaStyle.font(14, "SemiBold"))
         Text(detail).font(LumaStyle.font(12)).foregroundStyle(LumaStyle.secondary)
       }.fixedSize(horizontal: false, vertical: true)
-    }.accessibilityElement(children: .combine)
-  }
-
-  private func openNotificationSettings() async {
-    if let url = URL(string: UIApplication.openNotificationSettingsURLString),
-      await UIApplication.shared.open(url) { return }
-    if let url = URL(string: UIApplication.openSettingsURLString),
-      await UIApplication.shared.open(url) { return }
-    error = "Откройте Настройки iPhone → Уведомления → Luma."
+    }
   }
 }

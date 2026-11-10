@@ -7,76 +7,63 @@ struct SettingsView: View {
   @State private var showReadiness = false
   @State private var wantsPreview = false
   @State private var readyToPreview = false
+  @State private var previewDelay: TimeInterval = 3
   var body: some View {
     ScrollView {
       VStack(alignment: .leading, spacing: 24) {
         Text("Настройки").font(LumaStyle.font(30, "Medium", relativeTo: .largeTitle))
         Text("Ваша ночь, ваш ритм.").foregroundStyle(LumaStyle.secondary)
         LumaCard {
-          VStack(alignment: .leading, spacing: 16) {
-            SmallLabel(text: "КАК НАБЛЮДАТЬ ЗА СНОМ")
-            ForEach(SensorSource.allCases) { source in
-              Button {
-                model.setSource(source)
-              } label: {
-                HStack {
-                  Image(systemName: source == .phone ? "iphone" : "applewatch").frame(width: 24)
-                  Text(source.title).font(LumaStyle.font(14))
-                  Spacer()
-                  Image(
-                    systemName: model.state.source == source ? "checkmark.circle.fill" : "circle")
-                }.foregroundStyle(
-                  model.state.source == source ? LumaStyle.lavender : LumaStyle.secondary
-                ).frame(minHeight: 44)
-              }.disabled(model.hasPlan)
+          VStack(alignment: .leading, spacing: 10) {
+            HStack {
+              Text("REM всю ночь").font(LumaStyle.font(16, "SemiBold"))
+              Spacer()
+              Text("Premium").font(LumaStyle.font(11, "Medium"))
+                .foregroundStyle(LumaStyle.lavender).padding(.horizontal, 10).padding(.vertical, 5)
+                .background(LumaStyle.lavender.opacity(0.1), in: Capsule())
             }
-            if model.state.source == .phone {
-              Text(
-                "Без Apple Watch оценка REM менее надёжна: нет данных пульса и движений запястья. Насколько ниже точность в процентах, пока не измерено."
-              ).font(LumaStyle.font(12)).foregroundStyle(LumaStyle.amber)
-            }
-            if model.state.source.usesMicrophone {
-              Text(
-                "Положите iPhone рядом с кроватью, на открытую поверхность. Микрофон анализирует только признаки звука; запись ночных разговоров не сохраняется. Шум и другой спящий рядом могут мешать."
-              ).font(LumaStyle.font(12)).foregroundStyle(LumaStyle.secondary)
-            }
+            Text("Готовится для будущей подписки. Сейчас функция недоступна.")
+              .font(LumaStyle.font(12)).foregroundStyle(LumaStyle.secondary)
           }
         }
         LumaCard {
           VStack(alignment: .leading, spacing: 18) {
-            SmallLabel(text: "СИГНАЛ ДЛЯ СЛЕДУЮЩЕГО СЕАНСА")
+            SmallLabel(text: "СИГНАЛ БУДИЛЬНИКА")
             SignalEditor(
               signal: Binding(get: { model.state.signal }, set: { model.updateSignal($0) }),
               voices: model.state.voices)
             Button {
-              if model.state.signal.output.phoneEnabled { wantsPreview = true; showReadiness = true }
-              else { Task { await model.preview() } }
+              previewDelay = 3
+              wantsPreview = true; showReadiness = true
             } label: {
-              Label("Послушать и почувствовать", systemImage: "play.circle")
-            }.frame(maxWidth: .infinity, minHeight: 44).disabled(model.audio.recording || model.audio.playing || model.phonePreviewRunning)
-            Text(
-              model.state.signal.output == .both
-                ? "iPhone проиграет звук один раз. Для двух сигналов ночью запустите сеанс с источником «Часы + микрофон»."
-                : "Каждое звуковое уведомление проигрывает дорожку один раз. Выключите беззвучный режим iPhone."
-            ).font(LumaStyle.font(11)).foregroundStyle(LumaStyle.secondary)
+              Label("Проба AlarmKit через 3 секунды", systemImage: "play.circle")
+            }.frame(maxWidth: .infinity, minHeight: 44).disabled(model.audio.recording || model.audio.playing || model.busy || model.systemAlarms.preparing)
+            Text("Сигналы iPhone идут через AlarmKit. Для будильника создаётся отдельная четырёхсекундная копия выбранного звука. Исходная запись сохраняется.")
+              .font(LumaStyle.font(11)).foregroundStyle(LumaStyle.secondary)
           }
         }
         SoundLibraryView(audio: model.audio) { recorder = true }
         LumaCard {
           VStack(alignment: .leading, spacing: 14) {
-            Toggle(
-              "Личная настройка",
-              isOn: Binding(
-                get: { model.state.personalizationEnabled }, set: { model.setPersonalization($0) })
-            ).tint(LumaStyle.lavender)
-            Text(
-              "По желанию оставляйте отклик в дневнике. Настройка начинается от 12 подходящих ночей с часами, при наличии разных результатов. Одна неудача ничего не меняет."
-            ).font(LumaStyle.font(12)).foregroundStyle(LumaStyle.secondary)
-            Text("Подходящих ночей: \(model.personalizationCount)").font(
-              LumaStyle.font(12, "Medium"))
-            Text(
-              "Успех осознанного сна не доказывает REM. Настройка лишь немного меняет предпочтение похожих условий; это эксперимент."
-            ).font(LumaStyle.font(11)).foregroundStyle(LumaStyle.secondary)
+            SmallLabel(text: "ПРОВЕРКА ALARMKIT")
+            Button {
+              previewDelay = 60; wantsPreview = true; showReadiness = true
+            } label: {
+              Label("Проба с блокировкой через 60 секунд", systemImage: "lock.iphone")
+                .font(LumaStyle.font(13, "Medium")).frame(minHeight: 44)
+            }.disabled(model.busy || model.systemAlarms.preparing)
+            Text(model.systemAlarms.lastStopReport)
+              .font(LumaStyle.font(12)).foregroundStyle(LumaStyle.secondary)
+            Text("После запуска заблокируйте iPhone. Проверьте, прекратился ли звук сам, и повторите несколько раз. Запись в журнале подтверждает команду, но не доказывает, что динамик замолчал.")
+              .font(LumaStyle.font(11)).foregroundStyle(LumaStyle.secondary)
+            if let log = model.systemAlarms.logURL,
+              FileManager.default.fileExists(atPath: log.path) {
+              ShareLink(item: log) { Label("Журнал проверки", systemImage: "square.and.arrow.up") }
+                .font(LumaStyle.font(13)).frame(minHeight: 44)
+            }
+            Button("Отменить все системные сигналы", role: .destructive) {
+              Task { await model.stopAllSystemAlarms() }
+            }.font(LumaStyle.font(12)).frame(minHeight: 44).disabled(model.busy)
           }
         }
         LumaCard {
@@ -84,16 +71,14 @@ struct SettingsView: View {
             Button("Как настроить ночные сигналы") {
               wantsPreview = false; showReadiness = true
             }.frame(minHeight: 44)
-            Text(model.phoneNotificationSummary).font(LumaStyle.font(12)).foregroundStyle(LumaStyle.secondary)
-            Button("Разрешить данные Apple Health") { Task { await model.connectHealth() } }.frame(
+            Text(model.alarmPermissionSummary).font(LumaStyle.font(12)).foregroundStyle(LumaStyle.secondary)
+            Button("История сна из «Здоровья»") { Task { await model.connectHealth() } }.frame(
               minHeight: 44)
-            Button("Разрешить уведомления") { Task { await model.requestSignalAccess() } }.frame(
-              minHeight: 44)
-            Button("Обновить связь с часами") { model.syncConfiguration() }.frame(minHeight: 44)
-            Text(model.watchStatus).font(LumaStyle.font(12)).foregroundStyle(LumaStyle.secondary)
-            Text(
-              "Для ночной вибрации включите бесшумный режим часов. Система определяет рисунок постукиваний и доставку уведомлений. REM-сигналы на часы требуют доступной связи; работу при погашенных экранах нужно проверить на ваших устройствах."
-            ).font(LumaStyle.font(12)).foregroundStyle(LumaStyle.secondary)
+            Label {
+              Text("Связанные Apple Watch могут показывать системный сигнал AlarmKit. Отдельное приложение Luma на часах не требуется. Отображением и вибрацией управляет система.")
+                .font(LumaStyle.font(12)).foregroundStyle(LumaStyle.secondary)
+            } icon: { Image(systemName: "applewatch").foregroundStyle(LumaStyle.lavender) }
+
           }
         }
         Button("Удалить историю и отклики", role: .destructive) { confirmDelete = true }.frame(
@@ -103,10 +88,9 @@ struct SettingsView: View {
       }.padding(22)
     }.lumaScreen().toolbar(.hidden, for: .navigationBar)
       .sheet(isPresented: $showReadiness, onDismiss: {
-        if readyToPreview { readyToPreview = false; Task { await model.preview() } }
+        if readyToPreview { readyToPreview = false; Task { await model.testSystemAlarm(after: previewDelay) } }
       }) {
         SignalReadinessView(continueTitle: wantsPreview ? "Проверить сигнал" : "Понятно",
-          signalOutput: model.state.signal.output,
           requiresPermission: wantsPreview) { readyToPreview = wantsPreview }
           .environmentObject(model)
       }
@@ -120,54 +104,13 @@ struct SignalEditor: View {
   @Binding var signal: SignalSettings
   let voices: [VoiceClip]
   var body: some View {
-    VStack(alignment: .leading, spacing: 16) {
-      ForEach(SignalOutput.allCases) { output in
-        Button {
-          signal.output = output
-        } label: {
-          HStack(spacing: 12) {
-            Image(
-              systemName: output == .watch
-                ? "applewatch" : output == .phone ? "iphone" : "iphone.radiowaves.left.and.right"
-            ).frame(width: 24)
-            Text(output.title).font(LumaStyle.font(13))
-            Spacer()
-            Image(systemName: signal.output == output ? "checkmark.circle.fill" : "circle")
-          }.frame(minHeight: 44).foregroundStyle(
-            signal.output == output ? LumaStyle.lavender : LumaStyle.secondary)
-        }
-      }
-      if signal.output.phoneEnabled {
-        Picker("Звук iPhone", selection: $signal.voiceID) {
-          Text("Мелодия Luma").tag(Optional<UUID>.none)
-          ForEach(voices) { v in Text(v.name).tag(Optional(v.id)) }
-        }.tint(LumaStyle.lavender)
-        if signal.voiceID == nil {
-          Picker("Длительность", selection: $signal.melodySeconds) {
-            ForEach([4, 8, 15], id: \.self) { Text("\($0) сек").tag($0) }
-          }.pickerStyle(.segmented)
-        } else {
-          Text("Дорожка прозвучит один раз и затихнет сама.").font(LumaStyle.font(11)).foregroundStyle(
-            LumaStyle.secondary)
-        }
-      }
-      if signal.output == .both {
-        Text("Звук iPhone идёт напрямую, вибрация Watch — отдельно. На ночь запустите сеанс с микрофоном: без работающей Luma остаётся резервное уведомление через 5 секунд, которое iOS может направить на часы.")
-          .font(LumaStyle.font(11)).foregroundStyle(LumaStyle.secondary)
-      } else if signal.output.phoneEnabled {
-        Text("Обычное уведомление может уйти на надетые часы. Для отдельного звука телефона выберите «iPhone + Watch» и ночь с микрофоном. Вибрацией уведомлений управляет iOS.")
-          .font(LumaStyle.font(11)).foregroundStyle(LumaStyle.secondary)
-      }
-      if signal.output.watchEnabled {
-        SmallLabel(text: "КОРОТКИХ СИГНАЛОВ НА ЧАСАХ")
-        CountSelector(selected: signal.count) { signal.count = $0 }
-        Picker("Интервал", selection: $signal.gapSeconds) {
-          ForEach([3, 8, 12], id: \.self) { Text("\($0) сек").tag($0) }
-        }.tint(LumaStyle.lavender)
-        Text("Ночью это число уведомлений. Рисунок вибрации внутри каждого задаёт watchOS.").font(
-          LumaStyle.font(11)
-        ).foregroundStyle(LumaStyle.secondary)
-      }
+    VStack(alignment: .leading, spacing: 12) {
+      Picker("Звук", selection: $signal.voiceID) {
+        Text("Мелодия Luma").tag(Optional<UUID>.none)
+        ForEach(voices) { v in Text(v.name).tag(Optional(v.id)) }
+      }.tint(LumaStyle.lavender)
+      Text("Для будильника используется отдельная копия звука длиной 4 секунды.")
+        .font(LumaStyle.font(11)).foregroundStyle(LumaStyle.secondary)
     }
   }
 }

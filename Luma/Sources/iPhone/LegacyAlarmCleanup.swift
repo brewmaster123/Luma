@@ -3,14 +3,15 @@ import Foundation
 import AlarmKit
 #endif
 
-/// Upgrade cleanup only. New alarms and REM cues never use AlarmKit.
-/// Retain this for users installing over v0.3 or v0.4 with queued system alarms.
+/// Upgrade cleanup for v0.3/v0.4 only. Current AlarmKit records belong to
+/// SystemAlarmService and MUST survive both relaunch and a queue rebuild.
 @MainActor final class LegacyAlarmCleanup {
   private let keys = ["luma.system-alarm.configurations.v1", "luma.alarmkit.stop-windows.v1"]
   private var completed = false
 
   func removeRemainingAlarms() throws {
     guard !completed else { return }
+    guard hasLegacyRecords else { finish(); return }
     #if canImport(AlarmKit)
     if #available(iOS 26.0, *) {
       let manager = AlarmManager.shared

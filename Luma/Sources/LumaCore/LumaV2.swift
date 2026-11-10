@@ -237,12 +237,22 @@ public struct LumaState: Codable, Sendable {
     defaultPhoneDelivery = .shortCue
     for i in alarms.indices { alarms[i].phoneDelivery = .shortCue }
   }
+  public mutating func useAlarmKitDelivery() {
+    defaultPhoneDelivery = .systemAlarm
+    for i in alarms.indices {
+      alarms[i].phoneDelivery = .systemAlarm
+      alarms[i].signal.melodySeconds = 4
+    }
+    signal.melodySeconds = 4
+  }
   public var personalizationEnabled = false
   public var episodeMemory = EpisodeMemory()
   public var configurationRevision: Date = .distantPast
   public var processedEvents: [UUID] = []
   public var completedAlarmIDs: [String] = []
   public var mutedWatchSessions: [UUID] = []
+  /// Optional so archives from earlier versions remain readable.
+  public var indirectMethod: IndirectMethodSettings?
   public init() {}
 }
 /// Persistent hysteresis. Missing data cannot establish exit; a crash cannot replay a reserved episode.

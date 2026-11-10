@@ -45,7 +45,7 @@ struct JournalView: View {
             }
           }
           if model.state.sessions.isEmpty {
-            Text("Здесь появится ваш первый ночной сеанс.").font(LumaStyle.font(14))
+            Text("История ночных сеансов пока пуста.").font(LumaStyle.font(14))
               .foregroundStyle(LumaStyle.secondary).padding(.vertical, 12)
           }
           ForEach(model.state.sessions) { s in

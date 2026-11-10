@@ -1,6 +1,6 @@
 {
   "tool": "tree-sitter-swift",
-  "files": 45,
+  "files": 48,
   "errors": [],
   "native_compilation": false
 }

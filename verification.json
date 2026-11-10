@@ -1,9 +1,42 @@
 {
-  "base_archive": "Luma-iPhone-AppleWatch-v0.6.0-REM-Lab.zip",
-  "base_sha256": "03bcaeb6ad4243f763bf6278c369b56f87acb70cf297e3abecb88f9d08648f14",
+  "base_archive": "Luma-iPhone-AppleWatch-v0.8.0-AlarmKit-Test.zip",
+  "base_sha256": "648708da973a6628df5448efdc2433173e9477365917a6cfc09432fc0e38fc42",
+  "version": "0.9.0 (16) iPhone-only AlarmKit",
   "changes": [
     {
+      "file": ".github/workflows/ios-build.yml",
+      "change": "modified"
+    },
+    {
       "file": "Luma/Config/Base.xcconfig",
+      "change": "modified"
+    },
+    {
+      "file": "Luma/Config/Watch-Info.plist",
+      "change": "removed"
+    },
+    {
+      "file": "Luma/Config/Watch.entitlements",
+      "change": "removed"
+    },
+    {
+      "file": "Luma/Config/iOS-Info.plist",
+      "change": "modified"
+    },
+    {
+      "file": "Luma/Config/iOS.entitlements",
+      "change": "modified"
+    },
+    {
+      "file": "Luma/Docs/AlarmKit-blocker.json",
+      "change": "modified"
+    },
+    {
+      "file": "Luma/Docs/static-checks.json",
+      "change": "modified"
+    },
+    {
+      "file": "Luma/Docs/syntax-checks.json",
       "change": "modified"
     },
     {
@@ -11,7 +44,31 @@
       "change": "modified"
     },
     {
-      "file": "Luma/Sources/LumaCore/CuePlaybackStopper.swift",
+      "file": "Luma/Luma.xcodeproj/xcshareddata/xcschemes/Luma Watch.xcscheme",
+      "change": "removed"
+    },
+    {
+      "file": "Luma/Package.swift",
+      "change": "modified"
+    },
+    {
+      "file": "Luma/Resources/WatchAssets.xcassets/AppIcon.appiconset/AppIcon.png",
+      "change": "removed"
+    },
+    {
+      "file": "Luma/Resources/WatchAssets.xcassets/AppIcon.appiconset/Contents.json",
+      "change": "removed"
+    },
+    {
+      "file": "Luma/Resources/WatchAssets.xcassets/Contents.json",
+      "change": "removed"
+    },
+    {
+      "file": "Luma/Sources/LumaCore/SystemAlarmPlan.swift",
+      "change": "modified"
+    },
+    {
+      "file": "Luma/Sources/LumaCore/iPhoneOnlyMigration.swift",
       "change": "added"
     },
     {
@@ -19,11 +76,51 @@
       "change": "modified"
     },
     {
+      "file": "Luma/Sources/Platform/HealthService.swift",
+      "change": "modified"
+    },
+    {
       "file": "Luma/Sources/Platform/NotificationService.swift",
       "change": "modified"
     },
     {
-      "file": "Luma/Sources/Platform/PhoneAudio.swift",
+      "file": "Luma/Sources/Platform/ResearchLog.swift",
+      "change": "removed"
+    },
+    {
+      "file": "Luma/Sources/Platform/WatchBridge.swift",
+      "change": "removed"
+    },
+    {
+      "file": "Luma/Sources/Watch/FiniteHaptics.swift",
+      "change": "removed"
+    },
+    {
+      "file": "Luma/Sources/Watch/LumaWatchApp.swift",
+      "change": "removed"
+    },
+    {
+      "file": "Luma/Sources/Watch/MotionService.swift",
+      "change": "removed"
+    },
+    {
+      "file": "Luma/Sources/Watch/ResearchWatchRuntime.swift",
+      "change": "removed"
+    },
+    {
+      "file": "Luma/Sources/Watch/WatchRootView.swift",
+      "change": "removed"
+    },
+    {
+      "file": "Luma/Sources/iPhone/AlarmEditor.swift",
+      "change": "modified"
+    },
+    {
+      "file": "Luma/Sources/iPhone/IndirectMethodView.swift",
+      "change": "modified"
+    },
+    {
+      "file": "Luma/Sources/iPhone/LumaApp.swift",
       "change": "modified"
     },
     {
@@ -31,11 +128,35 @@
       "change": "modified"
     },
     {
-      "file": "Luma/Tests/LumaCoreTests/CuePlaybackStopperTests.swift",
+      "file": "Luma/Sources/iPhone/ResearchPhoneLink.swift",
+      "change": "removed"
+    },
+    {
+      "file": "Luma/Sources/iPhone/SettingsView.swift",
+      "change": "modified"
+    },
+    {
+      "file": "Luma/Sources/iPhone/SignalReadinessView.swift",
+      "change": "modified"
+    },
+    {
+      "file": "Luma/Sources/iPhone/SystemAlarmService.swift",
+      "change": "modified"
+    },
+    {
+      "file": "Luma/Tests/LumaCoreTests/iPhoneOnlyMigrationTests.swift",
       "change": "added"
     },
     {
+      "file": "Luma/scripts/check-on-mac.sh",
+      "change": "modified"
+    },
+    {
       "file": "Luma/scripts/check-static.py",
+      "change": "modified"
+    },
+    {
+      "file": "Luma/scripts/generate_project.py",
       "change": "modified"
     },
     {
@@ -44,16 +165,21 @@
     }
   ],
   "checks": {
-    "structural_checks_passed": 99,
+    "structural_checks_passed": 94,
     "swift_files_parsed": 45,
-    "xctest_methods_present": 79,
-    "new_stop_guard_tests_present": 7,
+    "swift_parser_errors": 0,
+    "xctest_methods_present": 98,
     "xctest_executed": false,
-    "swift_compilation": false,
-    "native_xcode_build": false,
-    "physical_device_tests": false
+    "native_build_executed": false,
+    "device_tests_executed": false
   },
-  "root_cause_status": "Source weaknesses addressed. The specific reported fifth-signal failure has not been reproduced on a device.",
-  "device_bug_resolution_confirmed": false,
+  "swift_typechecked": false,
+  "native_targets": 1,
+  "embedded_watch_app": false,
+  "watch_connectivity_used": false,
+  "system_watch_forwarding": "Apple-managed AlarmKit presentation",
+  "old_data_migration_tests_added": 6,
+  "old_data_migration_tests_executed": false,
+  "background_auto_stop_guaranteed": false,
   "production_ready": false
 }

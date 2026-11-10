@@ -26,31 +26,19 @@ struct PhoneRootView: View {
 struct NightView: View {
   @EnvironmentObject private var model: AppModel
   @State private var alarm: LumaAlarm?
-  @State private var showingREMHelp = false
   @State private var signalAction: SignalAction?
   @State private var preparedAction: SignalAction?
-  @State private var preparedOutput: SignalOutput = .phone
   private enum SignalAction: Identifiable {
-    case begin, resume, enable(UUID)
-    var id: String {
-      switch self { case .begin: return "begin"; case .resume: return "resume"; case .enable(let id): return id.uuidString }
-    }
-    var title: String {
-      switch self { case .begin: return "Начать ночь"; case .resume: return "Продолжить сеанс"; case .enable: return "Включить будильник" }
-    }
+    case enable(UUID)
+    var id: UUID { switch self { case .enable(let id): return id } }
+    var title: String { "Включить будильник" }
   }
-  private func prepare(_ action: SignalAction, signal: SignalSettings) {
-    if signal.output.phoneEnabled || (action.id == "begin" || action.id == "resume") && model.state.source.usesWatch {
-      preparedOutput = signal.output; signalAction = action
-    }
-    else { Task { await perform(action) } }
+  private func prepare(_ action: SignalAction) {
+    if model.systemAlarms.acceptedLimitations { Task { await perform(action) } }
+    else { signalAction = action }
   }
   private func perform(_ action: SignalAction) async {
-    switch action {
-    case .begin: await model.beginSession()
-    case .resume: await model.resumeSession()
-    case .enable(let id): await model.toggleAlarm(id)
-    }
+    switch action { case .enable(let id): await model.toggleAlarm(id) }
   }
 
   var body: some View {
@@ -67,11 +55,8 @@ struct NightView: View {
             .frame(height: isEmpty ? nil : 210)
             .clipped()
           nightHeading
-          remCard
+          IndirectMethodCard()
           alarmsSection
-          if model.state.source.usesWatch || model.state.signal.output.watchEnabled {
-            watchConnection
-          }
         }
         .padding(.horizontal, 22)
         .padding(.vertical, 14)
@@ -86,19 +71,10 @@ struct NightView: View {
       preparedAction = nil
       Task { await perform(action) }
     }) { action in
-      SignalReadinessView(continueTitle: action.title, signalOutput: preparedOutput,
-        startsSession: action.id == "begin" || action.id == "resume",
-        requiresPermission: preparedOutput.phoneEnabled) { preparedAction = action }
+      SignalReadinessView(continueTitle: action.title) { preparedAction = action }
         .environmentObject(model)
     }
     .sheet(item: $alarm) { AlarmEditor(alarm: $0).environmentObject(model) }
-    .sheet(isPresented: $showingREMHelp) {
-      REMHelpView()
-        .presentationDetents([.large])
-        .presentationDragIndicator(.visible)
-        .presentationCornerRadius(28)
-        .presentationBackground(LumaStyle.surface)
-    }
   }
 
   private var brandHeader: some View {
@@ -122,75 +98,6 @@ struct NightView: View {
         .foregroundStyle(LumaStyle.secondary)
         .multilineTextAlignment(.center)
         .fixedSize(horizontal: false, vertical: true)
-    }
-  }
-
-  private var remCard: some View {
-    LumaCard {
-      VStack(alignment: .leading, spacing: 12) {
-        HStack(spacing: 0) {
-          Text("REM · всю ночь").font(LumaStyle.font(17, "SemiBold"))
-          Button { showingREMHelp = true } label: {
-            Image(systemName: "questionmark")
-              .font(.system(size: 11, weight: .semibold))
-              .foregroundStyle(LumaStyle.lavender)
-              .frame(width: 23, height: 23)
-              .background(
-                LinearGradient(
-                  colors: [LumaStyle.lavender.opacity(0.11), LumaStyle.lavender.opacity(0.03)],
-                  startPoint: .topLeading, endPoint: .bottomTrailing), in: Circle())
-              .overlay(Circle().stroke(LumaStyle.lavender.opacity(0.34), lineWidth: 0.8))
-              .frame(width: 44, height: 44)
-              .contentShape(Rectangle())
-          }
-          .buttonStyle(.plain)
-          .accessibilityLabel("Как работает REM всю ночь")
-          .accessibilityHint("Открывает справку о подсказках во сне")
-          Spacer(minLength: 4)
-          Image(systemName: "waveform.path")
-            .foregroundStyle(LumaStyle.lavender)
-            .accessibilityHidden(true)
-        }
-        Text((model.activeSession?.source ?? model.state.source).title)
-          .font(LumaStyle.font(13))
-          .foregroundStyle(LumaStyle.secondary)
-        if let session = model.activeSession {
-          if session.watchResearch == true {
-            Text(model.researchStatus).font(LumaStyle.font(12))
-              .foregroundStyle(LumaStyle.lavender).fixedSize(horizontal: false, vertical: true)
-            if let url = model.researchLogURL {
-              ShareLink(item: url) { Label("Журнал проверки", systemImage: "square.and.arrow.up") }
-                .font(LumaStyle.font(12)).frame(minHeight: 44)
-            }
-          }
-          Text(
-            "\(session.episodes.count) предполагаемых эпизодов · с \(session.startedAt.formatted(date: .omitted, time: .shortened))"
-          ).font(LumaStyle.font(12))
-          Text(model.evidence.explanation)
-            .font(LumaStyle.font(12))
-            .foregroundStyle(LumaStyle.secondary)
-            .fixedSize(horizontal: false, vertical: true)
-          if session.status == .paused {
-            Button("Продолжить сеанс") { prepare(.resume, signal: session.signal) }
-              .buttonStyle(PrimaryButtonStyle())
-          }
-          Button("Завершить сеанс") { Task { await model.endSession() } }
-            .frame(maxWidth: .infinity, minHeight: 44)
-            .foregroundStyle(LumaStyle.lavender)
-        } else {
-          Button { prepare(.begin, signal: model.state.signal) } label: {
-            Label("Начать ночь", systemImage: "play.fill")
-          }
-          .buttonStyle(PrimaryButtonStyle())
-          .disabled(model.busy)
-        }
-        if model.activeSession?.signal.output == .both || model.hasPairedAlarms {
-          Text(model.pairedNightSummary)
-            .font(LumaStyle.font(11)).foregroundStyle(LumaStyle.secondary)
-            .fixedSize(horizontal: false, vertical: true)
-            .accessibilityIdentifier("night.pairedAudioStatus")
-        }
-      }
     }
   }
 
@@ -227,13 +134,12 @@ struct NightView: View {
                   .monospacedDigit()
                 Text(item.title).font(LumaStyle.font(13))
                 Text(
-                  item.signal.output.title + " · "
-                    + (item.weekdays.isEmpty ? "Один раз" : "Повтор по дням")
+                  item.weekdays.isEmpty ? "Один раз" : "Повтор по дням"
                 ).font(LumaStyle.font(10)).foregroundStyle(LumaStyle.secondary)
                 if item.enabled && item.weekdays.isEmpty && item.onceAt < Date() {
                   Text("Завершён")
                     .font(LumaStyle.font(10)).foregroundStyle(LumaStyle.secondary)
-                } else if item.enabled && item.signal.output.phoneEnabled
+                } else if item.enabled
                   && !model.queuedAlarmIDs.contains(item.id)
                 {
                   Text("Пока вне очереди iPhone")
@@ -254,7 +160,7 @@ struct NightView: View {
               isOn: Binding(
                 get: { item.enabled }, set: { _ in
                   if item.enabled { Task { await model.toggleAlarm(item.id) } }
-                  else { prepare(.enable(item.id), signal: item.signal) }
+                  else { prepare(.enable(item.id)) }
                 })
             ).labelsHidden().tint(LumaStyle.lavender)
           }
@@ -263,17 +169,6 @@ struct NightView: View {
     }
   }
 
-  private var watchConnection: some View {
-    HStack(alignment: .top, spacing: 10) {
-      Image(systemName: "applewatch")
-      VStack(alignment: .leading, spacing: 4) {
-        Text(model.watchReachable ? "Часы на связи" : "Apple Watch")
-          .font(LumaStyle.font(12, "Medium"))
-        Text(model.watchStatus).font(LumaStyle.font(11))
-      }
-      Spacer()
-    }.foregroundStyle(LumaStyle.secondary)
-  }
 }
 
 /// The moon is the flexible second child. Measure actual text before assigning it space.
@@ -315,34 +210,6 @@ private struct NightEmptyLayout: Layout {
   }
 }
 
-private struct REMHelpView: View {
-  @Environment(\.dismiss) private var dismiss
-  var body: some View {
-    ScrollView {
-      VStack(alignment: .leading, spacing: 16) {
-        HStack {
-          Text("REM · всю ночь").font(LumaStyle.font(21, "Medium"))
-          Spacer()
-          Button { dismiss() } label: {
-            Image(systemName: "xmark").font(.system(size: 12, weight: .medium))
-              .frame(width: 44, height: 44).contentShape(Rectangle())
-          }.buttonStyle(.plain).accessibilityLabel("Закрыть справку")
-        }
-        Text("REM-фаза (фаза быстрого сна) — это главное «окно» для осознанных сновидений (ОС).")
-        Text("Именно в этот период наш мозг проявляет высокую активность, сопоставимую с бодрствованием, в то время как тело максимально расслаблено и всё ещё находится в спящем состоянии.")
-        Text("Современные смарт-часы с помощью посторонних приложений могут определять REM-фазу человека в относительно реальном времени с примерно 70–75 % попадания.")
-        Text("Приложение Luma и его функции настоятельно рекомендуется использовать со смарт-часами для большей точности обнаружения REM-фазы человека в реальном времени. Но также приложение можно использовать и просто со смартфоном без часов, но процент определения фазы значительно снижается.")
-        Text("REM-фаза сна происходит примерно каждые 90–120 минут во время, когда человек спит.")
-        Text("Соответственно, включая эту функцию «REM всю ночь», сигнал вибрации со смарт-часов или сигнал с вашего смартфона будут издаваться каждый раз, когда вы будете входить в REM-фазу в режиме реального времени.")
-        Text("И что важно, сигналы и вибрация будут выключаться сами, без вашего ручного вмешательства.")
-        Text("Это позволит вам пробудиться прямо на пике вашей REM-фазы, при этом не двигая своё тело для отключения будильника, что позволит вам кардинально увеличить эффективность использования техник для вхождения в осознанные сновидения.")
-        Text("При определённых постоянных тренировках и при помощи Luma со смарт-часами можно достичь результата, что вы за ночь практически гарантированно будете попадать в осознанное сновидение.")
-      }.font(LumaStyle.font(14)).lineSpacing(4).foregroundStyle(LumaStyle.text)
-        .fixedSize(horizontal: false, vertical: true).padding(.horizontal, 24).padding(.vertical, 20)
-    }.scrollBounceBehavior(.basedOnSize).scrollIndicators(.hidden)
-  }
-}
-
 struct IntroductionView: View {
   @EnvironmentObject private var model: AppModel
   var body: some View {
@@ -354,7 +221,7 @@ struct IntroductionView: View {
         "Короткие сигналы, ваш голос и личный дневник — чтобы внимательнее исследовать сновидения."
       ).multilineTextAlignment(.center)
       Text(
-        "REM определяется экспериментально. Luma может пропускать фазы и ошибаться; данные остаются на ваших устройствах."
+        "Настраивайте сигналы и сохраняйте сновидения. Личные записи остаются на iPhone."
       ).font(LumaStyle.font(13)).foregroundStyle(LumaStyle.secondary).multilineTextAlignment(
         .center)
       Button("Начать знакомство") { model.completeIntroduction() }.buttonStyle(PrimaryButtonStyle())

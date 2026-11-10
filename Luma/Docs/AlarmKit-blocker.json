@@ -1,0 +1,40 @@
+{
+  "checked_on": "2026-11-10",
+  "status": "Experimental native integration implemented; not a verified self-ending alarm release",
+  "implemented": {
+    "scheduling": "AlarmManager.schedule with fixed schedules for Smart Alarm and Indirect Method",
+    "sound": "Separate four-second PCM CAF copies in Library/Sounds; originals retained",
+    "automatic_stop": "AlarmManager.stop at the scheduled time plus four seconds while code executes; actual-state observation, cancel fallback, retry and late-resume handling",
+    "recovery": "Persist reservations and cancellation intent before daemon changes",
+    "intervals": "Every integer 10–60 minutes; queue up to 12 hours, closest 96 combined entries; replenished while executing",
+    "watch_routing": "Apple system alert forwarding; no watch app, WatchConnectivity, custom haptic loop or separate Watch queue."
+  },
+  "not_proven": [
+    "Stop during suspension or termination",
+    "No repeat immediately after custom-file EOF",
+    "Indefinite repeat without any application execution",
+    "Exact sound/haptic presentation and dismissal on the user’s paired Watch"
+  ],
+  "activation": "Requires explicit disclosure acceptance and native AlarmKit permission; does not silently fall back to phone notifications",
+  "evidence": [
+    {
+      "url": "https://developer.apple.com/documentation/alarmkit/alarmmanager",
+      "finding": "Provides schedule, stop, cancel and alarmUpdates; these are called by this native implementation."
+    },
+    {
+      "url": "https://developer.apple.com/documentation/alarmkit/scheduling-an-alarm-with-alarmkit",
+      "finding": "Alert-only presentation needs no countdown extension; stopIntent is associated with user dismissal, not an alarm-fired callback."
+    },
+    {
+      "url": "https://developer.apple.com/forums/thread/685525",
+      "finding": "App timers are not a guarantee of code execution at a deadline while suspended."
+    },
+    {
+      "url": "https://developer.apple.com/forums/thread/797158",
+      "finding": "Scheduled alarms survive app termination; queue capacity depends on system resources."
+    }
+  ],
+  "next_step": "Compile in Xcode 26+, execute core and AVFoundation checks, then inspect acoustic and log results from repeated 60-second probes plus real 10–60-minute locked-screen intervals without debugger attachment.",
+  "version": "0.9.0 iPhone-only",
+  "watch_reference": "https://developer.apple.com/videos/play/wwdc2025/230/"
+}

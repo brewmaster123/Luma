@@ -18,6 +18,15 @@ struct AudioImportCheck {
       precondition(clip.imported == true && abs((clip.sourceDuration ?? 0) - seconds) < 0.05)
       precondition(output.fileFormat.streamDescription.pointee.mFormatID == kAudioFormatLinearPCM)
       print("PASS: stereo 48 kHz \(seconds)s converted to mono PCM 22.05 kHz \(duration)s")
+      let original = try Data(contentsOf: source)
+      let short = try CueAudioImporter.convert(source: source, directory: directory,
+        maximumDuration: 4, padToMaximum: true)
+      let shortOutput = try AVAudioFile(forReading: directory.appendingPathComponent(short.filename))
+      precondition(shortOutput.length == 88200 && shortOutput.processingFormat.sampleRate == 22050,
+        "AlarmKit copy must be exactly 4 seconds")
+      let unchanged = try Data(contentsOf: source)
+      precondition(unchanged == original, "Original recording changed")
+      print("PASS: AlarmKit copy exactly 4s; source unchanged (\(seconds)s source)")
     }
     let bad = directory.appendingPathComponent("invalid.mp3")
     try Data("invalid audio".utf8).write(to: bad)

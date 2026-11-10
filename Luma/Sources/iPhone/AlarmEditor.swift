@@ -69,15 +69,13 @@ struct AlarmEditor: View {
               ? "Один раз, в ближайшее выбранное время" : "Повтор в выбранные дни"
           ).font(LumaStyle.font(12)).foregroundStyle(LumaStyle.secondary)
           LumaCard { SignalEditor(signal: $alarm.signal, voices: model.state.voices) }
-          if alarm.signal.output.phoneEnabled {
-            Text(alarm.signal.output == .both
-              ? "Во время ночи с микрофоном iPhone проиграет звук напрямую, а часы получат отдельный сигнал. Оба закончатся сами."
-              : "Звук уведомления проиграет один раз и затихнет сам.")
+          Group {
+            Text("iPhone использует AlarmKit. Звук — 4 секунды; Luma отдельно отправляет команду остановки. Автоостановку с заблокированным экраном нужно проверить на вашем iPhone.")
               .font(LumaStyle.font(12)).foregroundStyle(LumaStyle.secondary)
           }
           if let saveError { Text(saveError).font(LumaStyle.font(12)).foregroundStyle(LumaStyle.amber) }
           Button("Сохранить будильник") {
-            if alarm.enabled && alarm.signal.output.phoneEnabled { showReadiness = true }
+            if alarm.enabled && !model.systemAlarms.acceptedLimitations { showReadiness = true }
             else { saveAlarm() }
           }.buttonStyle(PrimaryButtonStyle()).disabled(saving)
           if model.state.alarms.contains(where: { $0.id == alarm.id }) {
@@ -91,7 +89,7 @@ struct AlarmEditor: View {
       .sheet(isPresented: $showReadiness, onDismiss: {
         if readyToSave { readyToSave = false; saveAlarm() }
       }) {
-        SignalReadinessView(continueTitle: "Сохранить будильник", signalOutput: alarm.signal.output) { readyToSave = true }
+        SignalReadinessView(continueTitle: "Сохранить будильник") { readyToSave = true }
           .environmentObject(model)
       }
       .interactiveDismissDisabled(saving)

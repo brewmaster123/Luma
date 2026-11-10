@@ -1,75 +1,49 @@
 {
-  "base": "Luma 0.6.0 (11) REM Lab",
-  "version": "0.6.1 (12)",
-  "updated_utc": "2026-10-10T11:42:05.473543+00:00",
-  "stage": "Smart alarm auto-stop source update complete; native build and physical-device validation pending",
+  "base": "Luma 0.8.0 (15) AlarmKit Test",
+  "version": "0.9.0 (16) iPhone-only AlarmKit",
+  "updated_utc": "2026-11-10T07:52:15.310867+00:00",
+  "stage": "iPhone-only source conversion completed and statically verified; Xcode compilation and physical validation pending",
   "completed": [
-    "Causal Watch-only heuristic engine; no HealthKit sleep-stage inputs",
-    "Live workout HR and motion adapters, explicit research consent",
-    "Finite local Watch haptics, mirrored-session plus WatchConnectivity commands",
-    "Direct finite iPhone audio; no AlarmKit loops or notification routing for research cues",
-    "Run/session/age guards, persisted duplicate protection, stopped-session recovery",
-    "60-second background cue probe and local exportable JSONL diagnostics",
-    "Xcode project generation and 98 structural checks passed",
-    "43 Swift files parsed with tree-sitter without syntax errors (not Swift type checking)",
-    "Custom cue files prepared for access after phone lock",
-    "Ready source package and existing GitHub workflow; no interactive preview or Markdown guide",
-    "Independent monotonic deadline stops the captured short-cue player on a separate queue",
-    "Normal completion, interruption, manual stop and player replacement cancel the old deadline",
-    "Background expiration callbacks are tied to a playback generation",
-    "Completed direct phone alarms suppress stale fallback notifications, including in-flight queue rebuilds",
-    "Signal previews and custom voice cues share the same bounded playback path"
+    "Removed watchOS target, app sources, icon catalog, entitlements and shared scheme",
+    "Removed WatchConnectivity, direct watch cue scheduling and workout mirroring",
+    "Removed separate phone/watch output and haptic-count controls from native screens",
+    "Single system AlarmKit route for Smart Alarm and Indirect Method",
+    "Legacy Watch-only and paired alarms migrate without losing IDs, times, repeat days, voice references or diary",
+    "Existing indirect session, accepted AlarmKit IDs and stop deadlines preserved",
+    "Phone-only Xcode project generator, GitHub Actions and IPA packaging checks",
+    "Optional HealthKit sleep-history reader retained for journal only"
   ],
-  "pending": [
-    "Run all 79 Swift test methods, including new stop-guard scenarios",
-    "Compile both native targets in Xcode",
-    "Repeat scheduled-alarm tests on locked iPhone/Watch with at least 20 successive occurrences, built-in and custom cues",
-    "Verify phone-only notification cues and paired direct cues separately",
-    "REM accuracy and overnight research-runtime checks remain pending from the preceding version"
-  ],
-  "accuracy": "Unmeasured. Hand-tuned heuristic score is not a probability. No guarantee of detecting every REM episode.",
-  "runtime": "Research experiment using user-started workout session during sleep. May affect Health/Activity and battery. Not an App Store-ready runtime.",
-  "user_constraints": [
-    "No interactive mockup",
-    "No Markdown installation/testing guide",
-    "Keep incremental durable checkpoint"
-  ],
-  "last_source_changes": [
-    "Independent monotonic deadline stops the captured short-cue player on a separate queue",
-    "Normal completion, interruption, manual stop and player replacement cancel the old deadline",
-    "Background expiration callbacks are tied to a playback generation",
-    "Completed direct phone alarms suppress stale fallback notifications, including in-flight queue rebuilds",
-    "Signal previews and custom voice cues share the same bounded playback path"
-  ],
+  "watch_routing": "System-managed AlarmKit alert forwarding to paired Apple Watch, as documented by Apple. No companion app required by Luma.",
+  "four_second_audio_and_stop_code": "Retained from 0.8.0. Background stop reliability is not established by this change.",
   "checks": {
-    "structural_checks_passed": 99,
+    "structural_checks_passed": 94,
     "swift_files_parsed": 45,
-    "xctest_methods_present": 79,
-    "new_stop_guard_tests_present": 7,
+    "swift_parser_errors": 0,
+    "xctest_methods_present": 98,
     "xctest_executed": false,
-    "swift_compilation": false,
-    "native_xcode_build": false,
-    "physical_device_tests": false
+    "native_build_executed": false,
+    "device_tests_executed": false
   },
-  "source_archive": "Luma-iPhone-AppleWatch-v0.6.1-Smart-Alarm-Fix.zip",
-  "preserved_base_bundle_prefix": "com.sevchlenko.luma",
-  "known_limits": [
-    "Prototype heuristic has no measured precision/recall, is not a REM probability and can miss or falsely identify episodes",
-    "Background playback from workout mirroring and WCSession is implemented but unverified on locked devices",
-    "Workout runtime is explicitly user started during sleep, can affect Health/Activity, is battery-limited, and is not an established production/App Store sleep runtime",
-    "Ending/recovering a crashed workout stops the research run; a new run must be started manually",
-    "The existing regular alarm/phone-only paths are retained; this branch does not establish their all-night delivery reliability"
+  "pending": [
+    "Build with Xcode 26+",
+    "Run XCTest and AVFoundation checks",
+    "Test AlarmKit on a locked iPhone and paired worn Watch without a debugger",
+    "Remove any old separately installed Watch Luma app to clear its local queues"
   ],
-  "current_request": {
-    "label": "Умный Будильник",
-    "changes": [
-      "Independent monotonic deadline stops the captured short-cue player on a separate queue",
-      "Normal completion, interruption, manual stop and player replacement cancel the old deadline",
-      "Background expiration callbacks are tied to a playback generation",
-      "Completed direct phone alarms suppress stale fallback notifications, including in-flight queue rebuilds",
-      "Signal previews and custom voice cues share the same bounded playback path"
-    ],
-    "duration": "Actual validated audio file length (built-in 4, 8, or 15 seconds; custom cue up to 28 seconds), plus 0.25-second deadline allowance",
-    "root_cause_status": "Source weaknesses addressed. The specific reported fifth-signal failure has not been reproduced on a device."
-  }
+  "production_ready": false,
+  "background_auto_stop_verified": false,
+  "incremental_saves": true,
+  "user_constraints": [
+    "Apply changes to native code",
+    "No new interactive preview or Markdown guide"
+  ],
+  "native_watch_app_removed": true,
+  "native_targets": [
+    "Luma (iPhone)"
+  ],
+  "direct_watch_bridge_removed": true,
+  "watch_local_notification_scheduler_removed": true,
+  "system_alarm_scheduling_and_stop_code_retained": true,
+  "watch_system_alert_forwarding_device_tested": false,
+  "old_installed_watch_app": "May require one-time manual removal on the user device to remove old queues. No remote uninstall is attempted."
 }

@@ -1,4 +1,4 @@
-name: Luma - iPhone and Apple Watch
+name: Luma - iPhone AlarmKit
 
 on:
   push:
@@ -39,6 +39,9 @@ jobs:
           swift --version
           test "$(xcrun --sdk iphoneos --show-sdk-version | cut -d. -f1)" -ge 26
 
+      - name: Check native project structure
+        run: python3 scripts/check-static.py
+
       - name: Run core tests
         run: |
           set -euo pipefail
@@ -48,21 +51,6 @@ jobs:
         run: |
           set -euo pipefail
           bash scripts/check-audio-on-mac.sh 2>&1 | tee ../build-logs/audio-import.log
-
-      - name: Build Apple Watch app
-        run: |
-          set -euo pipefail
-          xcodebuild \
-            -project Luma.xcodeproj \
-            -scheme "Luma Watch" \
-            -configuration Debug \
-            -destination "generic/platform=watchOS" \
-            -derivedDataPath ../build/watch \
-            -resultBundlePath ../build-logs/watch.xcresult \
-            CODE_SIGNING_ALLOWED=NO \
-            CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGN_IDENTITY="" \
-            clean build 2>&1 | tee ../build-logs/watch-build.log
 
       - name: Build iPhone app
         run: |
@@ -84,9 +72,8 @@ jobs:
           set -euo pipefail
           LUMA_APP="../build/iphone/Build/Products/Debug-iphoneos/Luma.app"
           test -f "$LUMA_APP/Luma"
-          test -f "$LUMA_APP/Watch/Luma Watch.app/Luma Watch"
+          test ! -d "$LUMA_APP/Watch"
           test -f "$LUMA_APP/Manrope-Regular.ttf"
-          test -f "$LUMA_APP/Watch/Luma Watch.app/Manrope-Regular.ttf"
           test -f "$LUMA_APP/luma-tone-8.wav"
           mkdir -p ../dist/Payload
           ditto "$LUMA_APP" ../dist/Payload/Luma.app

@@ -23,9 +23,9 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSHealthShareUsageDescription</key>
-	<string>Luma использует пульс, дыхание и историю сна с Apple Watch для экспериментальной оценки сна и дневника.</string>
+	<string>Luma может показывать сохранённую историю сна в дневнике. Доступ к «Здоровью» необязателен и не нужен для работы будильников.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Микрофон нужен для голосовых подсказок, локальных заметок о снах, анализа признаков звука во время REM-сеанса и для поддержания независимого короткого сигнала iPhone вместе с Apple Watch при заблокированном iPhone. Аудио ночи не сохраняется.</string>
+	<string>Микрофон нужен для записи личных голосовых подсказок и заметок о сновидениях. Записи сохраняются на iPhone.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Manrope-Regular.ttf</string>
@@ -50,8 +50,6 @@
 	<key>UIUserInterfaceStyle</key>
 	<string>Dark</string>
 	<key>NSAlarmKitUsageDescription</key>
-	<string>Luma отменяет системные будильники предыдущей версии при переходе на короткие уведомления.</string>
-	<key>NSHealthUpdateUsageDescription</key>
-	<string>Исследовательский режим Luma использует системную тренировочную сессию для проверки непрерывных датчиков во сне. Она может влиять на показатели «Активности». Итоговая тренировка не сохраняется приложением.</string>
+	<string>Luma использует системные будильники для непрямого метода, умного будильника и проверки коротких сигналов, в том числе при заблокированном iPhone.</string>
 </dict>
 </plist>

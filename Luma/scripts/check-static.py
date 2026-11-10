@@ -51,7 +51,7 @@ def visit(uid, parent=ROOT):
     elif obj['isa']=='PBXFileReference':
         check(path.exists(), f'Referenced file exists: {path.relative_to(ROOT)}');files[uid]=path
 visit(root['mainGroup'])
-check(len(root['targets'])==2,'Exactly two native app targets')
+check(len(root['targets'])==1,'Exactly one iPhone app target')
 for uid in root['targets']:
     target=objects[uid]; swift=[]
     for phase_id in target['buildPhases']:
@@ -61,7 +61,7 @@ for uid in root['targets']:
     check(sum('@main' in p.read_text() for p in swift)==1,f"One entry point in {target['name']}")
     check(len(swift)==len(set(swift)),f"No duplicate source membership in {target['name']}")
     expected=set((ROOT/'Sources/LumaCore').glob('*.swift'))|set((ROOT/'Sources/Platform').glob('*.swift'))
-    expected|=set((ROOT/('Sources/iPhone' if target['name']=='Luma' else 'Sources/Watch')).glob('*.swift'))
+    expected|=set((ROOT/'Sources/iPhone').glob('*.swift'))
     check(set(swift)==expected,f"Complete and isolated source membership in {target['name']}")
 for path in sorted((ROOT/'Config').glob('*.plist'))+sorted((ROOT/'Config').glob('*.entitlements'))+[ROOT/'Resources/PrivacyInfo.xcprivacy']:
     data=plistlib.loads(path.read_bytes());check(isinstance(data,dict),f'Valid XML plist: {path.name}')
@@ -75,23 +75,24 @@ for catalog in (ROOT/'Resources').glob('*.xcassets'):
     check(png[:8]==b'\x89PNG\r\n\x1a\n' and (width,height)==(1024,1024),f'1024px icon: {catalog.name}')
     check(png[25]==2,f'Opaque RGB app icon: {catalog.name}')
 notifications=(ROOT/'Sources/Platform/NotificationService.swift').read_text()
-check(bool(re.search(r'repeats:\s*false', notifications)) and not re.search(r'repeats:\s*true', notifications),'Notification triggers are non-repeating in source')
+check('UNNotificationRequest(' not in notifications and 'UNTimeIntervalNotificationTrigger' not in notifications,
+      'Notification service only removes old requests; current alarms use AlarmKit')
 core='\n'.join(p.read_text() for p in (ROOT/'Tests/LumaCoreTests').glob('*.swift'))
-check(len(re.findall(r'func test\w+\(',core))==79,'79 XCTest scenarios are present (not executed by this script)')
+check(len(re.findall(r'func test\w+\(',core))==98,'98 XCTest scenarios are present (not executed by this script)')
 check((ROOT/'Resources/Manrope-LICENSE.txt').is_file(), 'Font license included')
 import wave
 for n in [4,8,15]:
     with wave.open(str(ROOT/f'Resources/luma-tone-{n}.wav'),'rb') as w:
         check(w.getnframes()/w.getframerate()==n and w.getnchannels()==1 and w.getsampwidth()==2, f'Finite PCM melody: {n} seconds')
-for name in ['iOS','Watch']:
+for name in ['iOS']:
     info=plistlib.loads((ROOT/f'Config/{name}-Info.plist').read_bytes())
     check(len(info['UIAppFonts'])==3 and all((ROOT/'Resources'/f).exists() for f in info['UIAppFonts']), f'Bundled Cyrillic fonts: {name}')
     ent=plistlib.loads((ROOT/f'Config/{name}.entitlements').read_bytes())
     check('com.apple.developer.usernotifications.time-sensitive' not in ent, f'Ordinary notification capabilities: {name}')
 for path in ['scripts/check-on-mac.sh', 'Sources/LumaCore/RealtimeREMEngine.swift',
-             'Sources/Watch/ResearchWatchRuntime.swift', 'Sources/iPhone/ResearchPhoneLink.swift']:
+             'Sources/iPhone/SystemAlarmService.swift', 'Sources/LumaCore/iPhoneOnlyMigration.swift']:
     check((ROOT/path).is_file(),f'Delivery file exists: {path}')
-check('NSAlarmKitUsageDescription' in plistlib.loads((ROOT/'Config/iOS-Info.plist').read_bytes()), 'Legacy alarm cleanup purpose string included')
+check('NSAlarmKitUsageDescription' in plistlib.loads((ROOT/'Config/iOS-Info.plist').read_bytes()), 'AlarmKit purpose string included')
 check('audio' in plistlib.loads((ROOT/'Config/iOS-Info.plist').read_bytes())['UIBackgroundModes'], 'Genuine audio background mode configured')
 check('if #available(iOS 26.0, *)' in (ROOT/'Sources/iPhone/LegacyAlarmCleanup.swift').read_text(), 'Legacy AlarmKit cleanup availability gated for older iOS')
 check((ROOT/'scripts/check-audio-on-mac.sh').is_file(), 'Actual AVFoundation import check included for CI')
@@ -107,21 +108,32 @@ for uid in root['targets']:
     for config in objects[target['buildConfigurationList']]['buildConfigurations']:
         item = objects[config]
         target_ids[(target['name'], item['name'])] = item['buildSettings']['PRODUCT_BUNDLE_IDENTIFIER'].replace('$(LUMA_BUNDLE_PREFIX)', prefix)
-companion = plistlib.loads((ROOT/'Config/Watch-Info.plist').read_bytes())['WKCompanionAppBundleIdentifier'].replace('$(LUMA_BUNDLE_PREFIX)', prefix)
 for mode in ['Debug', 'Release']:
-    check(target_ids[('Luma Watch', mode)] == target_ids[('Luma', mode)] + '.watchkitapp', f'Watch bundle belongs to iPhone bundle in {mode}')
-    check(companion == target_ids[('Luma', mode)], f'Watch companion matches installed iPhone identity in {mode}')
+    check(target_ids[('Luma', mode)] == prefix, f'Stable iPhone bundle identifier in {mode}')
+    check(not any(o['isa']=='PBXCopyFilesBuildPhase' for o in objects.values()), 'No embedded Watch app phase')
 check(bool(re.search(r'^CODE_SIGN_STYLE\s*=\s*Automatic\s*$', base, re.M)), 'Automatic signing remains enabled')
-watch_info = plistlib.loads((ROOT/'Config/Watch-Info.plist').read_bytes())
-check('workout-processing' in watch_info.get('WKBackgroundModes', []), 'Research Watch workout processing mode declared')
-check('audio' in watch_info.get('UIBackgroundModes', []), 'Watch audio/haptic background capability declared')
-check('NSHealthUpdateUsageDescription' in watch_info, 'Research workout authorization purpose declared')
+info=plistlib.loads((ROOT/'Config/iOS-Info.plist').read_bytes())
+check('NSHealthUpdateUsageDescription' not in info, 'No workout-write permission requested')
+ent=plistlib.loads((ROOT/'Config/iOS.entitlements').read_bytes())
+check('com.apple.developer.healthkit.background-delivery' not in ent, 'No watch research background delivery entitlement')
+check(not (ROOT/'Sources/Watch').exists(), 'Watch application source removed')
+check(not (ROOT/'Sources/Platform/WatchBridge.swift').exists(), 'WatchConnectivity bridge removed')
+check(not (ROOT/'Sources/iPhone/ResearchPhoneLink.swift').exists(), 'Workout session mirror removed')
+check(not (ROOT/'Config/Watch-Info.plist').exists(), 'Watch companion Info.plist removed')
+check(not (ROOT/'Config/Watch.entitlements').exists(), 'Watch entitlements removed')
+check(not (ROOT/'Resources/WatchAssets.xcassets').exists(), 'Watch app icon catalog removed')
+check(len(list((ROOT/'Luma.xcodeproj/xcshareddata/xcschemes').glob('*.xcscheme')))==1, 'Only iPhone shared scheme remains')
+active='\n'.join(p.read_text() for p in (ROOT/'Sources').rglob('*.swift'))
+check(not re.search(r'\bimport\s+(?:WatchKit|WatchConnectivity)\b|\bWCSession\.',active), 'No direct Watch runtime imports or session access')
+check('HKWorkoutSession' not in active, 'No live workout mirroring dependency')
+ui='\n'.join(p.read_text() for p in (ROOT/'Sources/iPhone').glob('*.swift'))
+check('ForEach(SignalOutput.allCases)' not in ui and 'watchStatus' not in ui, 'No custom Watch routing or connection controls')
+workflow=(ROOT.parent/'.github/workflows/ios-build.yml').read_text()
+check('generic/platform=watchOS' not in workflow and '-scheme "Luma Watch"' not in workflow, 'CI builds iPhone only')
+check('test ! -d "$LUMA_APP/Watch"' in workflow, 'IPA packaging rejects a bundled Watch app')
 engine = (ROOT/'Sources/LumaCore/RealtimeREMEngine.swift').read_text()
 check('asleepREM' not in engine and 'HealthKit' not in engine.split('public struct RealtimeREMEngine')[1],
       'Live REM engine has no HealthKit sleep-stage dependency')
-watch_runtime = (ROOT/'Sources/Watch/ResearchWatchRuntime.swift').read_text()
-check('notifyUser(' not in watch_runtime and 'for index in 0..<count' in watch_runtime,
-      'Research Watch cue uses a bounded haptic sequence, not a repeating Smart Alarm')
 print(f'PASS: {len(checks)} structural checks. Swift compilation and device behavior are NOT verified.')
 (ROOT/'Docs').mkdir(exist_ok=True)
 (ROOT/'Docs/static-checks.json').write_text(json.dumps({'kind':'structural-only','swift_compiled':False,'xctest_executed':False,'device_tests_executed':False,'checks':checks},ensure_ascii=False,indent=2))

@@ -29,6 +29,12 @@
 			path = "CuePlaybackStopper.swift";
 			sourceTree = "<group>";
 		};
+		0021BC002965D68CD047A01D = {
+			isa = "PBXFileReference";
+			lastKnownFileType = "sourcecode.swift";
+			path = "IndirectMethod.swift";
+			sourceTree = "<group>";
+		};
 		3118CCAE5937C526FD34A783 = {
 			isa = "PBXFileReference";
 			lastKnownFileType = "sourcecode.swift";
@@ -65,6 +71,18 @@
 			path = "RealtimeREMEngine.swift";
 			sourceTree = "<group>";
 		};
+		0F6887C5122F31ECD3F11CAF = {
+			isa = "PBXFileReference";
+			lastKnownFileType = "sourcecode.swift";
+			path = "SystemAlarmPlan.swift";
+			sourceTree = "<group>";
+		};
+		85A257268CA8E7B4BF8F96EF = {
+			isa = "PBXFileReference";
+			lastKnownFileType = "sourcecode.swift";
+			path = "iPhoneOnlyMigration.swift";
+			sourceTree = "<group>";
+		};
 		2689667F216FF42D5BA4E031 = {
 			isa = "PBXGroup";
 			children = (
@@ -72,12 +90,15 @@
 				"4670571C5E80FD03FFEB0958",
 				"11243E79560A1B4C66C6423B",
 				"8C4AD6B797268FBD924DEA60",
+				"0021BC002965D68CD047A01D",
 				"3118CCAE5937C526FD34A783",
 				"FFAA0F37C08B0572009406ED",
 				"6C270176EBD01586D160B953",
 				"0F60E7AB549E3C49CA860EA3",
 				"CC31BD96AF6D75999F0A337C",
 				"0A35976268BCB57F26131162",
+				"0F6887C5122F31ECD3F11CAF",
+				"85A257268CA8E7B4BF8F96EF",
 			);
 			name = "Core";
 			path = "Sources/LumaCore";
@@ -119,18 +140,6 @@
 			path = "PhoneAudio.swift";
 			sourceTree = "<group>";
 		};
-		916A0027391486EDED5E4985 = {
-			isa = "PBXFileReference";
-			lastKnownFileType = "sourcecode.swift";
-			path = "ResearchLog.swift";
-			sourceTree = "<group>";
-		};
-		73B39657AD891D6A80DF8135 = {
-			isa = "PBXFileReference";
-			lastKnownFileType = "sourcecode.swift";
-			path = "WatchBridge.swift";
-			sourceTree = "<group>";
-		};
 		673B7FE3400A78BBCDA4BAD0 = {
 			isa = "PBXGroup";
 			children = (
@@ -140,8 +149,6 @@
 				"6E9DD8540640E27D70827B1F",
 				"4365383AD61C0D7BA63C20FA",
 				"837802106AC3528D0ADC701D",
-				"916A0027391486EDED5E4985",
-				"73B39657AD891D6A80DF8135",
 			);
 			name = "Services";
 			path = "Sources/Platform";
@@ -151,6 +158,12 @@
 			isa = "PBXFileReference";
 			lastKnownFileType = "sourcecode.swift";
 			path = "AlarmEditor.swift";
+			sourceTree = "<group>";
+		};
+		6537B6F02A7208C02546A8AF = {
+			isa = "PBXFileReference";
+			lastKnownFileType = "sourcecode.swift";
+			path = "AlarmKitSoundBuilder.swift";
 			sourceTree = "<group>";
 		};
 		94DC8AA705F082731DABDCA6 = {
@@ -163,6 +176,12 @@
 			isa = "PBXFileReference";
 			lastKnownFileType = "sourcecode.swift";
 			path = "DesignSystem.swift";
+			sourceTree = "<group>";
+		};
+		1DA47523E8546942AAD2F78F = {
+			isa = "PBXFileReference";
+			lastKnownFileType = "sourcecode.swift";
+			path = "IndirectMethodView.swift";
 			sourceTree = "<group>";
 		};
 		4A50E4446BB96376B27818C0 = {
@@ -195,12 +214,6 @@
 			path = "PhoneRootView.swift";
 			sourceTree = "<group>";
 		};
-		9C0F351D2E40B7595B050923 = {
-			isa = "PBXFileReference";
-			lastKnownFileType = "sourcecode.swift";
-			path = "ResearchPhoneLink.swift";
-			sourceTree = "<group>";
-		};
 		DAAB7B546565E422B592345E = {
 			isa = "PBXFileReference";
 			lastKnownFileType = "sourcecode.swift";
@@ -219,79 +232,38 @@
 			path = "SoundLibraryView.swift";
 			sourceTree = "<group>";
 		};
+		45D8A4D4A0188B973433D9AE = {
+			isa = "PBXFileReference";
+			lastKnownFileType = "sourcecode.swift";
+			path = "SystemAlarmService.swift";
+			sourceTree = "<group>";
+		};
 		E9E2849FB60CD54DF94A678F = {
 			isa = "PBXGroup";
 			children = (
 				"8DE81E5353C11E33D2765DDC",
+				"6537B6F02A7208C02546A8AF",
 				"94DC8AA705F082731DABDCA6",
 				"35785E208BBA03C69FD14ED6",
+				"1DA47523E8546942AAD2F78F",
 				"4A50E4446BB96376B27818C0",
 				"95411ACF2708852E9E5E6A2C",
 				"ADE587429081E01A3A738180",
 				"8064301C3357AAFEAEF3276D",
 				"403BEDE476C142E4B1D47D58",
-				"9C0F351D2E40B7595B050923",
 				"DAAB7B546565E422B592345E",
 				"E0FFE0A743BB237B9FBF6ED1",
 				"F4817C4BC996DE3BEC79A493",
+				"45D8A4D4A0188B973433D9AE",
 			);
 			name = "iPhone";
 			path = "Sources/iPhone";
-			sourceTree = "<group>";
-		};
-		8AA95529481743860DBCC920 = {
-			isa = "PBXFileReference";
-			lastKnownFileType = "sourcecode.swift";
-			path = "FiniteHaptics.swift";
-			sourceTree = "<group>";
-		};
-		4F799F736BC90D3252CAA756 = {
-			isa = "PBXFileReference";
-			lastKnownFileType = "sourcecode.swift";
-			path = "LumaWatchApp.swift";
-			sourceTree = "<group>";
-		};
-		DB2064EF917521D4368854F2 = {
-			isa = "PBXFileReference";
-			lastKnownFileType = "sourcecode.swift";
-			path = "MotionService.swift";
-			sourceTree = "<group>";
-		};
-		896C7362B122C3062DDA9A43 = {
-			isa = "PBXFileReference";
-			lastKnownFileType = "sourcecode.swift";
-			path = "ResearchWatchRuntime.swift";
-			sourceTree = "<group>";
-		};
-		FF70DFB017447926AA4458D5 = {
-			isa = "PBXFileReference";
-			lastKnownFileType = "sourcecode.swift";
-			path = "WatchRootView.swift";
-			sourceTree = "<group>";
-		};
-		D4A55D39DC57BCE20D003C4F = {
-			isa = "PBXGroup";
-			children = (
-				"8AA95529481743860DBCC920",
-				"4F799F736BC90D3252CAA756",
-				"DB2064EF917521D4368854F2",
-				"896C7362B122C3062DDA9A43",
-				"FF70DFB017447926AA4458D5",
-			);
-			name = "Apple Watch";
-			path = "Sources/Watch";
 			sourceTree = "<group>";
 		};
 		DC3FF27F59841F376E6F05FC = {
 			isa = "PBXFileReference";
 			lastKnownFileType = "folder.assetcatalog";
 			path = "iOSAssets.xcassets";
-			sourceTree = "<group>";
-		};
-		6B4AF05FFC04E91DD2FB06CB = {
-			isa = "PBXFileReference";
-			lastKnownFileType = "folder.assetcatalog";
-			path = "WatchAssets.xcassets";
 			sourceTree = "<group>";
 		};
 		EAAAAEC84AAE203874A82FCF = {
@@ -340,7 +312,6 @@
 			isa = "PBXGroup";
 			children = (
 				"DC3FF27F59841F376E6F05FC",
-				"6B4AF05FFC04E91DD2FB06CB",
 				"EAAAAEC84AAE203874A82FCF",
 				"B9DC3BC6E1BFAE57F3FCF0A2",
 				"E8C49637CFABC74024000F6A",
@@ -364,22 +335,10 @@
 			path = "iOS-Info.plist";
 			sourceTree = "<group>";
 		};
-		5DFB7FDB3984E24B03CCB02F = {
-			isa = "PBXFileReference";
-			lastKnownFileType = "text.plist.xml";
-			path = "Watch-Info.plist";
-			sourceTree = "<group>";
-		};
 		E8A7A153C89A389FA3B68BD3 = {
 			isa = "PBXFileReference";
 			lastKnownFileType = "text.plist.xml";
 			path = "iOS.entitlements";
-			sourceTree = "<group>";
-		};
-		541B315713AF52A1C86EDA65 = {
-			isa = "PBXFileReference";
-			lastKnownFileType = "text.plist.xml";
-			path = "Watch.entitlements";
 			sourceTree = "<group>";
 		};
 		8851142DA56FD885CE668A16 = {
@@ -387,9 +346,7 @@
 			children = (
 				"7A7545181AD0CEC0A0CC4454",
 				"B3BAA1DE4B81491FFE9123E0",
-				"5DFB7FDB3984E24B03CCB02F",
 				"E8A7A153C89A389FA3B68BD3",
-				"541B315713AF52A1C86EDA65",
 			);
 			path = "Config";
 			sourceTree = "<group>";
@@ -401,19 +358,11 @@
 			sourceTree = "BUILT_PRODUCTS_DIR";
 			includeInIndex = 0;
 		};
-		F5833FB21E05CD68F99C4426 = {
-			isa = "PBXFileReference";
-			explicitFileType = "wrapper.application";
-			path = "Luma Watch.app";
-			sourceTree = "BUILT_PRODUCTS_DIR";
-			includeInIndex = 0;
-		};
 		FBDC4F23F93125BBEEAE800C = {
 			isa = "PBXGroup";
 			name = "Products";
 			children = (
 				"0106B7A7DD191675235ECDD4",
-				"F5833FB21E05CD68F99C4426",
 			);
 			sourceTree = "<group>";
 		};
@@ -423,7 +372,6 @@
 				"2689667F216FF42D5BA4E031",
 				"673B7FE3400A78BBCDA4BAD0",
 				"E9E2849FB60CD54DF94A678F",
-				"D4A55D39DC57BCE20D003C4F",
 				"87DF60DE337FB58864343E39",
 				"8851142DA56FD885CE668A16",
 				"FBDC4F23F93125BBEEAE800C",
@@ -522,59 +470,6 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = "Release";
 		};
-		36AFE429344AFC78E0C0CBC9 = {
-			isa = "XCBuildConfiguration";
-			name = "Debug";
-			buildSettings = {
-				PRODUCT_NAME = "Luma Watch";
-				PRODUCT_BUNDLE_IDENTIFIER = "$(LUMA_BUNDLE_PREFIX).watchkitapp";
-				SDKROOT = "watchos";
-				SUPPORTED_PLATFORMS = "watchos watchsimulator";
-				TARGETED_DEVICE_FAMILY = "4";
-				WATCHOS_DEPLOYMENT_TARGET = "10.0";
-				INFOPLIST_FILE = "Config/Watch-Info.plist";
-				CODE_SIGN_ENTITLEMENTS = "Config/Watch.entitlements";
-				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon";
-				GENERATE_INFOPLIST_FILE = "NO";
-				SKIP_INSTALL = "YES";
-				ENABLE_PREVIEWS = "YES";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
-				DEBUG_INFORMATION_FORMAT = "dwarf";
-			};
-		};
-		AF6457B0868CD7AF66498D5F = {
-			isa = "XCBuildConfiguration";
-			name = "Release";
-			buildSettings = {
-				PRODUCT_NAME = "Luma Watch";
-				PRODUCT_BUNDLE_IDENTIFIER = "$(LUMA_BUNDLE_PREFIX).watchkitapp";
-				SDKROOT = "watchos";
-				SUPPORTED_PLATFORMS = "watchos watchsimulator";
-				TARGETED_DEVICE_FAMILY = "4";
-				WATCHOS_DEPLOYMENT_TARGET = "10.0";
-				INFOPLIST_FILE = "Config/Watch-Info.plist";
-				CODE_SIGN_ENTITLEMENTS = "Config/Watch.entitlements";
-				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon";
-				GENERATE_INFOPLIST_FILE = "NO";
-				SKIP_INSTALL = "YES";
-				ENABLE_PREVIEWS = "YES";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				SWIFT_OPTIMIZATION_LEVEL = "-O";
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited)";
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-			};
-		};
-		EE59A5C0B955777962E4C11A = {
-			isa = "XCConfigurationList";
-			buildConfigurations = (
-				"36AFE429344AFC78E0C0CBC9",
-				"AF6457B0868CD7AF66498D5F",
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = "Release";
-		};
 		B4216FCCFC74B86FE9291531 = {
 			isa = "PBXBuildFile";
 			fileRef = "682DE1125CDA0A2F77E98CD8";
@@ -590,6 +485,10 @@
 		448A71044ED81F7C234C3E1B = {
 			isa = "PBXBuildFile";
 			fileRef = "8C4AD6B797268FBD924DEA60";
+		};
+		DEA23526378E0C587639FBDC = {
+			isa = "PBXBuildFile";
+			fileRef = "0021BC002965D68CD047A01D";
 		};
 		6235EDF3ACD08C1D9F1323D3 = {
 			isa = "PBXBuildFile";
@@ -615,6 +514,14 @@
 			isa = "PBXBuildFile";
 			fileRef = "0A35976268BCB57F26131162";
 		};
+		FFECDAC0F8FAFD6AA8587E3E = {
+			isa = "PBXBuildFile";
+			fileRef = "0F6887C5122F31ECD3F11CAF";
+		};
+		7791CA4016442BB29B456947 = {
+			isa = "PBXBuildFile";
+			fileRef = "85A257268CA8E7B4BF8F96EF";
+		};
 		48643513935B34C74676EF85 = {
 			isa = "PBXBuildFile";
 			fileRef = "A3EF9FCC01DEEC70A82DA31D";
@@ -639,17 +546,13 @@
 			isa = "PBXBuildFile";
 			fileRef = "837802106AC3528D0ADC701D";
 		};
-		1A969C18B75D300E0F7AEB0B = {
-			isa = "PBXBuildFile";
-			fileRef = "916A0027391486EDED5E4985";
-		};
-		A412464C0D53C5EAC73F82BB = {
-			isa = "PBXBuildFile";
-			fileRef = "73B39657AD891D6A80DF8135";
-		};
 		027AF4E38A3C8BED8ED4BFB6 = {
 			isa = "PBXBuildFile";
 			fileRef = "8DE81E5353C11E33D2765DDC";
+		};
+		6FDAFFD20355BEFC0730F239 = {
+			isa = "PBXBuildFile";
+			fileRef = "6537B6F02A7208C02546A8AF";
 		};
 		D14C3DD57402626D370CF561 = {
 			isa = "PBXBuildFile";
@@ -658,6 +561,10 @@
 		A0B6248FE883DD6744B39130 = {
 			isa = "PBXBuildFile";
 			fileRef = "35785E208BBA03C69FD14ED6";
+		};
+		E9F08F81A64A689F9E43AAD4 = {
+			isa = "PBXBuildFile";
+			fileRef = "1DA47523E8546942AAD2F78F";
 		};
 		C2D0F1F5A897C0D914E0618D = {
 			isa = "PBXBuildFile";
@@ -679,10 +586,6 @@
 			isa = "PBXBuildFile";
 			fileRef = "403BEDE476C142E4B1D47D58";
 		};
-		49D0FBC5D914B156C6D7BA91 = {
-			isa = "PBXBuildFile";
-			fileRef = "9C0F351D2E40B7595B050923";
-		};
 		5EAAB8D26D4BBFE7A79A5FCD = {
 			isa = "PBXBuildFile";
 			fileRef = "DAAB7B546565E422B592345E";
@@ -695,6 +598,10 @@
 			isa = "PBXBuildFile";
 			fileRef = "F4817C4BC996DE3BEC79A493";
 		};
+		A9A2B03B13B753795BA46F82 = {
+			isa = "PBXBuildFile";
+			fileRef = "45D8A4D4A0188B973433D9AE";
+		};
 		EA52A365800D1BF3180056F4 = {
 			isa = "PBXSourcesBuildPhase";
 			buildActionMask = 2147483647;
@@ -703,154 +610,35 @@
 				"07A604C338A35D51D0028240",
 				"057A1FA6B42B3D7B4B3AC06A",
 				"448A71044ED81F7C234C3E1B",
+				"DEA23526378E0C587639FBDC",
 				"6235EDF3ACD08C1D9F1323D3",
 				"B0DD5EFFD8F5FA6F1079A9F2",
 				"09B706F8318D00DB80E41480",
 				"C8D78A02CA3E81B15CA24803",
 				"A01950427884A6B834992B92",
 				"8C07CEE290070BE4270C6645",
+				"FFECDAC0F8FAFD6AA8587E3E",
+				"7791CA4016442BB29B456947",
 				"48643513935B34C74676EF85",
 				"2D7C59F5B6C4970D7DCF55F3",
 				"1C7DC9ABBE29E6EF8E3412F5",
 				"859C604AD3B768D322D43EEA",
 				"7B35A5846CA70D33B7D6A9FC",
 				"4314DD68C2B6C51F81102E6E",
-				"1A969C18B75D300E0F7AEB0B",
-				"A412464C0D53C5EAC73F82BB",
 				"027AF4E38A3C8BED8ED4BFB6",
+				"6FDAFFD20355BEFC0730F239",
 				"D14C3DD57402626D370CF561",
 				"A0B6248FE883DD6744B39130",
+				"E9F08F81A64A689F9E43AAD4",
 				"C2D0F1F5A897C0D914E0618D",
 				"3A7647BEC537CF7DE6FF4191",
 				"B66793DA49DA9C496B62FA5A",
 				"99390F7C8CDA897EF47EAF6A",
 				"642465F74203C24BB8D0D84D",
-				"49D0FBC5D914B156C6D7BA91",
 				"5EAAB8D26D4BBFE7A79A5FCD",
 				"02BEC4C07F72C8DFCA65AFFF",
 				"97F29B2BAE34D3B0F4E790DA",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		7E2F1B80873CEE91F74D512C = {
-			isa = "PBXBuildFile";
-			fileRef = "682DE1125CDA0A2F77E98CD8";
-		};
-		0976C025407BA96B6D504A5F = {
-			isa = "PBXBuildFile";
-			fileRef = "4670571C5E80FD03FFEB0958";
-		};
-		60AA3112C01E96416A7EECC2 = {
-			isa = "PBXBuildFile";
-			fileRef = "11243E79560A1B4C66C6423B";
-		};
-		5399402597BD67D067E413E6 = {
-			isa = "PBXBuildFile";
-			fileRef = "8C4AD6B797268FBD924DEA60";
-		};
-		630AB367A04C531CF6A873E6 = {
-			isa = "PBXBuildFile";
-			fileRef = "3118CCAE5937C526FD34A783";
-		};
-		78095E615F5D59139F7307CB = {
-			isa = "PBXBuildFile";
-			fileRef = "FFAA0F37C08B0572009406ED";
-		};
-		0BFF7E12B88FD3C8DC2FDEA6 = {
-			isa = "PBXBuildFile";
-			fileRef = "6C270176EBD01586D160B953";
-		};
-		AF187DD79997AD65D4E95AC0 = {
-			isa = "PBXBuildFile";
-			fileRef = "0F60E7AB549E3C49CA860EA3";
-		};
-		93D596FC40F8DE62839FF65B = {
-			isa = "PBXBuildFile";
-			fileRef = "CC31BD96AF6D75999F0A337C";
-		};
-		029C548C725BC7995CBD7D9E = {
-			isa = "PBXBuildFile";
-			fileRef = "0A35976268BCB57F26131162";
-		};
-		1BDE2A55ACCD1BB26E268CF5 = {
-			isa = "PBXBuildFile";
-			fileRef = "A3EF9FCC01DEEC70A82DA31D";
-		};
-		BDFB35FF9880AD76760E1CB8 = {
-			isa = "PBXBuildFile";
-			fileRef = "E99E8CBDEEB473962C0ED3AE";
-		};
-		860E2C4C57A838BF67BA2DCA = {
-			isa = "PBXBuildFile";
-			fileRef = "6CA13D2BCBB7031FCF6EBA0B";
-		};
-		B0FDD06BB0987C61EAD1D59E = {
-			isa = "PBXBuildFile";
-			fileRef = "6E9DD8540640E27D70827B1F";
-		};
-		82392F6689C916ECD59CBCF0 = {
-			isa = "PBXBuildFile";
-			fileRef = "4365383AD61C0D7BA63C20FA";
-		};
-		0688D2FEADD221CFAA487746 = {
-			isa = "PBXBuildFile";
-			fileRef = "837802106AC3528D0ADC701D";
-		};
-		42C90D0610213934E3C1ADDE = {
-			isa = "PBXBuildFile";
-			fileRef = "916A0027391486EDED5E4985";
-		};
-		1AD06CA8619B412478A5849B = {
-			isa = "PBXBuildFile";
-			fileRef = "73B39657AD891D6A80DF8135";
-		};
-		8FAD5774765F2FA64685CFF6 = {
-			isa = "PBXBuildFile";
-			fileRef = "8AA95529481743860DBCC920";
-		};
-		09B5C67198113C9FD2326781 = {
-			isa = "PBXBuildFile";
-			fileRef = "4F799F736BC90D3252CAA756";
-		};
-		3C5BC376195E3BF22EA80BED = {
-			isa = "PBXBuildFile";
-			fileRef = "DB2064EF917521D4368854F2";
-		};
-		209A00D7ECE0A51CF0B6E9FC = {
-			isa = "PBXBuildFile";
-			fileRef = "896C7362B122C3062DDA9A43";
-		};
-		3B9E32DE2C8B0180DBA0FDD1 = {
-			isa = "PBXBuildFile";
-			fileRef = "FF70DFB017447926AA4458D5";
-		};
-		CD3F8AFD6DBBDFD9F5BDB28D = {
-			isa = "PBXSourcesBuildPhase";
-			buildActionMask = 2147483647;
-			files = (
-				"7E2F1B80873CEE91F74D512C",
-				"0976C025407BA96B6D504A5F",
-				"60AA3112C01E96416A7EECC2",
-				"5399402597BD67D067E413E6",
-				"630AB367A04C531CF6A873E6",
-				"78095E615F5D59139F7307CB",
-				"0BFF7E12B88FD3C8DC2FDEA6",
-				"AF187DD79997AD65D4E95AC0",
-				"93D596FC40F8DE62839FF65B",
-				"029C548C725BC7995CBD7D9E",
-				"1BDE2A55ACCD1BB26E268CF5",
-				"BDFB35FF9880AD76760E1CB8",
-				"860E2C4C57A838BF67BA2DCA",
-				"B0FDD06BB0987C61EAD1D59E",
-				"82392F6689C916ECD59CBCF0",
-				"0688D2FEADD221CFAA487746",
-				"42C90D0610213934E3C1ADDE",
-				"1AD06CA8619B412478A5849B",
-				"8FAD5774765F2FA64685CFF6",
-				"09B5C67198113C9FD2326781",
-				"3C5BC376195E3BF22EA80BED",
-				"209A00D7ECE0A51CF0B6E9FC",
-				"3B9E32DE2C8B0180DBA0FDD1",
+				"A9A2B03B13B753795BA46F82",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -901,83 +689,12 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		627C7A87A345856BB61E907C = {
-			isa = "PBXBuildFile";
-			fileRef = "6B4AF05FFC04E91DD2FB06CB";
-		};
-		A4DA5A774528F9DBB99BB38F = {
-			isa = "PBXBuildFile";
-			fileRef = "EAAAAEC84AAE203874A82FCF";
-		};
-		CCE1E81DFB68B5621E64262B = {
-			isa = "PBXBuildFile";
-			fileRef = "B9DC3BC6E1BFAE57F3FCF0A2";
-		};
-		6677AF17233CEE95C29F6236 = {
-			isa = "PBXBuildFile";
-			fileRef = "E8C49637CFABC74024000F6A";
-		};
-		9BCFEA3A9C1433AEE1BD26DF = {
-			isa = "PBXBuildFile";
-			fileRef = "0BBABA34E50266C84D94A5FD";
-		};
-		17BE3E696A7C62606E17CCF5 = {
-			isa = "PBXResourcesBuildPhase";
-			buildActionMask = 2147483647;
-			files = (
-				"627C7A87A345856BB61E907C",
-				"A4DA5A774528F9DBB99BB38F",
-				"CCE1E81DFB68B5621E64262B",
-				"6677AF17233CEE95C29F6236",
-				"9BCFEA3A9C1433AEE1BD26DF",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		4AC8CBCE7F289ED8DDD7D66A = {
 			isa = "PBXFrameworksBuildPhase";
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
-		};
-		8A3E0281258E3244C506EEE9 = {
-			isa = "PBXFrameworksBuildPhase";
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		0764E7236D67D079DDECC835 = {
-			isa = "PBXBuildFile";
-			fileRef = "F5833FB21E05CD68F99C4426";
-			settings = {
-				ATTRIBUTES = (
-					"RemoveHeadersOnCopy",
-				);
-			};
-		};
-		6875401988B5EAB01E62EC01 = {
-			isa = "PBXCopyFilesBuildPhase";
-			buildActionMask = 2147483647;
-			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
-			dstSubfolderSpec = 16;
-			files = (
-				"0764E7236D67D079DDECC835",
-			);
-			name = "Embed Watch Content";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		FCDA9C0EBBE9EE5C1FF223AC = {
-			isa = "PBXContainerItemProxy";
-			containerPortal = "98F54143AB4E86B28C3AFEE0";
-			proxyType = 1;
-			remoteGlobalIDString = "B1CFA369DE2BF825E98EE343";
-			remoteInfo = "Luma Watch";
-		};
-		D10E12252A18663817E44F89 = {
-			isa = "PBXTargetDependency";
-			target = "B1CFA369DE2BF825E98EE343";
-			targetProxy = "FCDA9C0EBBE9EE5C1FF223AC";
 		};
 		32210FCB375F462AE26CA60F = {
 			isa = "PBXNativeTarget";
@@ -986,33 +703,14 @@
 				"EA52A365800D1BF3180056F4",
 				"4AC8CBCE7F289ED8DDD7D66A",
 				"EFF71D236AD8CB2A56B279C9",
-				"6875401988B5EAB01E62EC01",
 			);
 			buildRules = (
 			);
 			dependencies = (
-				"D10E12252A18663817E44F89",
 			);
 			name = "Luma";
 			productName = "Luma";
 			productReference = "0106B7A7DD191675235ECDD4";
-			productType = "com.apple.product-type.application";
-		};
-		B1CFA369DE2BF825E98EE343 = {
-			isa = "PBXNativeTarget";
-			buildConfigurationList = "EE59A5C0B955777962E4C11A";
-			buildPhases = (
-				"CD3F8AFD6DBBDFD9F5BDB28D",
-				"8A3E0281258E3244C506EEE9",
-				"17BE3E696A7C62606E17CCF5",
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = "Luma Watch";
-			productName = "Luma Watch";
-			productReference = "F5833FB21E05CD68F99C4426";
 			productType = "com.apple.product-type.application";
 		};
 		98F54143AB4E86B28C3AFEE0 = {
@@ -1023,9 +721,6 @@
 				LastUpgradeCheck = "1600";
 				TargetAttributes = {
 					32210FCB375F462AE26CA60F = {
-						CreatedOnToolsVersion = "16.0";
-					};
-					B1CFA369DE2BF825E98EE343 = {
 						CreatedOnToolsVersion = "16.0";
 					};
 				};
@@ -1045,7 +740,6 @@
 			projectRoot = "";
 			targets = (
 				"32210FCB375F462AE26CA60F",
-				"B1CFA369DE2BF825E98EE343",
 			);
 		};
 	};
