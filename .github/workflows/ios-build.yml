@@ -84,7 +84,7 @@ jobs:
           test -f "$LUMA_APP/Manrope-Regular.ttf"
           test -f "$LUMA_APP/luma-tone-4.wav"
           test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleSupportedPlatforms:0' "$LUMA_APP/Info.plist")" = "iPhoneOS"
-          /usr/bin/lipo -verify_arch arm64 "$LUMA_APP/Luma"
+          /usr/bin/lipo "$LUMA_APP/Luma" -verify_arch arm64
           mkdir -p ../dist/Payload
           ditto "$LUMA_APP" ../dist/Payload/Luma.app
           (
