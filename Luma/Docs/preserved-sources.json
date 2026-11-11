@@ -1,37 +1,25 @@
 {
-  "baseline": "0.9.1 (17)",
+  "baseline": "0.9.2 (18)",
   "files": [
+    {
+      "path": "Config/iOS-Info.plist",
+      "sha256": "35a4a3cbdaf25aacd346060459bdab4d40e66b94665a1d0772ea9f4e9d5bbe2b"
+    },
     {
       "path": "Config/iOS.entitlements",
       "sha256": "e82a7f6e130b0fe65a40214c15b4116c5245125329c63954d9ccdd9cc80f039e"
     },
     {
+      "path": "Luma.xcodeproj/project.pbxproj",
+      "sha256": "bedabef7e5af85dcb23f138bebe454c2d340b3007430d07f9218e6e250ffcb06"
+    },
+    {
+      "path": "Luma.xcodeproj/xcshareddata/xcschemes/Luma.xcscheme",
+      "sha256": "ce0b9f62e069eaf1e7335de0c1b92cfaecbe8d559be7bdf2508d5fa7687ec0e0"
+    },
+    {
       "path": "Package.swift",
       "sha256": "07af656d4ddcca3320980342fe6c865a19662be5dc600c1e56c6947aa033f933"
-    },
-    {
-      "path": "Resources/Manrope-LICENSE.txt",
-      "sha256": "e01b637272e0cbdfb240184dd98ea5cc671556d9894dae2668d92ab2c906787c"
-    },
-    {
-      "path": "Resources/Manrope-Medium.ttf",
-      "sha256": "6a21acf060627cedf46704e8484aeffc8ba94140b46cd553fa19338d301e439d"
-    },
-    {
-      "path": "Resources/Manrope-Regular.ttf",
-      "sha256": "8e6739a692e9b94f2e160f84029d741ee92f5a2dc8081e257bb8bba5f8680ae6"
-    },
-    {
-      "path": "Resources/Manrope-SemiBold.ttf",
-      "sha256": "b250ce5a3a6e5e99a79d25cbd7ffe32fae0dff6047cfaa8c27e2205234a39991"
-    },
-    {
-      "path": "Resources/Manrope-Variable.ttf",
-      "sha256": "d0639be45d0af36e798172419d7bd173c4bd4f29e2b76cbb69db1d11bf8b0a40"
-    },
-    {
-      "path": "Resources/PrivacyInfo.xcprivacy",
-      "sha256": "a331d51864743ebe4e00dd22360b4a538b6b3ac26a6b3eb54094e60a36959a12"
     },
     {
       "path": "Resources/iOSAssets.xcassets/AppIcon.appiconset/AppIcon.png",
@@ -58,6 +46,134 @@
       "sha256": "37d5345466972ded506efae43555eaf71e22e015b5a37ac93aa0fb99c9299826"
     },
     {
+      "path": "Resources/Manrope-LICENSE.txt",
+      "sha256": "e01b637272e0cbdfb240184dd98ea5cc671556d9894dae2668d92ab2c906787c"
+    },
+    {
+      "path": "Resources/Manrope-Medium.ttf",
+      "sha256": "6a21acf060627cedf46704e8484aeffc8ba94140b46cd553fa19338d301e439d"
+    },
+    {
+      "path": "Resources/Manrope-Regular.ttf",
+      "sha256": "8e6739a692e9b94f2e160f84029d741ee92f5a2dc8081e257bb8bba5f8680ae6"
+    },
+    {
+      "path": "Resources/Manrope-SemiBold.ttf",
+      "sha256": "b250ce5a3a6e5e99a79d25cbd7ffe32fae0dff6047cfaa8c27e2205234a39991"
+    },
+    {
+      "path": "Resources/Manrope-Variable.ttf",
+      "sha256": "d0639be45d0af36e798172419d7bd173c4bd4f29e2b76cbb69db1d11bf8b0a40"
+    },
+    {
+      "path": "Resources/PrivacyInfo.xcprivacy",
+      "sha256": "a331d51864743ebe4e00dd22360b4a538b6b3ac26a6b3eb54094e60a36959a12"
+    },
+    {
+      "path": "scripts/check-audio-on-mac.sh",
+      "sha256": "06a87f572fab19b54451117234b87a1797c857afb6e44813cd276ff1c1f8f471"
+    },
+    {
+      "path": "scripts/check-audio-on-mac.swift",
+      "sha256": "e7f07e67f02d1062a4e8062b9da6d6bd3002155ed01e9a7bd1f55edfcc197e3e"
+    },
+    {
+      "path": "scripts/check-finite-queue-on-mac.sh",
+      "sha256": "c0fc4bc97145bb0fad32f1222fd6d7cbc609c7784a979bff61b6269ce6e8f9dd"
+    },
+    {
+      "path": "scripts/check-finite-queue-on-mac.swift",
+      "sha256": "1ab46125cd1116fe1ab2189639a50f1da712eb23de36736e5da2e2fbdcd42096"
+    },
+    {
+      "path": "scripts/check-on-mac.sh",
+      "sha256": "56fbab6a3eabef0ecd3c208693cd5b39ee8788ee3f889516e909ea22aaef274a"
+    },
+    {
+      "path": "scripts/check-previous-versions.py",
+      "sha256": "d9d6570165361d575de32fc80d61ee4007a95f2ee87882f80d047775102d4f2c"
+    },
+    {
+      "path": "scripts/check-source-grammar.py",
+      "sha256": "f22cb64ab8c06a5c16e3f55bdbdc4b4019cf4d90b700c83cacf9a8a47d37ac13"
+    },
+    {
+      "path": "scripts/check-static.py",
+      "sha256": "4afb447895a59d5a61a27dde5a8673569341da5cd85e1c590c5f4fb93d79df3e"
+    },
+    {
+      "path": "scripts/generate_project.py",
+      "sha256": "f85fd7de56d588f237b8cdb0892f307ff77cf3d5e605e830ad6e5330bb2bb4c7"
+    },
+    {
+      "path": "scripts/project-graph.json",
+      "sha256": "ec96d90624a4ef3e5442fa5127e26364337a93542af015b32110418a3b3c761e"
+    },
+    {
+      "path": "scripts/requirements-validation.txt",
+      "sha256": "bd40560117191669717bb670fc985eaf62e6556b2a1b50d1ad04933bd8ef8b6b"
+    },
+    {
+      "path": "Sources/iPhone/AlarmEditor.swift",
+      "sha256": "df4399e51dc01bfc7f96e67ca9eebd78c7c2e9c91401bfcb791ddcebf648d303"
+    },
+    {
+      "path": "Sources/iPhone/CueAudioImporter.swift",
+      "sha256": "6a3aa2d1bc89654fa58d98615dde040f6485f50c50cfe943fd3838111f16825f"
+    },
+    {
+      "path": "Sources/iPhone/DesignSystem.swift",
+      "sha256": "09d4a84debb3216cf16f02153cba4869bdae196ebd505926129d650619d6abda"
+    },
+    {
+      "path": "Sources/iPhone/FiniteCueSoundBuilder.swift",
+      "sha256": "f8198cc070fc8fb1d8e58a9316beeb5d5c2a221ec65a06748e7ab2e383bdd2cd"
+    },
+    {
+      "path": "Sources/iPhone/IndirectMethodView.swift",
+      "sha256": "72b759ece1b0a60a0ffe3b379e9581fdd22909ae326d8fb0615b521864dba7b3"
+    },
+    {
+      "path": "Sources/iPhone/JournalView.swift",
+      "sha256": "5e56dbb3838c6bed77df9b6b9c23ff88994e445c21c16bb8f5977d6904634133"
+    },
+    {
+      "path": "Sources/iPhone/JournalVoiceComposer.swift",
+      "sha256": "0e725c45bb9263a62a5813414989b7090662017efd186a1ce3754266c449a862"
+    },
+    {
+      "path": "Sources/iPhone/LegacyAlarmCleanup.swift",
+      "sha256": "5797ce2716509f029ece1619d7865f478c80a41afaa8c8eb67b6da7a8a61e144"
+    },
+    {
+      "path": "Sources/iPhone/LumaApp.swift",
+      "sha256": "b4686e8d3a09161b263241353882351c4538e3d3504b994b1f4f603fa7befae8"
+    },
+    {
+      "path": "Sources/iPhone/LumaNotificationDelegate.swift",
+      "sha256": "bd3fe494e7557b46d87d02766fae4b0c4c100eefa7aa85ed8a882a8e4e55da9c"
+    },
+    {
+      "path": "Sources/iPhone/PhoneRootView.swift",
+      "sha256": "c12ab81895e3094a2f74a96636bd1b58c5d6bf7f12e96fdc932e8956a096ca5b"
+    },
+    {
+      "path": "Sources/iPhone/SettingsView.swift",
+      "sha256": "d89c62e8b739422d888cd39bbf923fe95949ac39f36bf6bd3084199315031941"
+    },
+    {
+      "path": "Sources/iPhone/SignalReadinessView.swift",
+      "sha256": "e51993361b270ac02975912158e30418062e5680692c1a1ca8ab4288117191de"
+    },
+    {
+      "path": "Sources/iPhone/SoundLibraryView.swift",
+      "sha256": "d8a4e847764847891dcd3fa87402e3d5bb8c3b5546a4c2fde6522dd2e9cdcfeb"
+    },
+    {
+      "path": "Sources/iPhone/SystemAlarmService.swift",
+      "sha256": "6b3d43292b2970e60640db10ff4ab2dabae7ff7923e0d975efd4a3a76c626a96"
+    },
+    {
       "path": "Sources/LumaCore/AcousticFeatures.swift",
       "sha256": "56dc961def8e779f756abdd8e2bf96beecb0ae3d4954918142de41f602f6efdd"
     },
@@ -72,6 +188,18 @@
     {
       "path": "Sources/LumaCore/CuePlaybackStopper.swift",
       "sha256": "756d99516095ab5c45820b13687fb0b3241d57622db661da09d173effd02e239"
+    },
+    {
+      "path": "Sources/LumaCore/FiniteCuePolicy.swift",
+      "sha256": "8f8495ba1d65500ec768e5fe86dc48df2fa3be04fa9ae4b146f583990f4fd4c4"
+    },
+    {
+      "path": "Sources/LumaCore/IndirectMethod.swift",
+      "sha256": "de186b13d72f28da4d9c59e633dd5a3e83c29df1f957ceced4aa9bb670547145"
+    },
+    {
+      "path": "Sources/LumaCore/iPhoneOnlyMigration.swift",
+      "sha256": "310e219a0eaeba5b5f5eb842c54b1392bf345fc0087b71a0e3969978091970f2"
     },
     {
       "path": "Sources/LumaCore/LumaV2.swift",
@@ -90,16 +218,28 @@
       "sha256": "6e914d0130feb5cda406af6cd4a7ca657b08ac598885f3c39bfe3f28309e8d40"
     },
     {
-      "path": "Sources/LumaCore/REMEstimator.swift",
-      "sha256": "4f00c0fa6bcf223e9486c299ca3d3d8e211f2ec99ef029960a252cef0a6e3da8"
-    },
-    {
       "path": "Sources/LumaCore/RealtimeREMEngine.swift",
       "sha256": "ff3d05a9bc7adfb8eb2f775e05f695feadfa7ef56a336f46b72320fc0aa639b6"
     },
     {
+      "path": "Sources/LumaCore/REMEstimator.swift",
+      "sha256": "4f00c0fa6bcf223e9486c299ca3d3d8e211f2ec99ef029960a252cef0a6e3da8"
+    },
+    {
+      "path": "Sources/LumaCore/SystemAlarmPlan.swift",
+      "sha256": "df36a5a22da21cb00d80f7696b95276e5a4930fdd9cd043ee04a8f2fdb7bd8c9"
+    },
+    {
       "path": "Sources/Platform/AppError.swift",
       "sha256": "cba4f687407841f56b963d3e66f0487d06b2428db5e349d74084f163251e6d63"
+    },
+    {
+      "path": "Sources/Platform/AppModel.swift",
+      "sha256": "8bac39a7af99ec62d3703b5705332eca6767afe8bff0e39c3939fb49c823c2e7"
+    },
+    {
+      "path": "Sources/Platform/CueDiagnostics.swift",
+      "sha256": "a1d0fb6cbdcbaf632ecf41ab377db1b9e32d216dead14760710f001f616dc48d"
     },
     {
       "path": "Sources/Platform/HealthService.swift",
@@ -110,24 +250,60 @@
       "sha256": "be5aaeff856b5ff77f9bb0cf08bacb47b364b3c2a0eb3f8ed11bef241be85e8f"
     },
     {
+      "path": "Sources/Platform/NotificationService.swift",
+      "sha256": "883dbc00e8dc37bf31d8f964b8630f0a3c3a89bdbab23caee987c122ede91f87"
+    },
+    {
       "path": "Sources/Platform/PhoneAudio.swift",
       "sha256": "ae2f7f073d695a4b296e7f8df642bbf0954ec58356ede7e391a298fd0f11de49"
     },
     {
-      "path": "Sources/iPhone/DesignSystem.swift",
-      "sha256": "09d4a84debb3216cf16f02153cba4869bdae196ebd505926129d650619d6abda"
+      "path": "Tests/LumaCoreTests/AlarmStopWindowTests.swift",
+      "sha256": "241480eca1c356da1fe0a7c7112e84e49e79bc6e393f0664d93dcc08e92a1946"
     },
     {
-      "path": "Sources/iPhone/JournalView.swift",
-      "sha256": "5e56dbb3838c6bed77df9b6b9c23ff88994e445c21c16bb8f5977d6904634133"
+      "path": "Tests/LumaCoreTests/AudioAndAlarmTests.swift",
+      "sha256": "4b7ec5255c3b06d951c3556aa2aefdd29280228ba0e5004d368d10b2802331b7"
     },
     {
-      "path": "Sources/iPhone/JournalVoiceComposer.swift",
-      "sha256": "0e725c45bb9263a62a5813414989b7090662017efd186a1ce3754266c449a862"
+      "path": "Tests/LumaCoreTests/CoreSafetyTests.swift",
+      "sha256": "b129ec5a60ff1dff795f28b9aec5ce20a43b30a99eeae7da5ff24c266e8660ca"
     },
     {
-      "path": "Sources/iPhone/SoundLibraryView.swift",
-      "sha256": "d8a4e847764847891dcd3fa87402e3d5bb8c3b5546a4c2fde6522dd2e9cdcfeb"
+      "path": "Tests/LumaCoreTests/CuePlaybackStopperTests.swift",
+      "sha256": "5405952b34ea06435742f7537b575f517ba0cdc2edc500d4fb47f59509c30db3"
+    },
+    {
+      "path": "Tests/LumaCoreTests/FiniteCuePolicyTests.swift",
+      "sha256": "db556db02032683f725c11fafeda24c6eb551cd8dab2bf4adc20ff451df7a77d"
+    },
+    {
+      "path": "Tests/LumaCoreTests/IndirectMethodTests.swift",
+      "sha256": "8c7934ff47c979d22bd9f5f57ba653eec26ad076a9a28334937f20d9ac9869ff"
+    },
+    {
+      "path": "Tests/LumaCoreTests/iPhoneOnlyMigrationTests.swift",
+      "sha256": "11c03a14143f4a8659f4deb3c4cb422439a7676d1216a6ec6747f4b38123f574"
+    },
+    {
+      "path": "Tests/LumaCoreTests/NotificationMigrationTests.swift",
+      "sha256": "217352f731f29ec135f8592c9fd1a3982a7d513fa7758730760f0dfa8bea3555"
+    },
+    {
+      "path": "Tests/LumaCoreTests/PairedCueTests.swift",
+      "sha256": "ebeb0724675839be9835e2816b3f465ed979416f1df3b9f19ab164558e526caa"
+    },
+    {
+      "path": "Tests/LumaCoreTests/RealtimeREMTests.swift",
+      "sha256": "77797503906418695a9cf3e6b18e962f8354b1999cfc41f9a5af53c68a20f40b"
+    },
+    {
+      "path": "Tests/LumaCoreTests/SystemAlarmPlanTests.swift",
+      "sha256": "bd4fc88edf10df2eb0de12b858ae6bff78de0cf25d186075d077e2447117c6a5"
+    },
+    {
+      "path": "Tests/LumaCoreTests/V2Tests.swift",
+      "sha256": "b9b4b8b4597eaa42cbaf5f191dbdf02cb951364bc3d4f41ce0fa210f94f8f1db"
     }
   ]
 }

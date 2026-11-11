@@ -1,0 +1,10 @@
+{
+  "kind": "YAML-and-release-consistency-check",
+  "runner": "macos-15-intel",
+  "xcode": "/Applications/Xcode_26.3.app/Contents/Developer",
+  "mandatory_checks_kept": true,
+  "IPA_version_assertions_match_config": true,
+  "application_Swift_files_identical_to_0_9_2": 36,
+  "CI_executed": false,
+  "native_build_executed": false
+}

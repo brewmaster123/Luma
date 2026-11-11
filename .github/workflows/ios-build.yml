@@ -15,7 +15,8 @@ concurrency:
 jobs:
   build:
     name: Test and build Luma
-    runs-on: macos-15
+    # macos-15 selects ARM64. Use the standard Intel pool explicitly.
+    runs-on: macos-15-intel
     timeout-minutes: 30
     env:
       DEVELOPER_DIR: /Applications/Xcode_26.3.app/Contents/Developer
@@ -36,6 +37,10 @@ jobs:
           mkdir -p ../build-logs
           test -f Package.swift
           test -f Luma.xcodeproj/project.pbxproj
+          printf 'Runner: %s / %s\n' "$RUNNER_OS" "$RUNNER_ARCH"
+          uname -m
+          test -d "$DEVELOPER_DIR"
+          printf 'Developer tools: %s\n' "$DEVELOPER_DIR"
           xcodebuild -version
           swift --version
           test "$(xcrun --sdk iphoneos --show-sdk-version | cut -d. -f1)" -ge 26
@@ -94,8 +99,8 @@ jobs:
           test ! -d "$LUMA_APP/Watch"
           test -f "$LUMA_APP/Manrope-Regular.ttf"
           test -f "$LUMA_APP/luma-tone-4.wav"
-          test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$LUMA_APP/Info.plist")" = "0.9.2"
-          test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' "$LUMA_APP/Info.plist")" = "18"
+          test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$LUMA_APP/Info.plist")" = "0.9.3"
+          test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' "$LUMA_APP/Info.plist")" = "19"
           test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleSupportedPlatforms:0' "$LUMA_APP/Info.plist")" = "iPhoneOS"
           /usr/bin/lipo "$LUMA_APP/Luma" -verify_arch arm64
           mkdir -p ../dist/Payload

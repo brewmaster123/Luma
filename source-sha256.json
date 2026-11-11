@@ -1,10 +1,10 @@
 {
-  "version": "0.9.2 (18)",
+  "version": "0.9.3 (19)",
   "kind": "project-input-sha256",
   "files": [
     {
       "path": ".github/workflows/ios-build.yml",
-      "sha256": "9dc01ffa2b504b7df4b828a375372a880212d0f4d1f55d0a8c021c9627833ef0"
+      "sha256": "885f7cc4ab72dfb36ea36783cff8338bc3b4d0cbddd727f1672b972fa0f41c81"
     },
     {
       "path": ".gitignore",
@@ -12,19 +12,19 @@
     },
     {
       "path": "AGENTS.md",
-      "sha256": "f07ff00e492c679e12bf90eb44e80be091c6a3facd65e2505c5f000437d06a49"
+      "sha256": "5c83bfebf9ddd56707ebafa054299fc90d5c6bdcc08eec0a5acedaf97a550c0e"
     },
     {
       "path": "CHANGELOG.md",
-      "sha256": "68debfe4578ec7a5c12bc576b5d0def535c1e6ad48c8b590bc8aa18f6eb1edb1"
+      "sha256": "12424aa693cb33ab7502edcce1e1bd5e66501b61c2895e69f5b2d857b6b2224f"
     },
     {
       "path": "DEVELOPMENT_STATUS.md",
-      "sha256": "827efe216fecfd5dc76d9f001ce315561516909cf270f09d87e303fd02df4379"
+      "sha256": "92e7a39dc01ae169377abdc10e27f8410136355a7103a550311b7ef1eebf6600"
     },
     {
       "path": "Luma/Config/Base.xcconfig",
-      "sha256": "078599679e699337b80b4ed2b9f9a25211eff371d2c5165116eff5f5617cfc86"
+      "sha256": "0c7536ed1d2288ae037aebd8ea50f862d1804e39114a56a0603a859f2d15e7a7"
     },
     {
       "path": "Luma/Config/iOS-Info.plist",
@@ -39,12 +39,16 @@
       "sha256": "0677370a1323edae40ac3981ad24fa025fd44319e423e69591d04ae0ed60d95f"
     },
     {
+      "path": "Luma/Docs/CI_RUNNER_ISSUE.md",
+      "sha256": "b4b710594a614a45c9a75f2519dd6a97b8c48084867351c7614e3c41b87c4d11"
+    },
+    {
       "path": "Luma/Docs/DEVICE_TESTS.md",
-      "sha256": "1abb0d3a791444d680b94dbd0940ab2c6d07534c0d3dc2c81eb4e1eac36d8dfd"
+      "sha256": "1b1eacb63990a3156a5ad69598649d3e3ec21785e231127c693299c245d6fe0c"
     },
     {
       "path": "Luma/Docs/VERSION_AUDIT.md",
-      "sha256": "db6f97e9865affbb1823a159cbd0476d8f7110df8b862233ff15bf89dc35ceb8"
+      "sha256": "54f988f533177674b9ec3b9a44e9bc605c5205c52c62d75382e7b8baa1c2d8a2"
     },
     {
       "path": "Luma/Luma.xcodeproj/project.pbxproj",
@@ -320,7 +324,7 @@
     },
     {
       "path": "Luma/scripts/check-preserved-sources.py",
-      "sha256": "389f1fcb505b60346f251cc401374c2c9115304d8b8947751cf82d6345d0d1ed"
+      "sha256": "32067de3953cfc66034ae6d06294d1de85a6cd4cd863b714ab48182829c8b037"
     },
     {
       "path": "Luma/scripts/check-previous-versions.py",
@@ -348,7 +352,7 @@
     },
     {
       "path": "README.md",
-      "sha256": "59c16b0dc40d05f1f415466e3d2b5847e65ca3bc4340ccb5d744c1366de1c1fd"
+      "sha256": "a222d248f4f346a9290c1dccf0704f6136e972a9e4735b128d32fea732ead3bb"
     }
   ]
 }

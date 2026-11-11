@@ -1,246 +1,108 @@
 {
-  "version": "0.9.2",
-  "build": 18,
-  "date": "2026-11-11",
-  "base": "0.9.1 (17)",
-  "base_directory": "C:\\Users\\Admin\\Desktop\\Luma\\Luma-iPhone-v0.9.1-Build-Fix",
-  "version_directory": "C:\\Users\\Admin\\Desktop\\Luma\\V.0.9.2",
-  "base_IPA_metadata_observed": {
-    "file": "C:\\Users\\Admin\\Desktop\\Luma\\IPA files\\Luma-unsigned.ipa",
-    "version": "0.9.1",
-    "build": "17",
-    "minimum_iOS": "17.0"
+  "version": "0.9.3",
+  "build": 19,
+  "date": "2026-11-12",
+  "base": "0.9.2 (18)",
+  "version_directory": "C:\\Users\\Admin\\Desktop\\Luma\\V.0.9.3",
+  "scope": "CI runner selection, diagnostics, release metadata and documentation",
+  "screenshot_observation": "Run #22 failed to acquire hosted runner; build steps did not start",
+  "service_incident": "https://www.githubstatus.com/incidents/dvy0t3mvh1lg",
+  "service_incident_causality_for_run_22_confirmed": false,
+  "runner_change": {
+    "before": "macos-15 (ARM64)",
+    "after": "macos-15-intel (X64)",
+    "capacity_guaranteed": false
   },
-  "delivery": "ordinary nonrepeating local notifications with finite 4.0-second PCM sound",
-  "AlarmKit_new_scheduling": false,
-  "AlarmKit_usage": "verified legacy cancellation only",
   "checks": {
     "structural_checks_passed": 113,
     "grammar_inputs_passed": 62,
-    "Swift_source_files_present": 36,
-    "Swift_grammar_inputs_passed": 51,
-    "Bash_grammar_inputs_passed": 11,
-    "YAML_parsed": true,
-    "python_scripts_AST_parsed": 5,
-    "core_XCTest_methods_present": 107,
-    "core_XCTest_executed": false,
-    "queue_integration_scenarios_present": 19,
-    "queue_integration_executed": false,
-    "AVFoundation_runtime_checks_executed": false,
-    "native_iOS_build_executed": false,
-    "Swift_compilation_executed": false,
-    "physical_device_tests_executed": false,
-    "preserved_base_files_SHA256_verified": 32,
-    "previous_version_files_SHA256_verified": 655,
-    "all_previous_directories_unchanged": true,
-    "bundled_WAV_exact_seconds": 4.0,
-    "bundled_WAV_frames": 88200
+    "YAML_and_package_version_consistency_passed": true,
+    "application_Swift_files_unchanged": 36,
+    "preserved_inputs_SHA256_verified": 76,
+    "previous_directory_files_SHA256_verified": 752,
+    "previous_directories_unchanged": true,
+    "XCTest_methods_present": 107,
+    "queue_scenarios_present": 19,
+    "Swift_tests_executed": false,
+    "Swift_compiled": false,
+    "Xcode_build_executed": false,
+    "physical_device_tests_executed": false
   },
-  "source_changes": [
+  "CI_executed_from_here": false,
+  "new_signed_IPA_generated": false,
+  "new_unsigned_IPA_generated": false,
+  "physical_four_second_completion_confirmed": false,
+  "production_ready": false,
+  "changes": [
     {
       "file": ".github/workflows/ios-build.yml",
       "change": "modified"
     },
     {
-      "file": ".gitignore",
-      "change": "added"
-    },
-    {
       "file": "AGENTS.md",
-      "change": "added"
+      "change": "modified"
     },
     {
       "file": "CHANGELOG.md",
-      "change": "added"
+      "change": "modified"
     },
     {
       "file": "DEVELOPMENT_STATUS.md",
-      "change": "added"
+      "change": "modified"
     },
     {
       "file": "Luma/Config/Base.xcconfig",
       "change": "modified"
     },
     {
-      "file": "Luma/Config/iOS-Info.plist",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Docs/ALARM_RESEARCH.md",
+      "file": "Luma/Docs/CI_RUNNER_ISSUE.md",
       "change": "added"
     },
     {
       "file": "Luma/Docs/DEVICE_TESTS.md",
-      "change": "added"
+      "change": "modified"
     },
     {
       "file": "Luma/Docs/VERSION_AUDIT.md",
+      "change": "modified"
+    },
+    {
+      "file": "Luma/Docs/github-status-observation.json",
       "change": "added"
     },
     {
-      "file": "Luma/Luma.xcodeproj/project.pbxproj",
+      "file": "Luma/Docs/preserved-sources-checks.json",
       "change": "modified"
     },
     {
-      "file": "Luma/Luma.xcodeproj/xcshareddata/xcschemes/Luma.xcscheme",
+      "file": "Luma/Docs/preserved-sources.json",
       "change": "modified"
     },
     {
-      "file": "Luma/Sources/LumaCore/FiniteCuePolicy.swift",
+      "file": "Luma/Docs/previous-versions-sha256.json",
+      "change": "modified"
+    },
+    {
+      "file": "Luma/Docs/previous-versions-verification.json",
+      "change": "modified"
+    },
+    {
+      "file": "Luma/Docs/workflow-validation.json",
       "change": "added"
-    },
-    {
-      "file": "Luma/Sources/LumaCore/IndirectMethod.swift",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Sources/LumaCore/SystemAlarmPlan.swift",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Sources/LumaCore/iPhoneOnlyMigration.swift",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Sources/Platform/AppModel.swift",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Sources/Platform/CueDiagnostics.swift",
-      "change": "added"
-    },
-    {
-      "file": "Luma/Sources/Platform/NotificationService.swift",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Sources/iPhone/AlarmEditor.swift",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Sources/iPhone/AlarmKitSoundBuilder.swift",
-      "change": "removed"
-    },
-    {
-      "file": "Luma/Sources/iPhone/CueAudioImporter.swift",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Sources/iPhone/FiniteCueSoundBuilder.swift",
-      "change": "added"
-    },
-    {
-      "file": "Luma/Sources/iPhone/IndirectMethodView.swift",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Sources/iPhone/LegacyAlarmCleanup.swift",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Sources/iPhone/LumaApp.swift",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Sources/iPhone/LumaNotificationDelegate.swift",
-      "change": "added"
-    },
-    {
-      "file": "Luma/Sources/iPhone/PhoneRootView.swift",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Sources/iPhone/SettingsView.swift",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Sources/iPhone/SignalReadinessView.swift",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Sources/iPhone/SystemAlarmService.swift",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Tests/LumaCoreTests/FiniteCuePolicyTests.swift",
-      "change": "added"
-    },
-    {
-      "file": "Luma/Tests/LumaCoreTests/SystemAlarmPlanTests.swift",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Tests/LumaCoreTests/iPhoneOnlyMigrationTests.swift",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/scripts/check-audio-on-mac.sh",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/scripts/check-audio-on-mac.swift",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/scripts/check-finite-queue-on-mac.sh",
-      "change": "added"
-    },
-    {
-      "file": "Luma/scripts/check-finite-queue-on-mac.swift",
-      "change": "added"
-    },
-    {
-      "file": "Luma/scripts/check-on-mac.sh",
-      "change": "modified"
     },
     {
       "file": "Luma/scripts/check-preserved-sources.py",
-      "change": "added"
-    },
-    {
-      "file": "Luma/scripts/check-previous-versions.py",
-      "change": "added"
-    },
-    {
-      "file": "Luma/scripts/check-source-grammar.py",
-      "change": "added"
-    },
-    {
-      "file": "Luma/scripts/check-static.py",
       "change": "modified"
-    },
-    {
-      "file": "Luma/scripts/project-graph.json",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/scripts/requirements-validation.txt",
-      "change": "added"
     },
     {
       "file": "README.md",
-      "change": "added"
+      "change": "modified"
     }
   ],
-  "generated_reports": [
-    "Luma/Docs/static-checks.json",
-    "Luma/Docs/source-grammar-checks.json",
-    "Luma/Docs/preserved-sources-checks.json",
-    "Luma/Docs/previous-versions-verification.json",
-    "Luma/Docs/audio-validation.json"
-  ],
-  "signed_IPA_generated": false,
-  "unsigned_IPA_generated": false,
-  "CI_executed": false,
-  "physical_four_second_completion_confirmed": false,
-  "production_ready": false,
-  "limitations": [
-    "Silent and Focus may suppress notification sound",
-    "Scheduled Summary or OS conditions can delay delivery",
-    "Watch may receive notification instead of locked iPhone",
-    "No guarantee of simultaneous iPhone and Watch sound",
-    "Finite queue; no refill from a suspended/force-quit process",
-    "First unlock after reboot needed for protected custom sounds",
-    "SDK type checking and all physical scenarios remain pending"
-  ]
+  "github_status_at_final_check": {
+    "Actions": "operational",
+    "active_incidents": 0,
+    "source": "https://www.githubstatus.com/api/v2/summary.json",
+    "page_updated_at": "2026-11-11T21:21:39.501Z"
+  }
 }

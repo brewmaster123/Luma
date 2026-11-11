@@ -18,4 +18,4 @@ report = {'baseline': baseline['baseline'], 'kind': 'sha256-regression-check',
 failed = [item['path'] for item in results if not item['unchanged']]
 if failed:
     raise SystemExit('FAIL: preserved files changed: ' + ', '.join(failed))
-print(f"PASS: {len(results)} preserved files match 0.9.1, including planner, REM, theme, diary and audio.")
+print(f"PASS: {len(results)} preserved files match {baseline['baseline']}, including planner, REM, theme, diary and audio.")
