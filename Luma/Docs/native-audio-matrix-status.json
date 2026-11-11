@@ -1,0 +1,21 @@
+{
+  "kind": "prepared-native-AVFoundation-matrix",
+  "case_count": 8,
+  "invalid_input_check": true,
+  "formats": [
+    "Float32 stereo 48kHz WAV",
+    "PCM16 mono 22.05kHz WAV"
+  ],
+  "source_seconds": [
+    0.32,
+    2,
+    4,
+    40
+  ],
+  "expected_output_frames": 88200,
+  "expected_sample_rate": 22050,
+  "expected_file_bits": 16,
+  "processing": "Float32 non-interleaved",
+  "executed_here": false,
+  "physical_device_tested": false
+}

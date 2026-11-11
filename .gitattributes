@@ -1,0 +1,24 @@
+* text=auto
+*.swift text eol=lf
+*.py text eol=lf
+*.sh text eol=lf
+*.json text eol=lf
+*.pbxproj text eol=lf
+*.xcscheme text eol=lf
+*.xcconfig text eol=lf
+*.plist text eol=lf
+*.entitlements text eol=lf
+*.xcprivacy text eol=lf
+*.md text eol=lf
+*.txt text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.wav -text
+*.caf -text
+*.ttf -text
+*.png -text
+*.jpg -text
+*.jpeg -text
+*.mp4 -text
+*.ipa -text
+*.zip -text

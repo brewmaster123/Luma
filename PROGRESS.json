@@ -1,10 +1,10 @@
 {
-  "version": "0.9.3 (19)",
-  "base": "0.9.2 (18)",
+  "version": "0.9.4 (20)",
+  "base": "0.9.3 (19)",
   "date": "2026-11-12",
-  "stage": "Intel runner workaround and portable verification complete; new GitHub run and device validation pending",
-  "application_source_changed": false,
-  "CI_run_started_from_here": false,
+  "stage": "Hash portability and audio processing fixes implemented; portable checks passed; new native CI pending",
+  "Python_integrity_tests_passed": 13,
+  "native_CI_started_from_here": false,
   "production_ready": false,
   "physical_four_second_completion_confirmed": false
 }

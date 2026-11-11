@@ -93,7 +93,7 @@ phone_target = obj("phone.target", "PBXNativeTarget", buildConfigurationList=pho
 project = obj("project", "PBXProject", attributes={"BuildIndependentTargetsInParallel": "YES", "LastSwiftUpdateCheck": "1600", "LastUpgradeCheck": "1600", "TargetAttributes": {phone_target: {"CreatedOnToolsVersion": "16.0"}}}, buildConfigurationList=project_configs, compatibilityVersion="Xcode 14.0", developmentRegion="ru", hasScannedForEncodings=0, knownRegions=["ru", "en", "Base"], mainGroup=main_group, productRefGroup=product_group, projectDirPath="", projectRoot="", targets=[phone_target])
 output = ROOT / "Luma.xcodeproj"
 output.mkdir(exist_ok=True)
-(output / "project.pbxproj").write_text("// !$*UTF8*$!\n" + dump({"archiveVersion": 1, "classes": {}, "objectVersion": 56, "objects": objects, "rootObject": project}) + "\n")
+(output / "project.pbxproj").write_text("// !$*UTF8*$!\n" + dump({"archiveVersion": 1, "classes": {}, "objectVersion": 56, "objects": objects, "rootObject": project}) + "\n", encoding="utf-8", newline="\n")
 
 schemes = output / "xcshareddata" / "xcschemes"
 schemes.mkdir(parents=True, exist_ok=True)
@@ -107,8 +107,8 @@ for name, target, product in [("Luma", phone_target, "Luma.app")]:
   <ProfileAction buildConfiguration="Release" shouldUseLaunchSchemeArgsEnv="YES" savedToolIdentifier="" useCustomWorkingDirectory="NO" debugDocumentVersioning="YES"><BuildableProductRunnable runnableDebuggingMode="0">{reference}</BuildableProductRunnable></ProfileAction>
   <AnalyzeAction buildConfiguration="Debug"/><ArchiveAction buildConfiguration="Release" revealArchiveInOrganizer="YES"/>
 </Scheme>'''
-    (schemes / (name + ".xcscheme")).write_text(text)
+    (schemes / (name + ".xcscheme")).write_text(text, encoding="utf-8", newline="\n")
 
 # Metadata used by the static verifier; regenerated from the same project object graph.
-(ROOT / "scripts/project-graph.json").write_text(json.dumps({"objects": objects, "rootObject": project}, indent=2))
+(ROOT / "scripts/project-graph.json").write_text(json.dumps({"objects": objects, "rootObject": project}, indent=2), encoding="utf-8", newline="\n")
 print(f"Generated {output}; {len(objects)} project objects.")

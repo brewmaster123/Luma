@@ -19,7 +19,7 @@ enum FiniteCueSoundBuilder {
     }
     let data = try Data(contentsOf: source)
     var hasher = SHA256()
-    hasher.update(data: Data("luma-finite-pcm-4s-fade-v2".utf8)); hasher.update(data: data)
+    hasher.update(data: Data("luma-finite-pcm-4s-fade-v3-float-processing".utf8)); hasher.update(data: data)
     let digest = hasher.finalize().map { String(format: "%02x", $0) }.joined()
     let name = "luma-cue4-\(digest).caf"
     let folder: URL
@@ -60,13 +60,37 @@ enum FiniteCueSoundBuilder {
       && f.length == frameCount && format.mFormatID == kAudioFormatLinearPCM && format.mBitsPerChannel == 16
   }
   private static func renderFade(from source: URL, to target: URL) throws {
-    let input = try AVAudioFile(forReading: source, commonFormat: .pcmFormatInt16, interleaved: true)
-    guard input.length == frameCount,
-      let buffer = AVAudioPCMBuffer(pcmFormat: input.processingFormat, frameCapacity: AVAudioFrameCount(frameCount))
-    else { throw AppError.message("Неверная длительность короткого звука.") }
-    try input.read(into: buffer)
-    guard buffer.frameLength == AVAudioFrameCount(frameCount), let samples = buffer.int16ChannelData?[0] else {
-      throw AppError.message("Не удалось обработать короткий звук.")
+    let input = try AVAudioFile(forReading: source, commonFormat: .pcmFormatFloat32, interleaved: false)
+    guard input.length == frameCount, input.processingFormat.sampleRate == sampleRate,
+      input.processingFormat.channelCount == 1, !input.processingFormat.isInterleaved,
+      input.processingFormat.commonFormat == .pcmFormatFloat32 else {
+      NSLog("Luma finite cue input: %@", "frames=\(input.length), file=\(input.fileFormat), processing=\(input.processingFormat)")
+      throw AppError.message("Не удалось прочитать четырёхсекундный звук. Попробуйте другой файл.")
+    }
+    guard let buffer = AVAudioPCMBuffer(pcmFormat: input.processingFormat, frameCapacity: AVAudioFrameCount(frameCount)),
+      let chunk = AVAudioPCMBuffer(pcmFormat: input.processingFormat, frameCapacity: 4096),
+      let samples = buffer.floatChannelData?[0], let chunkSamples = chunk.floatChannelData?[0] else {
+      NSLog("Luma finite cue buffer allocation failed: %@", String(describing: input.processingFormat))
+      throw AppError.message("Не удалось обработать короткий звук. Повторите попытку.")
+    }
+    // A successful read can return fewer frames than requested. Gather all of
+    // them before fading, and report an early EOF separately from a format error.
+    var position = 0
+    while position < Int(frameCount) {
+      chunk.frameLength = 0
+      let requested = AVAudioFrameCount(min(Int(chunk.frameCapacity), Int(frameCount) - position))
+      try input.read(into: chunk, frameCount: requested)
+      let count = Int(chunk.frameLength)
+      guard count > 0 else {
+        NSLog("Luma finite cue early EOF: %@", "read=\(position)/\(frameCount), processing=\(input.processingFormat)")
+        throw AppError.message("Файл короткого звука прочитан не полностью. Попробуйте другой файл.")
+      }
+      samples.advanced(by: position).update(from: chunkSamples, count: count)
+      position += count
+    }
+    buffer.frameLength = AVAudioFrameCount(position)
+    guard (0..<position).allSatisfy({ samples[$0].isFinite }) else {
+      throw AppError.message("В коротком звуке обнаружены недопустимые отсчёты.")
     }
     // Fade the end of the actual content, before any padding on a short voice.
     var end = Int(buffer.frameLength)
@@ -77,17 +101,17 @@ enum FiniteCueSoundBuilder {
       for i in 0..<fade {
         let gain = 0.5 * (1 + cos(.pi * Double(i) / Double(fade - 1)))
         let index = end - fade + i
-        samples[index] = Int16((Double(samples[index]) * gain).rounded())
+        samples[index] = Float(Double(samples[index]) * gain)
       }
     }
     if attack > 1 {
       for i in 0..<attack {
         let gain = 0.5 * (1 - cos(.pi * Double(i) / Double(attack - 1)))
-        samples[i] = Int16((Double(samples[i]) * gain).rounded())
+        samples[i] = Float(Double(samples[i]) * gain)
       }
     }
-    let output = try AVAudioFile(forWriting: target, settings: input.processingFormat.settings,
-      commonFormat: .pcmFormatInt16, interleaved: true)
+    let output = try AVAudioFile(forWriting: target, settings: CueAudioImporter.pcm16FileSettings,
+      commonFormat: .pcmFormatFloat32, interleaved: false)
     try output.write(from: buffer)
   }
 }

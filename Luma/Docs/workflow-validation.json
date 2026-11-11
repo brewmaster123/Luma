@@ -1,10 +1,15 @@
 {
-  "kind": "YAML-and-release-consistency-check",
+  "kind": "YAML-and-release-gates-validation",
   "runner": "macos-15-intel",
-  "xcode": "/Applications/Xcode_26.3.app/Contents/Developer",
-  "mandatory_checks_kept": true,
+  "native_mandatory_gates": [
+    "preserved",
+    "core",
+    "audio",
+    "queue",
+    "iphone"
+  ],
+  "source_integrity_tests_required": true,
   "IPA_version_assertions_match_config": true,
-  "application_Swift_files_identical_to_0_9_2": 36,
-  "CI_executed": false,
-  "native_build_executed": false
+  "native_execution_performed_here": false,
+  "passed": true
 }

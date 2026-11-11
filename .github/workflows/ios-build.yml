@@ -50,10 +50,15 @@ jobs:
         run: python3 scripts/check-static.py
 
       - name: Check preserved planner, data and resources
-        run: python3 scripts/check-preserved-sources.py
+        id: preserved
+        run: |
+          set -euo pipefail
+          python3 scripts/test-source-integrity.py
+          python3 scripts/check-preserved-sources.py
 
       - name: Run core tests
         id: core
+        if: ${{ !cancelled() && steps.project.outcome == 'success' && steps.structure.outcome == 'success' }}
         run: |
           set -euo pipefail
           swift test 2>&1 | tee ../build-logs/core-tests.log
@@ -91,6 +96,7 @@ jobs:
             clean build 2>&1 | tee ../build-logs/iphone-build.log
 
       - name: Package unsigned IPA
+        if: ${{ success() && steps.preserved.outcome == 'success' && steps.core.outcome == 'success' && steps.audio.outcome == 'success' && steps.queue.outcome == 'success' && steps.iphone.outcome == 'success' }}
         run: |
           set -euo pipefail
           LUMA_APP="../build/iphone/Build/Products/Debug-iphoneos/Luma.app"
@@ -99,8 +105,8 @@ jobs:
           test ! -d "$LUMA_APP/Watch"
           test -f "$LUMA_APP/Manrope-Regular.ttf"
           test -f "$LUMA_APP/luma-tone-4.wav"
-          test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$LUMA_APP/Info.plist")" = "0.9.3"
-          test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' "$LUMA_APP/Info.plist")" = "19"
+          test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$LUMA_APP/Info.plist")" = "0.9.4"
+          test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' "$LUMA_APP/Info.plist")" = "20"
           test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleSupportedPlatforms:0' "$LUMA_APP/Info.plist")" = "iPhoneOS"
           /usr/bin/lipo "$LUMA_APP/Luma" -verify_arch arm64
           mkdir -p ../dist/Payload

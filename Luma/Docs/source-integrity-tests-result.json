@@ -1,0 +1,7 @@
+{
+  "kind": "executed-Python-unittest",
+  "tests": 13,
+  "failures": 0,
+  "includes_full_preserved_set_LF_and_CRLF_checkout_simulation": true,
+  "native_or_device_execution": false
+}

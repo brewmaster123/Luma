@@ -1,7 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 cd "$(dirname "$0")/.."
-LUMA_AUDIO_CHECK_DIR="$(mktemp -d)"
+mkdir -p .build/validation
+LUMA_AUDIO_CHECK_DIR="$(mktemp -d .build/validation/audio.XXXXXX)"
 trap 'rm -rf "$LUMA_AUDIO_CHECK_DIR"' EXIT
 xcrun swiftc -swift-version 5 Sources/LumaCore/*.swift Sources/Platform/AppError.swift \
   Sources/iPhone/CueAudioImporter.swift Sources/iPhone/FiniteCueSoundBuilder.swift \
