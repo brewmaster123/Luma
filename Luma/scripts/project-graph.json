@@ -24,10 +24,22 @@
       "path": "CuePlaybackStopper.swift",
       "sourceTree": "<group>"
     },
+    "5DB63C3B71000C66DFB02C9C": {
+      "isa": "PBXFileReference",
+      "lastKnownFileType": "sourcecode.swift",
+      "path": "FiniteCuePolicy.swift",
+      "sourceTree": "<group>"
+    },
     "0021BC002965D68CD047A01D": {
       "isa": "PBXFileReference",
       "lastKnownFileType": "sourcecode.swift",
       "path": "IndirectMethod.swift",
+      "sourceTree": "<group>"
+    },
+    "85A257268CA8E7B4BF8F96EF": {
+      "isa": "PBXFileReference",
+      "lastKnownFileType": "sourcecode.swift",
+      "path": "iPhoneOnlyMigration.swift",
       "sourceTree": "<group>"
     },
     "3118CCAE5937C526FD34A783": {
@@ -54,28 +66,22 @@
       "path": "PairedCuePolicy.swift",
       "sourceTree": "<group>"
     },
-    "CC31BD96AF6D75999F0A337C": {
-      "isa": "PBXFileReference",
-      "lastKnownFileType": "sourcecode.swift",
-      "path": "REMEstimator.swift",
-      "sourceTree": "<group>"
-    },
     "0A35976268BCB57F26131162": {
       "isa": "PBXFileReference",
       "lastKnownFileType": "sourcecode.swift",
       "path": "RealtimeREMEngine.swift",
       "sourceTree": "<group>"
     },
+    "CC31BD96AF6D75999F0A337C": {
+      "isa": "PBXFileReference",
+      "lastKnownFileType": "sourcecode.swift",
+      "path": "REMEstimator.swift",
+      "sourceTree": "<group>"
+    },
     "0F6887C5122F31ECD3F11CAF": {
       "isa": "PBXFileReference",
       "lastKnownFileType": "sourcecode.swift",
       "path": "SystemAlarmPlan.swift",
-      "sourceTree": "<group>"
-    },
-    "85A257268CA8E7B4BF8F96EF": {
-      "isa": "PBXFileReference",
-      "lastKnownFileType": "sourcecode.swift",
-      "path": "iPhoneOnlyMigration.swift",
       "sourceTree": "<group>"
     },
     "2689667F216FF42D5BA4E031": {
@@ -85,15 +91,16 @@
         "4670571C5E80FD03FFEB0958",
         "11243E79560A1B4C66C6423B",
         "8C4AD6B797268FBD924DEA60",
+        "5DB63C3B71000C66DFB02C9C",
         "0021BC002965D68CD047A01D",
+        "85A257268CA8E7B4BF8F96EF",
         "3118CCAE5937C526FD34A783",
         "FFAA0F37C08B0572009406ED",
         "6C270176EBD01586D160B953",
         "0F60E7AB549E3C49CA860EA3",
-        "CC31BD96AF6D75999F0A337C",
         "0A35976268BCB57F26131162",
-        "0F6887C5122F31ECD3F11CAF",
-        "85A257268CA8E7B4BF8F96EF"
+        "CC31BD96AF6D75999F0A337C",
+        "0F6887C5122F31ECD3F11CAF"
       ],
       "name": "Core",
       "path": "Sources/LumaCore",
@@ -109,6 +116,12 @@
       "isa": "PBXFileReference",
       "lastKnownFileType": "sourcecode.swift",
       "path": "AppModel.swift",
+      "sourceTree": "<group>"
+    },
+    "CCAE7BFED6A7F2A9F35FB1A1": {
+      "isa": "PBXFileReference",
+      "lastKnownFileType": "sourcecode.swift",
+      "path": "CueDiagnostics.swift",
       "sourceTree": "<group>"
     },
     "6CA13D2BCBB7031FCF6EBA0B": {
@@ -140,6 +153,7 @@
       "children": [
         "A3EF9FCC01DEEC70A82DA31D",
         "E99E8CBDEEB473962C0ED3AE",
+        "CCAE7BFED6A7F2A9F35FB1A1",
         "6CA13D2BCBB7031FCF6EBA0B",
         "6E9DD8540640E27D70827B1F",
         "4365383AD61C0D7BA63C20FA",
@@ -155,12 +169,6 @@
       "path": "AlarmEditor.swift",
       "sourceTree": "<group>"
     },
-    "6537B6F02A7208C02546A8AF": {
-      "isa": "PBXFileReference",
-      "lastKnownFileType": "sourcecode.swift",
-      "path": "AlarmKitSoundBuilder.swift",
-      "sourceTree": "<group>"
-    },
     "94DC8AA705F082731DABDCA6": {
       "isa": "PBXFileReference",
       "lastKnownFileType": "sourcecode.swift",
@@ -171,6 +179,12 @@
       "isa": "PBXFileReference",
       "lastKnownFileType": "sourcecode.swift",
       "path": "DesignSystem.swift",
+      "sourceTree": "<group>"
+    },
+    "D4AE81042B66546E974D7615": {
+      "isa": "PBXFileReference",
+      "lastKnownFileType": "sourcecode.swift",
+      "path": "FiniteCueSoundBuilder.swift",
       "sourceTree": "<group>"
     },
     "1DA47523E8546942AAD2F78F": {
@@ -201,6 +215,12 @@
       "isa": "PBXFileReference",
       "lastKnownFileType": "sourcecode.swift",
       "path": "LumaApp.swift",
+      "sourceTree": "<group>"
+    },
+    "D030F4387F9049223D97F011": {
+      "isa": "PBXFileReference",
+      "lastKnownFileType": "sourcecode.swift",
+      "path": "LumaNotificationDelegate.swift",
       "sourceTree": "<group>"
     },
     "403BEDE476C142E4B1D47D58": {
@@ -237,14 +257,15 @@
       "isa": "PBXGroup",
       "children": [
         "8DE81E5353C11E33D2765DDC",
-        "6537B6F02A7208C02546A8AF",
         "94DC8AA705F082731DABDCA6",
         "35785E208BBA03C69FD14ED6",
+        "D4AE81042B66546E974D7615",
         "1DA47523E8546942AAD2F78F",
         "4A50E4446BB96376B27818C0",
         "95411ACF2708852E9E5E6A2C",
         "ADE587429081E01A3A738180",
         "8064301C3357AAFEAEF3276D",
+        "D030F4387F9049223D97F011",
         "403BEDE476C142E4B1D47D58",
         "DAAB7B546565E422B592345E",
         "E0FFE0A743BB237B9FBF6ED1",
@@ -481,9 +502,17 @@
       "isa": "PBXBuildFile",
       "fileRef": "8C4AD6B797268FBD924DEA60"
     },
+    "AC48AEC5E588C33FA9DB1C6D": {
+      "isa": "PBXBuildFile",
+      "fileRef": "5DB63C3B71000C66DFB02C9C"
+    },
     "DEA23526378E0C587639FBDC": {
       "isa": "PBXBuildFile",
       "fileRef": "0021BC002965D68CD047A01D"
+    },
+    "7791CA4016442BB29B456947": {
+      "isa": "PBXBuildFile",
+      "fileRef": "85A257268CA8E7B4BF8F96EF"
     },
     "6235EDF3ACD08C1D9F1323D3": {
       "isa": "PBXBuildFile",
@@ -501,21 +530,17 @@
       "isa": "PBXBuildFile",
       "fileRef": "0F60E7AB549E3C49CA860EA3"
     },
-    "A01950427884A6B834992B92": {
-      "isa": "PBXBuildFile",
-      "fileRef": "CC31BD96AF6D75999F0A337C"
-    },
     "8C07CEE290070BE4270C6645": {
       "isa": "PBXBuildFile",
       "fileRef": "0A35976268BCB57F26131162"
     },
+    "A01950427884A6B834992B92": {
+      "isa": "PBXBuildFile",
+      "fileRef": "CC31BD96AF6D75999F0A337C"
+    },
     "FFECDAC0F8FAFD6AA8587E3E": {
       "isa": "PBXBuildFile",
       "fileRef": "0F6887C5122F31ECD3F11CAF"
-    },
-    "7791CA4016442BB29B456947": {
-      "isa": "PBXBuildFile",
-      "fileRef": "85A257268CA8E7B4BF8F96EF"
     },
     "48643513935B34C74676EF85": {
       "isa": "PBXBuildFile",
@@ -524,6 +549,10 @@
     "2D7C59F5B6C4970D7DCF55F3": {
       "isa": "PBXBuildFile",
       "fileRef": "E99E8CBDEEB473962C0ED3AE"
+    },
+    "17805ED15F98A9BCE117D33D": {
+      "isa": "PBXBuildFile",
+      "fileRef": "CCAE7BFED6A7F2A9F35FB1A1"
     },
     "1C7DC9ABBE29E6EF8E3412F5": {
       "isa": "PBXBuildFile",
@@ -545,10 +574,6 @@
       "isa": "PBXBuildFile",
       "fileRef": "8DE81E5353C11E33D2765DDC"
     },
-    "6FDAFFD20355BEFC0730F239": {
-      "isa": "PBXBuildFile",
-      "fileRef": "6537B6F02A7208C02546A8AF"
-    },
     "D14C3DD57402626D370CF561": {
       "isa": "PBXBuildFile",
       "fileRef": "94DC8AA705F082731DABDCA6"
@@ -556,6 +581,10 @@
     "A0B6248FE883DD6744B39130": {
       "isa": "PBXBuildFile",
       "fileRef": "35785E208BBA03C69FD14ED6"
+    },
+    "6D01405183BE5E5436137C31": {
+      "isa": "PBXBuildFile",
+      "fileRef": "D4AE81042B66546E974D7615"
     },
     "E9F08F81A64A689F9E43AAD4": {
       "isa": "PBXBuildFile",
@@ -576,6 +605,10 @@
     "99390F7C8CDA897EF47EAF6A": {
       "isa": "PBXBuildFile",
       "fileRef": "8064301C3357AAFEAEF3276D"
+    },
+    "F66535989661BEF383631593": {
+      "isa": "PBXBuildFile",
+      "fileRef": "D030F4387F9049223D97F011"
     },
     "642465F74203C24BB8D0D84D": {
       "isa": "PBXBuildFile",
@@ -605,30 +638,33 @@
         "07A604C338A35D51D0028240",
         "057A1FA6B42B3D7B4B3AC06A",
         "448A71044ED81F7C234C3E1B",
+        "AC48AEC5E588C33FA9DB1C6D",
         "DEA23526378E0C587639FBDC",
+        "7791CA4016442BB29B456947",
         "6235EDF3ACD08C1D9F1323D3",
         "B0DD5EFFD8F5FA6F1079A9F2",
         "09B706F8318D00DB80E41480",
         "C8D78A02CA3E81B15CA24803",
-        "A01950427884A6B834992B92",
         "8C07CEE290070BE4270C6645",
+        "A01950427884A6B834992B92",
         "FFECDAC0F8FAFD6AA8587E3E",
-        "7791CA4016442BB29B456947",
         "48643513935B34C74676EF85",
         "2D7C59F5B6C4970D7DCF55F3",
+        "17805ED15F98A9BCE117D33D",
         "1C7DC9ABBE29E6EF8E3412F5",
         "859C604AD3B768D322D43EEA",
         "7B35A5846CA70D33B7D6A9FC",
         "4314DD68C2B6C51F81102E6E",
         "027AF4E38A3C8BED8ED4BFB6",
-        "6FDAFFD20355BEFC0730F239",
         "D14C3DD57402626D370CF561",
         "A0B6248FE883DD6744B39130",
+        "6D01405183BE5E5436137C31",
         "E9F08F81A64A689F9E43AAD4",
         "C2D0F1F5A897C0D914E0618D",
         "3A7647BEC537CF7DE6FF4191",
         "B66793DA49DA9C496B62FA5A",
         "99390F7C8CDA897EF47EAF6A",
+        "F66535989661BEF383631593",
         "642465F74203C24BB8D0D84D",
         "5EAAB8D26D4BBFE7A79A5FCD",
         "02BEC4C07F72C8DFCA65AFFF",

@@ -7,6 +7,8 @@ if ! command -v xcodebuild >/dev/null 2>&1; then
 fi
 test "$(xcrun --sdk iphoneos --show-sdk-version | cut -d. -f1)" -ge 26
 python3 scripts/check-static.py
+python3 scripts/check-preserved-sources.py
 swift test
 bash scripts/check-audio-on-mac.sh
+bash scripts/check-finite-queue-on-mac.sh
 xcodebuild -project Luma.xcodeproj -scheme Luma -destination 'generic/platform=iOS Simulator' -derivedDataPath .build/phone CODE_SIGNING_ALLOWED=NO build

@@ -1,6 +1,7 @@
 import Foundation
 
-/// Persisted separately from the diary. A sound ending is NOT an AlarmKit stop.
+/// Persisted separately from the diary. Schema 1 used AlarmKit; schema 2 uses
+/// finite, nonrepeating UserNotifications sounds. Names stay stable for decoding.
 public enum SystemAlarmKind: String, Codable, Hashable, Sendable { case smart, indirect, probe }
 public struct SystemAlarmRequest: Equatable, Sendable {
   public var key: String
@@ -26,6 +27,7 @@ public struct SystemAlarmRecord: Codable, Equatable, Identifiable, Sendable {
   /// Written before schedule() and cleared only after the system accepts it.
   public var pending: Bool
   public var stopAt: Date { fireAt.addingTimeInterval(SystemAlarmPolicy.soundSeconds) }
+  public var notificationID: String { FiniteCuePolicy.identifier(for: id) }
   public init(id: UUID = UUID(), request: SystemAlarmRequest, soundName: String) {
     self.id = id; key = request.key; ownerID = request.ownerID; kind = request.kind
     fireAt = request.fireAt; title = request.title; self.soundName = soundName; pending = true
@@ -38,7 +40,7 @@ public struct IndirectAlarmSession: Codable, Equatable, Sendable {
   public var signal: SignalSettings
   public init(settings: IndirectMethodSettings, signal: SignalSettings, startedAt: Date = Date()) {
     id = UUID(); self.startedAt = startedAt; self.settings = settings.validated
-    self.signal = signal.systemAlarmSignal
+    self.signal = signal.finiteCueSignal
   }
   public func dates(after now: Date, horizon: TimeInterval = SystemAlarmPolicy.queueHorizon) -> [Date] {
     guard now.timeIntervalSince1970.isFinite, startedAt.timeIntervalSince1970.isFinite,
@@ -55,7 +57,7 @@ public struct IndirectAlarmSession: Codable, Equatable, Sendable {
   }
 }
 public struct SystemAlarmLedger: Codable, Equatable, Sendable {
-  public var schema = 1
+  public var schema = 2
   public var records: [SystemAlarmRecord] = []
   public var handledKeys: [String] = []
   public var indirectSession: IndirectAlarmSession?
@@ -64,6 +66,20 @@ public struct SystemAlarmLedger: Codable, Equatable, Sendable {
   public var cancelledOwners: [UUID]?
   public var cancelAllRequested: Bool?
   public init() {}
+  /// Call only AFTER all legacy AlarmKit alarms have been cancelled and verified.
+  /// Future occurrences must remain eligible; an elapsed cue is never replayed.
+  @discardableResult public mutating func migrateToFiniteNotifications(now: Date) -> Bool {
+    guard schema == 1 else { return false }
+    let sessionCancelled = indirectSession.map { (cancelledOwners ?? []).contains($0.id) } ?? false
+    if cancelAllRequested == true || sessionCancelled {
+      indirectSession = nil
+    }
+    for record in records where record.fireAt <= now { markHandled(record) }
+    records.removeAll()
+    cancelledOwners = nil; cancelAllRequested = nil
+    schema = 2
+    return true
+  }
   public mutating func markHandled(_ record: SystemAlarmRecord) {
     records.removeAll { $0.id == record.id }
     handledKeys.removeAll { $0 == record.key }
@@ -75,7 +91,9 @@ public enum SystemAlarmPolicy {
   public static let soundSeconds: TimeInterval = 4
   /// A finite system queue, replenished while the app executes; not an infinite OS timer.
   public static let queueHorizon: TimeInterval = 12 * 60 * 60
-  public static let queueLimit = 96
+  // Stay below the system's 64 pending local-notification budget. The scheduler
+  // also subtracts any requests belonging to other features before adding cues.
+  public static let queueLimit = 60
   public enum StopAction: Equatable, Sendable {
     case none
     case wait(until: Date)

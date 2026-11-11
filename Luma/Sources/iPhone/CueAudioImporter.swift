@@ -49,7 +49,7 @@ enum CueAudioImporter {
       }
       guard written > 6615 else { throw AppError.message("Аудиофайл слишком короткий.") }
       // A short voice remains intact; a silent tail fills the rest of its four
-      // second AlarmKit copy. The original diary/voice file is never truncated.
+      // second cue copy. The original diary/voice file is never truncated.
       if padToMaximum, let samples = outputBuffer.int16ChannelData?[0] {
         samples.initialize(repeating: 0, count: Int(outputBuffer.frameCapacity))
         while written < maximumFrames {

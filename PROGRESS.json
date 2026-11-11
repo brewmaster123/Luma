@@ -1,65 +1,20 @@
 {
-  "base": "Luma 0.9.0 (16) iPhone-only AlarmKit",
-  "version": "0.9.1 (17) CI build fix",
-  "updated_utc": "2026-11-10T10:27:03.470982+00:00",
-  "stage": "Known GitHub test compiler failure fixed; 98 Swift XCTest methods compiled and passed on Linux; native iOS build pending GitHub",
+  "version": "0.9.2 (18)",
+  "base": "0.9.1 (17)",
+  "date": "2026-11-11",
+  "stage": "Implementation and portable verification complete; macOS build and physical acceptance pending",
   "completed": [
-    "Removed watchOS target, app sources, icon catalog, entitlements and shared scheme",
-    "Removed WatchConnectivity, direct watch cue scheduling and workout mirroring",
-    "Removed separate phone/watch output and haptic-count controls from native screens",
-    "Single system AlarmKit route for Smart Alarm and Indirect Method",
-    "Legacy Watch-only and paired alarms migrate without losing IDs, times, repeat days, voice references or diary",
-    "Existing indirect session, accepted AlarmKit IDs and stop deadlines preserved",
-    "Phone-only Xcode project generator, GitHub Actions and IPA packaging checks",
-    "Optional HealthKit sleep-history reader retained for journal only"
+    "Finite local-notification route for smart and indirect cues",
+    "Legacy AlarmKit cleanup and schema migration",
+    "Four-second audio resources and custom fade copies",
+    "Queue persistence, cancellation and concurrency guards",
+    "macOS regression harness and CI wiring",
+    "Required Russian documentation and device test plan"
   ],
-  "watch_routing": "System-managed AlarmKit alert forwarding to paired Apple Watch, as documented by Apple. No companion app required by Luma.",
-  "four_second_audio_and_stop_code": "Retained from 0.8.0. Background stop reliability is not established by this change.",
-  "checks": {
-    "structural_checks_passed": 94,
-    "core_tests_compiled": true,
-    "core_tests_executed": 98,
-    "core_test_failures": 0,
-    "swift_version": "6.2.4",
-    "core_test_platform": "Linux x86_64",
-    "ios_source_files_parsed_by_swift": 33,
-    "ios_parse_target": "arm64-apple-ios17.0",
-    "ios_parse_exit_code": 0,
-    "yaml_parsed": true,
-    "shell_syntax_passed": true,
-    "native_iOS_build_executed": false,
-    "device_tests_executed": false
-  },
   "pending": [
-    "Run updated GitHub Actions with Xcode 26.3 to compile iPhone app, run AVFoundation checks and package unsigned IPA",
-    "Sign the resulting IPA for installation, or install directly from Xcode",
-    "Retest AlarmKit sound and stop timing with a locked physical iPhone"
+    "Execute macOS CI and sign/install",
+    "Execute DEVICE_TESTS on real iPhone/Watch"
   ],
   "production_ready": false,
-  "background_auto_stop_verified": false,
-  "incremental_saves": true,
-  "user_constraints": [
-    "Apply changes to native code",
-    "No new interactive preview or Markdown guide"
-  ],
-  "native_watch_app_removed": true,
-  "native_targets": [
-    "Luma (iPhone)"
-  ],
-  "direct_watch_bridge_removed": true,
-  "watch_local_notification_scheduler_removed": true,
-  "system_alarm_scheduling_and_stop_code_retained": true,
-  "watch_system_alert_forwarding_device_tested": false,
-  "old_installed_watch_app": "May require one-time manual removal on the user device to remove old queues. No remote uninstall is attempted.",
-  "ci_failure": {
-    "input_log": "logs_115903748511.zip",
-    "step": "Run core tests",
-    "file": "Tests/LumaCoreTests/iPhoneOnlyMigrationTests.swift",
-    "line": 73,
-    "error": "XCTAssertEqual requires LumaState to conform to Equatable",
-    "fix": "Compare deterministic sorted-key encoded state; keep full idempotency regression coverage without changing production state conformance"
-  },
-  "ci_improvement": "Native compilation and AVFoundation checks still run after a core-test failure for complete diagnostics; all checks must pass before IPA packaging",
-  "new_native_build_executed": false,
-  "core_tests_executed_after_fix": true
+  "physical_four_second_completion_confirmed": false
 }

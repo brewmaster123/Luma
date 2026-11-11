@@ -1,0 +1,135 @@
+{
+  "baseline": "0.9.1 (17)",
+  "kind": "sha256-regression-check",
+  "passed": true,
+  "files": [
+    {
+      "path": "Config/iOS.entitlements",
+      "unchanged": true
+    },
+    {
+      "path": "Package.swift",
+      "unchanged": true
+    },
+    {
+      "path": "Resources/Manrope-LICENSE.txt",
+      "unchanged": true
+    },
+    {
+      "path": "Resources/Manrope-Medium.ttf",
+      "unchanged": true
+    },
+    {
+      "path": "Resources/Manrope-Regular.ttf",
+      "unchanged": true
+    },
+    {
+      "path": "Resources/Manrope-SemiBold.ttf",
+      "unchanged": true
+    },
+    {
+      "path": "Resources/Manrope-Variable.ttf",
+      "unchanged": true
+    },
+    {
+      "path": "Resources/PrivacyInfo.xcprivacy",
+      "unchanged": true
+    },
+    {
+      "path": "Resources/iOSAssets.xcassets/AppIcon.appiconset/AppIcon.png",
+      "unchanged": true
+    },
+    {
+      "path": "Resources/iOSAssets.xcassets/AppIcon.appiconset/Contents.json",
+      "unchanged": true
+    },
+    {
+      "path": "Resources/iOSAssets.xcassets/Contents.json",
+      "unchanged": true
+    },
+    {
+      "path": "Resources/luma-tone-15.wav",
+      "unchanged": true
+    },
+    {
+      "path": "Resources/luma-tone-4.wav",
+      "unchanged": true
+    },
+    {
+      "path": "Resources/luma-tone-8.wav",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/LumaCore/AcousticFeatures.swift",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/LumaCore/AlarmStopWindow.swift",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/LumaCore/CueEngine.swift",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/LumaCore/CuePlaybackStopper.swift",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/LumaCore/LumaV2.swift",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/LumaCore/Models.swift",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/LumaCore/MultimodalEstimator.swift",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/LumaCore/PairedCuePolicy.swift",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/LumaCore/REMEstimator.swift",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/LumaCore/RealtimeREMEngine.swift",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/Platform/AppError.swift",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/Platform/HealthService.swift",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/Platform/LocalStore.swift",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/Platform/PhoneAudio.swift",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/iPhone/DesignSystem.swift",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/iPhone/JournalView.swift",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/iPhone/JournalVoiceComposer.swift",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/iPhone/SoundLibraryView.swift",
+      "unchanged": true
+    }
+  ]
+}

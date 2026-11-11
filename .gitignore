@@ -1,0 +1,10 @@
+Luma/.build/
+Luma/.validation-tools/
+Luma/__pycache__/
+Luma/scripts/__pycache__/
+build/
+build-logs/
+dist/
+*.xcuserstate
+xcuserdata/
+.DS_Store

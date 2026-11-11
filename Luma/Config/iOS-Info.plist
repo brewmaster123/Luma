@@ -50,6 +50,6 @@
 	<key>UIUserInterfaceStyle</key>
 	<string>Dark</string>
 	<key>NSAlarmKitUsageDescription</key>
-	<string>Luma использует системные будильники для непрямого метода, умного будильника и проверки коротких сигналов, в том числе при заблокированном iPhone.</string>
+	<string>Luma отменяет системные будильники предыдущих версий при переходе на короткие уведомления. Новые сигналы не используют AlarmKit.</string>
 </dict>
 </plist>

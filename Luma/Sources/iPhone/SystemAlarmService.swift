@@ -1,52 +1,44 @@
 import Foundation
 import Combine
-import UIKit
-#if canImport(AlarmKit)
-import AlarmKit
-import ActivityKit
-import AppIntents
-import SwiftUI
 
-@available(iOS 26.0, *)
-struct LumaAlarmMetadata: AlarmMetadata { var kind: String }
-
-/// A manual fallback, not an automatic alarm-fired callback. AlarmKit invokes
-/// stopIntent after a person dismisses the system alarm.
-@available(iOS 26.0, *)
-struct LumaStopAlarmIntent: LiveActivityIntent {
-  static var title: LocalizedStringResource = "Остановить сигнал Luma"
-  static var openAppWhenRun = false
-  @Parameter(title: "Идентификатор будильника") var alarmID: String
-  init() { alarmID = "" }
-  init(id: UUID) { alarmID = id.uuidString }
-  func perform() async throws -> some IntentResult {
-    guard let id = UUID(uuidString: alarmID) else { return .result() }
-    try await MainActor.run {
-      let manager = AlarmManager.shared
-      if try manager.alarms.contains(where: { $0.id == id }) { try manager.stop(id: id) }
-    }
-    return .result()
-  }
-}
-#endif
-
-/// Real AlarmKit scheduling plus a best-effort, app-driven four-second stop.
-/// No timer, sound EOF, stopIntent or async sequence is a background execution
-/// entitlement. A suspended/terminated process cannot promise this stop deadline.
+/// Historical name retained for callers/storage. All new cues are finite local
+/// notifications. No app timer, background assertion, AlarmKit state or
+/// notification callback is needed to stop their audio.
 @MainActor final class SystemAlarmService: ObservableObject {
   @Published private(set) var ledger = SystemAlarmLedger()
-  @Published private(set) var summary = "AlarmKit · требуется iOS 26 или новее"
-  @Published private(set) var lastStopReport = "Автоостановка на этом iPhone ещё не проверена"
+  @Published private(set) var summary = "Проверяем уведомления Luma…"
+  @Published private(set) var lastStopReport = "Звук — 4,0 сек. Акустическая проверка на iPhone ещё не выполнена."
   @Published private(set) var preparing = false
-  private let consentKey = "luma.alarmkit.short-stop-consent.v1"
+  @Published private(set) var authorized = false
+  let supported = true // UserNotifications is supported throughout our iOS 17+ target.
+  private let scheduler: any FiniteNotificationScheduling
+  private let cleanup: (Bool) throws -> Void
+  private let prepareSound: (URL) throws -> String
+  private let storageDirectory: URL?
+  private let defaults: UserDefaults
   private var loaded = false
+  private var bootstrapped = false
+  private var bootstrapping = false
+  private var bootstrapTask: Task<Void, Error>?
   private var generation = UUID()
-  private var updates: Task<Void, Never>?
-  private var deadlines: [UUID: Task<Void, Never>] = [:]
-  private var backgroundTask: UIBackgroundTaskIdentifier = .invalid
-  private var stopAttempts: [UUID: Int] = [:]
+  private var inFlightID: UUID?
   private var lastPoll = Date.distantPast
-  var acceptedLimitations: Bool { UserDefaults.standard.bool(forKey: consentKey) }
+  private var summaryWarning: String?
+  private var observedDeliveries = Set<String>()
+
+  init(scheduler: (any FiniteNotificationScheduling)? = nil, directory: URL? = nil,
+    defaults: UserDefaults = .standard, legacyCleanup: ((Bool) throws -> Void)? = nil,
+    soundBuilder: ((URL) throws -> String)? = nil) {
+    self.scheduler = scheduler ?? NotificationService()
+    storageDirectory = directory; self.defaults = defaults
+    prepareSound = soundBuilder ?? { try FiniteCueSoundBuilder.prepare(source: $0) }
+    if let legacyCleanup { cleanup = legacyCleanup }
+    else {
+      let legacy = LegacyAlarmCleanup()
+      cleanup = { try legacy.removeRemainingAlarms(requiresConfirmation: $0) }
+    }
+  }
+  var acceptedLimitations: Bool { defaults.bool(forKey: FiniteCuePolicy.consentKey) }
   var indirectSession: IndirectAlarmSession? { ledger.indirectSession }
   var indirectRecords: [SystemAlarmRecord] {
     guard let id = indirectSession?.id else { return [] }
@@ -54,53 +46,52 @@ struct LumaStopAlarmIntent: LiveActivityIntent {
       .sorted { $0.fireAt < $1.fireAt }
   }
   var queueUntil: Date? { indirectRecords.last?.fireAt }
-  var logURL: URL? { try? directory().appendingPathComponent("alarmkit-events.jsonl") }
-  var supported: Bool {
-    #if canImport(AlarmKit)
-    if #available(iOS 26.0, *) { return true }
-    #endif
-    return false
-  }
-  var authorized: Bool {
-    #if canImport(AlarmKit)
-    if #available(iOS 26.0, *) { return AlarmManager.shared.authorizationState == .authorized }
-    #endif
-    return false
-  }
+  var logURL: URL? { CueDiagnostics.logURL }
 
-  func bootstrap() throws {
+  func bootstrap() async throws {
+    if let bootstrapTask { try await bootstrapTask.value; return }
+    let task = Task { @MainActor in try await self.bootstrapBody() }
+    bootstrapTask = task
+    defer { bootstrapTask = nil }
+    try await task.value
+  }
+  private func bootstrapBody() async throws {
     try load()
-    #if canImport(AlarmKit)
-    if #available(iOS 26.0, *) {
-      guard AlarmManager.shared.authorizationState == .authorized else {
-        summary = "Разрешите системные будильники Luma"; return
+    if !bootstrapped {
+      bootstrapping = true
+      defer { bootstrapping = false }
+      // Do not erase schema-1 reservations until the old daemon queue is empty.
+      // Even an empty legacy ledger can have lost an orphan daemon ID.
+      try cleanup(ledger.schema == 1)
+      let oldPending = await scheduler.pending()
+      let oldDelivered = await scheduler.delivered()
+      let oldIDs = Set((oldPending + oldDelivered).map(\.identifier)
+        .filter { $0.hasPrefix("luma.") && !$0.hasPrefix(FiniteCuePolicy.prefix) })
+      try await scheduler.cancel(Array(oldIDs), includingDelivered: true)
+      let previous = ledger
+      if ledger.migrateToFiniteNotifications(now: Date()) {
+        do { try persist() } catch { ledger = previous; throw error }
+        CueDiagnostics.event("legacy_ledger_migrated", detail: "future owners and interval cadence retained")
       }
-      try completeCancellations()
-      observe()
-      try refresh()
+      bootstrapped = true
     }
-    #endif
+    if !preparing {
+      try await completeCancellations()
+      try await refreshRecords()
+    }
+    await refreshAccess()
   }
   func authorize(acceptLimitations: Bool = false) async throws {
-    try load()
-    guard supported else {
-      throw AppError.message("Для системных сигналов Luma нужен iPhone с iOS 26 или новее и сборка с Xcode 26 или новее.")
-    }
+    try await bootstrap()
     guard acceptedLimitations || acceptLimitations else {
-      throw AppError.message("Сначала прочитайте условия проверки автоостановки AlarmKit.")
+      throw AppError.message("Сначала ознакомьтесь с настройкой коротких уведомлений Luma.")
     }
-    #if canImport(AlarmKit)
-    if #available(iOS 26.0, *) {
-      let state = try await AlarmManager.shared.requestAuthorization()
-      guard state == .authorized else {
-        throw AppError.message("Разрешите будильники: Настройки iPhone → Приложения → Luma → Будильники.")
-      }
-      UserDefaults.standard.set(true, forKey: consentKey)
-      try completeCancellations()
-      observe()
-      try refresh()
+    try await scheduler.requestAuthorization()
+    await refreshAccess()
+    guard authorized else {
+      throw AppError.message("Разрешите уведомления Luma, звуки, баннеры и экран блокировки в настройках iPhone. Выключите беззвучный режим и разрешите Luma в Focus.")
     }
-    #endif
+    defaults.set(true, forKey: FiniteCuePolicy.consentKey)
   }
   func setIndirect(_ session: IndirectAlarmSession?) throws {
     try load()
@@ -110,352 +101,286 @@ struct LumaStopAlarmIntent: LiveActivityIntent {
   }
   func resetHandled(ownerID: UUID) throws {
     try load()
+    let previous = ledger
     ledger.handledKeys.removeAll { $0.contains(ownerID.uuidString) }
-    ledger.cancelledOwners?.removeAll { $0 == ownerID }
-    try persist()
+    do { try persist() } catch { ledger = previous; throw error }
   }
 
-  /// Keeps system-accepted records, reserves before scheduling, and cancels stale
-  /// IDs before replacing them. No notification or AVAudioPlayer fallback here.
   @discardableResult
   func reconcile(_ requests: [SystemAlarmRequest], activeOwners: Set<UUID>) async throws -> Set<UUID> {
-    try load()
-    guard !preparing else { throw AppError.message("Подготовка будильников ещё выполняется.") }
-    guard supported, acceptedLimitations else {
+    // A stop/delete can arrive while bootstrap is awaiting the notification
+    // daemon, before preparing becomes true. Invalidate that stale input too.
+    let operation = generation
+    try await bootstrap()
+    guard operation == generation, !Task.isCancelled else { throw CancellationError() }
+    guard !preparing else { throw AppError.message("Подготовка сигналов ещё выполняется.") }
+    guard acceptedLimitations else {
       if requests.isEmpty { return [] }
-      throw AppError.message("Откройте настройку будильника и разрешите AlarmKit перед запуском.")
+      throw AppError.message("Откройте настройку сигнала и разрешите уведомления Luma.")
     }
     preparing = true
-    let operation = generation
-    defer {
-      preparing = false; updateSummary()
-      do { try completeCancellations() }
-      catch { summary = "Отмена очереди не завершена: \(error.localizedDescription)" }
-    }
-    #if canImport(AlarmKit)
-    if #available(iOS 26.0, *) {
-      let manager = AlarmManager.shared
-      guard manager.authorizationState == .authorized else {
-        throw AppError.message("Доступ Luma к системным будильникам выключен в настройках iPhone.")
+    defer { preparing = false; updateSummary() }
+    do {
+      // Cancellation must also work if notification permission was revoked.
+      try await completeCancellations()
+      try await refreshRecords()
+      guard operation == generation, !Task.isCancelled else { throw CancellationError() }
+      await refreshAccess()
+      // Removing disabled/deleted owners must not depend on permission to add.
+      for record in ledger.records where record.kind != .probe && !activeOwners.contains(record.ownerID) {
+        try await cancel(record, includingDelivered: false)
       }
-      try completeCancellations()
-      observe()
-      try refresh()
-      let desired = SystemAlarmPolicy.desired(requests, after: Date(), handled: Set(ledger.handledKeys))
+      guard operation == generation, !Task.isCancelled else { throw CancellationError() }
+      guard authorized || requests.isEmpty else {
+        throw AppError.message("Уведомления или звуки Luma выключены. Проверьте настройки iPhone.")
+      }
+      let pending = await scheduler.pending()
+      guard operation == generation, !Task.isCancelled else { throw CancellationError() }
+      let foreignCount = pending.filter { !$0.identifier.hasPrefix(FiniteCuePolicy.prefix) }.count
+      let requestedKeys = Set(requests.map(\.key))
+      let protectedProbes = ledger.records.filter { $0.kind == .probe && !requestedKeys.contains($0.key) }.count
+      let capacity = max(0, FiniteCuePolicy.capacity(otherPending: foreignCount) - protectedProbes)
+      let desired = Array(SystemAlarmPolicy.desired(requests, after: Date(),
+        handled: Set(ledger.handledKeys)).prefix(capacity))
       let wanted = Set(desired.map(\.key))
-      let system = try manager.alarms
-      let alerting = Set(system.filter { $0.state == .alerting }.map(\.id))
-      for record in ledger.records {
-        let keepRinging = alerting.contains(record.id) && activeOwners.contains(record.ownerID)
-        if !wanted.contains(record.key) && record.kind != .probe && !keepRinging {
-          try cancel(record)
-        }
-      }
-      var soundCache: [URL: String] = [:]
-      for request in desired {
-        guard operation == generation, !Task.isCancelled else { throw CancellationError() }
-        let sound: String
-        if let cached = soundCache[request.source] { sound = cached }
-        else { sound = try AlarmKitSoundBuilder.prepare(source: request.source); soundCache[request.source] = sound }
-        if let previous = ledger.records.first(where: { $0.key == request.key }) {
-          if previous.soundName == sound && previous.title == request.title && !previous.pending { continue }
-          try cancel(previous)
-        }
-        if request.fireAt.timeIntervalSinceNow <= 1 { continue }
-        let record = SystemAlarmRecord(request: request, soundName: sound)
-        ledger.records.append(record)
-        do { try persist() } catch { ledger.records.removeAll { $0.id == record.id }; throw error }
-        do {
-          let stop = AlarmButton(text: "Остановить", textColor: .white, systemImageName: "stop.fill")
-          // Alert-only presentation: no countdown/snooze and no missing widget extension.
-          let alert = AlarmPresentation.Alert(title: LocalizedStringResource(stringLiteral: request.title),
-            stopButton: stop, secondaryButton: nil, secondaryButtonBehavior: nil)
-          let attributes = AlarmAttributes(presentation: AlarmPresentation(alert: alert),
-            metadata: LumaAlarmMetadata(kind: request.kind.rawValue),
-            tintColor: Color(red: 0.72, green: 0.68, blue: 0.98))
-          let configuration = AlarmManager.AlarmConfiguration<LumaAlarmMetadata>.alarm(
-            schedule: .fixed(request.fireAt), attributes: attributes,
-            stopIntent: LumaStopAlarmIntent(id: record.id), sound: .named(sound))
-          _ = try await manager.schedule(id: record.id, configuration: configuration)
-          guard operation == generation, !Task.isCancelled,
-            ledger.records.contains(where: { $0.id == record.id }) else {
-            try manager.cancel(id: record.id)
-            ledger.records.removeAll { $0.id == record.id }; try persist()
-            throw CancellationError()
-          }
-          if let i = ledger.records.firstIndex(where: { $0.id == record.id }) { ledger.records[i].pending = false }
-          do { try persist() } catch {
-            try? manager.cancel(id: record.id)
-            throw error
-          }
-          event("scheduled", record: record)
-          armDeadline(record)
-        } catch {
-          // A failed/ambiguous scheduling call must not leave an untracked alarm.
-          let stillExists = (try? manager.alarms.contains(where: { $0.id == record.id })) ?? true
-          if stillExists {
-            do { try manager.cancel(id: record.id) }
-            catch {
-              if !ledger.records.contains(where: { $0.id == record.id }) { ledger.records.append(record) }
-              try? persist(); armDeadline(record)
-              throw AppError.message("Не удалось подтвердить отмену системного сигнала. Откройте Luma и проверьте очередь. \(error.localizedDescription)")
-            }
-          }
-          ledger.records.removeAll { $0.id == record.id }
-          try? persist()
-          event("schedule_failed", record: record, detail: error.localizedDescription)
+      // Prepare every asset before disturbing an accepted future queue.
+      var sounds: [URL: String] = [:]
+      for request in desired where sounds[request.source] == nil {
+        do { sounds[request.source] = try prepareSound(request.source) }
+        catch {
+          CueDiagnostics.event("sound_prepare_failed", detail: error.localizedDescription)
           throw error
         }
       }
-      try refresh()
+      for record in ledger.records {
+        // Do not cancel a just-due pending delivery merely because its time is
+        // no longer in the future. Its sound still ends independently of us.
+        let justDue = activeOwners.contains(record.ownerID)
+          && (-5...1).contains(record.fireAt.timeIntervalSinceNow)
+        if !wanted.contains(record.key) && record.kind != .probe && !justDue {
+          try await cancel(record, includingDelivered: false)
+        }
+      }
+      for request in desired {
+        guard operation == generation, !Task.isCancelled else { throw CancellationError() }
+        guard let sound = sounds[request.source] else { continue }
+        if let previous = ledger.records.first(where: { $0.key == request.key }) {
+          if previous.soundName == sound && previous.title == request.title && !previous.pending { continue }
+          try await cancel(previous, includingDelivered: false)
+        }
+        guard operation == generation, !Task.isCancelled else { throw CancellationError() }
+        if request.fireAt.timeIntervalSinceNow <= 1 { continue }
+        let record = SystemAlarmRecord(request: request, soundName: sound)
+        ledger.records.append(record)
+        do { try persist() } catch {
+          ledger.records.removeAll { $0.id == record.id }; throw error
+        }
+        inFlightID = record.id
+        do {
+          CueDiagnostics.event("schedule_attempt", record: record)
+          try await scheduler.add(record)
+          guard operation == generation, !Task.isCancelled,
+            ledger.records.contains(where: { $0.id == record.id }) else { throw CancellationError() }
+          // Verify admission; add() returning is not acoustic confirmation.
+          let admitted = await scheduler.pending()
+          guard operation == generation, !Task.isCancelled else { throw CancellationError() }
+          guard admitted.contains(where: { $0.matches(record) }) else {
+            throw AppError.message("Система не подтвердила постановку сигнала в очередь.")
+          }
+          if let i = ledger.records.firstIndex(where: { $0.id == record.id }) { ledger.records[i].pending = false }
+          try persist()
+          inFlightID = nil
+          CueDiagnostics.event("schedule_accepted", record: record, detail: "nonrepeating; finite 4-second PCM sound")
+        } catch {
+          // A failed or cancelled await may still have admitted a request.
+          let original = error
+          do {
+            try await scheduler.cancel([record.notificationID], includingDelivered: false)
+            ledger.records.removeAll { $0.id == record.id }
+            inFlightID = nil
+            try persist()
+          } catch {
+            inFlightID = nil
+            CueDiagnostics.event("ambiguous_schedule_cleanup_failed", record: record, detail: error.localizedDescription)
+            throw AppError.message("Не удалось подтвердить отмену сигнала. Откройте Luma и отмените очередь. \(error.localizedDescription)")
+          }
+          CueDiagnostics.event("schedule_failed_or_cancelled", record: record, detail: original.localizedDescription)
+          throw original
+        }
+      }
+      try await completeCancellations()
+      guard operation == generation else { throw CancellationError() }
       return Set(ledger.records.filter { !$0.pending }.map(\.ownerID))
+    } catch {
+      inFlightID = nil
+      do { try await completeCancellations() }
+      catch { summaryWarning = "Отмена очереди не завершена: \(error.localizedDescription)" }
+      throw error
     }
-    #endif
-    throw AppError.message("AlarmKit недоступен в этой сборке.")
   }
 
-  func stopIndirect() throws {
+  func stopIndirect() async throws {
+    try await bootstrap()
     try load()
-    generation = UUID() // In-flight schedule must cancel itself on return.
+    generation = UUID()
     guard let id = indirectSession?.id else { return }
+    let previous = ledger
     ledger.indirectSession = nil
     ledger.cancelledOwners = Array(Set(ledger.cancelledOwners ?? []).union([id]))
-    try persist()
-    try completeCancellations(); updateSummary()
+    do { try persist() } catch { ledger = previous; throw error }
+    try await completeCancellations(); updateSummary()
   }
-  func cancelProbes() throws {
-    try load()
-    guard !preparing else { throw AppError.message("Дождитесь подготовки очереди AlarmKit.") }
-    for record in ledger.records where record.kind == .probe { try cancel(record) }
-  }
-  func stopAll() throws {
+  func cancelOwner(_ id: UUID) async throws {
     try load(); generation = UUID()
-    ledger.indirectSession = nil; ledger.cancelAllRequested = true
-    try persist()
-    try completeCancellations()
-    finishBackgroundTask(); updateSummary()
+    let previous = ledger
+    ledger.cancelledOwners = Array(Set(ledger.cancelledOwners ?? []).union([id]))
+    do { try persist() } catch { ledger = previous; throw error }
+    try cleanup(ledger.schema == 1)
+    try await completeCancellations(); updateSummary()
   }
-  private func completeCancellations() throws {
-    guard ledger.cancelAllRequested == true || !(ledger.cancelledOwners ?? []).isEmpty else { return }
-    #if canImport(AlarmKit)
-    if #available(iOS 26.0, *) {
-      if ledger.cancelAllRequested == true {
-        // Includes orphan IDs from a killed scheduling call or an older release.
-        let alarms = try AlarmManager.shared.alarms
-        for alarm in alarms { try AlarmManager.shared.cancel(id: alarm.id) }
-        deadlines.values.forEach { $0.cancel() }; deadlines.removeAll()
-        ledger.records.removeAll()
-      } else {
-        let owners = Set(ledger.cancelledOwners ?? [])
-        for record in ledger.records where owners.contains(record.ownerID) { try cancel(record) }
-      }
-      // A schedule awaiting the daemon can still return after cancellation.
-      // Keep the durable tombstone until that continuation has finished.
-      if preparing { try persist(); return }
-      ledger.cancelAllRequested = nil; ledger.cancelledOwners = nil
-      try persist()
-    }
-    #endif
-  }
-  func poll() {
-    guard Date().timeIntervalSince(lastPoll) >= 0.5 else { return }
-    lastPoll = Date()
-    do { try refresh() } catch { summary = error.localizedDescription }
-  }
-  func appBecameInactive() {
-    // Only finish imminent work with finite UIKit background time. This does
-    // not request a background assertion for the next 10–60 minute interval.
-    if ledger.records.contains(where: {
-      (-4...15).contains($0.fireAt.timeIntervalSinceNow)
-    }) { beginBackgroundTask() }
-    poll()
-  }
-  func refresh() throws {
+  func cancelProbes() async throws {
     try load()
-    #if canImport(AlarmKit)
-    if #available(iOS 26.0, *), AlarmManager.shared.authorizationState == .authorized {
-      try handle(AlarmManager.shared.alarms)
-    }
-    #endif
+    guard !preparing else { throw AppError.message("Дождитесь подготовки очереди сигналов.") }
+    preparing = true
+    defer { preparing = false }
+    for record in ledger.records where record.kind == .probe { try await cancel(record, includingDelivered: true) }
     updateSummary()
   }
-
-  #if canImport(AlarmKit)
-  @available(iOS 26.0, *)
-  private func observe() {
-    guard updates == nil else { return }
-    updates = Task { @MainActor [weak self] in
-      for await alarms in AlarmManager.shared.alarmUpdates {
-        guard !Task.isCancelled, let self else { return }
-        do { try self.handle(alarms); self.updateSummary() }
-        catch { self.summary = error.localizedDescription }
-      }
-    }
+  func stopAll() async throws {
+    try load(); generation = UUID()
+    let previous = ledger
+    ledger.indirectSession = nil; ledger.cancelAllRequested = true
+    do { try persist() } catch { ledger = previous; throw error }
+    // Cancel legacy alarms as well if bootstrap previously failed.
+    try cleanup(ledger.schema == 1)
+    try await completeCancellations(); updateSummary()
   }
-  @available(iOS 26.0, *)
-  private func handle(_ incoming: [Alarm]) throws {
-    // An asynchronous update can be older than an interleaved schedule/cancel.
-    // Re-read the daemon before treating an ID as absent.
-    let alarms = try AlarmManager.shared.alarms
-    let byID = Dictionary(uniqueKeysWithValues: alarms.map { ($0.id, $0) })
+  private func completeCancellations() async throws {
+    guard ledger.cancelAllRequested == true || !(ledger.cancelledOwners ?? []).isEmpty else { return }
+    let cancellationGeneration = generation
+    let all = ledger.cancelAllRequested == true
+    let owners = Set(ledger.cancelledOwners ?? [])
+    let records = ledger.records.filter { all || owners.contains($0.ownerID) }
+    var ids = Set(records.map(\.notificationID))
+    if all {
+      let pending = await scheduler.pending(), delivered = await scheduler.delivered()
+      ids.formUnion((pending + delivered).map(\.identifier).filter { $0.hasPrefix(FiniteCuePolicy.prefix) })
+    }
+    try await scheduler.cancel(Array(ids), includingDelivered: true)
+    let remove = Set(records.map(\.id).filter { $0 != inFlightID })
+    ledger.records.removeAll { remove.contains($0.id) }
+    // Keep a durable tombstone until an outstanding add() continuation finishes.
+    // A newer stop/delete may have persisted another intention during await.
+    // An older continuation must not clear that newer durable intention.
+    if inFlightID == nil && generation == cancellationGeneration {
+      ledger.cancelAllRequested = nil; ledger.cancelledOwners = nil
+    }
+    try persist()
+    CueDiagnostics.event("queue_cancel_verified", detail: "pending cancelled; an already playing finite sound may finish naturally")
+  }
+  func poll() async {
+    guard !preparing, !bootstrapping, Date().timeIntervalSince(lastPoll) >= 30 else { return }
+    lastPoll = Date()
+    do { try await bootstrap() } catch { summary = error.localizedDescription }
+  }
+  func appBecameInactive() {
+    CueDiagnostics.event("app_inactive", detail: "no stop timer; the OS owns admitted sounds")
+  }
+  func refresh() async throws {
+    guard !preparing else { return }
+    try await bootstrap()
+  }
+
+  private func refreshRecords() async throws {
+    let pending = await scheduler.pending()
+    let known = Set(ledger.records.map(\.notificationID))
+    let orphanIDs = pending.map(\.identifier).filter { $0.hasPrefix(FiniteCuePolicy.prefix) && !known.contains($0) }
+    try await scheduler.cancel(orphanIDs, includingDelivered: false)
+    if !orphanIDs.isEmpty { CueDiagnostics.event("orphan_requests_cancelled", detail: "\(orphanIDs.count)") }
+    let byID = Dictionary(uniqueKeysWithValues: pending.map { ($0.identifier, $0) })
     var changed = false
     for record in ledger.records {
-      if let alarm = byID[record.id] {
-        // A reservation with a real daemon alarm survived an interrupted await.
+      if let snapshot = byID[record.notificationID], snapshot.matches(record) {
         if record.pending, let i = ledger.records.firstIndex(where: { $0.id == record.id }) {
           ledger.records[i].pending = false; changed = true
+          CueDiagnostics.event("reservation_recovered", record: record)
         }
-        switch SystemAlarmPolicy.stopAction(record: record, alerting: alarm.state == .alerting, now: Date()) {
-        case .none: armDeadline(record)
-        case .wait:
-          beginBackgroundTask(); armDeadline(record)
-        case .stop(let lateness):
-          beginBackgroundTask()
-          do {
-            try AlarmManager.shared.stop(id: record.id)
-            // Check the daemon rather than trusting an audio completion or timer.
-            if try AlarmManager.shared.alarms.contains(where: { $0.id == record.id }) {
-              try AlarmManager.shared.cancel(id: record.id)
-            }
-            ledger.markHandled(record); changed = true
-            deadlines.removeValue(forKey: record.id)?.cancel()
-            stopAttempts[record.id] = nil
-            lastStopReport = lateness < 0.75
-              ? "Команда автоостановки выполнена · акустическая проверка нужна на iPhone"
-              : "Остановка опоздала на \(Int(lateness.rounded())) сек · фоновый тест не пройден"
-            event("stop_succeeded", record: record, lateBy: lateness)
-          } catch {
-            stopAttempts[record.id, default: 0] += 1
-            // Independent retry path; cancelling a fixed alarm also ends its alert.
-            do {
-              try AlarmManager.shared.cancel(id: record.id)
-              ledger.markHandled(record); changed = true
-              deadlines.removeValue(forKey: record.id)?.cancel()
-              lastStopReport = "Выполнена резервная отмена сигнала · проверьте журнал"
-              event("cancel_after_stop_error", record: record, lateBy: lateness)
-            } catch {
-              lastStopReport = "Не удалось остановить системный сигнал. Остановите его на экране iPhone."
-              if stopAttempts[record.id] == 1 { event("stop_failed", record: record, detail: error.localizedDescription) }
-              // Retain record. poll/alarmUpdates will retry while the process runs.
-            }
-          }
+      } else {
+        if byID[record.notificationID] != nil {
+          try await scheduler.cancel([record.notificationID], includingDelivered: false)
+          CueDiagnostics.event("unexpected_request_configuration", record: record)
         }
-      } else if !record.pending || !preparing {
-        ledger.markHandled(record); changed = true
-        deadlines.removeValue(forKey: record.id)?.cancel()
-        event("absent_or_dismissed", record: record)
+        if record.fireAt <= Date().addingTimeInterval(1) {
+          ledger.markHandled(record)
+          CueDiagnostics.event("due_request_no_longer_pending", record: record,
+            detail: "delivery/dismissal inferred; acoustic playback not observable")
+        } else {
+          // A missing FUTURE request can be re-created. Never mark it delivered.
+          ledger.records.removeAll { $0.id == record.id }
+          CueDiagnostics.event("future_request_missing", record: record)
+        }
+        changed = true
       }
     }
     if changed { try persist() }
-    if !ledger.records.contains(where: { (-4...15).contains($0.fireAt.timeIntervalSinceNow) }) {
-      finishBackgroundTask()
-    }
-  }
-  #endif
-
-  private func armDeadline(_ record: SystemAlarmRecord) {
-    guard deadlines[record.id] == nil else { return }
-    let delay = max(0.5, record.stopAt.timeIntervalSinceNow)
-    guard delay.isFinite else { return }
-    deadlines[record.id] = Task { @MainActor [weak self] in
-      do { try await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000)) } catch { return }
-      guard let self, !Task.isCancelled else { return }
-      self.deadlines[record.id] = nil
-      // No polling assumption: fetch the real state at the original deadline.
-      do { try self.refresh() } catch { self.summary = error.localizedDescription }
-    }
-  }
-  private func cancel(_ record: SystemAlarmRecord) throws {
-    #if canImport(AlarmKit)
-    if #available(iOS 26.0, *) {
-      let manager = AlarmManager.shared
-      if try manager.alarms.contains(where: { $0.id == record.id }) { try manager.cancel(id: record.id) }
-    }
-    #endif
-    deadlines.removeValue(forKey: record.id)?.cancel()
-    let retainReservation = preparing && record.pending
-      && (ledger.cancelAllRequested == true || (ledger.cancelledOwners ?? []).contains(record.ownerID))
-    if !retainReservation { ledger.records.removeAll { $0.id == record.id } }
-    try persist(); event("cancelled", record: record)
-  }
-  private func beginBackgroundTask() {
-    guard backgroundTask == .invalid else { return }
-    backgroundTask = UIApplication.shared.beginBackgroundTask(withName: "Finish Luma alarm") { [weak self] in
-      Task { @MainActor in
-        guard let self else { return }
-        self.event("background_time_expired")
-        // Fail short if background time ends while already ringing.
-        #if canImport(AlarmKit)
-        if #available(iOS 26.0, *) {
-          if let alarms = (try? AlarmManager.shared.alarms) {
-            for alarm in alarms where alarm.state == .alerting {
-              try? AlarmManager.shared.stop(id: alarm.id)
-            }
-          }
-        }
-        #endif
-        self.finishBackgroundTask()
+    for item in await scheduler.delivered() where item.identifier.hasPrefix(FiniteCuePolicy.prefix) {
+      if observedDeliveries.insert(item.identifier).inserted {
+        CueDiagnostics.event("system_delivery_observed", identifier: item.identifier,
+          detail: "finite sound end expected without a stop call; not an acoustic measurement")
       }
     }
   }
-  private func finishBackgroundTask() {
-    guard backgroundTask != .invalid else { return }
-    let id = backgroundTask; backgroundTask = .invalid
-    UIApplication.shared.endBackgroundTask(id)
+  private func cancel(_ record: SystemAlarmRecord, includingDelivered: Bool) async throws {
+    CueDiagnostics.event("cancel_attempt", record: record)
+    try await scheduler.cancel([record.notificationID], includingDelivered: includingDelivered)
+    ledger.records.removeAll { $0.id == record.id }
+    try persist()
+    CueDiagnostics.event("cancel_verified", record: record)
+  }
+  private func refreshAccess() async {
+    let access = await scheduler.access()
+    authorized = access.ready
+    summaryWarning = access.scheduledSummary ? "Выключите сводку уведомлений для Luma" : nil
+    updateSummary()
   }
   private func updateSummary() {
-    guard supported else { return }
-    guard authorized else { summary = "Разрешите системные будильники Luma"; return }
+    guard authorized else { summary = "Разрешите уведомления Luma, звуки и экран блокировки"; return }
     let count = ledger.records.filter { !$0.pending }.count
-    summary = count > 0 ? "AlarmKit · в очереди \(count) сигналов" : "AlarmKit · очередь пуста"
+    summary = "Короткие сигналы · в очереди \(count)"
+    if let summaryWarning { summary += " · \(summaryWarning)" }
   }
   private func directory() throws -> URL {
-    let folder = try FileManager.default.url(for: .applicationSupportDirectory,
-      in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent("LumaAlarmKit")
-    try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true,
-      attributes: [.protectionKey: FileProtectionType.completeUntilFirstUserAuthentication])
-    return folder
+    if let storageDirectory {
+      try FileManager.default.createDirectory(at: storageDirectory, withIntermediateDirectories: true)
+      return storageDirectory
+    }
+    return try CueDiagnostics.directory()
   }
   private func load() throws {
     guard !loaded else { return }
     let file = try directory().appendingPathComponent("alarms.json")
     if FileManager.default.fileExists(atPath: file.path) {
       var value = try JSONDecoder().decode(SystemAlarmLedger.self, from: Data(contentsOf: file))
-      guard value.schema == 1,
+      guard [1, 2].contains(value.schema),
         Set(value.records.map(\.id)).count == value.records.count,
         Set(value.records.map(\.key)).count == value.records.count,
         value.records.allSatisfy({ $0.fireAt.timeIntervalSince1970.isFinite
-          && $0.soundName.hasPrefix("luma-ak4-") && !$0.soundName.contains("/") }) else {
-        throw AppError.message("Повреждён журнал системных будильников. Новые сигналы не поставлены.")
+          && (value.schema == 1 ? ($0.soundName.hasPrefix("luma-ak4-")
+            && !$0.soundName.contains("/") && !$0.soundName.contains("\\"))
+            : FiniteCuePolicy.validSoundName($0.soundName)) }) else {
+        throw AppError.message("Повреждён журнал сигналов. Новая очередь не поставлена.")
       }
-      let changed = value.migrateToiPhoneOnly()
+      _ = value.migrateToiPhoneOnly()
       ledger = value
-      if changed {
-        do { try persist() } catch { loaded = false; throw error }
-      }
     }
     loaded = true
   }
   private func persist() throws {
     let file = try directory().appendingPathComponent("alarms.json")
+    #if os(iOS)
     try JSONEncoder().encode(ledger).write(to: file, options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])
-  }
-  private func event(_ name: String, record: SystemAlarmRecord? = nil,
-    lateBy: TimeInterval? = nil, detail: String? = nil) {
-    guard let file = logURL else { return }
-    var item: [String: Any] = ["event": name, "at": Date().timeIntervalSince1970,
-      "application_state": UIApplication.shared.applicationState.rawValue]
-    if let record { item["id"] = record.id.uuidString; item["kind"] = record.kind.rawValue
-      item["scheduled_at"] = record.fireAt.timeIntervalSince1970; item["stop_at"] = record.stopAt.timeIntervalSince1970 }
-    if let lateBy { item["late_by_seconds"] = lateBy }
-    if let detail { item["detail"] = String(detail.prefix(300)) }
-    guard var data = try? JSONSerialization.data(withJSONObject: item, options: [.sortedKeys]) else { return }
-    data.append(10)
-    do {
-      if FileManager.default.fileExists(atPath: file.path) {
-        let handle = try FileHandle(forWritingTo: file); defer { try? handle.close() }
-        try handle.seekToEnd(); try handle.write(contentsOf: data)
-      } else { try data.write(to: file, options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication]) }
-    } catch { /* Diagnostics must not prevent stopping an alarm. */ }
+    #else
+    try JSONEncoder().encode(ledger).write(to: file, options: .atomic)
+    #endif
   }
 }

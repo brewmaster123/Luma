@@ -1,0 +1,256 @@
+{
+  "kind": "tree-sitter-grammar-and-YAML-only",
+  "swift_compiled": false,
+  "xctest_executed": false,
+  "physical_device_tested": false,
+  "files": [
+    {
+      "file": "Package.swift",
+      "errors": []
+    },
+    {
+      "file": "scripts\\check-audio-on-mac.swift",
+      "errors": []
+    },
+    {
+      "file": "scripts\\check-finite-queue-on-mac.swift",
+      "errors": []
+    },
+    {
+      "file": "Sources\\iPhone\\AlarmEditor.swift",
+      "errors": []
+    },
+    {
+      "file": "Sources\\iPhone\\CueAudioImporter.swift",
+      "errors": []
+    },
+    {
+      "file": "Sources\\iPhone\\DesignSystem.swift",
+      "errors": []
+    },
+    {
+      "file": "Sources\\iPhone\\FiniteCueSoundBuilder.swift",
+      "errors": []
+    },
+    {
+      "file": "Sources\\iPhone\\IndirectMethodView.swift",
+      "errors": []
+    },
+    {
+      "file": "Sources\\iPhone\\JournalView.swift",
+      "errors": []
+    },
+    {
+      "file": "Sources\\iPhone\\JournalVoiceComposer.swift",
+      "errors": []
+    },
+    {
+      "file": "Sources\\iPhone\\LegacyAlarmCleanup.swift",
+      "errors": []
+    },
+    {
+      "file": "Sources\\iPhone\\LumaApp.swift",
+      "errors": []
+    },
+    {
+      "file": "Sources\\iPhone\\LumaNotificationDelegate.swift",
+      "errors": []
+    },
+    {
+      "file": "Sources\\iPhone\\PhoneRootView.swift",
+      "errors": []
+    },
+    {
+      "file": "Sources\\iPhone\\SettingsView.swift",
+      "errors": []
+    },
+    {
+      "file": "Sources\\iPhone\\SignalReadinessView.swift",
+      "errors": []
+    },
+    {
+      "file": "Sources\\iPhone\\SoundLibraryView.swift",
+      "errors": []
+    },
+    {
+      "file": "Sources\\iPhone\\SystemAlarmService.swift",
+      "errors": []
+    },
+    {
+      "file": "Sources\\LumaCore\\AcousticFeatures.swift",
+      "errors": []
+    },
+    {
+      "file": "Sources\\LumaCore\\AlarmStopWindow.swift",
+      "errors": []
+    },
+    {
+      "file": "Sources\\LumaCore\\CueEngine.swift",
+      "errors": []
+    },
+    {
+      "file": "Sources\\LumaCore\\CuePlaybackStopper.swift",
+      "errors": []
+    },
+    {
+      "file": "Sources\\LumaCore\\FiniteCuePolicy.swift",
+      "errors": []
+    },
+    {
+      "file": "Sources\\LumaCore\\IndirectMethod.swift",
+      "errors": []
+    },
+    {
+      "file": "Sources\\LumaCore\\iPhoneOnlyMigration.swift",
+      "errors": []
+    },
+    {
+      "file": "Sources\\LumaCore\\LumaV2.swift",
+      "errors": []
+    },
+    {
+      "file": "Sources\\LumaCore\\Models.swift",
+      "errors": []
+    },
+    {
+      "file": "Sources\\LumaCore\\MultimodalEstimator.swift",
+      "errors": []
+    },
+    {
+      "file": "Sources\\LumaCore\\PairedCuePolicy.swift",
+      "errors": []
+    },
+    {
+      "file": "Sources\\LumaCore\\RealtimeREMEngine.swift",
+      "errors": []
+    },
+    {
+      "file": "Sources\\LumaCore\\REMEstimator.swift",
+      "errors": []
+    },
+    {
+      "file": "Sources\\LumaCore\\SystemAlarmPlan.swift",
+      "errors": []
+    },
+    {
+      "file": "Sources\\Platform\\AppError.swift",
+      "errors": []
+    },
+    {
+      "file": "Sources\\Platform\\AppModel.swift",
+      "errors": []
+    },
+    {
+      "file": "Sources\\Platform\\CueDiagnostics.swift",
+      "errors": []
+    },
+    {
+      "file": "Sources\\Platform\\HealthService.swift",
+      "errors": []
+    },
+    {
+      "file": "Sources\\Platform\\LocalStore.swift",
+      "errors": []
+    },
+    {
+      "file": "Sources\\Platform\\NotificationService.swift",
+      "errors": []
+    },
+    {
+      "file": "Sources\\Platform\\PhoneAudio.swift",
+      "errors": []
+    },
+    {
+      "file": "Tests\\LumaCoreTests\\AlarmStopWindowTests.swift",
+      "errors": []
+    },
+    {
+      "file": "Tests\\LumaCoreTests\\AudioAndAlarmTests.swift",
+      "errors": []
+    },
+    {
+      "file": "Tests\\LumaCoreTests\\CoreSafetyTests.swift",
+      "errors": []
+    },
+    {
+      "file": "Tests\\LumaCoreTests\\CuePlaybackStopperTests.swift",
+      "errors": []
+    },
+    {
+      "file": "Tests\\LumaCoreTests\\FiniteCuePolicyTests.swift",
+      "errors": []
+    },
+    {
+      "file": "Tests\\LumaCoreTests\\IndirectMethodTests.swift",
+      "errors": []
+    },
+    {
+      "file": "Tests\\LumaCoreTests\\iPhoneOnlyMigrationTests.swift",
+      "errors": []
+    },
+    {
+      "file": "Tests\\LumaCoreTests\\NotificationMigrationTests.swift",
+      "errors": []
+    },
+    {
+      "file": "Tests\\LumaCoreTests\\PairedCueTests.swift",
+      "errors": []
+    },
+    {
+      "file": "Tests\\LumaCoreTests\\RealtimeREMTests.swift",
+      "errors": []
+    },
+    {
+      "file": "Tests\\LumaCoreTests\\SystemAlarmPlanTests.swift",
+      "errors": []
+    },
+    {
+      "file": "Tests\\LumaCoreTests\\V2Tests.swift",
+      "errors": []
+    },
+    {
+      "file": "scripts\\check-audio-on-mac.sh",
+      "errors": []
+    },
+    {
+      "file": "scripts\\check-finite-queue-on-mac.sh",
+      "errors": []
+    },
+    {
+      "file": "scripts\\check-on-mac.sh",
+      "errors": []
+    },
+    {
+      "file": "workflow: Check project and tools",
+      "errors": []
+    },
+    {
+      "file": "workflow: Check native project structure",
+      "errors": []
+    },
+    {
+      "file": "workflow: Check preserved planner, data and resources",
+      "errors": []
+    },
+    {
+      "file": "workflow: Run core tests",
+      "errors": []
+    },
+    {
+      "file": "workflow: Verify audio import with AVFoundation",
+      "errors": []
+    },
+    {
+      "file": "workflow: Verify queue recovery and cancellation",
+      "errors": []
+    },
+    {
+      "file": "workflow: Build iPhone app",
+      "errors": []
+    },
+    {
+      "file": "workflow: Package unsigned IPA",
+      "errors": []
+    }
+  ]
+}

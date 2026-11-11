@@ -21,6 +21,10 @@ struct PhoneRootView: View {
       .sheet(isPresented: $model.showOnboarding) {
         IntroductionView().environmentObject(model).interactiveDismissDisabled()
       }
+      .sheet(isPresented: $model.showSignalMigration) {
+        SignalReadinessView(continueTitle: "Включить сохранённые сигналы")
+          .environmentObject(model)
+      }
   }
 }
 struct NightView: View {

@@ -41,11 +41,11 @@ final class SystemAlarmPlanTests: XCTestCase {
   func testQueueIsFiniteAndDoesNotCatchUpMissedSignals() {
     let s = IndirectAlarmSession(settings: .init(intervalMinutes: 10),
       signal: SignalSettings(), startedAt: start)
-    XCTAssertEqual(s.dates(after: start).count, 72)
+    XCTAssertEqual(s.dates(after: start).count, 60)
     XCTAssertEqual(s.dates(after: start.addingTimeInterval(600)).first,
       start.addingTimeInterval(1200))
     let many = (1...150).map { request(Double($0) * 10, key: String($0)) }
-    XCTAssertEqual(SystemAlarmPolicy.desired(many, after: start, handled: []).count, 96)
+    XCTAssertEqual(SystemAlarmPolicy.desired(many, after: start, handled: []).count, 60)
   }
   func testLedgerReservationAndHandledKeysSurviveRelaunch() throws {
     var ledger = SystemAlarmLedger()

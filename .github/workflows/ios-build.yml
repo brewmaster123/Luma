@@ -1,4 +1,4 @@
-name: Luma - iPhone AlarmKit
+name: Luma - finite four-second cues
 
 on:
   push:
@@ -44,6 +44,9 @@ jobs:
         id: structure
         run: python3 scripts/check-static.py
 
+      - name: Check preserved planner, data and resources
+        run: python3 scripts/check-preserved-sources.py
+
       - name: Run core tests
         id: core
         run: |
@@ -56,6 +59,14 @@ jobs:
         run: |
           set -euo pipefail
           bash scripts/check-audio-on-mac.sh 2>&1 | tee ../build-logs/audio-import.log
+
+      - name: Verify queue recovery and cancellation
+        id: queue
+        timeout-minutes: 3
+        if: ${{ !cancelled() && steps.project.outcome == 'success' && steps.structure.outcome == 'success' }}
+        run: |
+          set -euo pipefail
+          bash scripts/check-finite-queue-on-mac.sh 2>&1 | tee ../build-logs/finite-queue.log
 
       - name: Build iPhone app
         id: iphone
@@ -83,6 +94,8 @@ jobs:
           test ! -d "$LUMA_APP/Watch"
           test -f "$LUMA_APP/Manrope-Regular.ttf"
           test -f "$LUMA_APP/luma-tone-4.wav"
+          test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$LUMA_APP/Info.plist")" = "0.9.2"
+          test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' "$LUMA_APP/Info.plist")" = "18"
           test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleSupportedPlatforms:0' "$LUMA_APP/Info.plist")" = "iPhoneOS"
           /usr/bin/lipo "$LUMA_APP/Luma" -verify_arch arm64
           mkdir -p ../dist/Payload

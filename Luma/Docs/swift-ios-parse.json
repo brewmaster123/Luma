@@ -1,7 +1,0 @@
-{
-  "compiler": "Swift 6.2.4",
-  "target": "arm64-apple-ios17.0",
-  "swift_sources": 33,
-  "exit_code": 0,
-  "mode": "frontend parse only, not Apple SDK type checking or native linking"
-}

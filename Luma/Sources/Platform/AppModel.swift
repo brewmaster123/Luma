@@ -1,7 +1,7 @@
 import Combine
 import Foundation
 
-/// iPhone-only application state. AlarmKit owns alarms and system Watch
+/// iPhone-only application state. UserNotifications owns cues and system Watch
 /// forwarding; there is no watch app, WCSession, workout mirroring or cue bridge.
 @MainActor final class AppModel: ObservableObject {
   @Published private(set) var archive = AppArchive()
@@ -15,11 +15,10 @@ import Foundation
   @Published private(set) var alarmPermissionReady = false
   @Published var message: String?
   @Published var showOnboarding = false
+  @Published var showSignalMigration = false
   let audio = PhoneAudio()
   let systemAlarms = SystemAlarmService()
   private let health = HealthService()
-  private let notifications = NotificationService() // Old notification cleanup only.
-  private let legacyAlarms = LegacyAlarmCleanup()
   private var store: LocalStore?
   private var storageProblem: String?
   private var started = false
@@ -62,7 +61,7 @@ import Foundation
   var indirectIntervalMinutes: Int {
     (state.indirectMethod ?? IndirectMethodSettings()).validated.intervalMinutes
   }
-  var newAlarmDelivery: PhoneAlarmDelivery { .systemAlarm }
+  var newAlarmDelivery: PhoneAlarmDelivery { .shortCue }
   var versionLabel: String {
     let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "—"
     let build = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "—"
@@ -75,13 +74,16 @@ import Foundation
   }
   func start() async {
     guard !started else { return }; started = true
-    // No old sound notification queues remain on iPhone after this migration.
-    await notifications.cancelPrefix("luma.")
-    do { try legacyAlarms.removeRemainingAlarms(); try systemAlarms.bootstrap() }
+    // Preserve accepted finite cues on relaunch; bootstrap migrates old queues.
+    do { try await systemAlarms.bootstrap() }
     catch { message = error.localizedDescription }
     startTicker()
     guard storageProblem == nil, save() else { return }
     await rebuildAlarms()
+    if systemAlarms.ledger.schema == 2, !systemAlarms.acceptedLimitations, !showOnboarding,
+      indirectRunning || state.alarms.contains(where: { $0.next(after: Date()) != nil }) {
+      showSignalMigration = true
+    }
   }
   func resume() async {
     isForeground = true; alarmOrderDate = Date()
@@ -98,7 +100,7 @@ import Foundation
     }
   }
   private func tick() async {
-    systemAlarms.poll()
+    await systemAlarms.poll()
     if Date().timeIntervalSince(alarmOrderDate) >= 30 { alarmOrderDate = Date() }
     if storageProblem == nil, !rebuilding, !systemAlarms.preparing, systemAlarms.acceptedLimitations,
       Date().timeIntervalSince(lastSystemRefill) >= 60 {
@@ -109,7 +111,7 @@ import Foundation
     archive.onboardingComplete = true; showOnboarding = false; save()
   }
   func refreshAlarmAccess() async {
-    do { try systemAlarms.bootstrap() } catch { message = error.localizedDescription }
+    do { try await systemAlarms.bootstrap() } catch { message = error.localizedDescription }
     alarmPermissionSummary = systemAlarms.summary
     alarmPermissionReady = systemAlarms.authorized && systemAlarms.acceptedLimitations
   }
@@ -137,14 +139,14 @@ import Foundation
     defer { busy = false }
     do {
       try await systemAlarms.authorize()
-      let signal = state.signal.systemAlarmSignal
+      let signal = state.signal.finiteCueSignal
       let session = IndirectAlarmSession(settings: .init(intervalMinutes: indirectIntervalMinutes), signal: signal)
-      _ = try AlarmKitSoundBuilder.prepare(source: audio.soundURL(session.signal, clips: state.voices))
+      _ = try FiniteCueSoundBuilder.prepare(source: audio.soundURL(session.signal, clips: state.voices))
       try systemAlarms.setIndirect(session)
       await rebuildAlarms()
       guard !systemAlarms.indirectRecords.isEmpty else {
-        try systemAlarms.stopIndirect()
-        throw AppError.message(message ?? "AlarmKit не принял сигналы. Режим не запущен.")
+        try await systemAlarms.stopIndirect()
+        throw AppError.message(message ?? "Система не приняла уведомления. Режим не запущен.")
       }
 
     } catch { message = error.localizedDescription }
@@ -153,7 +155,7 @@ import Foundation
   func stopIndirectMethod() async {
     guard !busy else { return }
     busy = true; defer { busy = false }
-    do { try systemAlarms.stopIndirect() }
+    do { try await systemAlarms.stopIndirect() }
     catch { message = "Не все сигналы отменены: \(error.localizedDescription)" }
   }
 
@@ -164,7 +166,7 @@ import Foundation
     for i in state.alarms.indices { state.alarms[i].enabled = false }
     guard save() else { state = previous; return }
     do {
-      try systemAlarms.stopAll()
+      try await systemAlarms.stopAll()
       queuedAlarmIDs = []
     } catch { message = error.localizedDescription }
   }
@@ -174,30 +176,32 @@ import Foundation
     busy = true; defer { busy = false }
     do {
       try await systemAlarms.authorize()
-      try systemAlarms.cancelProbes()
+      try await systemAlarms.cancelProbes()
       let id = UUID(), date = Date().addingTimeInterval(max(3, min(60, seconds)))
-      let signal = state.signal.systemAlarmSignal
+      let signal = state.signal.finiteCueSignal
       let request = SystemAlarmRequest(key: "luma.probe.\(id.uuidString)", ownerID: id,
-        kind: .probe, fireAt: date, title: "Проба AlarmKit · Luma",
+        kind: .probe, fireAt: date, title: "Короткий сигнал · Luma",
         source: try audio.soundURL(signal, clips: state.voices))
       let requests = try systemAlarmRequests() + [request]
       let queued = try await systemAlarms.reconcile(requests, activeOwners: systemAlarmOwners.union([id]))
       guard queued.contains(id) else {
         throw AppError.message("Пробный сигнал не поставлен. Повторите пробу с задержкой 60 секунд.")
       }
-      message = "Проба AlarmKit через \(Int(max(3, min(60, seconds)))) сек. Заблокируйте iPhone. Звук — 4 сек; если автоостановка не сработает, остановите сигнал на экране."
+      message = "Проба через \(Int(max(3, min(60, seconds)))) сек. Выключите беззвучный режим, разрешите Luma в Focus и заблокируйте iPhone. Проверьте один звук длиной 4 секунды."
     } catch { message = error.localizedDescription }
   }
 
   func preparePhoneSignals(acceptLimitations: Bool = false) async throws {
-    try legacyAlarms.removeRemainingAlarms()
     try await systemAlarms.authorize(acceptLimitations: acceptLimitations)
     alarmPermissionSummary = systemAlarms.summary
     alarmPermissionReady = true
+    // Resume the migrated cadence and saved alarms after the new notification
+    // contract has been explained. Do not require recreating an interval session.
+    await rebuildAlarms()
   }
 
   func updateSignal(_ s: SignalSettings) {
-    state.signal = s.systemAlarmSignal
+    state.signal = s.finiteCueSignal
     save()
   }
 
@@ -206,12 +210,12 @@ import Foundation
     busy = true
     defer { busy = false }
     var alarm = input
-    alarm.title = String(alarm.title.prefix(80)); alarm.signal = alarm.signal.systemAlarmSignal
-    alarm.phoneDelivery = .systemAlarm
+    alarm.title = String(alarm.title.prefix(80)); alarm.signal = alarm.signal.finiteCueSignal
+    alarm.phoneDelivery = .shortCue
     alarm.signal.melodySeconds = 4
     if alarm.enabled {
       do {
-        _ = try AlarmKitSoundBuilder.prepare(source: audio.soundURL(alarm.signal, clips: state.voices))
+        _ = try FiniteCueSoundBuilder.prepare(source: audio.soundURL(alarm.signal, clips: state.voices))
         try await preparePhoneSignals()
         try systemAlarms.resetHandled(ownerID: alarm.id)
       } catch { message = error.localizedDescription; return false }
@@ -220,10 +224,19 @@ import Foundation
     if let i = state.alarms.firstIndex(where: { $0.id == alarm.id }) { state.alarms[i] = alarm }
     else { state.alarms.append(alarm) }
     guard save() else { state = old; return false }
+    if old.alarms.first(where: { $0.id == alarm.id }) != alarm {
+      do { try await systemAlarms.cancelOwner(alarm.id) }
+      catch {
+        state = old; save()
+        message = "Не удалось отменить прежние сигналы будильника: \(error.localizedDescription)"
+        await rebuildAlarms()
+        return false
+      }
+    }
     alarmOrderDate = Date(); await rebuildAlarms()
     if alarm.enabled && alarm.next(after: Date()) != nil,
       !queuedAlarmIDs.contains(alarm.id) {
-      let schedulingError = message ?? "AlarmKit не принял будильник."
+      let schedulingError = message ?? "Система не приняла уведомление будильника."
       state = old; save(); await rebuildAlarms()
       message = schedulingError
       return false
@@ -252,6 +265,8 @@ import Foundation
     let old = state
     state.alarms.removeAll { $0.id == id }
     guard save() else { state = old; return }
+    do { try await systemAlarms.cancelOwner(id) }
+    catch { message = "Отмена удалённого будильника не завершена: \(error.localizedDescription)" }
     await rebuildAlarms()
 
   }
@@ -396,14 +411,14 @@ import Foundation
     repeat {
       rebuildAgain = false
       do {
-        try legacyAlarms.removeRemainingAlarms(); try systemAlarms.bootstrap()
+        try await systemAlarms.bootstrap()
         if systemAlarms.acceptedLimitations {
           queuedAlarmIDs = try await systemAlarms.reconcile(try systemAlarmRequests(), activeOwners: systemAlarmOwners)
           lastSystemQueueError = nil
         } else { queuedAlarmIDs = [] }
       } catch {
         queuedAlarmIDs = Set(systemAlarms.ledger.records.filter { !$0.pending }.map(\.ownerID))
-        let text = "Очередь AlarmKit: \(error.localizedDescription)"
+        let text = "Очередь сигналов: \(error.localizedDescription)"
         if text != lastSystemQueueError { message = text; lastSystemQueueError = text }
       }
       alarmPermissionSummary = systemAlarms.summary

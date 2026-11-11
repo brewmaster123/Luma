@@ -1,45 +1,55 @@
 import Foundation
-#if canImport(AlarmKit)
+#if os(iOS) && canImport(AlarmKit)
 import AlarmKit
 #endif
 
-/// Upgrade cleanup for v0.3/v0.4 only. Current AlarmKit records belong to
-/// SystemAlarmService and MUST survive both relaunch and a queue rebuild.
+/// This release never schedules AlarmKit. Cancel this app's daemon alarms,
+/// including orphan IDs and ringing alarms, before admitting any finite cue.
 @MainActor final class LegacyAlarmCleanup {
   private let keys = ["luma.system-alarm.configurations.v1", "luma.alarmkit.stop-windows.v1"]
+  private let oldConsentKey = "luma.alarmkit.short-stop-consent.v1"
   private var completed = false
-
-  func removeRemainingAlarms() throws {
+  func removeRemainingAlarms(requiresConfirmation: Bool = false) throws {
     guard !completed else { return }
-    guard hasLegacyRecords else { finish(); return }
-    #if canImport(AlarmKit)
+    #if os(iOS)
+    if #unavailable(iOS 26.0) {
+      // This OS cannot own AlarmKit alarms. Notification migration is separate.
+      finish(); return
+    }
+    #endif
+    #if os(iOS) && canImport(AlarmKit)
     if #available(iOS 26.0, *) {
       let manager = AlarmManager.shared
       if manager.authorizationState == .authorized {
-        // AlarmManager lists this app's alarms only, including an already ringing one.
-        // Enumerate them even if a prior crash lost Luma's cached IDs.
         let alarms = try manager.alarms
-        var failures = 0
         for alarm in alarms {
-          do { try manager.cancel(id: alarm.id) } catch { failures += 1 }
+          CueDiagnostics.event("legacy_alarmkit_cancel_attempt", identifier: alarm.id.uuidString)
+          do {
+            try manager.cancel(id: alarm.id)
+            CueDiagnostics.event("legacy_alarmkit_cancel_returned", identifier: alarm.id.uuidString)
+          } catch {
+            CueDiagnostics.event("legacy_alarmkit_cancel_failed", identifier: alarm.id.uuidString,
+              detail: error.localizedDescription)
+            throw error
+          }
         }
-        guard failures == 0, try manager.alarms.isEmpty else {
-          throw AppError.message("Не удалось отменить сигналы предыдущей версии. Откройте Luma ещё раз перед настройкой новых сигналов.")
+        let remaining = try manager.alarms
+        guard remaining.isEmpty else {
+          throw AppError.message("Не все старые будильники отменены. Новые сигналы не включены; откройте Luma ещё раз.")
         }
-        finish()
-        return
+        CueDiagnostics.event("legacy_alarmkit_empty_verified")
+        finish(); return
       }
     }
     #endif
-    guard !hasLegacyRecords else {
-      throw AppError.message("Сначала нужно отменить будильники предыдущей версии. В настройках iPhone разрешите Luma доступ к будильникам и снова откройте приложение. Данные и записи сохранятся.")
+    guard !requiresConfirmation && !hasLegacyRecords else {
+      throw AppError.message("Нужно отменить старые будильники AlarmKit. Разрешите Luma доступ к будильникам в настройках iPhone и откройте приложение снова. Новая очередь пока не включена.")
     }
-    // Fresh installs and older iOS versions do not request AlarmKit permission.
     finish()
   }
-
   private var hasLegacyRecords: Bool {
-    keys.contains { key in
+    if UserDefaults.standard.bool(forKey: oldConsentKey) { return true }
+    return keys.contains { key in
       if let dictionary = UserDefaults.standard.dictionary(forKey: key) { return !dictionary.isEmpty }
       if let data = UserDefaults.standard.data(forKey: key) {
         guard let value = try? JSONSerialization.jsonObject(with: data) else { return true }
@@ -52,6 +62,7 @@ import AlarmKit
   }
   private func finish() {
     keys.forEach { UserDefaults.standard.removeObject(forKey: $0) }
+    UserDefaults.standard.removeObject(forKey: oldConsentKey)
     completed = true
   }
 }

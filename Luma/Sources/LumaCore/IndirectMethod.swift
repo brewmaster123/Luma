@@ -5,8 +5,10 @@ public enum LumaFeatures {
   public static let remNightEnabled = false
   /// No documented system-managed short auto-dismiss is available in AlarmKit.
   /// App timers and alarmUpdates cannot guarantee execution on a locked phone.
-  /// The test build explicitly discloses this limitation before arming AlarmKit.
+  /// AlarmKit is now used only to cancel legacy alarms during migration.
   public static let alarmKitAutomaticStopVerified = false
+  /// File duration and queue tests are not physical iPhone validation.
+  public static let finiteNotificationDeviceVerified = false
 }
 
 public struct IndirectMethodSettings: Codable, Equatable, Sendable {

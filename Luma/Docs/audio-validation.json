@@ -1,0 +1,16 @@
+{
+  "kind": "bundled-WAV-measurement",
+  "file": "Resources/luma-tone-4.wav",
+  "sample_rate": 22050,
+  "frames": 88200,
+  "seconds": 4.0,
+  "channels": 1,
+  "bits_per_sample": 16,
+  "peak_dbfs": -14.803,
+  "first_sample": 0,
+  "last_sample": 0,
+  "last_100_samples_peak": 20,
+  "last_100ms_rms": 150.733,
+  "physical_playback_tested": false,
+  "runtime_custom_CAF_conversion_tested": false
+}

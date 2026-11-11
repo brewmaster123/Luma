@@ -4,7 +4,7 @@ import XCTest
 
 final class iPhoneOnlyMigrationTests: XCTestCase {
   private let now = Date(timeIntervalSince1970: 2_000_000_000)
-  func testEveryLegacyOutputBecomesAnAlarmKitAlarmWithoutChangingSchedule() {
+  func testEveryLegacyOutputBecomesAFiniteCueWithoutChangingSchedule() {
     var state = LumaState()
     let voice = UUID()
     for output in SignalOutput.allCases {
@@ -23,7 +23,7 @@ final class iPhoneOnlyMigrationTests: XCTestCase {
       XCTAssertEqual(alarm.signal.output, .phone)
       XCTAssertEqual(alarm.signal.melodySeconds, 4)
       XCTAssertEqual(alarm.signal.voiceID, voice)
-      XCTAssertEqual(alarm.delivery, .systemAlarm)
+      XCTAssertEqual(alarm.delivery, .shortCue)
     }
   }
   func testArchiveKeepsDiaryVoiceNotesFeedbackAndCompletedSessions() throws {
