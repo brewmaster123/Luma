@@ -1014,17 +1014,12 @@
       "isa": "PBXBuildFile",
       "fileRef": "EAAAAEC84AAE203874A82FCF"
     },
-    "F8CF244847B7FB0281ED98C7": {
-      "isa": "PBXBuildFile",
-      "fileRef": "8CF4BF41879BAAE186550AC7"
-    },
     "17BE3E696A7C62606E17CCF5": {
       "isa": "PBXResourcesBuildPhase",
       "buildActionMask": 2147483647,
       "files": [
         "627C7A87A345856BB61E907C",
-        "A4DA5A774528F9DBB99BB38F",
-        "F8CF244847B7FB0281ED98C7"
+        "A4DA5A774528F9DBB99BB38F"
       ],
       "runOnlyForDeploymentPostprocessing": 0
     },

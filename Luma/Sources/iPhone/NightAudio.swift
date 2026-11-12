@@ -23,7 +23,7 @@ import MediaPlayer
   private var leaseEnd: Task<Void, Never>?
   private var stopping = false
   var ready: Bool {
-    enabled && !interrupted && player?.isPlaying == true
+    enabled && !stopping && !interrupted && player?.isPlaying == true
       && AVAudioSession.sharedInstance().outputVolume > 0 && (until ?? .distantPast) > Date()
   }
   override init() {
@@ -89,6 +89,10 @@ import MediaPlayer
       lease = UIApplication.shared.beginBackgroundTask(withName: "Luma finish alarm Stop") { [weak self] in
         Task { @MainActor in await self?.stopSafely("Время фоновой остановки истекло") }
       }
+    }
+    if lease == .invalid && interrupted {
+      Task { @MainActor [weak self] in await self?.stopSafely("Система не дала время для остановки; очередь снимается") }
+      return
     }
     leaseEnd?.cancel()
     leaseEnd = Task { @MainActor [weak self] in

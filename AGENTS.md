@@ -16,7 +16,7 @@ Luma — короткие ночные подсказки и дневник. О�
 - PhoneAudio.swift: не деактивирует общую сессию, пока NightAudio её использует; конфликтующие записи запрещены.
 - WatchCuePlan.swift: full snapshot с revision, UUID/датами/названиями, лимит 60/12h; reject stale/replayed revisions.
 - WatchCueLink.swift: updateApplicationContext + immediate message при reachability, только фактический ack.
-- WatchCueStore.swift: Watch local notifications, nonrepeating, собственный WAV4, pending verification, cancellation, queued revision protection, завершение WC background tasks.
+- WatchCueStore.swift: Watch local notifications, nonrepeating, стандартный системный звук watchOS, pending verification, cancellation, queued revision protection, завершение WC background tasks.
 - LumaWatchApp.swift: permission/status/refresh и foreground sound delegate.
 - AppModel.swift: связывает runtime, AlarmKit queue и Watch snapshot; холодный запуск без аудио disarms старую очередь.
 - AlarmKitSoundBuilder/CueAudioImporter: пользовательские WAV4 с fade, исходники целы, Float32 обработка отдельно от PCM16 файла.

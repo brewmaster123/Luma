@@ -190,8 +190,8 @@ check('check-preserved-sources.py' in workflow, 'CI verifies preserved planner, 
 for target_id in root['targets']:
     resources=[objects[phase] for phase in objects[target_id]['buildPhases'] if objects[phase]['isa']=='PBXResourcesBuildPhase']
     bundled=[files[objects[item]['fileRef']].name for phase in resources for item in phase['files']]
-    check('luma-alarm-4.wav' in bundled, 'Four-second WAV included in each app')
     if objects[target_id]['name']=='Luma':
+        check('luma-alarm-4.wav' in bundled, 'Four-second AlarmKit WAV included on iPhone')
         check({'luma-tone-4.wav','luma-night-rain.wav'} <= set(bundled), 'Preview and genuine sleep audio bundled on iPhone')
 check('generic/platform=watchOS' in workflow and '-scheme "Luma Watch"' in workflow, 'CI builds the Watch target')
 check('test -d "$LUMA_APP/Watch/Luma Watch.app"' in workflow, 'IPA packaging requires companion app')
@@ -205,7 +205,7 @@ with wave.open(str(ROOT/'Resources/luma-night-rain.wav'),'rb') as w:
     check(w.getnframes()/w.getframerate()==20 and max(map(abs,samples))>1000,
           'Sleep resource is twenty seconds of non-silent PCM audio')
 watch=(ROOT/'Sources/Watch/WatchCueStore.swift').read_text()
-check('UNNotificationRequest(' in watch and 'repeats: false' in watch, 'Watch owns independent one-shot local cues')
+check('UNNotificationRequest(' in watch and 'repeats: false' in watch and 'content.sound = .default' in watch, 'Watch owns independent one-shot cues using a supported system sound')
 check('shouldReplace' in watch and 'pendingNotificationRequests' in watch and 'revision' in watch,
       'Watch handles full-plan revisions and verifies local admission')
 check('setTaskCompletedWithSnapshot(false)' in watch, 'Watch connectivity tasks are explicitly completed')

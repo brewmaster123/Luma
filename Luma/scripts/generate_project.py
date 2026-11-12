@@ -99,7 +99,7 @@ watch_sources = sources_phase("watch.sources", ["Sources/LumaCore/", "Sources/Wa
 fonts = [f"Resources/Manrope-{s}.ttf" for s in ["Regular", "Medium", "SemiBold"]]
 tones = [f"Resources/luma-tone-{n}.wav" for n in [4,8,15]] + ["Resources/luma-alarm-4.wav"]
 phone_resources = resources_phase("phone.resources", ["Resources/iOSAssets.xcassets", "Resources/PrivacyInfo.xcprivacy"] + fonts + tones + ["Resources/luma-night-rain.wav"])
-watch_resources = resources_phase("watch.resources", ["Resources/WatchAssets.xcassets", "Resources/PrivacyInfo.xcprivacy", "Resources/luma-alarm-4.wav"])
+watch_resources = resources_phase("watch.resources", ["Resources/WatchAssets.xcassets", "Resources/PrivacyInfo.xcprivacy"])
 phone_frameworks = obj("phone.frameworks", "PBXFrameworksBuildPhase", buildActionMask=2147483647, files=[], runOnlyForDeploymentPostprocessing=0)
 watch_frameworks = obj("watch.frameworks", "PBXFrameworksBuildPhase", buildActionMask=2147483647, files=[], runOnlyForDeploymentPostprocessing=0)
 embed_file = obj("embed.watch.file", "PBXBuildFile", fileRef=watch_product, settings={"ATTRIBUTES": ["RemoveHeadersOnCopy"]})

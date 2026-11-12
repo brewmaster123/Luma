@@ -61,8 +61,13 @@ import WatchConnectivity
   private func acceptAck(_ revision: String?, count: Int?, error: String?) {
     guard let revision, let value = UInt64(revision), value == latest?.revision else { return }
     if let error { summary = "Часы: \(error)"; return }
+    guard let count, (0...60).contains(count) else { return }
+    let expected = latest?.cues.filter { $0.fireAt.timeIntervalSinceNow > 2 }.count ?? 0
+    guard count >= expected else {
+      summary = "Часы подтвердили только \(count) из \(expected) сигналов"; return
+    }
     confirmedRevision = value
-    summary = "На часах подтверждено: \(count ?? 0) сигналов"
+    summary = "На часах подтверждено: \(count) сигналов"
   }
   nonisolated func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
     Task { @MainActor [weak self] in self?.send() }

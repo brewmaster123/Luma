@@ -97,7 +97,7 @@ import WatchKit
         guard delay > 1 else { continue }
         let content = UNMutableNotificationContent()
         content.title = cue.title; content.body = "Короткий сигнал Luma"
-        content.sound = UNNotificationSound(named: UNNotificationSoundName("luma-alarm-4.wav"))
+        content.sound = .default // watchOS does not support custom named notification sounds.
         content.threadIdentifier = "luma.watch.cues"
         content.userInfo = ["cueID": cue.id.uuidString]
         let request = UNNotificationRequest(identifier: cue.notificationID, content: content,
@@ -106,7 +106,8 @@ import WatchKit
       }
       let admitted = Set(await center.pendingNotificationRequests().map(\.identifier))
       let future = desired.filter { $0.fireAt.timeIntervalSinceNow > 2 }
-      guard Set(future.map(\.notificationID)).isSubset(of: admitted) else { throw WatchPlanError.unconfirmed }
+      guard Set(future.map(\.notificationID)).isSubset(of: admitted),
+        Set(obsolete).isDisjoint(with: admitted) else { throw WatchPlanError.unconfirmed }
       next = desired.first?.fireAt
       summary = "В очереди на часах: \(future.count)"
       ack["count"] = future.count
