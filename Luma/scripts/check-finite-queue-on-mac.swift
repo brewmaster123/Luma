@@ -190,6 +190,30 @@ private func require(_ condition: @autoclosure () -> Bool, _ message: String) th
         try require(s.ledger.schema == 3 && s.indirectSession == session, "Notification migration lost session")
         try require(s.ledger.records.map(\.key) == ["future"] && f.backend.adds == 1, "Future key lost")
       }),
+      ("missing real audio runtime rejects new admission", { f in
+        let s = f.service(), r = f.request()
+        s.runtimeReady = { false }
+        do { _ = try await s.reconcile([r], activeOwners: [r.ownerID]); throw CheckError.failed("Runtime gate bypassed") }
+        catch is AppError {}
+        try require(f.backend.adds == 0 && s.ledger.records.isEmpty, "Unsafe queue admitted")
+      }),
+      ("runtime loss disarms all IDs but retains interval origin", { f in
+        let s = f.service()
+        let session = IndirectAlarmSession(settings: .init(intervalMinutes: 30), signal: .init())
+        try s.setIndirect(session)
+        let r = f.request(owner: session.id, kind: .indirect)
+        _ = try await s.reconcile([r], activeOwners: [session.id])
+        try await s.disarmForRuntimeLoss()
+        try require(s.indirectSession == session && f.backend.queue.isEmpty, "Runtime loss lost cadence or kept alarms")
+      }),
+      ("prearmed deadline removes overdue ID without alarm update callback", { f in
+        let s = f.service(), r = f.request(seconds: 2)
+        _ = try await s.reconcile([r], activeOwners: [r.ownerID])
+        let identifier = s.ledger.records.first!.notificationID
+        try await Task.sleep(nanoseconds: 6_500_000_000)
+        try require(f.backend.stops == [identifier] && f.backend.queue.isEmpty,
+          "Deadline required an alarmUpdates callback")
+      }),
       ("queue query failure retains admitted records and prevents rescheduling", { f in
         let r = f.request(), s = f.service()
         _ = try await s.reconcile([r], activeOwners: [r.ownerID])

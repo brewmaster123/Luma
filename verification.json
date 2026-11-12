@@ -1,291 +1,36 @@
 {
-  "version": "0.9.5",
-  "build": 21,
+  "version": "0.9.6",
+  "build": 22,
+  "base": "0.9.5 (21)",
   "date": "2026-11-12",
-  "at_utc": "2026-11-12T08:04:37.803739+00:00",
-  "base": "0.9.4 (20)",
-  "directory": "C:\\Users\\Admin\\Desktop\\Luma\\V.0.9.5",
-  "request": "AlarmKit for both modes, finite WAV EOF experiment; no Apple documentation browsing",
-  "implementation": [
-    "Common AlarmKit scheduler for smart/indirect/probe fixed occurrences",
-    "Dedicated 4.000 second WAV and separate PCM16 user WAV copies",
-    "Schema 1/2 migration after legacy notification and AlarmKit cleanup",
-    "Observed-alert Stop backup only while the process executes; current occurrence only"
-  ],
+  "at_utc": "2026-11-12T10:49:38.177549+00:00",
+  "directory": "C:\\Users\\Admin\\Desktop\\Luma\\V.0.9.6",
+  "implementation": "Real sleep-audio runtime, prearmed per-occurrence AlarmKit Stop, independent Watch local queue",
   "checks": {
-    "Python_integrity_tests_executed": 13,
-    "Python_integrity_test_failures": 0,
-    "full_preserved_set_LF_and_CRLF_simulation_passed": true,
-    "structural_checks_passed": 124,
-    "grammar_inputs_passed": 66,
-    "Python_scripts_AST_parsed": 6,
-    "preserved_inputs_verified": 51,
-    "historical_files_raw_SHA256_verified": 959,
-    "previous_directories_unchanged": true,
-    "YAML_and_IPA_gates_verified": true,
-    "core_XCTest_methods_present": 116,
-    "native_queue_scenarios_present": 22,
-    "native_audio_cases_present": 8,
-    "bundled_WAV_duration_measured_seconds": 4.0,
-    "Swift_tests_executed_here": false,
-    "native_queue_harness_executed_here": false,
-    "AVFoundation_matrix_executed_here": false,
-    "Xcode_build_executed_here": false,
-    "physical_device_tests_executed": false
+    "structural_checks_passed": 148,
+    "grammar_inputs_passed": 73,
+    "Python_tests_executed": 13,
+    "Python_test_failures": 0,
+    "preserved_inputs_verified": 67,
+    "historical_original_files": 1073,
+    "external_user_IPA_additions": 1,
+    "core_XCTest_methods_present": 119,
+    "native_queue_scenarios_present": 25,
+    "native_audio_cases_present": 8
   },
-  "tester_audio": {
-    "transcription": "local automatic faster-whisper base",
-    "sanitized_summary": "Only one notification on Watch, no melody reported",
-    "original_audio_unchanged": true,
-    "original_audio_included_in_project": false,
-    "temporary_tools_removed": true
+  "native_CI": {
+    "status": "not-started",
+    "branch": "luma/0.9.6-night-audio"
   },
-  "Apple_documentation_or_internet_consulted_this_turn": false,
-  "CI_run_started_from_here": false,
-  "new_IPA_generated_here": false,
-  "physical_four_second_completion_confirmed": false,
-  "AlarmKit_no_replay_confirmed": false,
+  "physical_device_tests_executed": false,
+  "locked_Stop_confirmed": false,
+  "Watch_delivery_confirmed": false,
   "production_ready": false,
-  "changes": [
-    {
-      "file": ".github/workflows/ios-build.yml",
-      "change": "modified"
-    },
-    {
-      "file": "AGENTS.md",
-      "change": "modified"
-    },
-    {
-      "file": "CHANGELOG.md",
-      "change": "modified"
-    },
-    {
-      "file": "DEVELOPMENT_STATUS.md",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Config/Base.xcconfig",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Config/iOS-Info.plist",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Docs/ALARM_RESEARCH.md",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Docs/CI_AUDIO_HASH_FIX.md",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Docs/CI_RUNNER_ISSUE.md",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Docs/DEVICE_TESTS.md",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Docs/TESTER_FEEDBACK.md",
-      "change": "added"
-    },
-    {
-      "file": "Luma/Docs/VERSION_AUDIT.md",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Docs/audio-validation.json",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Docs/github-status-observation.json",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Docs/native-audio-matrix-status.json",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Docs/native-queue-status.json",
-      "change": "added"
-    },
-    {
-      "file": "Luma/Docs/preserved-sources-checks.json",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Docs/preserved-sources.json",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Docs/previous-versions-sha256.json",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Docs/previous-versions-verification.json",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Docs/python-syntax-checks.json",
-      "change": "added"
-    },
-    {
-      "file": "Luma/Docs/source-grammar-checks.json",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Docs/source-integrity-tests-result.json",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Docs/source-integrity-tests.log",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Docs/static-checks.json",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Docs/workflow-validation.json",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Luma.xcodeproj/project.pbxproj",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Resources/luma-alarm-4.wav",
-      "change": "added"
-    },
-    {
-      "file": "Luma/Sources/LumaCore/FiniteCuePolicy.swift",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Sources/LumaCore/IndirectMethod.swift",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Sources/LumaCore/SystemAlarmPlan.swift",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Sources/LumaCore/WaveCueInspector.swift",
-      "change": "added"
-    },
-    {
-      "file": "Luma/Sources/LumaCore/iPhoneOnlyMigration.swift",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Sources/Platform/AlarmScheduling.swift",
-      "change": "added"
-    },
-    {
-      "file": "Luma/Sources/Platform/AppModel.swift",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Sources/Platform/CueDiagnostics.swift",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Sources/Platform/NotificationService.swift",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Sources/iPhone/AlarmEditor.swift",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Sources/iPhone/AlarmKitScheduler.swift",
-      "change": "added"
-    },
-    {
-      "file": "Luma/Sources/iPhone/AlarmKitSoundBuilder.swift",
-      "change": "added"
-    },
-    {
-      "file": "Luma/Sources/iPhone/FiniteCueSoundBuilder.swift",
-      "change": "removed"
-    },
-    {
-      "file": "Luma/Sources/iPhone/IndirectMethodView.swift",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Sources/iPhone/LegacyAlarmCleanup.swift",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Sources/iPhone/LumaApp.swift",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Sources/iPhone/LumaNotificationDelegate.swift",
-      "change": "removed"
-    },
-    {
-      "file": "Luma/Sources/iPhone/SettingsView.swift",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Sources/iPhone/SignalReadinessView.swift",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Sources/iPhone/SystemAlarmService.swift",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Tests/LumaCoreTests/AlarmKitWaveMigrationTests.swift",
-      "change": "added"
-    },
-    {
-      "file": "Luma/Tests/LumaCoreTests/FiniteCuePolicyTests.swift",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/Tests/LumaCoreTests/WaveCueInspectorTests.swift",
-      "change": "added"
-    },
-    {
-      "file": "Luma/Tests/LumaCoreTests/iPhoneOnlyMigrationTests.swift",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/scripts/check-audio-on-mac.sh",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/scripts/check-audio-on-mac.swift",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/scripts/check-finite-queue-on-mac.sh",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/scripts/check-finite-queue-on-mac.swift",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/scripts/check-static.py",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/scripts/generate_project.py",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/scripts/project-graph.json",
-      "change": "modified"
-    },
-    {
-      "file": "README.md",
-      "change": "modified"
-    }
-  ]
+  "known_limitations": [
+    "Force quit/termination removes audio runtime but may leave persistent AlarmKit alarms",
+    "Audio interruptions require device validation",
+    "Watch Focus/permission/locked wrist can suppress local cues",
+    "Independent Watch cue plus AlarmKit forwarding may duplicate alerts"
+  ],
+  "external_sources": "Luma/Docs/ALARM_RESEARCH.md"
 }

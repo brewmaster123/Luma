@@ -42,6 +42,23 @@ struct SettingsView: View {
               .font(LumaStyle.font(11)).foregroundStyle(LumaStyle.secondary)
           }
         }
+        LumaCard {
+          VStack(alignment: .leading, spacing: 12) {
+            SmallLabel(text: "НОЧНОЙ РЕЖИМ")
+            Text(model.nightAudio.status).font(LumaStyle.font(13))
+            Slider(value: Binding(get: { model.nightAudio.volume }, set: { model.nightAudio.volume = $0 }), in: 0.08...0.6)
+              .accessibilityLabel("Громкость тихого дождя")
+            Text("Между сигналами играет тихий дождь. Сам фон не вызывает вибрацию часов. Оставьте Luma в фоне: остановка AlarmKit выполняется через четыре секунды, пока работает ночное аудио.")
+              .font(LumaStyle.font(12)).foregroundStyle(LumaStyle.secondary)
+            Button(model.nightAudio.enabled ? "Остановить фон и снять очередь" : "Включить тихий ночной фон") {
+              if model.nightAudio.enabled { Task { await model.stopNightAudio() } }
+              else if model.systemAlarms.acceptedLimitations { Task { await model.enableNightAudio() } }
+              else { wantsPreview = false; showReadiness = true }
+            }.frame(minHeight: 44).disabled(model.busy)
+            Text(model.watchLink.summary).font(LumaStyle.font(12)).foregroundStyle(LumaStyle.secondary)
+            Button("Обновить расписание на часах") { model.watchLink.send() }.font(LumaStyle.font(12))
+          }
+        }
         SoundLibraryView(audio: model.audio) { recorder = true }
         LumaCard {
           VStack(alignment: .leading, spacing: 14) {
@@ -54,7 +71,7 @@ struct SettingsView: View {
             }.disabled(model.busy || model.systemAlarms.preparing)
             Text(model.systemAlarms.lastStopReport)
               .font(LumaStyle.font(12)).foregroundStyle(LumaStyle.secondary)
-            Text("После запуска заблокируйте iPhone. Проверьте один звук длиной 4 секунды без повтора. Журнал показывает состояние AlarmKit и резервную Stop; фактическое окончание звука нужно измерить на устройстве.")
+            Text("После запуска заблокируйте iPhone. Проверьте один звук длиной 4 секунды без повтора. Журнал показывает состояние AlarmKit и резервную Stop; фактическое окончание звука нужно измерить на устройстве с включённым ночным фоном.")
               .font(LumaStyle.font(11)).foregroundStyle(LumaStyle.secondary)
             if let log = model.systemAlarms.logURL,
               FileManager.default.fileExists(atPath: log.path) {
@@ -75,7 +92,7 @@ struct SettingsView: View {
             Button("История сна из «Здоровья»") { Task { await model.connectHealth() } }.frame(
               minHeight: 44)
             Label {
-              Text("Часы могут показывать системный будильник AlarmKit. Проверьте, что на заблокированном iPhone звучит WAV, а сигнал заканчивается самостоятельно. Обычные уведомления для сигналов отключены.")
+              Text("Установите и откройте Luma на Apple Watch, разрешите её сигналы и дождитесь подтверждения очереди. Часы хранят своё расписание независимо от блокировки iPhone. Системное отражение AlarmKit нужно проверить на дублирование.")
                 .font(LumaStyle.font(12)).foregroundStyle(LumaStyle.secondary)
             } icon: { Image(systemName: "applewatch").foregroundStyle(LumaStyle.lavender) }
 

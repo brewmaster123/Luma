@@ -18,6 +18,10 @@ import Foundation
   @Published var showSignalMigration = false
   let audio = PhoneAudio()
   let systemAlarms = SystemAlarmService()
+  let nightAudio = NightAudio()
+  let watchLink = WatchCueLink()
+  private var nightAudioChanges: AnyCancellable?
+  private var watchChanges: AnyCancellable?
   private let health = HealthService()
   private var store: LocalStore?
   private var storageProblem: String?
@@ -50,6 +54,23 @@ import Foundation
     showOnboarding = !archive.onboardingComplete
     audioChanges = audio.objectWillChange.sink { [weak self] _ in self?.objectWillChange.send() }
     systemAlarmChanges = systemAlarms.objectWillChange.sink { [weak self] _ in self?.objectWillChange.send() }
+    nightAudioChanges = nightAudio.objectWillChange.sink { [weak self] _ in self?.objectWillChange.send() }
+    watchChanges = watchLink.objectWillChange.sink { [weak self] _ in self?.objectWillChange.send() }
+    systemAlarms.runtimeReady = { [weak self] in self?.nightAudio.ready == true }
+    systemAlarms.onAlertObserved = { [weak self] in self?.nightAudio.protectStopWindow() }
+    systemAlarms.onQueueChanged = { [weak self] ledger in
+      let owners = Set(ledger.cancelledOwners ?? [])
+      self?.watchLink.publish(ledger.cancelAllRequested == true ? []
+        : ledger.records.filter { !owners.contains($0.ownerID) })
+    }
+    nightAudio.onCheckAlarms = { [weak self] in try? await self?.systemAlarms.refresh() }
+    nightAudio.onStopRequested = { [weak self] in
+      guard let self else { return }
+      do { try await self.systemAlarms.disarmForRuntimeLoss() }
+      catch { self.message = "Отмена системной очереди не подтверждена: " + error.localizedDescription; throw error }
+      self.watchLink.publish(self.systemAlarms.ledger.records)
+    }
+    audio.externalPlaybackActive = { [weak self] in self?.nightAudio.enabled == true }
     audio.onClip = { [weak self] clip in self?.addSoundClip(clip) }
     audio.onError = { [weak self] text in self?.message = text }
     audio.onInterruption = { [weak self] text in self?.message = text }
@@ -74,8 +95,12 @@ import Foundation
   }
   func start() async {
     guard !started else { return }; started = true
-    // Preserve accepted finite cues on relaunch; bootstrap migrates old queues.
-    do { try await systemAlarms.bootstrap() }
+    // A cold launch has no live sleep-audio runtime; remove unsafe old IDs.
+    do {
+      try await systemAlarms.bootstrap()
+      if systemAlarms.authorized, !nightAudio.ready { try await systemAlarms.disarmForRuntimeLoss() }
+      watchLink.publish(systemAlarms.ledger.records)
+    }
     catch { message = error.localizedDescription }
     startTicker()
     guard storageProblem == nil, save() else { return }
@@ -102,7 +127,7 @@ import Foundation
   private func tick() async {
     await systemAlarms.poll()
     if Date().timeIntervalSince(alarmOrderDate) >= 30 { alarmOrderDate = Date() }
-    if storageProblem == nil, !rebuilding, !systemAlarms.preparing, systemAlarms.acceptedLimitations,
+    if storageProblem == nil, nightAudio.ready, !rebuilding, !systemAlarms.preparing, systemAlarms.acceptedLimitations,
       Date().timeIntervalSince(lastSystemRefill) >= 60 {
       lastSystemRefill = Date(); await rebuildAlarms()
     }
@@ -138,7 +163,7 @@ import Foundation
     busy = true
     defer { busy = false }
     do {
-      try await systemAlarms.authorize()
+      try await preparePhoneSignals()
       let signal = state.signal.systemAlarmSignal
       let session = IndirectAlarmSession(settings: .init(intervalMinutes: indirectIntervalMinutes), signal: signal)
       _ = try AlarmKitSoundBuilder.prepare(source: audio.soundURL(session.signal, clips: state.voices))
@@ -175,7 +200,7 @@ import Foundation
     guard !busy, !systemAlarms.preparing else { return }
     busy = true; defer { busy = false }
     do {
-      try await systemAlarms.authorize()
+      try await preparePhoneSignals()
       try await systemAlarms.cancelProbes()
       let id = UUID(), date = Date().addingTimeInterval(max(3, min(60, seconds)))
       let signal = state.signal.systemAlarmSignal
@@ -192,13 +217,22 @@ import Foundation
   }
 
   func preparePhoneSignals(acceptLimitations: Bool = false) async throws {
+    guard !audio.recording, !audio.playing else {
+      throw AppError.message("Завершите запись или прослушивание перед ночным режимом.")
+    }
     try await systemAlarms.authorize(acceptLimitations: acceptLimitations)
+    try nightAudio.start()
     alarmPermissionSummary = systemAlarms.summary
     alarmPermissionReady = true
     // Resume the migrated cadence and saved alarms after the AlarmKit WAV
     // experiment has been explained. Do not require recreating an interval session.
     await rebuildAlarms()
   }
+
+  func enableNightAudio() async {
+    do { try await preparePhoneSignals() } catch { message = error.localizedDescription }
+  }
+  func stopNightAudio() async { await nightAudio.stopSafely() }
 
   func updateSignal(_ s: SignalSettings) {
     state.signal = s.systemAlarmSignal
@@ -334,7 +368,7 @@ import Foundation
   }
 
   func importMelody(_ url: URL) async {
-    guard !busy, !hasPlan, !audio.recording else { message = "Добавляйте мелодии между сеансами."; return }
+    guard !busy, !hasPlan, !nightAudio.enabled, !audio.recording else { message = "Добавляйте мелодии между сеансами."; return }
     busy = true; defer { busy = false }
     do { addSoundClip(try await audio.importSound(from: url)) } catch { message = error.localizedDescription }
   }
@@ -412,7 +446,7 @@ import Foundation
       rebuildAgain = false
       do {
         try await systemAlarms.bootstrap()
-        if systemAlarms.acceptedLimitations {
+        if systemAlarms.acceptedLimitations && nightAudio.ready {
           queuedAlarmIDs = try await systemAlarms.reconcile(try systemAlarmRequests(), activeOwners: systemAlarmOwners)
           lastSystemQueueError = nil
         } else { queuedAlarmIDs = [] }

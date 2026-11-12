@@ -1,13 +1,5 @@
 {
-  "version": "0.9.5 (21)",
-  "kind": "prepared-native-queue-integration",
-  "scenarios_present": 22,
-  "includes": [
-    "migration from schemas 1 and 2",
-    "queue query failure is not treated as empty",
-    "observed overdue alert Stop preserves next occurrence",
-    "durable cancellation and generation protection"
-  ],
-  "executed_here": false,
-  "physical_device_tested": false
+  "version": "0.9.6 (22)",
+  "scenarios_present": 25,
+  "executed_here": false
 }

@@ -57,6 +57,10 @@
       "errors": []
     },
     {
+      "file": "Sources\\iPhone\\NightAudio.swift",
+      "errors": []
+    },
+    {
       "file": "Sources\\iPhone\\PhoneRootView.swift",
       "errors": []
     },
@@ -74,6 +78,10 @@
     },
     {
       "file": "Sources\\iPhone\\SystemAlarmService.swift",
+      "errors": []
+    },
+    {
+      "file": "Sources\\iPhone\\WatchCueLink.swift",
       "errors": []
     },
     {
@@ -133,6 +141,10 @@
       "errors": []
     },
     {
+      "file": "Sources\\LumaCore\\WatchCuePlan.swift",
+      "errors": []
+    },
+    {
       "file": "Sources\\LumaCore\\WaveCueInspector.swift",
       "errors": []
     },
@@ -166,6 +178,14 @@
     },
     {
       "file": "Sources\\Platform\\PhoneAudio.swift",
+      "errors": []
+    },
+    {
+      "file": "Sources\\Watch\\LumaWatchApp.swift",
+      "errors": []
+    },
+    {
+      "file": "Sources\\Watch\\WatchCueStore.swift",
       "errors": []
     },
     {
@@ -221,6 +241,10 @@
       "errors": []
     },
     {
+      "file": "Tests\\LumaCoreTests\\WatchCuePlanTests.swift",
+      "errors": []
+    },
+    {
       "file": "Tests\\LumaCoreTests\\WaveCueInspectorTests.swift",
       "errors": []
     },
@@ -265,10 +289,12 @@
       "errors": []
     },
     {
+      "file": "workflow: Build Apple Watch companion",
+      "errors": []
+    },
+    {
       "file": "workflow: Package unsigned IPA",
       "errors": []
     }
-  ],
-  "version": "0.9.5 (21)",
-  "date": "2026-11-12"
+  ]
 }

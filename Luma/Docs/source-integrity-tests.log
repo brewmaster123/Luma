@@ -1,4 +1,1 @@
-Luma 0.9.5 (21), 2026-11-12. Current-turn Python unittest run in Windows.
-13 tests passed, 0 failures, 0 errors.
-Includes complete 51-input manifest simulation for LF and CRLF checkout.
-No Swift/XCTest/AVFoundation/device execution.
+Current Windows run, 0.9.6 (22): 13 Python unittest cases passed; includes full preserved-set LF/CRLF simulation. No XCTest execution.

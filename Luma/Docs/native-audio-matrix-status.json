@@ -1,5 +1,5 @@
 {
-  "version": "0.9.5 (21)",
+  "version": "0.9.6 (22)",
   "kind": "prepared-native-AVFoundation-matrix",
   "case_count": 8,
   "invalid_input_check": true,

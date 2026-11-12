@@ -1,54 +1,41 @@
-# Контекст разработки Luma 0.9.5 (21)
+# Контекст Luma 0.9.6 (22)
 
-Luma — короткие ночные подсказки и дневник для практики осознанных сновидений. REM-оценка не является медицинской диагностикой.
+Luma — короткие ночные подсказки и дневник. Основа V.0.9.5 (21). Каждая следующая версия — новая папка V.<major>.<minor>.<patch> в C:\Users\Admin\Desktop\Luma. Не менять предыдущие папки, держать инструменты/сборки внутри новой. Сохранять com.sevchlenko.luma, подпись, данные, дневник и оригиналы записей.
 
-## Правила версий
+## Последний запрос
 
-Каждая новая версия — отдельная папка V.<major>.<minor>.<patch> в C:\Users\Admin\Desktop\Luma. Основа этой версии — V.0.9.4, build 20. Не менять, не удалять, не переносить и не нормализовать старые папки. Рабочие/временные файлы держать внутри новой версии. Обновлять README, CHANGELOG, DEVELOPMENT_STATUS и AGENTS. Проверять номера в конфигурации, workflow и IPA, не выбирать основу по mtime.
-
-Сохранять com.sevchlenko.luma, Automatic Signing, entitlements и пользовательские данные. Ключи подписи в исходники не добавлять. В этой рабочей папке нет Git-репозитория; удалённый CI не запускался.
-
-## Прямой запрос пользователя
-
-В обоих режимах использовать AlarmKit с мелодией не длиннее четырёх секунд, проверить естественное окончание файла. Пользователь прямо запретил обращаться к документации Apple в этой работе; внешние источники не открывались. Это заменяет прежнее правило 0.9.4 о доставке уведомлениями. Локальные уведомления оставлены только для удаления старой очереди.
-
-Не выдавать гипотезу WAV EOF за доказанное устранение системного повторения. Не придумывать loopCount/playOnce/soundDuration API. Нельзя представлять Task.sleep, Timer, alarmUpdates или background task как гарантию вызова Stop в suspended приложении. Не добавлять постоянную тишину, фиктивную тренировку и keep-alive.
+Пользователь физически подтвердил: AlarmKit не заканчивается с блокировкой. Попросил Stop через 4 секунды и Watch при обоих состояниях iPhone; разрешил интернет и очень тихий фон между сигналами. Это заменяет старый запрет на фон/интернет. Фон должен быть явно видимым, управляемым и без вибрации часов.
 
 ## Архитектура
 
-Один iPhone SwiftUI target, deployment iOS 17. Сигналы AlarmKit доступны только на iOS 26+. Swift Package LumaCore содержит модели, планировщик и XCTest.
+Два SwiftUI targets: iPhone и минимальный Watch companion. iPhone включает LumaCore/Platform/iPhone; Watch включает только LumaCore/Watch. Не возвращать старые workout/REM/WatchConnectivity исследовательские сервисы.
 
-- LumaV2.swift: модели, AlarmPlanner, исторические delivery raw values.
-- iPhoneOnlyMigration.swift: перевод сохранённого состояния на AlarmKit без изменения дат, ID, голосов и дневника.
-- SystemAlarmPlan.swift: ledger schema 3, очередь, interval session, миграция schema 1/2, отмены.
-- FiniteCuePolicy.swift: историческое имя, сейчас префикс luma.alarmkit., WAV имена, новая версия согласия. capacity(otherPending:) — только исторический helper уведомлений, в AlarmKit delivery не применяется.
-- WaveCueInspector.swift: RIFF/PCM проверка 88 200 frames, 22 050 mono16, запрет smpl/plst. Это проверка файла, не системного проигрывателя.
-- AppModel.swift: умный будильник, непрямой метод, проба и обновление очереди.
-- AlarmScheduling.swift: подставляемый протокол.
-- AlarmKitScheduler.swift: реальные schedule/fixed/.named(WAV), разрешение, ID/state snapshots, Stop/Cancel. Нет fallback на уведомление.
-- SystemAlarmService.swift: reservation до await, проверка admission, durable cancellation, защита generation/inFlight, orphan cleanup, миграция и исполнение резервного Stop.
-- NotificationService.swift: только отмена legacy luma.* уведомлений. LumaNotificationDelegate удалён.
-- LegacyAlarmCleanup.swift: очищать прежние schemas; текущая schema 3 должна переживать обычный запуск.
-- AlarmKitSoundBuilder.swift: отдельный WAV кэш v4 с затуханием; оригиналы сохраняются.
-- CueAudioImporter.swift: Float32 non-interleaved обработка отдельно от PCM16 файла.
-- CueDiagnostics.swift: OSLog + ограниченный JSONL alarmkit-wave-events.jsonl. Наблюдение alerting не является callback фактического акустического старта/EOF.
-- LocalStore, PhoneAudio, HealthService, дневник и REM-алгоритмы сохранены.
-- REM всю ночь, собственный Watch target и WCSession отсутствовали в основе; не возвращать попутно.
+- NightAudio.swift: настоящий тихий дождь, playback+audio background mode, MPNowPlaying/Stop, ненулевая громкость, 12h лимит. При interruption короткое ограниченное выполнение; при отсутствии resume 8s — disarm. Это НЕ системный wake-up и не гарантия после force quit.
+- SystemAlarmService.swift: AlarmKit, ledger schema 3, admission до/после await, prearmed Stop fireAt+4, независимость от alarmUpdates/перестроения, durable cancellation. disarmForRuntimeLoss сохраняет cadence/session.
+- AlarmKitScheduler.swift: fixed occurrence с WAV; stop alerting UUID, cancel late scheduled UUID; tolerate concurrent dismissal только после проверки отсутствия ID.
+- PhoneAudio.swift: не деактивирует общую сессию, пока NightAudio её использует; конфликтующие записи запрещены.
+- WatchCuePlan.swift: full snapshot с revision, UUID/датами/названиями, лимит 60/12h; reject stale/replayed revisions.
+- WatchCueLink.swift: updateApplicationContext + immediate message при reachability, только фактический ack.
+- WatchCueStore.swift: Watch local notifications, nonrepeating, собственный WAV4, pending verification, cancellation, queued revision protection, завершение WC background tasks.
+- LumaWatchApp.swift: permission/status/refresh и foreground sound delegate.
+- AppModel.swift: связывает runtime, AlarmKit queue и Watch snapshot; холодный запуск без аудио disarms старую очередь.
+- AlarmKitSoundBuilder/CueAudioImporter: пользовательские WAV4 с fade, исходники целы, Float32 обработка отдельно от PCM16 файла.
+- AlarmPlanner/IndirectMethod/LocalStore/дневник/REM-алгоритмы сохранены.
 
-Frameworks: Foundation, SwiftUI, Combine, AlarmKit, ActivityKit, AppIntents, AVFoundation/AVFAudio, AudioToolbox, UserNotifications (cleanup), CryptoKit, OSLog, HealthKit. Swift imports используют autolinking; AlarmKit gated по OS и canImport.
+Фреймворки: AlarmKit/ActivityKit/AppIntents на iOS26, SwiftUI/Foundation/Combine, AVFoundation, UIKit, MediaPlayer, WatchConnectivity, WatchKit, UserNotifications (Watch scheduling, iPhone legacy cleanup), CryptoKit/OSLog/HealthKit исторически. Watch не просит workout/HealthKit/микрофон.
 
-## Звук и миграция
+## Важные ограничения
 
-База Resources/luma-alarm-4.wav — копия проверенной четырёхсекундной мелодии. Пользовательские записи: Library/Sounds/luma-ak4-<hash>.wav, PCM16 mono 22 050, ровно 88 200 отсчётов, fade, короткие записи дополняются тишиной. Оригиналы/дневник не обрезать. После reboot нужен первый unlock для защищённых файлов.
+Нельзя выдавать длину WAV за Stop. Нельзя обещать выполнение таймера suspended процесса. Здесь runtime зависит от реально играющего аудио; AlarmKit может его прервать, поэтому требуется физический тест. Не добавлять фиктивные тренировки, приватные API, push-by-the-second или бесконечный background task.
 
-Ledger остаётся в Application Support/LumaAlarmKit/alarms.json. Schema 1 — прежний AlarmKit, 2 — уведомления, 3 — новый WAV AlarmKit. Мигрировать только после подтверждения отмены обоих старых транспортов. Сохранять начало/интервал сеанса и будущие keys, не проигрывать прошлое. Не чистить schema 3 как legacy при каждом запуске.
+Фон не отправляет haptics. Watch cues планируются заранее, а не sendMessage в секунду звонка. Watch local notifications не обходят Focus/permissions/locked wrist. AlarmKit mirroring может дать дополнительное системное оповещение; проверить на устройстве.
 
-Четыре секунды относятся к одному событию. До 60 событий/12 часов вперёд; 30 минут между началами сохранены. Лимит 60 — Luma, не заявленный лимит OS. Stop текущего UUID не должен отменять следующий интервал. Никаких заявлений о бесконечном фоне после исчерпания очереди.
+Четыре секунды — одно событие, не вся серия. Отмена текущего UUID сохраняет следующие. Полная отмена/потеря runtime передаёт пустой Watch plan. Ошибку отмены не скрывать текстом «всё снято». При force quit остановка не гарантирована; перед закрытием снять очередь в приложении.
 
-## Проверка и честный статус
+## Проверки
 
-Windows проверки не заменяют swiftc, XCTest, AVFoundation или физический iPhone. Обязательные Mac проверки — scripts/check-on-mac.sh; в CI все gates сохранены. Манифест preserved-sources.json берёт ожидаемые хеши из 0.9.4: lf-text нормализует только CRLF → LF, бинарные ресурсы raw. Намеренные изменения перечислять отдельно. Предыдущие папки проверяются raw SHA-256.
+Обязательный Mac прогон scripts/check-on-mac.sh и CI gates, включая Watch. Не обходить проверки ради IPA. Windows grammar/static/integrity — не swiftc/XCTest/устройство. Verified-флаги остаются false до внешней записи locked/unlocked и 30-минутной серии.
 
-После каждого изменения выполнять только относящиеся к нему проверки. Для устройства использовать Docs/DEVICE_TESTS.md: locked/suspended, force quit, три получасовых события, следующий сигнал, Silent/Focus, Watch, restart, upgrade. Измерять внешним устройством, продолжать запись после EOF для поиска повторов.
+Expected preserved hashes брать из V.0.9.5, lf-text только CRLF→LF, бинарные raw. Предыдущие файлы проверять raw SHA-256. Пользователь может добавить новый IPA во время работы: отдельно фиксировать такие добавления, не менять исходный снимок и не утверждать, что агент их создал.
 
-alarmKitWaveEOFDeviceVerified и alarmKitAutomaticStopVerified остаются false до протокола физического теста. Не считать наличие ID или возврат Stop акустическим доказательством. Отзыв тестировщика: карточка пришла на часы, мелодия не прозвучала; содержимое аудио не публиковать. После восстановления контекста читать DEVELOPMENT_STATUS и verification.json.
+Читать DEVELOPMENT_STATUS/verification для фактического статуса CI. Документация Apple изучена в этой работе с разрешения пользователя; источники — Docs/ALARM_RESEARCH.md. Предыдущую гипотезу EOF считать неудачной по сообщению пользователя.

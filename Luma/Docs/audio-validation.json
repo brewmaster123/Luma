@@ -1,32 +1,30 @@
 {
-  "version": "0.9.5 (21)",
-  "at_utc": "2026-11-12T08:02:29.569710+00:00",
-  "kind": "executed-bundled-WAV-measurement",
-  "file": "Resources/luma-alarm-4.wav",
-  "bytes": 176444,
-  "sha256": "9c2784e108846aede7bf3a607e9db2babef5deadc717fa43c8952832df9d70c9",
-  "sample_rate": 22050,
-  "frames": 88200,
-  "seconds": 4.0,
-  "channels": 1,
-  "bits_per_sample": 16,
-  "chunks": [
+  "version": "0.9.6 (22)",
+  "kind": "executed-resource-measurement",
+  "measurements": [
     {
-      "tag": "fmt ",
-      "size": 16
+      "file": "luma-alarm-4.wav",
+      "seconds": 4.0,
+      "frames": 88200,
+      "rate": 22050,
+      "channels": 1,
+      "bits": 16,
+      "rms_dbfs": -23.161,
+      "peak": 5961,
+      "sha256": "9c2784e108846aede7bf3a607e9db2babef5deadc717fa43c8952832df9d70c9"
     },
     {
-      "tag": "data",
-      "size": 176400
+      "file": "luma-night-rain.wav",
+      "seconds": 20.0,
+      "frames": 441000,
+      "rate": 22050,
+      "channels": 1,
+      "bits": 16,
+      "rms_dbfs": -25.193,
+      "peak": 7375,
+      "sha256": "760775a7bb5e76e04c74795daa436aefbd2442058b7e9aba3fec08829b0030d9"
     }
   ],
-  "embedded_loops": false,
-  "peak_dbfs": -14.803,
-  "first_sample": 0,
-  "last_sample": 0,
-  "last_100_samples_peak": 20,
-  "last_100ms_rms": 150.733,
-  "runtime_custom_WAV_conversion_tested": false,
-  "physical_playback_tested": false,
-  "AlarmKit_repetition_behavior_verified": false
+  "native_playback_tested": false,
+  "physical_duration_tested": false
 }

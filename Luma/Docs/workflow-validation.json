@@ -1,20 +1,16 @@
 {
-  "version": "0.9.5 (21)",
-  "at_utc": "2026-11-12T08:02:29.569710+00:00",
+  "version": "0.9.6 (22)",
   "kind": "executed-YAML-and-release-gates-validation",
-  "runner": "macos-15-intel",
-  "xcode": "/Applications/Xcode_26.3.app/Contents/Developer",
+  "passed": true,
   "native_mandatory_gates": [
     "preserved",
     "core",
     "audio",
     "queue",
-    "iphone"
+    "iphone",
+    "watch"
   ],
-  "source_integrity_tests_required": true,
   "IPA_version_assertions_match_config": true,
-  "dedicated_WAV_packaging_check": true,
-  "no_continue_on_error": true,
-  "native_execution_performed_here": false,
-  "passed": true
+  "companion_required": true,
+  "native_execution_performed_here": false
 }

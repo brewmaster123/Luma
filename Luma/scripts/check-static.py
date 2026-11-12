@@ -51,7 +51,7 @@ def visit(uid, parent=ROOT):
     elif obj['isa']=='PBXFileReference':
         check(path.exists(), f'Referenced file exists: {path.relative_to(ROOT)}');files[uid]=path
 visit(root['mainGroup'])
-check(len(root['targets'])==1,'Exactly one iPhone app target')
+check(len(root['targets'])==2,'iPhone and independent-queue Watch targets exist')
 for uid in root['targets']:
     target=objects[uid]; swift=[]
     for phase_id in target['buildPhases']:
@@ -62,6 +62,8 @@ for uid in root['targets']:
     check(len(swift)==len(set(swift)),f"No duplicate source membership in {target['name']}")
     expected=set((ROOT/'Sources/LumaCore').glob('*.swift'))|set((ROOT/'Sources/Platform').glob('*.swift'))
     expected|=set((ROOT/'Sources/iPhone').glob('*.swift'))
+    if target['name'] == 'Luma Watch':
+        expected=set((ROOT/'Sources/LumaCore').glob('*.swift'))|set((ROOT/'Sources/Watch').glob('*.swift'))
     check(set(swift)==expected,f"Complete and isolated source membership in {target['name']}")
 for path in sorted((ROOT/'Config').glob('*.plist'))+sorted((ROOT/'Config').glob('*.entitlements'))+[ROOT/'Resources/PrivacyInfo.xcprivacy']:
     data=plistlib.loads(path.read_bytes());check(isinstance(data,dict),f'Valid XML plist: {path.name}')
@@ -82,8 +84,8 @@ check('removePendingNotificationRequests' in notifications and 'let remaining = 
 service=(ROOT/'Sources/iPhone/SystemAlarmService.swift').read_text(encoding='utf-8-sig')
 check(not re.search(r'Timer\.|asyncAfter|beginBackgroundTask|BGTaskScheduler', service),
       'No timer-based background wake or keep-alive is added')
-check('if snapshot.alerting' in service and 'armBackup(record)' in service
-      and 'Execution-only backup' in service, 'Backup Stop follows observed alert state and is explicitly execution-only')
+check('armBackup(record)' in service and 'try await self.expire(record)' in service
+      and 'runtimeReady()' in service, 'Absolute Stop deadlines are prearmed and admission requires real audio runtime')
 check('inFlightID' in service and 'cancelAllRequested' in service and 'bootstrapTask' in service,
       'Queue admission, durable cancellation and concurrent bootstrap recovery are present')
 core='\n'.join(p.read_text() for p in (ROOT/'Tests/LumaCoreTests').glob('*.swift'))
@@ -127,19 +129,18 @@ for uid in root['targets']:
         target_ids[(target['name'], item['name'])] = item['buildSettings']['PRODUCT_BUNDLE_IDENTIFIER'].replace('$(LUMA_BUNDLE_PREFIX)', prefix)
 for mode in ['Debug', 'Release']:
     check(target_ids[('Luma', mode)] == prefix, f'Stable iPhone bundle identifier in {mode}')
-    check(not any(o['isa']=='PBXCopyFilesBuildPhase' for o in objects.values()), 'No embedded Watch app phase')
+    check(target_ids[('Luma Watch', mode)] == prefix+'.watchkitapp', f'Companion identity in {mode}')
 check(bool(re.search(r'^CODE_SIGN_STYLE\s*=\s*Automatic\s*$', base, re.M)), 'Automatic signing remains enabled')
 info=plistlib.loads((ROOT/'Config/iOS-Info.plist').read_bytes())
 check('NSHealthUpdateUsageDescription' not in info, 'No workout-write permission requested')
 ent=plistlib.loads((ROOT/'Config/iOS.entitlements').read_bytes())
 check('com.apple.developer.healthkit.background-delivery' not in ent, 'No watch research background delivery entitlement')
-check(not (ROOT/'Sources/Watch').exists(), 'Watch application source removed')
-check(not (ROOT/'Sources/Platform/WatchBridge.swift').exists(), 'WatchConnectivity bridge removed')
-check(not (ROOT/'Sources/iPhone/ResearchPhoneLink.swift').exists(), 'Workout session mirror removed')
-check(not (ROOT/'Config/Watch-Info.plist').exists(), 'Watch companion Info.plist removed')
-check(not (ROOT/'Config/Watch.entitlements').exists(), 'Watch entitlements removed')
-check(not (ROOT/'Resources/WatchAssets.xcassets').exists(), 'Watch app icon catalog removed')
-check(len(list((ROOT/'Luma.xcodeproj/xcshareddata/xcschemes').glob('*.xcscheme')))==1, 'Only iPhone shared scheme remains')
+check((ROOT/'Sources/Watch/LumaWatchApp.swift').exists(), 'Companion Watch entry point present')
+check(any(o['isa']=='PBXCopyFilesBuildPhase' for o in objects.values()), 'Companion app embedded in iPhone product')
+check(len(list((ROOT/'Luma.xcodeproj/xcshareddata/xcschemes').glob('*.xcscheme')))==2, 'Both schemes are shared')
+watch_info=plistlib.loads((ROOT/'Config/Watch-Info.plist').read_bytes())
+check(watch_info['WKCompanionAppBundleIdentifier']=='$(LUMA_BUNDLE_PREFIX)', 'Watch companion bundle link preserved')
+check('workout-processing' not in watch_info.get('WKBackgroundModes', []), 'No fake workout or sensor background session')
 active='\n'.join(p.read_text() for p in (ROOT/'Sources').rglob('*.swift'))
 scheduler=(ROOT/'Sources/iPhone/AlarmKitScheduler.swift').read_text()
 check('AlarmManager.shared.schedule' in scheduler and 'sound: .named(record.soundName)' in scheduler,
@@ -152,7 +153,8 @@ check('if #available(iOS 26.0, *)' in scheduler and 'metadataVisible: false' in 
       'AlarmKit is availability-gated and queue snapshots do not invent sound metadata')
 check('try manager.stop(id: alarmID)' in scheduler and 'let verified = try manager.alarms' in scheduler,
       'Backup Stop verifies system ID removal')
-check('UNNotificationRequest(' not in active and 'UNTimeIntervalNotificationTrigger(' not in active,
+phone_active='\n'.join(p.read_text() for folder in ['LumaCore','Platform','iPhone'] for p in (ROOT/'Sources'/folder).glob('*.swift'))
+check('UNNotificationRequest(' not in phone_active and 'UNTimeIntervalNotificationTrigger(' not in phone_active,
       'Both alarm modes have no notification scheduling fallback')
 check(not (ROOT/'Sources/iPhone/LumaNotificationDelegate.swift').exists(),
       'Legacy foreground notification delegate removed')
@@ -178,19 +180,35 @@ while position + 8 <= len(raw):
     chunks.append(tag); position += 8 + size + (size & 1)
 check(position == len(raw) and not ({b'smpl',b'plst'} & set(chunks)),
       'Dedicated WAV is complete and contains no embedded sampler/playlist loops')
-check(not re.search(r'\bimport\s+(?:WatchKit|WatchConnectivity)\b|\bWCSession\.',active), 'No direct Watch runtime imports or session access')
+check('updateApplicationContext' in (ROOT/'Sources/iPhone/WatchCueLink.swift').read_text(), 'Watch receives a full plan in advance, not a phone-lock-dependent mirrored notification')
 check('HKWorkoutSession' not in active, 'No live workout mirroring dependency')
 ui='\n'.join(p.read_text() for p in (ROOT/'Sources/iPhone').glob('*.swift'))
-check('ForEach(SignalOutput.allCases)' not in ui and 'watchStatus' not in ui, 'No custom Watch routing or connection controls')
+check('ForEach(SignalOutput.allCases)' not in ui, 'No removed legacy output router reintroduced')
 workflow=(ROOT.parent/'.github/workflows/ios-build.yml').read_text()
 check('check-finite-queue-on-mac.sh' in workflow, 'CI compiles and executes native queue regression harness')
 check('check-preserved-sources.py' in workflow, 'CI verifies preserved planner, data and resources')
 for target_id in root['targets']:
     resources=[objects[phase] for phase in objects[target_id]['buildPhases'] if objects[phase]['isa']=='PBXResourcesBuildPhase']
     bundled=[files[objects[item]['fileRef']].name for phase in resources for item in phase['files']]
-    check({'luma-tone-4.wav','luma-alarm-4.wav'} <= set(bundled), 'Preview and dedicated AlarmKit WAV belong to the app resource phase')
-check('generic/platform=watchOS' not in workflow and '-scheme "Luma Watch"' not in workflow, 'CI builds iPhone only')
-check('test ! -d "$LUMA_APP/Watch"' in workflow, 'IPA packaging rejects a bundled Watch app')
+    check('luma-alarm-4.wav' in bundled, 'Four-second WAV included in each app')
+    if objects[target_id]['name']=='Luma':
+        check({'luma-tone-4.wav','luma-night-rain.wav'} <= set(bundled), 'Preview and genuine sleep audio bundled on iPhone')
+check('generic/platform=watchOS' in workflow and '-scheme "Luma Watch"' in workflow, 'CI builds the Watch target')
+check('test -d "$LUMA_APP/Watch/Luma Watch.app"' in workflow, 'IPA packaging requires companion app')
+night=(ROOT/'Sources/iPhone/NightAudio.swift').read_text()
+check('next.numberOfLoops = -1' in night and 'luma-night-rain' in night and 'MPNowPlayingInfoCenter' in night,
+      'User-visible genuine sleep audio, with lock-screen Stop controls')
+check('onStopRequested' in night and 'disarmForRuntimeLoss' in service, 'Runtime loss attempts durable queue cancellation')
+check('8_000_000_000' in night and '10_000_000_000' in night, 'Interruption grace and execution lease are bounded')
+with wave.open(str(ROOT/'Resources/luma-night-rain.wav'),'rb') as w:
+    samples=struct.unpack('<'+'h'*w.getnframes(),w.readframes(w.getnframes()))
+    check(w.getnframes()/w.getframerate()==20 and max(map(abs,samples))>1000,
+          'Sleep resource is twenty seconds of non-silent PCM audio')
+watch=(ROOT/'Sources/Watch/WatchCueStore.swift').read_text()
+check('UNNotificationRequest(' in watch and 'repeats: false' in watch, 'Watch owns independent one-shot local cues')
+check('shouldReplace' in watch and 'pendingNotificationRequests' in watch and 'revision' in watch,
+      'Watch handles full-plan revisions and verifies local admission')
+check('setTaskCompletedWithSnapshot(false)' in watch, 'Watch connectivity tasks are explicitly completed')
 engine = (ROOT/'Sources/LumaCore/RealtimeREMEngine.swift').read_text()
 check('asleepREM' not in engine and 'HealthKit' not in engine.split('public struct RealtimeREMEngine')[1],
       'Live REM engine has no HealthKit sleep-stage dependency')

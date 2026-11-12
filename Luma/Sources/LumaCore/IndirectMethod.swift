@@ -10,6 +10,8 @@ public enum LumaFeatures {
   /// File duration and queue tests are not physical iPhone validation.
   public static let finiteNotificationDeviceVerified = false
   public static let alarmKitWaveEOFDeviceVerified = false
+  public static let nightAudioStopDeviceVerified = false
+  public static let independentWatchScheduleDeviceVerified = false
 }
 
 public struct IndirectMethodSettings: Codable, Equatable, Sendable {

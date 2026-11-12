@@ -1,8 +1,8 @@
-name: Luma - AlarmKit four-second WAV
+name: Luma - night audio Stop and Watch cues
 
 on:
   push:
-    branches: [main]
+    branches: [main, luma/0.9.6-night-audio]
   workflow_dispatch:
 
 permissions:
@@ -95,19 +95,30 @@ jobs:
             CODE_SIGN_IDENTITY="" \
             clean build 2>&1 | tee ../build-logs/iphone-build.log
 
+      - name: Build Apple Watch companion
+        id: watch
+        if: ${{ !cancelled() && steps.project.outcome == 'success' && steps.structure.outcome == 'success' }}
+        run: |
+          set -euo pipefail
+          xcodebuild -project Luma.xcodeproj -scheme "Luma Watch" -configuration Debug \
+            -destination "generic/platform=watchOS" -derivedDataPath ../build/watch \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" \
+            build 2>&1 | tee ../build-logs/watch-build.log
+
       - name: Package unsigned IPA
-        if: ${{ success() && steps.preserved.outcome == 'success' && steps.core.outcome == 'success' && steps.audio.outcome == 'success' && steps.queue.outcome == 'success' && steps.iphone.outcome == 'success' }}
+        if: ${{ success() && steps.preserved.outcome == 'success' && steps.core.outcome == 'success' && steps.audio.outcome == 'success' && steps.queue.outcome == 'success' && steps.iphone.outcome == 'success' && steps.watch.outcome == 'success' }}
         run: |
           set -euo pipefail
           LUMA_APP="../build/iphone/Build/Products/Debug-iphoneos/Luma.app"
           test -f "$LUMA_APP/Luma"
           test -f "$LUMA_APP/Info.plist"
-          test ! -d "$LUMA_APP/Watch"
+          test -d "$LUMA_APP/Watch/Luma Watch.app"
+          test -f "$LUMA_APP/luma-night-rain.wav"
           test -f "$LUMA_APP/Manrope-Regular.ttf"
           test -f "$LUMA_APP/luma-tone-4.wav"
           test -f "$LUMA_APP/luma-alarm-4.wav"
-          test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$LUMA_APP/Info.plist")" = "0.9.5"
-          test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' "$LUMA_APP/Info.plist")" = "21"
+          test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$LUMA_APP/Info.plist")" = "0.9.6"
+          test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' "$LUMA_APP/Info.plist")" = "22"
           test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleSupportedPlatforms:0' "$LUMA_APP/Info.plist")" = "iPhoneOS"
           /usr/bin/lipo "$LUMA_APP/Luma" -verify_arch arm64
           mkdir -p ../dist/Payload
