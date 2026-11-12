@@ -53,9 +53,14 @@ struct AudioImportCheck {
           "\(label): padded/truncated copy must be exactly 4 seconds")
 
         let sounds = directory.appendingPathComponent("Sounds")
-        let sound = try FiniteCueSoundBuilder.prepare(source: source, directory: sounds)
+        let sound = try AlarmKitSoundBuilder.prepare(source: source, directory: sounds)
         let soundURL = sounds.appendingPathComponent(sound)
-        try require(FiniteCueSoundBuilder.valid(soundURL), "\(label): invalid final PCM16 cue")
+        try require(AlarmKitSoundBuilder.valid(soundURL), "\(label): invalid final PCM16 cue")
+        let facts = try WaveCueInspector.inspect(Data(contentsOf: soundURL))
+        try require(facts?.isFourSecondCue == true && facts?.hasLoopMetadata == false,
+          "\(label): WAV length/loop metadata")
+        try require(sound.hasPrefix("luma-ak4-") && sound.hasSuffix(".wav"),
+          "\(label): must use new WAV cache")
         // Inspect the disk encoding separately from a standard Float32 reader.
         let inspection = try AVAudioFile(forReading: soundURL, commonFormat: .pcmFormatFloat32, interleaved: false)
         print("INFO: \(label): file=\(inspection.fileFormat), processing=\(inspection.processingFormat), frames=\(inspection.length)")
@@ -70,7 +75,7 @@ struct AudioImportCheck {
           let silentStart = min(88200, Int(ceil(seconds * 22050)) + 2048)
           try require(pcm[silentStart..<88200].allSatisfy { $0 == 0 }, "\(label): short content must have silent padding")
         }
-        let cached = try FiniteCueSoundBuilder.prepare(source: source, directory: sounds)
+        let cached = try AlarmKitSoundBuilder.prepare(source: source, directory: sounds)
         try require(cached == sound, "\(label): cache name changed")
         let after = try Data(contentsOf: source)
         try require(after == original, "\(label): original source changed")
@@ -81,7 +86,7 @@ struct AudioImportCheck {
     let bad = directory.appendingPathComponent("invalid.mp3")
     try Data("invalid audio".utf8).write(to: bad)
     var rejected = false
-    do { _ = try FiniteCueSoundBuilder.prepare(source: bad, directory: directory) }
+    do { _ = try AlarmKitSoundBuilder.prepare(source: bad, directory: directory) }
     catch { rejected = true }
     try require(rejected, "Invalid input must be rejected without a default sound fallback")
     print("PASS: \(cases) audio matrix cases plus invalid-input rejection. No physical-device claim.")

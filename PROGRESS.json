@@ -1,10 +1,11 @@
 {
-  "version": "0.9.4 (20)",
-  "base": "0.9.3 (19)",
+  "version": "0.9.5 (21)",
+  "base": "0.9.4 (20)",
   "date": "2026-11-12",
-  "stage": "Hash portability and audio processing fixes implemented; portable checks passed; new native CI pending",
+  "stage": "AlarmKit WAV implementation and portable checks complete; native build and physical EOF/replay tests pending",
   "Python_integrity_tests_passed": 13,
   "native_CI_started_from_here": false,
   "production_ready": false,
-  "physical_four_second_completion_confirmed": false
+  "physical_four_second_completion_confirmed": false,
+  "AlarmKit_no_replay_confirmed": false
 }

@@ -1,4 +1,5 @@
 {
+  "version": "0.9.5 (21)",
   "kind": "prepared-native-AVFoundation-matrix",
   "case_count": 8,
   "invalid_input_check": true,
@@ -12,9 +13,7 @@
     4,
     40
   ],
-  "expected_output_frames": 88200,
-  "expected_sample_rate": 22050,
-  "expected_file_bits": 16,
+  "expected_output": "WAV PCM16 mono 22050Hz, 88200 frames, no smpl/plst",
   "processing": "Float32 non-interleaved",
   "executed_here": false,
   "physical_device_tested": false

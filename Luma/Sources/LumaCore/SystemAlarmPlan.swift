@@ -1,7 +1,7 @@
 import Foundation
 
-/// Persisted separately from the diary. Schema 1 used AlarmKit; schema 2 uses
-/// finite, nonrepeating UserNotifications sounds. Names stay stable for decoding.
+/// Schema 1: earlier AlarmKit; schema 2: notification trial; schema 3: AlarmKit
+/// with a dedicated four-second WAV. Keep the storage location/record decoder.
 public enum SystemAlarmKind: String, Codable, Hashable, Sendable { case smart, indirect, probe }
 public struct SystemAlarmRequest: Equatable, Sendable {
   public var key: String
@@ -57,7 +57,7 @@ public struct IndirectAlarmSession: Codable, Equatable, Sendable {
   }
 }
 public struct SystemAlarmLedger: Codable, Equatable, Sendable {
-  public var schema = 2
+  public var schema = 3
   public var records: [SystemAlarmRecord] = []
   public var handledKeys: [String] = []
   public var indirectSession: IndirectAlarmSession?
@@ -66,6 +66,18 @@ public struct SystemAlarmLedger: Codable, Equatable, Sendable {
   public var cancelledOwners: [UUID]?
   public var cancelAllRequested: Bool?
   public init() {}
+  /// Call after BOTH old notification requests and old AlarmKit alarms have
+  /// been cancelled. Preserve the interval origin and future occurrence keys.
+  @discardableResult public mutating func migrateToAlarmKitWave(now: Date) -> Bool {
+    guard schema == 1 || schema == 2 else { return false }
+    let sessionCancelled = indirectSession.map { (cancelledOwners ?? []).contains($0.id) } ?? false
+    if cancelAllRequested == true || sessionCancelled { indirectSession = nil }
+    for record in records where record.fireAt <= now { markHandled(record) }
+    records.removeAll()
+    cancelAllRequested = nil; cancelledOwners = nil
+    schema = 3
+    return true
+  }
   /// Call only AFTER all legacy AlarmKit alarms have been cancelled and verified.
   /// Future occurrences must remain eligible; an elapsed cue is never replayed.
   @discardableResult public mutating func migrateToFiniteNotifications(now: Date) -> Bool {
@@ -91,8 +103,8 @@ public enum SystemAlarmPolicy {
   public static let soundSeconds: TimeInterval = 4
   /// A finite system queue, replenished while the app executes; not an infinite OS timer.
   public static let queueHorizon: TimeInterval = 12 * 60 * 60
-  // Stay below the system's 64 pending local-notification budget. The scheduler
-  // also subtracts any requests belonging to other features before adding cues.
+  // Bounded app queue; the daemon can reject admission earlier. This is not an
+  // assertion about a fixed OS AlarmKit limit.
   public static let queueLimit = 60
   public enum StopAction: Equatable, Sendable {
     case none

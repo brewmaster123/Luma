@@ -3,8 +3,8 @@ import Foundation
 import AlarmKit
 #endif
 
-/// This release never schedules AlarmKit. Cancel this app's daemon alarms,
-/// including orphan IDs and ringing alarms, before admitting any finite cue.
+/// Cancel the previous schema's AlarmKit queue, including orphan/ringing IDs,
+/// before admitting schema-3 WAV alarms. Current IDs survive normal relaunch.
 @MainActor final class LegacyAlarmCleanup {
   private let keys = ["luma.system-alarm.configurations.v1", "luma.alarmkit.stop-windows.v1"]
   private let oldConsentKey = "luma.alarmkit.short-stop-consent.v1"
@@ -17,6 +17,8 @@ import AlarmKit
       finish(); return
     }
     #endif
+    // Schema-3 AlarmKit records must survive a normal relaunch.
+    guard requiresConfirmation || hasLegacyRecords else { completed = true; return }
     #if os(iOS) && canImport(AlarmKit)
     if #available(iOS 26.0, *) {
       let manager = AlarmManager.shared
@@ -35,7 +37,7 @@ import AlarmKit
         }
         let remaining = try manager.alarms
         guard remaining.isEmpty else {
-          throw AppError.message("Не все старые будильники отменены. Новые сигналы не включены; откройте Luma ещё раз.")
+          throw AppError.message("РќРµ РІСЃРµ СЃС‚Р°СЂС‹Рµ Р±СѓРґРёР»СЊРЅРёРєРё РѕС‚РјРµРЅРµРЅС‹. РќРѕРІС‹Рµ СЃРёРіРЅР°Р»С‹ РЅРµ РІРєР»СЋС‡РµРЅС‹; РѕС‚РєСЂРѕР№С‚Рµ Luma РµС‰С‘ СЂР°Р·.")
         }
         CueDiagnostics.event("legacy_alarmkit_empty_verified")
         finish(); return
@@ -43,7 +45,7 @@ import AlarmKit
     }
     #endif
     guard !requiresConfirmation && !hasLegacyRecords else {
-      throw AppError.message("Нужно отменить старые будильники AlarmKit. Разрешите Luma доступ к будильникам в настройках iPhone и откройте приложение снова. Новая очередь пока не включена.")
+      throw AppError.message("РќСѓР¶РЅРѕ РѕС‚РјРµРЅРёС‚СЊ СЃС‚Р°СЂС‹Рµ Р±СѓРґРёР»СЊРЅРёРєРё AlarmKit. Р Р°Р·СЂРµС€РёС‚Рµ Luma РґРѕСЃС‚СѓРї Рє Р±СѓРґРёР»СЊРЅРёРєР°Рј РІ РЅР°СЃС‚СЂРѕР№РєР°С… iPhone Рё РѕС‚РєСЂРѕР№С‚Рµ РїСЂРёР»РѕР¶РµРЅРёРµ СЃРЅРѕРІР°. РќРѕРІР°СЏ РѕС‡РµСЂРµРґСЊ РїРѕРєР° РЅРµ РІРєР»СЋС‡РµРЅР°.")
     }
     finish()
   }

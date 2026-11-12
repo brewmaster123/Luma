@@ -1,7 +1,7 @@
 import Foundation
 
 extension SignalSettings {
-  /// .phone identifies the notification owner. It does not suppress Apple's own
+  /// .phone identifies the AlarmKit owner. It does not suppress Apple's own
   /// system forwarding to paired Apple Watch; legacy raw values remain decodable.
   public var finiteCueSignal: Self {
     var signal = validated()
@@ -13,9 +13,9 @@ extension SignalSettings {
 }
 extension LumaState {
   /// Retain alarm IDs/dates/repeat days, audio references, journal and feedback.
-  /// A legacy Watch-only alarm keeps its schedule as a finite iPhone notification.
+  /// Keep legacy schedules and voice references while selecting AlarmKit.
   public mutating func migrateToiPhoneOnly(now: Date = Date()) {
-    useNotificationDelivery()
+    useAlarmKitDelivery()
     signal = signal.finiteCueSignal
     source = .phone
     for i in alarms.indices { alarms[i].signal = alarms[i].signal.finiteCueSignal }

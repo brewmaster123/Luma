@@ -1,53 +1,52 @@
 {
-  "version": "0.9.4",
-  "build": 20,
+  "version": "0.9.5",
+  "build": 21,
   "date": "2026-11-12",
-  "base": "0.9.3 (19)",
-  "directory": "C:\\Users\\Admin\\Desktop\\Luma\\V.0.9.4",
-  "fixes": [
-    "Declared LF text hashing and strict binary hashing",
-    "Explicit Float32 processing separate from PCM16 disk encoding",
-    "Complete frame reads, fade diagnostics, renderer cache v3",
-    "Mandatory CI integrity tests and explicit IPA gates"
+  "at_utc": "2026-11-12T08:04:37.803739+00:00",
+  "base": "0.9.4 (20)",
+  "directory": "C:\\Users\\Admin\\Desktop\\Luma\\V.0.9.5",
+  "request": "AlarmKit for both modes, finite WAV EOF experiment; no Apple documentation browsing",
+  "implementation": [
+    "Common AlarmKit scheduler for smart/indirect/probe fixed occurrences",
+    "Dedicated 4.000 second WAV and separate PCM16 user WAV copies",
+    "Schema 1/2 migration after legacy notification and AlarmKit cleanup",
+    "Observed-alert Stop backup only while the process executes; current occurrence only"
   ],
-  "previous_CI_observed_in_user_screenshot": {
-    "commit_and_app_version_not_provided": true,
-    "preservation_step": "failed",
-    "core_tests": "skipped",
-    "audio_step": "failed",
-    "queue_step": "passed",
-    "iPhone_build_step": "passed",
-    "IPA_packaging": "skipped",
-    "exact_render_guard_failure_branch": "not distinguishable from screenshot"
-  },
   "checks": {
     "Python_integrity_tests_executed": 13,
     "Python_integrity_test_failures": 0,
     "full_preserved_set_LF_and_CRLF_simulation_passed": true,
-    "structural_checks_passed": 113,
-    "grammar_inputs_passed": 62,
+    "structural_checks_passed": 124,
+    "grammar_inputs_passed": 66,
     "Python_scripts_AST_parsed": 6,
-    "preserved_inputs_verified": 70,
-    "historical_files_raw_SHA256_verified": 852,
+    "preserved_inputs_verified": 51,
+    "historical_files_raw_SHA256_verified": 959,
     "previous_directories_unchanged": true,
     "YAML_and_IPA_gates_verified": true,
-    "core_XCTest_methods_present": 107,
-    "queue_scenarios_present": 19,
-    "new_native_audio_cases_present": 8,
+    "core_XCTest_methods_present": 116,
+    "native_queue_scenarios_present": 22,
+    "native_audio_cases_present": 8,
+    "bundled_WAV_duration_measured_seconds": 4.0,
     "Swift_tests_executed_here": false,
-    "new_AVFoundation_matrix_executed_here": false,
-    "new_Xcode_build_executed_here": false,
+    "native_queue_harness_executed_here": false,
+    "AVFoundation_matrix_executed_here": false,
+    "Xcode_build_executed_here": false,
     "physical_device_tests_executed": false
   },
+  "tester_audio": {
+    "transcription": "local automatic faster-whisper base",
+    "sanitized_summary": "Only one notification on Watch, no melody reported",
+    "original_audio_unchanged": true,
+    "original_audio_included_in_project": false,
+    "temporary_tools_removed": true
+  },
+  "Apple_documentation_or_internet_consulted_this_turn": false,
   "CI_run_started_from_here": false,
   "new_IPA_generated_here": false,
   "physical_four_second_completion_confirmed": false,
+  "AlarmKit_no_replay_confirmed": false,
   "production_ready": false,
   "changes": [
-    {
-      "file": ".gitattributes",
-      "change": "added"
-    },
     {
       "file": ".github/workflows/ios-build.yml",
       "change": "modified"
@@ -69,12 +68,28 @@
       "change": "modified"
     },
     {
+      "file": "Luma/Config/iOS-Info.plist",
+      "change": "modified"
+    },
+    {
+      "file": "Luma/Docs/ALARM_RESEARCH.md",
+      "change": "modified"
+    },
+    {
       "file": "Luma/Docs/CI_AUDIO_HASH_FIX.md",
-      "change": "added"
+      "change": "modified"
+    },
+    {
+      "file": "Luma/Docs/CI_RUNNER_ISSUE.md",
+      "change": "modified"
     },
     {
       "file": "Luma/Docs/DEVICE_TESTS.md",
       "change": "modified"
+    },
+    {
+      "file": "Luma/Docs/TESTER_FEEDBACK.md",
+      "change": "added"
     },
     {
       "file": "Luma/Docs/VERSION_AUDIT.md",
@@ -90,6 +105,10 @@
     },
     {
       "file": "Luma/Docs/native-audio-matrix-status.json",
+      "change": "modified"
+    },
+    {
+      "file": "Luma/Docs/native-queue-status.json",
       "change": "added"
     },
     {
@@ -109,12 +128,24 @@
       "change": "modified"
     },
     {
-      "file": "Luma/Docs/source-integrity-tests-result.json",
+      "file": "Luma/Docs/python-syntax-checks.json",
       "change": "added"
     },
     {
+      "file": "Luma/Docs/source-grammar-checks.json",
+      "change": "modified"
+    },
+    {
+      "file": "Luma/Docs/source-integrity-tests-result.json",
+      "change": "modified"
+    },
+    {
       "file": "Luma/Docs/source-integrity-tests.log",
-      "change": "added"
+      "change": "modified"
+    },
+    {
+      "file": "Luma/Docs/static-checks.json",
+      "change": "modified"
     },
     {
       "file": "Luma/Docs/workflow-validation.json",
@@ -125,15 +156,63 @@
       "change": "modified"
     },
     {
-      "file": "Luma/Luma.xcodeproj/xcshareddata/xcschemes/Luma.xcscheme",
+      "file": "Luma/Resources/luma-alarm-4.wav",
+      "change": "added"
+    },
+    {
+      "file": "Luma/Sources/LumaCore/FiniteCuePolicy.swift",
       "change": "modified"
     },
     {
-      "file": "Luma/Sources/iPhone/CueAudioImporter.swift",
+      "file": "Luma/Sources/LumaCore/IndirectMethod.swift",
       "change": "modified"
+    },
+    {
+      "file": "Luma/Sources/LumaCore/SystemAlarmPlan.swift",
+      "change": "modified"
+    },
+    {
+      "file": "Luma/Sources/LumaCore/WaveCueInspector.swift",
+      "change": "added"
+    },
+    {
+      "file": "Luma/Sources/LumaCore/iPhoneOnlyMigration.swift",
+      "change": "modified"
+    },
+    {
+      "file": "Luma/Sources/Platform/AlarmScheduling.swift",
+      "change": "added"
+    },
+    {
+      "file": "Luma/Sources/Platform/AppModel.swift",
+      "change": "modified"
+    },
+    {
+      "file": "Luma/Sources/Platform/CueDiagnostics.swift",
+      "change": "modified"
+    },
+    {
+      "file": "Luma/Sources/Platform/NotificationService.swift",
+      "change": "modified"
+    },
+    {
+      "file": "Luma/Sources/iPhone/AlarmEditor.swift",
+      "change": "modified"
+    },
+    {
+      "file": "Luma/Sources/iPhone/AlarmKitScheduler.swift",
+      "change": "added"
+    },
+    {
+      "file": "Luma/Sources/iPhone/AlarmKitSoundBuilder.swift",
+      "change": "added"
     },
     {
       "file": "Luma/Sources/iPhone/FiniteCueSoundBuilder.swift",
+      "change": "removed"
+    },
+    {
+      "file": "Luma/Sources/iPhone/IndirectMethodView.swift",
       "change": "modified"
     },
     {
@@ -141,7 +220,39 @@
       "change": "modified"
     },
     {
+      "file": "Luma/Sources/iPhone/LumaApp.swift",
+      "change": "modified"
+    },
+    {
+      "file": "Luma/Sources/iPhone/LumaNotificationDelegate.swift",
+      "change": "removed"
+    },
+    {
+      "file": "Luma/Sources/iPhone/SettingsView.swift",
+      "change": "modified"
+    },
+    {
+      "file": "Luma/Sources/iPhone/SignalReadinessView.swift",
+      "change": "modified"
+    },
+    {
       "file": "Luma/Sources/iPhone/SystemAlarmService.swift",
+      "change": "modified"
+    },
+    {
+      "file": "Luma/Tests/LumaCoreTests/AlarmKitWaveMigrationTests.swift",
+      "change": "added"
+    },
+    {
+      "file": "Luma/Tests/LumaCoreTests/FiniteCuePolicyTests.swift",
+      "change": "modified"
+    },
+    {
+      "file": "Luma/Tests/LumaCoreTests/WaveCueInspectorTests.swift",
+      "change": "added"
+    },
+    {
+      "file": "Luma/Tests/LumaCoreTests/iPhoneOnlyMigrationTests.swift",
       "change": "modified"
     },
     {
@@ -161,11 +272,7 @@
       "change": "modified"
     },
     {
-      "file": "Luma/scripts/check-on-mac.sh",
-      "change": "modified"
-    },
-    {
-      "file": "Luma/scripts/check-preserved-sources.py",
+      "file": "Luma/scripts/check-static.py",
       "change": "modified"
     },
     {
@@ -175,10 +282,6 @@
     {
       "file": "Luma/scripts/project-graph.json",
       "change": "modified"
-    },
-    {
-      "file": "Luma/scripts/test-source-integrity.py",
-      "change": "added"
     },
     {
       "file": "README.md",

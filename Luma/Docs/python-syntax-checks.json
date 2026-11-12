@@ -1,0 +1,13 @@
+{
+  "version": "0.9.5 (21)",
+  "kind": "executed-Python-AST-parse",
+  "files": [
+    "check-preserved-sources.py",
+    "check-previous-versions.py",
+    "check-source-grammar.py",
+    "check-static.py",
+    "generate_project.py",
+    "test-source-integrity.py"
+  ],
+  "passed": true
+}

@@ -36,16 +36,16 @@ struct SettingsView: View {
               previewDelay = 3
               wantsPreview = true; showReadiness = true
             } label: {
-              Label("Короткий сигнал через 3 секунды", systemImage: "play.circle")
+              Label("Проба AlarmKit через 3 секунды", systemImage: "play.circle")
             }.frame(maxWidth: .infinity, minHeight: 44).disabled(model.audio.recording || model.audio.playing || model.busy || model.systemAlarms.preparing)
-            Text("Для уведомления создаётся отдельная четырёхсекундная копия выбранного звука с плавным завершением. Исходная запись сохраняется.")
+            Text("Для AlarmKit создаётся отдельный WAV длиной 4 секунды с плавным завершением. Исходная запись сохраняется.")
               .font(LumaStyle.font(11)).foregroundStyle(LumaStyle.secondary)
           }
         }
         SoundLibraryView(audio: model.audio) { recorder = true }
         LumaCard {
           VStack(alignment: .leading, spacing: 14) {
-            SmallLabel(text: "ПРОВЕРКА КОРОТКОГО СИГНАЛА")
+            SmallLabel(text: "ПРОВЕРКА ALARMKIT")
             Button {
               previewDelay = 60; wantsPreview = true; showReadiness = true
             } label: {
@@ -54,7 +54,7 @@ struct SettingsView: View {
             }.disabled(model.busy || model.systemAlarms.preparing)
             Text(model.systemAlarms.lastStopReport)
               .font(LumaStyle.font(12)).foregroundStyle(LumaStyle.secondary)
-            Text("После запуска заблокируйте iPhone. Проверьте один звук длиной 4 секунды без повтора. Журнал показывает постановку и доступные сведения о доставке; длительность звука нужно измерить на устройстве.")
+            Text("После запуска заблокируйте iPhone. Проверьте один звук длиной 4 секунды без повтора. Журнал показывает состояние AlarmKit и резервную Stop; фактическое окончание звука нужно измерить на устройстве.")
               .font(LumaStyle.font(11)).foregroundStyle(LumaStyle.secondary)
             if let log = model.systemAlarms.logURL,
               FileManager.default.fileExists(atPath: log.path) {
@@ -75,7 +75,7 @@ struct SettingsView: View {
             Button("История сна из «Здоровья»") { Task { await model.connectHealth() } }.frame(
               minHeight: 44)
             Label {
-              Text("Уведомление может прийти на Apple Watch вместо заблокированного iPhone. Для звука на iPhone выключите отражение Luma в приложении Watch и проверьте пару устройств. Одновременный сигнал на обоих устройствах не гарантируется.")
+              Text("Часы могут показывать системный будильник AlarmKit. Проверьте, что на заблокированном iPhone звучит WAV, а сигнал заканчивается самостоятельно. Обычные уведомления для сигналов отключены.")
                 .font(LumaStyle.font(12)).foregroundStyle(LumaStyle.secondary)
             } icon: { Image(systemName: "applewatch").foregroundStyle(LumaStyle.lavender) }
 

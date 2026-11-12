@@ -1,4 +1,4 @@
-name: Luma - finite four-second cues
+name: Luma - AlarmKit four-second WAV
 
 on:
   push:
@@ -105,8 +105,9 @@ jobs:
           test ! -d "$LUMA_APP/Watch"
           test -f "$LUMA_APP/Manrope-Regular.ttf"
           test -f "$LUMA_APP/luma-tone-4.wav"
-          test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$LUMA_APP/Info.plist")" = "0.9.4"
-          test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' "$LUMA_APP/Info.plist")" = "20"
+          test -f "$LUMA_APP/luma-alarm-4.wav"
+          test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$LUMA_APP/Info.plist")" = "0.9.5"
+          test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' "$LUMA_APP/Info.plist")" = "21"
           test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleSupportedPlatforms:0' "$LUMA_APP/Info.plist")" = "iPhoneOS"
           /usr/bin/lipo "$LUMA_APP/Luma" -verify_arch arm64
           mkdir -p ../dist/Payload

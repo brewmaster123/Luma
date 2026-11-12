@@ -1,7 +1,7 @@
 import Combine
 import Foundation
 
-/// iPhone-only application state. UserNotifications owns cues and system Watch
+/// iPhone-only application state. AlarmKit owns alarms and system Watch
 /// forwarding; there is no watch app, WCSession, workout mirroring or cue bridge.
 @MainActor final class AppModel: ObservableObject {
   @Published private(set) var archive = AppArchive()
@@ -61,7 +61,7 @@ import Foundation
   var indirectIntervalMinutes: Int {
     (state.indirectMethod ?? IndirectMethodSettings()).validated.intervalMinutes
   }
-  var newAlarmDelivery: PhoneAlarmDelivery { .shortCue }
+  var newAlarmDelivery: PhoneAlarmDelivery { .systemAlarm }
   var versionLabel: String {
     let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "—"
     let build = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "—"
@@ -80,7 +80,7 @@ import Foundation
     startTicker()
     guard storageProblem == nil, save() else { return }
     await rebuildAlarms()
-    if systemAlarms.ledger.schema == 2, !systemAlarms.acceptedLimitations, !showOnboarding,
+    if systemAlarms.supported, !systemAlarms.acceptedLimitations, !showOnboarding,
       indirectRunning || state.alarms.contains(where: { $0.next(after: Date()) != nil }) {
       showSignalMigration = true
     }
@@ -139,14 +139,14 @@ import Foundation
     defer { busy = false }
     do {
       try await systemAlarms.authorize()
-      let signal = state.signal.finiteCueSignal
+      let signal = state.signal.systemAlarmSignal
       let session = IndirectAlarmSession(settings: .init(intervalMinutes: indirectIntervalMinutes), signal: signal)
-      _ = try FiniteCueSoundBuilder.prepare(source: audio.soundURL(session.signal, clips: state.voices))
+      _ = try AlarmKitSoundBuilder.prepare(source: audio.soundURL(session.signal, clips: state.voices))
       try systemAlarms.setIndirect(session)
       await rebuildAlarms()
       guard !systemAlarms.indirectRecords.isEmpty else {
         try await systemAlarms.stopIndirect()
-        throw AppError.message(message ?? "Система не приняла уведомления. Режим не запущен.")
+        throw AppError.message(message ?? "AlarmKit не принял сигналы. Режим не запущен.")
       }
 
     } catch { message = error.localizedDescription }
@@ -178,16 +178,16 @@ import Foundation
       try await systemAlarms.authorize()
       try await systemAlarms.cancelProbes()
       let id = UUID(), date = Date().addingTimeInterval(max(3, min(60, seconds)))
-      let signal = state.signal.finiteCueSignal
+      let signal = state.signal.systemAlarmSignal
       let request = SystemAlarmRequest(key: "luma.probe.\(id.uuidString)", ownerID: id,
-        kind: .probe, fireAt: date, title: "Короткий сигнал · Luma",
+        kind: .probe, fireAt: date, title: "Проба AlarmKit · Luma",
         source: try audio.soundURL(signal, clips: state.voices))
       let requests = try systemAlarmRequests() + [request]
       let queued = try await systemAlarms.reconcile(requests, activeOwners: systemAlarmOwners.union([id]))
       guard queued.contains(id) else {
         throw AppError.message("Пробный сигнал не поставлен. Повторите пробу с задержкой 60 секунд.")
       }
-      message = "Проба через \(Int(max(3, min(60, seconds)))) сек. Выключите беззвучный режим, разрешите Luma в Focus и заблокируйте iPhone. Проверьте один звук длиной 4 секунды."
+      message = "Проба через \(Int(max(3, min(60, seconds)))) сек. Сигнал через AlarmKit: WAV длиной 4 секунды. Заблокируйте iPhone и проверьте звук. Если он повторяется, нажмите «Остановить»."
     } catch { message = error.localizedDescription }
   }
 
@@ -195,13 +195,13 @@ import Foundation
     try await systemAlarms.authorize(acceptLimitations: acceptLimitations)
     alarmPermissionSummary = systemAlarms.summary
     alarmPermissionReady = true
-    // Resume the migrated cadence and saved alarms after the new notification
-    // contract has been explained. Do not require recreating an interval session.
+    // Resume the migrated cadence and saved alarms after the AlarmKit WAV
+    // experiment has been explained. Do not require recreating an interval session.
     await rebuildAlarms()
   }
 
   func updateSignal(_ s: SignalSettings) {
-    state.signal = s.finiteCueSignal
+    state.signal = s.systemAlarmSignal
     save()
   }
 
@@ -210,12 +210,12 @@ import Foundation
     busy = true
     defer { busy = false }
     var alarm = input
-    alarm.title = String(alarm.title.prefix(80)); alarm.signal = alarm.signal.finiteCueSignal
-    alarm.phoneDelivery = .shortCue
+    alarm.title = String(alarm.title.prefix(80)); alarm.signal = alarm.signal.systemAlarmSignal
+    alarm.phoneDelivery = .systemAlarm
     alarm.signal.melodySeconds = 4
     if alarm.enabled {
       do {
-        _ = try FiniteCueSoundBuilder.prepare(source: audio.soundURL(alarm.signal, clips: state.voices))
+        _ = try AlarmKitSoundBuilder.prepare(source: audio.soundURL(alarm.signal, clips: state.voices))
         try await preparePhoneSignals()
         try systemAlarms.resetHandled(ownerID: alarm.id)
       } catch { message = error.localizedDescription; return false }
@@ -236,7 +236,7 @@ import Foundation
     alarmOrderDate = Date(); await rebuildAlarms()
     if alarm.enabled && alarm.next(after: Date()) != nil,
       !queuedAlarmIDs.contains(alarm.id) {
-      let schedulingError = message ?? "Система не приняла уведомление будильника."
+      let schedulingError = message ?? "AlarmKit не принял будильник."
       state = old; save(); await rebuildAlarms()
       message = schedulingError
       return false

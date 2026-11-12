@@ -3,8 +3,8 @@ import OSLog
 
 enum CueDiagnostics {
   private static let lock = NSLock()
-  private static let logger = Logger(subsystem: "com.sevchlenko.luma", category: "finite-cues")
-  static var logURL: URL? { try? directory().appendingPathComponent("finite-cue-events.jsonl") }
+  private static let logger = Logger(subsystem: "com.sevchlenko.luma", category: "alarmkit-short-sound")
+  static var logURL: URL? { try? directory().appendingPathComponent("alarmkit-wave-events.jsonl") }
   static func directory() throws -> URL {
     // Keep the legacy ledger location so upgrades can actually find schema 1.
     let folder = try FileManager.default.url(for: .applicationSupportDirectory,
@@ -22,20 +22,20 @@ enum CueDiagnostics {
     lock.lock(); defer { lock.unlock() }
     guard let file = logURL else { return }
     var item: [String: Any] = ["event": name, "at": Date().timeIntervalSince1970,
-      "delivery": "finite-local-notification", "acoustic_measurement": false]
+      "delivery": "alarmkit-four-second-wav", "acoustic_measurement": false]
     if let record {
       item["id"] = record.id.uuidString; item["kind"] = record.kind.rawValue
       item["scheduled_at"] = record.fireAt.timeIntervalSince1970
       item["sound_seconds"] = SystemAlarmPolicy.soundSeconds
     }
-    if let identifier { item["notification_id"] = identifier }
+    if let identifier { item["system_identifier"] = identifier }
     if let detail { item["detail"] = String(detail.prefix(300)) }
     guard var data = try? JSONSerialization.data(withJSONObject: item, options: [.sortedKeys]) else { return }
     data.append(10)
     do {
       if let size = (try? FileManager.default.attributesOfItem(atPath: file.path)[.size]) as? NSNumber,
         size.intValue > 2 * 1024 * 1024 {
-        let previous = file.deletingLastPathComponent().appendingPathComponent("finite-cue-events.previous.jsonl")
+        let previous = file.deletingLastPathComponent().appendingPathComponent("alarmkit-wave-events.previous.jsonl")
         if FileManager.default.fileExists(atPath: previous.path) { try FileManager.default.removeItem(at: previous) }
         try FileManager.default.moveItem(at: file, to: previous)
       }

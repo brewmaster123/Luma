@@ -50,6 +50,6 @@
 	<key>UIUserInterfaceStyle</key>
 	<string>Dark</string>
 	<key>NSAlarmKitUsageDescription</key>
-	<string>Luma отменяет системные будильники предыдущих версий при переходе на короткие уведомления. Новые сигналы не используют AlarmKit.</string>
+	<string>Luma использует AlarmKit для умного будильника и непрямого метода с коротким звуком, включая сигналы при заблокированном iPhone.</string>
 </dict>
 </plist>

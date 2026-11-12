@@ -1,3 +1,5 @@
+> Историческая заметка из предыдущего выпуска. В работе 0.9.5 источники не открывались; текущие результаты — verification.json и DEVELOPMENT_STATUS.md.
+
 # GitHub Actions: runner не выделен — 12 ноября 2026
 
 Скриншот запуска №22 содержит ошибку `The job was not acquired by Runner of type hosted even after multiple attempts` и предупреждения о capacity macOS arm64. Ни checkout, ни Swift/Xcode в этом запуске не начались. Он не подтверждает ошибку компиляции Luma и не проверяет работу сигналов.

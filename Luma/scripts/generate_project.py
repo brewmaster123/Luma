@@ -39,7 +39,7 @@ for folder, title in [("Sources/LumaCore", "Core"), ("Sources/Platform", "Servic
 
 resource_children = []
 for filename, kind in [("iOSAssets.xcassets", "folder.assetcatalog"),
-                       ("PrivacyInfo.xcprivacy", "text.xml")] + [(f"Manrope-{style}.ttf", "file") for style in ["Regular", "Medium", "SemiBold"]] + [(f"luma-tone-{n}.wav", "audio.wav") for n in [4,8,15]]:
+                       ("PrivacyInfo.xcprivacy", "text.xml")] + [(f"Manrope-{style}.ttf", "file") for style in ["Regular", "Medium", "SemiBold"]] + [(f"luma-tone-{n}.wav", "audio.wav") for n in [4,8,15]] + [("luma-alarm-4.wav", "audio.wav")]:
     path = "Resources/" + filename
     refs[path] = obj(path, "PBXFileReference", lastKnownFileType=kind, path=filename, sourceTree="<group>")
     resource_children.append(refs[path])
@@ -86,7 +86,7 @@ def resources_phase(key, paths):
 
 phone_sources = sources_phase("phone.sources", ["Sources/LumaCore/", "Sources/Platform/", "Sources/iPhone/"])
 fonts = [f"Resources/Manrope-{s}.ttf" for s in ["Regular", "Medium", "SemiBold"]]
-tones = [f"Resources/luma-tone-{n}.wav" for n in [4,8,15]]
+tones = [f"Resources/luma-tone-{n}.wav" for n in [4,8,15]] + ["Resources/luma-alarm-4.wav"]
 phone_resources = resources_phase("phone.resources", ["Resources/iOSAssets.xcassets", "Resources/PrivacyInfo.xcprivacy"] + fonts + tones)
 phone_frameworks = obj("phone.frameworks", "PBXFrameworksBuildPhase", buildActionMask=2147483647, files=[], runOnlyForDeploymentPostprocessing=0)
 phone_target = obj("phone.target", "PBXNativeTarget", buildConfigurationList=phone_configs, buildPhases=[phone_sources, phone_frameworks, phone_resources], buildRules=[], dependencies=[], name="Luma", productName="Luma", productReference=phone_product, productType="com.apple.product-type.application")

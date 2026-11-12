@@ -1,21 +1,11 @@
 {
-  "baseline": "0.9.3 (19)",
+  "baseline": "0.9.4 (20)",
   "kind": "sha256-with-explicit-text-normalization",
   "manifest_schema": 2,
   "passed": true,
   "files": [
     {
-      "path": "Config/iOS-Info.plist",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
       "path": "Config/iOS.entitlements",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
-      "path": "Luma.xcodeproj/project.pbxproj",
       "hash_mode": "lf-text",
       "unchanged": true
     },
@@ -90,12 +80,12 @@
       "unchanged": true
     },
     {
-      "path": "scripts/check-finite-queue-on-mac.sh",
+      "path": "scripts/check-on-mac.sh",
       "hash_mode": "lf-text",
       "unchanged": true
     },
     {
-      "path": "scripts/check-finite-queue-on-mac.swift",
+      "path": "scripts/check-preserved-sources.py",
       "hash_mode": "lf-text",
       "unchanged": true
     },
@@ -110,32 +100,22 @@
       "unchanged": true
     },
     {
-      "path": "scripts/check-static.py",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
-      "path": "scripts/project-graph.json",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
       "path": "scripts/requirements-validation.txt",
       "hash_mode": "lf-text",
       "unchanged": true
     },
     {
-      "path": "Sources/iPhone/AlarmEditor.swift",
+      "path": "scripts/test-source-integrity.py",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/iPhone/CueAudioImporter.swift",
       "hash_mode": "lf-text",
       "unchanged": true
     },
     {
       "path": "Sources/iPhone/DesignSystem.swift",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
-      "path": "Sources/iPhone/IndirectMethodView.swift",
       "hash_mode": "lf-text",
       "unchanged": true
     },
@@ -150,42 +130,12 @@
       "unchanged": true
     },
     {
-      "path": "Sources/iPhone/LegacyAlarmCleanup.swift",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
-      "path": "Sources/iPhone/LumaApp.swift",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
-      "path": "Sources/iPhone/LumaNotificationDelegate.swift",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
       "path": "Sources/iPhone/PhoneRootView.swift",
       "hash_mode": "lf-text",
       "unchanged": true
     },
     {
-      "path": "Sources/iPhone/SettingsView.swift",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
-      "path": "Sources/iPhone/SignalReadinessView.swift",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
       "path": "Sources/iPhone/SoundLibraryView.swift",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
-      "path": "Sources/iPhone/SystemAlarmService.swift",
       "hash_mode": "lf-text",
       "unchanged": true
     },
@@ -206,21 +156,6 @@
     },
     {
       "path": "Sources/LumaCore/CuePlaybackStopper.swift",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
-      "path": "Sources/LumaCore/FiniteCuePolicy.swift",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
-      "path": "Sources/LumaCore/IndirectMethod.swift",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
-      "path": "Sources/LumaCore/iPhoneOnlyMigration.swift",
       "hash_mode": "lf-text",
       "unchanged": true
     },
@@ -255,22 +190,7 @@
       "unchanged": true
     },
     {
-      "path": "Sources/LumaCore/SystemAlarmPlan.swift",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
       "path": "Sources/Platform/AppError.swift",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
-      "path": "Sources/Platform/AppModel.swift",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
-      "path": "Sources/Platform/CueDiagnostics.swift",
       "hash_mode": "lf-text",
       "unchanged": true
     },
@@ -281,11 +201,6 @@
     },
     {
       "path": "Sources/Platform/LocalStore.swift",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
-      "path": "Sources/Platform/NotificationService.swift",
       "hash_mode": "lf-text",
       "unchanged": true
     },
@@ -315,17 +230,7 @@
       "unchanged": true
     },
     {
-      "path": "Tests/LumaCoreTests/FiniteCuePolicyTests.swift",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
       "path": "Tests/LumaCoreTests/IndirectMethodTests.swift",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
-      "path": "Tests/LumaCoreTests/iPhoneOnlyMigrationTests.swift",
       "hash_mode": "lf-text",
       "unchanged": true
     },
@@ -354,5 +259,7 @@
       "hash_mode": "lf-text",
       "unchanged": true
     }
-  ]
+  ],
+  "version": "0.9.5 (21)",
+  "date": "2026-11-12"
 }

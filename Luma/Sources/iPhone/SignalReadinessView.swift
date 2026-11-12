@@ -1,7 +1,7 @@
 import SwiftUI
 import UIKit
 
-/// Explain notification settings that determine whether a finite cue is audible.
+/// Explain the concrete four-second WAV AlarmKit test before scheduling.
 struct SignalReadinessView: View {
   @EnvironmentObject private var model: AppModel
   @Environment(\.dismiss) private var dismiss
@@ -21,19 +21,19 @@ struct SignalReadinessView: View {
             Image(systemName: "xmark").frame(width: 44, height: 44).contentShape(Rectangle())
           }.buttonStyle(.plain).accessibilityLabel("Закрыть").disabled(working)
         }
-        Text("Короткие сигналы Luma").font(LumaStyle.font(24, "Medium"))
+        Text("AlarmKit · короткий сигнал").font(LumaStyle.font(24, "Medium"))
         LumaCard {
           VStack(alignment: .leading, spacing: 18) {
-            step("1", "Разрешите уведомления", "Включите уведомления Luma, звуки и показ на экране блокировки. Они могут приходить, когда приложение закрыто.")
-            step("2", "Один короткий звук", "Каждая подсказка использует отдельный звук длиной 4 секунды с плавным завершением. Исходная голосовая запись сохраняется.")
+            step("1", "Разрешите будильники", "Умный будильник и непрямой метод используют AlarmKit. Нужен iPhone с iOS 26 или новее и разрешение на будильники.")
+            step("2", "WAV длиной 4 секунды", "В AlarmKit передаётся отдельный короткий WAV с плавным затуханием. Оригинал вашей записи сохраняется.")
             step("3", "Сначала проверьте с блокировкой", "В настройках есть проба через 60 секунд. Заблокируйте iPhone и проверьте, затих ли сигнал без прикосновений.")
           }
         }
-        Text("Для звука выключите беззвучный режим, проверьте громкость уведомлений и разрешите Luma в нужном Focus, включая «Сон». Выключите сводку уведомлений для Luma. Эти настройки могут заглушить или задержать сигнал. Проверка на вашем iPhone обязательна.")
+        Text("Это проверочная версия. Повтор звука самим AlarmKit на устройстве ещё не исключён. Если сигнал продолжится, нажмите «Остановить». Перед ночью проверьте пробу с заблокированным iPhone.")
           .font(LumaStyle.font(13)).foregroundStyle(LumaStyle.amber).lineSpacing(4)
-          .accessibilityIdentifier("signal.notificationLimitations")
+          .accessibilityIdentifier("signal.alarmkitWaveTest")
         Group {
-          Text("С подключёнными Apple Watch система обычно направляет уведомление на часы вместо заблокированного iPhone. Для сигнала на iPhone выключите отражение уведомлений Luma в приложении Watch и проверьте результат. Одновременный сигнал на обоих устройствах не гарантируется.")
+          Text("Apple Watch могут показывать системный сигнал AlarmKit. Проверьте звук iPhone и вибрацию часов на вашей паре устройств. Обычное уведомление Luma для сигнала не используется.")
             .font(LumaStyle.font(12)).foregroundStyle(LumaStyle.secondary)
         }
         Text(model.systemAlarms.summary).font(LumaStyle.font(12)).foregroundStyle(LumaStyle.secondary)

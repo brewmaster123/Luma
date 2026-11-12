@@ -6,7 +6,7 @@ final class FiniteCuePolicyTests: XCTestCase {
   private func record(_ seconds: Double, key: String) -> SystemAlarmRecord {
     .init(request: .init(key: key, ownerID: UUID(), kind: .smart,
       fireAt: now.addingTimeInterval(seconds), title: "Luma", source: URL(fileURLWithPath: "/sound.wav")),
-      soundName: "luma-cue4-test.caf")
+      soundName: "luma-alarm-4.wav")
   }
   func testMigrationDoesNotLoseFutureOccurrencesOrReplayElapsedCues() {
     var ledger = SystemAlarmLedger(); ledger.schema = 1
@@ -35,7 +35,7 @@ final class FiniteCuePolicyTests: XCTestCase {
   func testFiniteLedgerSurvivesRoundTripWithoutTouchingAcceptedIDs() throws {
     var ledger = SystemAlarmLedger(); ledger.records = [record(300, key: "future")]
     let restored = try JSONDecoder().decode(SystemAlarmLedger.self, from: JSONEncoder().encode(ledger))
-    XCTAssertEqual(restored, ledger); XCTAssertEqual(restored.schema, 2)
+    XCTAssertEqual(restored, ledger); XCTAssertEqual(restored.schema, 3)
   }
   func testNotificationBudgetReservesRoomAndAccountsForOtherFeatures() {
     XCTAssertEqual(FiniteCuePolicy.capacity(otherPending: 0), 60)
@@ -61,9 +61,9 @@ final class FiniteCuePolicyTests: XCTestCase {
     snapshot.fireAt.addTimeInterval(1); XCTAssertFalse(snapshot.matches(record))
   }
   func testDefaultAndCustomSoundNamesAreBoundedToSafeResources() {
-    XCTAssertTrue(FiniteCuePolicy.validSoundName("luma-tone-4.wav"))
-    XCTAssertTrue(FiniteCuePolicy.validSoundName("luma-cue4-abc.caf"))
-    for value in ["default", "luma-tone-15.wav", "luma-ak4-old.caf", "../luma-cue4-x.caf",
+    XCTAssertTrue(FiniteCuePolicy.validSoundName("luma-alarm-4.wav"))
+    XCTAssertTrue(FiniteCuePolicy.validSoundName("luma-ak4-abc.wav"))
+    for value in ["default", "luma-tone-4.wav", "luma-tone-15.wav", "luma-cue4-old.caf", "luma-ak4-old.caf", "../luma-cue4-x.caf",
       "luma-cue4-../x.caf", "luma-cue4-..\\x.caf"] {
       XCTAssertFalse(FiniteCuePolicy.validSoundName(value), value)
     }
@@ -77,8 +77,9 @@ final class FiniteCuePolicyTests: XCTestCase {
     XCTAssertEqual(Set(dates.map(session.key(for:))).count, 24)
     XCTAssertEqual(SystemAlarmPolicy.soundSeconds, 4)
   }
-  func testConsentForAlarmKitDoesNotAuthorizeTheDifferentNotificationContract() {
+  func testEarlierConsentDoesNotAuthorizeTheNewAlarmKitWaveTrial() {
     XCTAssertNotEqual(FiniteCuePolicy.consentKey, "luma.alarmkit.short-stop-consent.v1")
-    XCTAssertFalse(LumaFeatures.finiteNotificationDeviceVerified)
+    XCTAssertNotEqual(FiniteCuePolicy.consentKey, "luma.notifications.finite-cues-consent.v1")
+    XCTAssertFalse(LumaFeatures.alarmKitWaveEOFDeviceVerified)
   }
 }

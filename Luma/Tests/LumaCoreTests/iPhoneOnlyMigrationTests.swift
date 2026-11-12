@@ -4,7 +4,7 @@ import XCTest
 
 final class iPhoneOnlyMigrationTests: XCTestCase {
   private let now = Date(timeIntervalSince1970: 2_000_000_000)
-  func testEveryLegacyOutputBecomesAFiniteCueWithoutChangingSchedule() {
+  func testEveryLegacyOutputUsesAlarmKitWithoutChangingSchedule() {
     var state = LumaState()
     let voice = UUID()
     for output in SignalOutput.allCases {
@@ -23,21 +23,21 @@ final class iPhoneOnlyMigrationTests: XCTestCase {
       XCTAssertEqual(alarm.signal.output, .phone)
       XCTAssertEqual(alarm.signal.melodySeconds, 4)
       XCTAssertEqual(alarm.signal.voiceID, voice)
-      XCTAssertEqual(alarm.delivery, .shortCue)
+      XCTAssertEqual(alarm.delivery, .systemAlarm)
     }
   }
   func testArchiveKeepsDiaryVoiceNotesFeedbackAndCompletedSessions() throws {
     var archive = AppArchive(), state = LumaState()
-    let voice = VoiceClip(id: UUID(), name: "Голос", filename: "original.caf", duration: 20)
+    let voice = VoiceClip(id: UUID(), name: "Р“РѕР»РѕСЃ", filename: "original.caf", duration: 20)
     state.voices = [voice]; state.signal.voiceID = voice.id
     var session = NightSession(source: .watch, signal: state.signal)
     session.status = .ended; session.endedAt = now
     state.sessions = [session]
-    var feedback = SessionFeedback(sessionID: session.id); feedback.note = "Помню сон"
+    var feedback = SessionFeedback(sessionID: session.id); feedback.note = "РџРѕРјРЅСЋ СЃРѕРЅ"
     let note = JournalVoice(id: UUID(), filename: "dream.m4a", duration: 100)
     feedback.voiceNotes = [note]; state.feedback = [feedback]
     archive.v2 = state
-    var dream = DreamEntry(); dream.text = "Мои сновидения"; dream.voiceNotes = [note]
+    var dream = DreamEntry(); dream.text = "РњРѕРё СЃРЅРѕРІРёРґРµРЅРёСЏ"; dream.voiceNotes = [note]
     archive.diary = [dream]
     var decoded = try JSONDecoder().decode(AppArchive.self, from: JSONEncoder().encode(archive))
     decoded.v2?.migrateToiPhoneOnly(now: now)
@@ -81,8 +81,8 @@ final class iPhoneOnlyMigrationTests: XCTestCase {
     session.signal.output = .both; session.signal.voiceID = UUID() // A decoded pre-0.9 session.
     let request = SystemAlarmRequest(key: session.key(for: now.addingTimeInterval(1020)),
       ownerID: session.id, kind: .indirect, fireAt: now.addingTimeInterval(1020),
-      title: "Непрямой метод", source: URL(fileURLWithPath: "/original.caf"))
-    let record = SystemAlarmRecord(request: request, soundName: "luma-ak4-test.caf")
+      title: "РќРµРїСЂСЏРјРѕР№ РјРµС‚РѕРґ", source: URL(fileURLWithPath: "/original.caf"))
+    let record = SystemAlarmRecord(request: request, soundName: "luma-alarm-4.wav")
     var ledger = SystemAlarmLedger(); ledger.records = [record]; ledger.indirectSession = session
     ledger.handledKeys = ["old"]; ledger.cancelledOwners = [UUID()]
     let previous = ledger

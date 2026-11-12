@@ -75,20 +75,20 @@ for catalog in (ROOT/'Resources').glob('*.xcassets'):
     check(png[:8]==b'\x89PNG\r\n\x1a\n' and (width,height)==(1024,1024),f'1024px icon: {catalog.name}')
     check(png[25]==2,f'Opaque RGB app icon: {catalog.name}')
 notifications=(ROOT/'Sources/Platform/NotificationService.swift').read_text(encoding='utf-8-sig')
-check('UNNotificationRequest(' in notifications and 'UNTimeIntervalNotificationTrigger' in notifications
-      and 'repeats: false' in notifications, 'Short cues use nonrepeating system notification triggers')
-check('UNNotificationSound(named:' in notifications and 'content.interruptionLevel = .active' in notifications,
-      'Finite custom sound and ordinary notification delivery configured')
-check('defaultCritical' not in notifications and 'ringtoneSound' not in notifications,
-      'No critical-alert or looping ringtone substitution')
+check('UNNotificationRequest(' not in notifications and 'center.add(' not in notifications,
+      'NotificationService only removes legacy requests; it cannot schedule signals')
+check('removePendingNotificationRequests' in notifications and 'let remaining = await' in notifications,
+      'Legacy notification cancellation is verified before queue migration')
 service=(ROOT/'Sources/iPhone/SystemAlarmService.swift').read_text(encoding='utf-8-sig')
-check(not re.search(r'Task\.sleep|Timer\.|asyncAfter|beginBackgroundTask|BGTaskScheduler', service),
-      'Cue completion has no app timer or background execution dependency')
+check(not re.search(r'Timer\.|asyncAfter|beginBackgroundTask|BGTaskScheduler', service),
+      'No timer-based background wake or keep-alive is added')
+check('if snapshot.alerting' in service and 'armBackup(record)' in service
+      and 'Execution-only backup' in service, 'Backup Stop follows observed alert state and is explicitly execution-only')
 check('inFlightID' in service and 'cancelAllRequested' in service and 'bootstrapTask' in service,
       'Queue admission, durable cancellation and concurrent bootstrap recovery are present')
 core='\n'.join(p.read_text() for p in (ROOT/'Tests/LumaCoreTests').glob('*.swift'))
 test_count=len(re.findall(r'func test\w+\(',core))
-check(test_count >= 107,f'{test_count} XCTest scenarios are present (not executed by this script)')
+check(test_count >= 116,f'{test_count} XCTest scenarios are present (not executed by this script)')
 check((ROOT/'scripts/check-finite-queue-on-mac.swift').is_file(), 'Native queue integration harness included')
 check((ROOT/'Resources/Manrope-LICENSE.txt').is_file(), 'Font license included')
 import wave
@@ -141,19 +141,43 @@ check(not (ROOT/'Config/Watch.entitlements').exists(), 'Watch entitlements remov
 check(not (ROOT/'Resources/WatchAssets.xcassets').exists(), 'Watch app icon catalog removed')
 check(len(list((ROOT/'Luma.xcodeproj/xcshareddata/xcschemes').glob('*.xcscheme')))==1, 'Only iPhone shared scheme remains')
 active='\n'.join(p.read_text() for p in (ROOT/'Sources').rglob('*.swift'))
-check('AlarmManager.shared.schedule' not in active and 'manager.schedule(' not in active,
-      'No new AlarmKit alarms can be scheduled by this release')
-check('AlarmKitSoundBuilder' not in active, 'Unreliable AlarmKit sound path is removed')
-delegate=(ROOT/'Sources/iPhone/LumaNotificationDelegate.swift').read_text()
-check('completionHandler([.sound, .banner, .list])' in delegate and 'AVAudioPlayer' not in delegate.split('final class')[1],
-      'Foreground delegates sound to iOS exactly once without a second audio player')
-check('@UIApplicationDelegateAdaptor(LumaNotificationDelegate.self)' in (ROOT/'Sources/iPhone/LumaApp.swift').read_text(),
-      'Notification delegate is installed during application launch')
-sound=(ROOT/'Sources/iPhone/FiniteCueSoundBuilder.swift').read_text()
+scheduler=(ROOT/'Sources/iPhone/AlarmKitScheduler.swift').read_text()
+check('AlarmManager.shared.schedule' in scheduler and 'sound: .named(record.soundName)' in scheduler,
+      'New signals schedule AlarmKit with their own named WAV')
+check('schedule: .fixed(record.fireAt)' in scheduler and 'secondaryButton: nil' in scheduler,
+      'Each occurrence has a fixed schedule without snooze/repeat controls')
+check('sound: .default' not in scheduler and 'AVAudioPlayer' not in scheduler,
+      'AlarmKit scheduler has no default sound or foreground-player substitute')
+check('if #available(iOS 26.0, *)' in scheduler and 'metadataVisible: false' in scheduler,
+      'AlarmKit is availability-gated and queue snapshots do not invent sound metadata')
+check('try manager.stop(id: alarmID)' in scheduler and 'let verified = try manager.alarms' in scheduler,
+      'Backup Stop verifies system ID removal')
+check('UNNotificationRequest(' not in active and 'UNTimeIntervalNotificationTrigger(' not in active,
+      'Both alarm modes have no notification scheduling fallback')
+check(not (ROOT/'Sources/iPhone/LumaNotificationDelegate.swift').exists(),
+      'Legacy foreground notification delegate removed')
+sound=(ROOT/'Sources/iPhone/AlarmKitSoundBuilder.swift').read_text()
 check('88200' in sound and '22050' in sound and 'renderFade' in sound and 'completeUntilFirstUserAuthentication' in sound,
-      'Custom cue copies are finite, faded PCM and accessible after screen lock')
-check('useNotificationDelivery()' in (ROOT/'Sources/LumaCore/iPhoneOnlyMigration.swift').read_text(),
-      'Saved alarms migrate to finite notification delivery without changing the planner')
+      'Custom WAV copies are finite, faded PCM and accessible after screen lock')
+check('WaveCueInspector.inspect' in sound and '.wav"' in sound and 'luma-alarmkit-wave-4s-fade-v4' in sound,
+      'New cache stores inspected WAV copies and does not reuse old CAF assets')
+check('useAlarmKitDelivery()' in (ROOT/'Sources/LumaCore/iPhoneOnlyMigration.swift').read_text(),
+      'Saved alarms select AlarmKit without changing the planner')
+check('migrateToAlarmKitWave' in service and 'ledger.schema < 3' in service,
+      'Both earlier transport schemas migrate before new scheduling')
+check('alarmKitWaveEOFDeviceVerified = false' in (ROOT/'Sources/LumaCore/IndirectMethod.swift').read_text(),
+      'Physical EOF behavior remains explicitly unverified')
+with wave.open(str(ROOT/'Resources/luma-alarm-4.wav'),'rb') as alarm_wave:
+    check(alarm_wave.getnframes() == 88200 and alarm_wave.getframerate() == 22050
+          and alarm_wave.getnchannels() == 1 and alarm_wave.getsampwidth() == 2,
+          'Dedicated AlarmKit resource is four-second mono PCM16')
+raw = (ROOT/'Resources/luma-alarm-4.wav').read_bytes()
+position = 12; chunks = []
+while position + 8 <= len(raw):
+    tag, size = raw[position:position+4], struct.unpack_from('<I', raw, position+4)[0]
+    chunks.append(tag); position += 8 + size + (size & 1)
+check(position == len(raw) and not ({b'smpl',b'plst'} & set(chunks)),
+      'Dedicated WAV is complete and contains no embedded sampler/playlist loops')
 check(not re.search(r'\bimport\s+(?:WatchKit|WatchConnectivity)\b|\bWCSession\.',active), 'No direct Watch runtime imports or session access')
 check('HKWorkoutSession' not in active, 'No live workout mirroring dependency')
 ui='\n'.join(p.read_text() for p in (ROOT/'Sources/iPhone').glob('*.swift'))
@@ -164,7 +188,7 @@ check('check-preserved-sources.py' in workflow, 'CI verifies preserved planner, 
 for target_id in root['targets']:
     resources=[objects[phase] for phase in objects[target_id]['buildPhases'] if objects[phase]['isa']=='PBXResourcesBuildPhase']
     bundled=[files[objects[item]['fileRef']].name for phase in resources for item in phase['files']]
-    check('luma-tone-4.wav' in bundled, 'Four-second tone belongs to the app resource build phase')
+    check({'luma-tone-4.wav','luma-alarm-4.wav'} <= set(bundled), 'Preview and dedicated AlarmKit WAV belong to the app resource phase')
 check('generic/platform=watchOS' not in workflow and '-scheme "Luma Watch"' not in workflow, 'CI builds iPhone only')
 check('test ! -d "$LUMA_APP/Watch"' in workflow, 'IPA packaging rejects a bundled Watch app')
 engine = (ROOT/'Sources/LumaCore/RealtimeREMEngine.swift').read_text()

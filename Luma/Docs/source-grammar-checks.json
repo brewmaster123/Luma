@@ -21,15 +21,19 @@
       "errors": []
     },
     {
+      "file": "Sources\\iPhone\\AlarmKitScheduler.swift",
+      "errors": []
+    },
+    {
+      "file": "Sources\\iPhone\\AlarmKitSoundBuilder.swift",
+      "errors": []
+    },
+    {
       "file": "Sources\\iPhone\\CueAudioImporter.swift",
       "errors": []
     },
     {
       "file": "Sources\\iPhone\\DesignSystem.swift",
-      "errors": []
-    },
-    {
-      "file": "Sources\\iPhone\\FiniteCueSoundBuilder.swift",
       "errors": []
     },
     {
@@ -50,10 +54,6 @@
     },
     {
       "file": "Sources\\iPhone\\LumaApp.swift",
-      "errors": []
-    },
-    {
-      "file": "Sources\\iPhone\\LumaNotificationDelegate.swift",
       "errors": []
     },
     {
@@ -133,6 +133,14 @@
       "errors": []
     },
     {
+      "file": "Sources\\LumaCore\\WaveCueInspector.swift",
+      "errors": []
+    },
+    {
+      "file": "Sources\\Platform\\AlarmScheduling.swift",
+      "errors": []
+    },
+    {
       "file": "Sources\\Platform\\AppError.swift",
       "errors": []
     },
@@ -158,6 +166,10 @@
     },
     {
       "file": "Sources\\Platform\\PhoneAudio.swift",
+      "errors": []
+    },
+    {
+      "file": "Tests\\LumaCoreTests\\AlarmKitWaveMigrationTests.swift",
       "errors": []
     },
     {
@@ -209,6 +221,10 @@
       "errors": []
     },
     {
+      "file": "Tests\\LumaCoreTests\\WaveCueInspectorTests.swift",
+      "errors": []
+    },
+    {
       "file": "scripts\\check-audio-on-mac.sh",
       "errors": []
     },
@@ -252,5 +268,7 @@
       "file": "workflow: Package unsigned IPA",
       "errors": []
     }
-  ]
+  ],
+  "version": "0.9.5 (21)",
+  "date": "2026-11-12"
 }

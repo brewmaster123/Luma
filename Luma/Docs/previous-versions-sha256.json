@@ -5,6 +5,11 @@
     "sha256": "f67418cf271a16bf2f6ec9db352360404377cdcfb29c7199812099462a0baa7c"
   },
   {
+    "path": "IPA files/v 0.9.4.ipa",
+    "size": 2735044,
+    "sha256": "699beb6b18772ce06ba356d7fdc48a59be3c057cd51ec5524b26fdb4c9703b07"
+  },
+  {
     "path": "Luma-iPhone-v0.9.1-Build-Fix/.github/workflows/ios-build.yml",
     "size": 3380,
     "sha256": "357dd7337c3b0064318c3fa7089c1c04a39255cd4d99370221de0b4c440a8746"
@@ -1813,6 +1818,536 @@
     "path": "V.0.9.3/verification.json",
     "size": 3053,
     "sha256": "fbdbd1ed3566b71cd219d98111cd1f6b98b44509875aab956495486066e65414"
+  },
+  {
+    "path": "V.0.9.4/.gitattributes",
+    "size": 405,
+    "sha256": "62959bf7fd44f1cf9771e551ad492714f40282a1d97bf2bf2e3a73ba5ddbc25b"
+  },
+  {
+    "path": "V.0.9.4/.github/workflows/ios-build.yml",
+    "size": 4756,
+    "sha256": "e7e870f9d3dad0178588396199991b0bdcbf3e582e7d619f1f73f3a6638f57af"
+  },
+  {
+    "path": "V.0.9.4/.gitignore",
+    "size": 142,
+    "sha256": "6f6f3efa550d4f0356eb7eba3f0df2196bdebd5b1160c91463db0d54f45762cf"
+  },
+  {
+    "path": "V.0.9.4/AGENTS.md",
+    "size": 12236,
+    "sha256": "1b6a2532d8596dc6c58a4dc2930b8bdd3c6af7fd9d6a7db00b5c9dc17ca81b4a"
+  },
+  {
+    "path": "V.0.9.4/CHANGELOG.md",
+    "size": 6156,
+    "sha256": "0edf17c000b222d8e0879d7099e51e065c37235c22811e2e3140c099edf95f22"
+  },
+  {
+    "path": "V.0.9.4/DEVELOPMENT_STATUS.md",
+    "size": 5103,
+    "sha256": "2ecbcf5ffa8cfab0c9288da96faceb2cb761bd6f1afad7794998261e379347c7"
+  },
+  {
+    "path": "V.0.9.4/Luma/Config/Base.xcconfig",
+    "size": 434,
+    "sha256": "a56e66c883bfd3ddf0fbe26b27030638ee1fa4c58b30b4d5fb1a66fb13223f75"
+  },
+  {
+    "path": "V.0.9.4/Luma/Config/iOS-Info.plist",
+    "size": 2201,
+    "sha256": "35a4a3cbdaf25aacd346060459bdab4d40e66b94665a1d0772ea9f4e9d5bbe2b"
+  },
+  {
+    "path": "V.0.9.4/Luma/Config/iOS.entitlements",
+    "size": 239,
+    "sha256": "e82a7f6e130b0fe65a40214c15b4116c5245125329c63954d9ccdd9cc80f039e"
+  },
+  {
+    "path": "V.0.9.4/Luma/Docs/ALARM_RESEARCH.md",
+    "size": 10769,
+    "sha256": "0677370a1323edae40ac3981ad24fa025fd44319e423e69591d04ae0ed60d95f"
+  },
+  {
+    "path": "V.0.9.4/Luma/Docs/audio-validation.json",
+    "size": 392,
+    "sha256": "46c4ee884b38ab95cc6c5567e2c5335b27036a184a37940f46ffb4fc9fe195ec"
+  },
+  {
+    "path": "V.0.9.4/Luma/Docs/CI_AUDIO_HASH_FIX.md",
+    "size": 5487,
+    "sha256": "d362404986f937a1a912284c9e13553c2ab18e8ae24db8a319292fe1547c6465"
+  },
+  {
+    "path": "V.0.9.4/Luma/Docs/CI_RUNNER_ISSUE.md",
+    "size": 4273,
+    "sha256": "b4b710594a614a45c9a75f2519dd6a97b8c48084867351c7614e3c41b87c4d11"
+  },
+  {
+    "path": "V.0.9.4/Luma/Docs/DEVICE_TESTS.md",
+    "size": 10687,
+    "sha256": "a76f27cfd08a6bea10c28bcbf1314bf52dea4f4c342a948aab6bd304740fc4bb"
+  },
+  {
+    "path": "V.0.9.4/Luma/Docs/github-status-observation.json",
+    "size": 318,
+    "sha256": "94ac4c2f8788001ed7e42e7302455bd60f3d6ce5765116dd5d725b4e0023944e"
+  },
+  {
+    "path": "V.0.9.4/Luma/Docs/native-audio-matrix-status.json",
+    "size": 441,
+    "sha256": "3cf0d0a1af33792370aa4803666248c676391b9c2850cd9faccbe08dbd9f3f62"
+  },
+  {
+    "path": "V.0.9.4/Luma/Docs/preserved-sources-checks.json",
+    "size": 8604,
+    "sha256": "34b642db49d6ad02d63a3d217037d2c47b67517a2e5cda0fb03b76c179630c62"
+  },
+  {
+    "path": "V.0.9.4/Luma/Docs/preserved-sources.json",
+    "size": 20197,
+    "sha256": "d7cb85988a0788c6e3c927fc96a72b0ef48f6663fe1738a4d6ac1cfc982f3ab5"
+  },
+  {
+    "path": "V.0.9.4/Luma/Docs/previous-versions-sha256.json",
+    "size": 144297,
+    "sha256": "0882b9f7fbb06dc3f236dd8197eb7e0a946d49583082d481b07304b634fc192e"
+  },
+  {
+    "path": "V.0.9.4/Luma/Docs/previous-versions-verification.json",
+    "size": 146,
+    "sha256": "3fe0f509dd4a8c70dcdfa8027fff3c8e5c07b7cf91a385f790022ce89e263eaa"
+  },
+  {
+    "path": "V.0.9.4/Luma/Docs/source-grammar-checks.json",
+    "size": 5931,
+    "sha256": "9bc5e479825e61bce180671f8e84aeb769ba1fb75058e1cf760d5accdf7f8a95"
+  },
+  {
+    "path": "V.0.9.4/Luma/Docs/source-integrity-tests-result.json",
+    "size": 182,
+    "sha256": "6c216722982ac53a12732fbeee5b474fef5515bbfb881a888658d107ed692246"
+  },
+  {
+    "path": "V.0.9.4/Luma/Docs/source-integrity-tests.log",
+    "size": 1674,
+    "sha256": "5f80c5b014e2beb29b62fc3df2392b742803ada1d03b7118c3ce69ee4fcab306"
+  },
+  {
+    "path": "V.0.9.4/Luma/Docs/static-checks.json",
+    "size": 6905,
+    "sha256": "d15daef1cf75d404a9b5732ae8d82d51c828e833001b5f684ad738ba6764212c"
+  },
+  {
+    "path": "V.0.9.4/Luma/Docs/VERSION_AUDIT.md",
+    "size": 5402,
+    "sha256": "fddb059fe058ebd2ec80a07b6c9e5142422d388fe6a813e2c0124306da183031"
+  },
+  {
+    "path": "V.0.9.4/Luma/Docs/workflow-validation.json",
+    "size": 334,
+    "sha256": "44b513db52d4995aace44803c512b4e753be10e957927063e935352645c3884b"
+  },
+  {
+    "path": "V.0.9.4/Luma/Luma.xcodeproj/project.pbxproj",
+    "size": 21563,
+    "sha256": "7ec7d037000ef4ce40f80efb44634f4f23b296d45a15d97a07f3baa362795905"
+  },
+  {
+    "path": "V.0.9.4/Luma/Luma.xcodeproj/xcshareddata/xcschemes/Luma.xcscheme",
+    "size": 1991,
+    "sha256": "9d50e3111cc2b17e62e43632802457fc24409bed1f4045908163d94756e0fdba"
+  },
+  {
+    "path": "V.0.9.4/Luma/Package.swift",
+    "size": 394,
+    "sha256": "07af656d4ddcca3320980342fe6c865a19662be5dc600c1e56c6947aa033f933"
+  },
+  {
+    "path": "V.0.9.4/Luma/Resources/iOSAssets.xcassets/AppIcon.appiconset/AppIcon.png",
+    "size": 57928,
+    "sha256": "4ee127bb7a7e65108cd6e5e966af7f639d9a441c84b6dba2d8f9ec41fdc0bc35"
+  },
+  {
+    "path": "V.0.9.4/Luma/Resources/iOSAssets.xcassets/AppIcon.appiconset/Contents.json",
+    "size": 202,
+    "sha256": "9239900ca4c37dc860feb154216409f05d906e26f2d79550e1e8e8b8db6324c7"
+  },
+  {
+    "path": "V.0.9.4/Luma/Resources/iOSAssets.xcassets/Contents.json",
+    "size": 59,
+    "sha256": "a3393322cd7b4c1e0aa93bebe09abaa91ad891290d1225b0b5d10b5c6f216025"
+  },
+  {
+    "path": "V.0.9.4/Luma/Resources/luma-tone-15.wav",
+    "size": 661544,
+    "sha256": "beaed8a9c5145968990b619fa8dcd48e6530c6f6ea961c4d4ac3a4f40a157387"
+  },
+  {
+    "path": "V.0.9.4/Luma/Resources/luma-tone-4.wav",
+    "size": 176444,
+    "sha256": "9c2784e108846aede7bf3a607e9db2babef5deadc717fa43c8952832df9d70c9"
+  },
+  {
+    "path": "V.0.9.4/Luma/Resources/luma-tone-8.wav",
+    "size": 352844,
+    "sha256": "37d5345466972ded506efae43555eaf71e22e015b5a37ac93aa0fb99c9299826"
+  },
+  {
+    "path": "V.0.9.4/Luma/Resources/Manrope-LICENSE.txt",
+    "size": 4384,
+    "sha256": "e01b637272e0cbdfb240184dd98ea5cc671556d9894dae2668d92ab2c906787c"
+  },
+  {
+    "path": "V.0.9.4/Luma/Resources/Manrope-Medium.ttf",
+    "size": 96620,
+    "sha256": "6a21acf060627cedf46704e8484aeffc8ba94140b46cd553fa19338d301e439d"
+  },
+  {
+    "path": "V.0.9.4/Luma/Resources/Manrope-Regular.ttf",
+    "size": 96572,
+    "sha256": "8e6739a692e9b94f2e160f84029d741ee92f5a2dc8081e257bb8bba5f8680ae6"
+  },
+  {
+    "path": "V.0.9.4/Luma/Resources/Manrope-SemiBold.ttf",
+    "size": 96652,
+    "sha256": "b250ce5a3a6e5e99a79d25cbd7ffe32fae0dff6047cfaa8c27e2205234a39991"
+  },
+  {
+    "path": "V.0.9.4/Luma/Resources/Manrope-Variable.ttf",
+    "size": 165420,
+    "sha256": "d0639be45d0af36e798172419d7bd173c4bd4f29e2b76cbb69db1d11bf8b0a40"
+  },
+  {
+    "path": "V.0.9.4/Luma/Resources/PrivacyInfo.xcprivacy",
+    "size": 598,
+    "sha256": "a331d51864743ebe4e00dd22360b4a538b6b3ac26a6b3eb54094e60a36959a12"
+  },
+  {
+    "path": "V.0.9.4/Luma/scripts/check-audio-on-mac.sh",
+    "size": 475,
+    "sha256": "adbbc8754d8b7780fb61e2370eb879f1661e91171ea8eea8daf4336c78a9b62c"
+  },
+  {
+    "path": "V.0.9.4/Luma/scripts/check-audio-on-mac.swift",
+    "size": 7610,
+    "sha256": "d69017711d0b29d6613293687e2cb4b8b90d630de542f9e59c0ce0a3e711d5cd"
+  },
+  {
+    "path": "V.0.9.4/Luma/scripts/check-finite-queue-on-mac.sh",
+    "size": 593,
+    "sha256": "9608be37dcce4d6e665f537b9540bbc937bfcc573a81b192ddd851b7d133748a"
+  },
+  {
+    "path": "V.0.9.4/Luma/scripts/check-finite-queue-on-mac.swift",
+    "size": 17423,
+    "sha256": "6ff612e30a62f0a1d8d51bef98b74871ee79555bcd47bf8ef5d0f02c1b83a6bf"
+  },
+  {
+    "path": "V.0.9.4/Luma/scripts/check-on-mac.sh",
+    "size": 630,
+    "sha256": "57884f690a612df5a1472497480ef034df7a0c5b88b557d95537fd412409117e"
+  },
+  {
+    "path": "V.0.9.4/Luma/scripts/check-preserved-sources.py",
+    "size": 2793,
+    "sha256": "5d7b24b2e4b0c2f28b95228237d8ef4ab38293d31939b6d3ff077f8daf9772bc"
+  },
+  {
+    "path": "V.0.9.4/Luma/scripts/check-previous-versions.py",
+    "size": 1639,
+    "sha256": "d9d6570165361d575de32fc80d61ee4007a95f2ee87882f80d047775102d4f2c"
+  },
+  {
+    "path": "V.0.9.4/Luma/scripts/check-source-grammar.py",
+    "size": 2386,
+    "sha256": "f22cb64ab8c06a5c16e3f55bdbdc4b4019cf4d90b700c83cacf9a8a47d37ac13"
+  },
+  {
+    "path": "V.0.9.4/Luma/scripts/check-static.py",
+    "size": 12466,
+    "sha256": "4afb447895a59d5a61a27dde5a8673569341da5cd85e1c590c5f4fb93d79df3e"
+  },
+  {
+    "path": "V.0.9.4/Luma/scripts/generate_project.py",
+    "size": 8866,
+    "sha256": "36513f6fe47421368f7ebb52497391a2b31fbc2348ae8052ad2f2486db2ff6ce"
+  },
+  {
+    "path": "V.0.9.4/Luma/scripts/project-graph.json",
+    "size": 24138,
+    "sha256": "9d8dd2bd14e1e5dce55d5b3e3716e91c4b48f17ea008541c0e6a8e9486811771"
+  },
+  {
+    "path": "V.0.9.4/Luma/scripts/requirements-validation.txt",
+    "size": 84,
+    "sha256": "bd40560117191669717bb670fc985eaf62e6556b2a1b50d1ad04933bd8ef8b6b"
+  },
+  {
+    "path": "V.0.9.4/Luma/scripts/test-source-integrity.py",
+    "size": 5144,
+    "sha256": "a59d1f570948128b61d52f4951bb6f5eb4051f60731b556f4d0142fe976925cf"
+  },
+  {
+    "path": "V.0.9.4/Luma/Sources/iPhone/AlarmEditor.swift",
+    "size": 5022,
+    "sha256": "df4399e51dc01bfc7f96e67ca9eebd78c7c2e9c91401bfcb791ddcebf648d303"
+  },
+  {
+    "path": "V.0.9.4/Luma/Sources/iPhone/CueAudioImporter.swift",
+    "size": 5825,
+    "sha256": "e52c18e283386a600b406ab70cd2467968652f2f339d374f378ca443daa61577"
+  },
+  {
+    "path": "V.0.9.4/Luma/Sources/iPhone/DesignSystem.swift",
+    "size": 5585,
+    "sha256": "09d4a84debb3216cf16f02153cba4869bdae196ebd505926129d650619d6abda"
+  },
+  {
+    "path": "V.0.9.4/Luma/Sources/iPhone/FiniteCueSoundBuilder.swift",
+    "size": 6540,
+    "sha256": "778e5990c58d549ba0b87ec91bd3adbb20823f8a9d2857fa83a8595d958426f3"
+  },
+  {
+    "path": "V.0.9.4/Luma/Sources/iPhone/IndirectMethodView.swift",
+    "size": 7945,
+    "sha256": "72b759ece1b0a60a0ffe3b379e9581fdd22909ae326d8fb0615b521864dba7b3"
+  },
+  {
+    "path": "V.0.9.4/Luma/Sources/iPhone/JournalView.swift",
+    "size": 14988,
+    "sha256": "5e56dbb3838c6bed77df9b6b9c23ff88994e445c21c16bb8f5977d6904634133"
+  },
+  {
+    "path": "V.0.9.4/Luma/Sources/iPhone/JournalVoiceComposer.swift",
+    "size": 4137,
+    "sha256": "0e725c45bb9263a62a5813414989b7090662017efd186a1ce3754266c449a862"
+  },
+  {
+    "path": "V.0.9.4/Luma/Sources/iPhone/LegacyAlarmCleanup.swift",
+    "size": 3033,
+    "sha256": "592c4ff61a8219f51c2240fc252fb6dc987979554ccbc9a14994affe7481f978"
+  },
+  {
+    "path": "V.0.9.4/Luma/Sources/iPhone/LumaApp.swift",
+    "size": 821,
+    "sha256": "b4686e8d3a09161b263241353882351c4538e3d3504b994b1f4f603fa7befae8"
+  },
+  {
+    "path": "V.0.9.4/Luma/Sources/iPhone/LumaNotificationDelegate.swift",
+    "size": 1482,
+    "sha256": "bd3fe494e7557b46d87d02766fae4b0c4c100eefa7aa85ed8a882a8e4e55da9c"
+  },
+  {
+    "path": "V.0.9.4/Luma/Sources/iPhone/PhoneRootView.swift",
+    "size": 9446,
+    "sha256": "c12ab81895e3094a2f74a96636bd1b58c5d6bf7f12e96fdc932e8956a096ca5b"
+  },
+  {
+    "path": "V.0.9.4/Luma/Sources/iPhone/SettingsView.swift",
+    "size": 9216,
+    "sha256": "d89c62e8b739422d888cd39bbf923fe95949ac39f36bf6bd3084199315031941"
+  },
+  {
+    "path": "V.0.9.4/Luma/Sources/iPhone/SignalReadinessView.swift",
+    "size": 5206,
+    "sha256": "e51993361b270ac02975912158e30418062e5680692c1a1ca8ab4288117191de"
+  },
+  {
+    "path": "V.0.9.4/Luma/Sources/iPhone/SoundLibraryView.swift",
+    "size": 2702,
+    "sha256": "d8a4e847764847891dcd3fa87402e3d5bb8c3b5546a4c2fde6522dd2e9cdcfeb"
+  },
+  {
+    "path": "V.0.9.4/Luma/Sources/iPhone/SystemAlarmService.swift",
+    "size": 19488,
+    "sha256": "249ae614f17d0c2e46a372b1b03e042b6d6234fc85fe92d95d48955dfe9dd497"
+  },
+  {
+    "path": "V.0.9.4/Luma/Sources/LumaCore/AcousticFeatures.swift",
+    "size": 1321,
+    "sha256": "56dc961def8e779f756abdd8e2bf96beecb0ae3d4954918142de41f602f6efdd"
+  },
+  {
+    "path": "V.0.9.4/Luma/Sources/LumaCore/AlarmStopWindow.swift",
+    "size": 1902,
+    "sha256": "be2e29fb7224b69e627fd3538cd9e82c99ab3651fb97a3f782fdb3229193f8e7"
+  },
+  {
+    "path": "V.0.9.4/Luma/Sources/LumaCore/CueEngine.swift",
+    "size": 4267,
+    "sha256": "b0a2ad7cbc65cc30066a4f928b8c9f244db935787734b6976eb7a28e5603c3e5"
+  },
+  {
+    "path": "V.0.9.4/Luma/Sources/LumaCore/CuePlaybackStopper.swift",
+    "size": 1695,
+    "sha256": "756d99516095ab5c45820b13687fb0b3241d57622db661da09d173effd02e239"
+  },
+  {
+    "path": "V.0.9.4/Luma/Sources/LumaCore/FiniteCuePolicy.swift",
+    "size": 1821,
+    "sha256": "8f8495ba1d65500ec768e5fe86dc48df2fa3be04fa9ae4b146f583990f4fd4c4"
+  },
+  {
+    "path": "V.0.9.4/Luma/Sources/LumaCore/IndirectMethod.swift",
+    "size": 1332,
+    "sha256": "de186b13d72f28da4d9c59e633dd5a3e83c29df1f957ceced4aa9bb670547145"
+  },
+  {
+    "path": "V.0.9.4/Luma/Sources/LumaCore/iPhoneOnlyMigration.swift",
+    "size": 1498,
+    "sha256": "310e219a0eaeba5b5f5eb842c54b1392bf345fc0087b71a0e3969978091970f2"
+  },
+  {
+    "path": "V.0.9.4/Luma/Sources/LumaCore/LumaV2.swift",
+    "size": 12536,
+    "sha256": "c4e58a2545de088b25802d13f6dd583fbe7f3bc65f273407dc3923f0fbaaa785"
+  },
+  {
+    "path": "V.0.9.4/Luma/Sources/LumaCore/Models.swift",
+    "size": 7608,
+    "sha256": "eb7e625ef32b7931bada0b61257a7bc1ab79adc8bdf33b2805fc01e2ae0485d8"
+  },
+  {
+    "path": "V.0.9.4/Luma/Sources/LumaCore/MultimodalEstimator.swift",
+    "size": 7736,
+    "sha256": "7340f93c968fcd1b8e6538dc958a11ad33b1a352aeaea0aa067d3eed77ea6a52"
+  },
+  {
+    "path": "V.0.9.4/Luma/Sources/LumaCore/PairedCuePolicy.swift",
+    "size": 2130,
+    "sha256": "6e914d0130feb5cda406af6cd4a7ca657b08ac598885f3c39bfe3f28309e8d40"
+  },
+  {
+    "path": "V.0.9.4/Luma/Sources/LumaCore/RealtimeREMEngine.swift",
+    "size": 7092,
+    "sha256": "ff3d05a9bc7adfb8eb2f775e05f695feadfa7ef56a336f46b72320fc0aa639b6"
+  },
+  {
+    "path": "V.0.9.4/Luma/Sources/LumaCore/REMEstimator.swift",
+    "size": 4417,
+    "sha256": "4f00c0fa6bcf223e9486c299ca3d3d8e211f2ec99ef029960a252cef0a6e3da8"
+  },
+  {
+    "path": "V.0.9.4/Luma/Sources/LumaCore/SystemAlarmPlan.swift",
+    "size": 5566,
+    "sha256": "df36a5a22da21cb00d80f7696b95276e5a4930fdd9cd043ee04a8f2fdb7bd8c9"
+  },
+  {
+    "path": "V.0.9.4/Luma/Sources/Platform/AppError.swift",
+    "size": 183,
+    "sha256": "cba4f687407841f56b963d3e66f0487d06b2428db5e349d74084f163251e6d63"
+  },
+  {
+    "path": "V.0.9.4/Luma/Sources/Platform/AppModel.swift",
+    "size": 19058,
+    "sha256": "8bac39a7af99ec62d3703b5705332eca6767afe8bff0e39c3939fb49c823c2e7"
+  },
+  {
+    "path": "V.0.9.4/Luma/Sources/Platform/CueDiagnostics.swift",
+    "size": 2796,
+    "sha256": "a1d0fb6cbdcbaf632ecf41ab377db1b9e32d216dead14760710f001f616dc48d"
+  },
+  {
+    "path": "V.0.9.4/Luma/Sources/Platform/HealthService.swift",
+    "size": 2566,
+    "sha256": "2ef20bee400debb95a0435d6b71f387903c46040fb034ded48bf5f9bea956285"
+  },
+  {
+    "path": "V.0.9.4/Luma/Sources/Platform/LocalStore.swift",
+    "size": 1185,
+    "sha256": "be5aaeff856b5ff77f9bb0cf08bacb47b364b3c2a0eb3f8ed11bef241be85e8f"
+  },
+  {
+    "path": "V.0.9.4/Luma/Sources/Platform/NotificationService.swift",
+    "size": 3956,
+    "sha256": "883dbc00e8dc37bf31d8f964b8630f0a3c3a89bdbab23caee987c122ede91f87"
+  },
+  {
+    "path": "V.0.9.4/Luma/Sources/Platform/PhoneAudio.swift",
+    "size": 23597,
+    "sha256": "ae2f7f073d695a4b296e7f8df642bbf0954ec58356ede7e391a298fd0f11de49"
+  },
+  {
+    "path": "V.0.9.4/Luma/Tests/LumaCoreTests/AlarmStopWindowTests.swift",
+    "size": 2683,
+    "sha256": "241480eca1c356da1fe0a7c7112e84e49e79bc6e393f0664d93dcc08e92a1946"
+  },
+  {
+    "path": "V.0.9.4/Luma/Tests/LumaCoreTests/AudioAndAlarmTests.swift",
+    "size": 5332,
+    "sha256": "4b7ec5255c3b06d951c3556aa2aefdd29280228ba0e5004d368d10b2802331b7"
+  },
+  {
+    "path": "V.0.9.4/Luma/Tests/LumaCoreTests/CoreSafetyTests.swift",
+    "size": 6898,
+    "sha256": "b129ec5a60ff1dff795f28b9aec5ce20a43b30a99eeae7da5ff24c266e8660ca"
+  },
+  {
+    "path": "V.0.9.4/Luma/Tests/LumaCoreTests/CuePlaybackStopperTests.swift",
+    "size": 4398,
+    "sha256": "5405952b34ea06435742f7537b575f517ba0cdc2edc500d4fb47f59509c30db3"
+  },
+  {
+    "path": "V.0.9.4/Luma/Tests/LumaCoreTests/FiniteCuePolicyTests.swift",
+    "size": 4817,
+    "sha256": "db556db02032683f725c11fafeda24c6eb551cd8dab2bf4adc20ff451df7a77d"
+  },
+  {
+    "path": "V.0.9.4/Luma/Tests/LumaCoreTests/IndirectMethodTests.swift",
+    "size": 2420,
+    "sha256": "8c7934ff47c979d22bd9f5f57ba653eec26ad076a9a28334937f20d9ac9869ff"
+  },
+  {
+    "path": "V.0.9.4/Luma/Tests/LumaCoreTests/iPhoneOnlyMigrationTests.swift",
+    "size": 5916,
+    "sha256": "11c03a14143f4a8659f4deb3c4cb422439a7676d1216a6ec6747f4b38123f574"
+  },
+  {
+    "path": "V.0.9.4/Luma/Tests/LumaCoreTests/NotificationMigrationTests.swift",
+    "size": 2979,
+    "sha256": "217352f731f29ec135f8592c9fd1a3982a7d513fa7758730760f0dfa8bea3555"
+  },
+  {
+    "path": "V.0.9.4/Luma/Tests/LumaCoreTests/PairedCueTests.swift",
+    "size": 4220,
+    "sha256": "ebeb0724675839be9835e2816b3f465ed979416f1df3b9f19ab164558e526caa"
+  },
+  {
+    "path": "V.0.9.4/Luma/Tests/LumaCoreTests/RealtimeREMTests.swift",
+    "size": 6105,
+    "sha256": "77797503906418695a9cf3e6b18e962f8354b1999cfc41f9a5af53c68a20f40b"
+  },
+  {
+    "path": "V.0.9.4/Luma/Tests/LumaCoreTests/SystemAlarmPlanTests.swift",
+    "size": 4713,
+    "sha256": "bd4fc88edf10df2eb0de12b858ae6bff78de0cf25d186075d077e2447117c6a5"
+  },
+  {
+    "path": "V.0.9.4/Luma/Tests/LumaCoreTests/V2Tests.swift",
+    "size": 11548,
+    "sha256": "b9b4b8b4597eaa42cbaf5f191dbdf02cb951364bc3d4f41ce0fa210f94f8f1db"
+  },
+  {
+    "path": "V.0.9.4/PROGRESS.json",
+    "size": 356,
+    "sha256": "94a7d1896a5f68447fff811b0eb9b1aa0fe6af6cca9e9405651fae7ad99d2a6f"
+  },
+  {
+    "path": "V.0.9.4/README.md",
+    "size": 13152,
+    "sha256": "2673ff943bd95106372f9ebce55d0da69e6ac68f4b7c5c84f6cf0c9d5f4c3b5a"
+  },
+  {
+    "path": "V.0.9.4/source-sha256.json",
+    "size": 16621,
+    "sha256": "6859e37f2480c5d5ffddabfb30f6ffa22626f0b32526c4d6cab97b30c8988fd9"
+  },
+  {
+    "path": "V.0.9.4/verification.json",
+    "size": 4879,
+    "sha256": "cac809b38f1d34dcdb599d3f737a144e8105fa9779e7777f9347a3c91646ce5e"
   },
   {
     "path": "v0.2/.github/workflows/ios-build.yml",

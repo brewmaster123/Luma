@@ -1,18 +1,4 @@
-test_binary_cannot_opt_into_text_normalization (__main__.SourceIntegrityTests.test_binary_cannot_opt_into_text_normalization) ... ok
-test_binary_crlf_bytes_are_never_normalized (__main__.SourceIntegrityTests.test_binary_crlf_bytes_are_never_normalized) ... ok
-test_bom_or_encoding_change_is_not_hidden (__main__.SourceIntegrityTests.test_bom_or_encoding_change_is_not_hidden) ... ok
-test_changed_source_value_is_still_rejected (__main__.SourceIntegrityTests.test_changed_source_value_is_still_rejected) ... ok
-test_crlf_and_lf_accept_the_same_source (__main__.SourceIntegrityTests.test_crlf_and_lf_accept_the_same_source) ... ok
-test_missing_file_fails (__main__.SourceIntegrityTests.test_missing_file_fails) ... ok
-test_mixed_line_endings_accept_the_same_source (__main__.SourceIntegrityTests.test_mixed_line_endings_accept_the_same_source) ... ok
-test_old_manifest_keeps_raw_byte_behavior (__main__.SourceIntegrityTests.test_old_manifest_keeps_raw_byte_behavior) ... ok
-test_paths_cannot_escape_project (__main__.SourceIntegrityTests.test_paths_cannot_escape_project) ... ok
-test_project_manifest_survives_both_git_checkout_styles (__main__.SourceIntegrityTests.test_project_manifest_survives_both_git_checkout_styles) ... ok
-test_schema_requires_explicit_modes (__main__.SourceIntegrityTests.test_schema_requires_explicit_modes) ... ok
-test_unknown_modes_fail_closed (__main__.SourceIntegrityTests.test_unknown_modes_fail_closed) ... ok
-test_whitespace_changes_are_not_hidden (__main__.SourceIntegrityTests.test_whitespace_changes_are_not_hidden) ... ok
-
-----------------------------------------------------------------------
-Ran 13 tests in 1.052s
-
-OK
+Luma 0.9.5 (21), 2026-11-12. Current-turn Python unittest run in Windows.
+13 tests passed, 0 failures, 0 errors.
+Includes complete 51-input manifest simulation for LF and CRLF checkout.
+No Swift/XCTest/AVFoundation/device execution.

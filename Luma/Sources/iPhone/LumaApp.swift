@@ -3,7 +3,6 @@ import SwiftUI
 @main
 @MainActor
 struct LumaApp: App {
-  @UIApplicationDelegateAdaptor(LumaNotificationDelegate.self) private var notificationDelegate
   @StateObject private var model: AppModel
   @Environment(\.scenePhase) private var phase
   init() {

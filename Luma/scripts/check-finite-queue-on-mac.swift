@@ -5,12 +5,14 @@ private func require(_ condition: @autoclosure () -> Bool, _ message: String) th
   if !condition() { throw CheckError.failed(message) }
 }
 
-@MainActor private final class FakeNotifications: FiniteNotificationScheduling {
+@MainActor private final class FakeAlarmBackend: ShortAlarmScheduling {
   var queue: [String: FiniteCueSnapshot] = [:]
   var deliveredItems: [FiniteCueSnapshot] = []
   var adds = 0
   var failAddAfterAdmission = false
   var failCancel = false
+  var failQuery = false
+  var stops: [String] = []
   var permission = true
   var pauseNextAdd = false
   var pauseNextPending = false
@@ -20,10 +22,11 @@ private func require(_ condition: @autoclosure () -> Bool, _ message: String) th
   private var pendingObserver: CheckedContinuation<Void, Never>?
   private var pendingGate: CheckedContinuation<Void, Never>?
   func requestAuthorization() async throws {}
-  func access() async -> CueNotificationAccess {
-    .init(authorized: permission, sound: permission, alerts: permission, lockScreen: permission, scheduledSummary: false)
+  func access() async -> AlarmAccess {
+    .init(supported: true, authorized: permission)
   }
-  func pending() async -> [FiniteCueSnapshot] {
+  func pending() async throws -> [FiniteCueSnapshot] {
+    if failQuery { throw CheckError.injected }
     if pauseNextPending {
       pauseNextPending = false; pendingPaused = true
       pendingObserver?.resume(); pendingObserver = nil
@@ -50,6 +53,10 @@ private func require(_ condition: @autoclosure () -> Bool, _ message: String) th
     identifiers.forEach { queue[$0] = nil }
     if includingDelivered { deliveredItems.removeAll { identifiers.contains($0.identifier) } }
   }
+  func stop(_ identifier: String) async throws {
+    stops.append(identifier)
+    try await cancel([identifier], includingDelivered: true)
+  }
   func waitForAdd(count: Int = 1) async {
     if adds >= count { return }
     await withCheckedContinuation { addObserver = (count, $0) }
@@ -71,7 +78,7 @@ private func require(_ condition: @autoclosure () -> Bool, _ message: String) th
   let directory: URL
   let suite = "LumaFiniteCueCheck.\(UUID())"
   let defaults: UserDefaults
-  let backend = FakeNotifications()
+  let backend = FakeAlarmBackend()
   init() throws {
     directory = FileManager.default.temporaryDirectory.appendingPathComponent("Luma-queue-check-\(UUID())")
     try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
@@ -85,7 +92,7 @@ private func require(_ condition: @autoclosure () -> Bool, _ message: String) th
   func service(cleanup: ((Bool) throws -> Void)? = nil,
     soundBuilder: ((URL) throws -> String)? = nil) -> SystemAlarmService {
     SystemAlarmService(scheduler: backend, directory: directory, defaults: defaults,
-      legacyCleanup: cleanup ?? { _ in }, soundBuilder: soundBuilder ?? { _ in "luma-tone-4.wav" })
+      legacyCleanup: cleanup ?? { _ in }, soundBuilder: soundBuilder ?? { _ in "luma-alarm-4.wav" }, notificationCleanup: {})
   }
   func save(_ ledger: SystemAlarmLedger) throws {
     try JSONEncoder().encode(ledger).write(to: directory.appendingPathComponent("alarms.json"), options: .atomic)
@@ -128,9 +135,9 @@ private func require(_ condition: @autoclosure () -> Bool, _ message: String) th
       }),
       ("reservation survives crash after system admission", { f in
         let r = f.request()
-        let record = SystemAlarmRecord(request: r, soundName: "luma-tone-4.wav")
+        let record = SystemAlarmRecord(request: r, soundName: "luma-alarm-4.wav")
         var ledger = SystemAlarmLedger(); ledger.records = [record]; try f.save(ledger)
-        f.backend.queue[record.notificationID] = FakeNotifications.snapshot(record)
+        f.backend.queue[record.notificationID] = FakeAlarmBackend.snapshot(record)
         let s = f.service()
         _ = try await s.reconcile([r], activeOwners: [r.ownerID])
         try require(f.backend.adds == 0 && s.ledger.records.first?.pending == false, "Reservation recovery")
@@ -138,7 +145,7 @@ private func require(_ condition: @autoclosure () -> Bool, _ message: String) th
       ("elapsed cue cannot block or replay before the next interval", { f in
         let old = f.request(key: "elapsed", seconds: -1800)
         var ledger = SystemAlarmLedger()
-        ledger.records = [.init(request: old, soundName: "luma-tone-4.wav")]
+        ledger.records = [.init(request: old, soundName: "luma-alarm-4.wav")]
         try f.save(ledger)
         let next = f.request(key: "next", owner: old.ownerID)
         let s = f.service()
@@ -157,7 +164,7 @@ private func require(_ condition: @autoclosure () -> Bool, _ message: String) th
         var confirmed = false
         let s = f.service(cleanup: { required in confirmed = required })
         try await s.bootstrap()
-        try require(confirmed && s.ledger.schema == 2 && s.ledger.records.isEmpty, "Migration not gated")
+        try require(confirmed && s.ledger.schema == 3 && s.ledger.records.isEmpty, "Migration not gated")
         try require(s.indirectSession == session && !s.acceptedLimitations, "Session or consent damaged")
       }),
       ("failed legacy cancellation blocks new cues and retains old records", { f in
@@ -170,6 +177,43 @@ private func require(_ condition: @autoclosure () -> Bool, _ message: String) th
         } catch CheckError.injected {}
         let disk = try f.disk()
         try require(f.backend.adds == 0 && disk == ledger, "Legacy queue forgotten")
+      }),
+      ("schema 2 notification migration preserves future interval origin", { f in
+        var ledger = SystemAlarmLedger(); ledger.schema = 2
+        let session = IndirectAlarmSession(settings: .init(intervalMinutes: 30), signal: .init())
+        ledger.indirectSession = session
+        let future = f.request(key: "future", owner: session.id, kind: .indirect)
+        ledger.records = [.init(request: future, soundName: "luma-cue4-old.caf")]
+        try f.save(ledger)
+        let s = f.service()
+        _ = try await s.reconcile([future], activeOwners: [session.id])
+        try require(s.ledger.schema == 3 && s.indirectSession == session, "Notification migration lost session")
+        try require(s.ledger.records.map(\.key) == ["future"] && f.backend.adds == 1, "Future key lost")
+      }),
+      ("queue query failure retains admitted records and prevents rescheduling", { f in
+        let r = f.request(), s = f.service()
+        _ = try await s.reconcile([r], activeOwners: [r.ownerID])
+        let before = try f.disk()
+        f.backend.failQuery = true
+        do { try await s.refresh(); throw CheckError.failed("Query failure was hidden") }
+        catch CheckError.injected {}
+        let after = try f.disk()
+        try require(before == after && f.backend.adds == 1, "Query failure became an empty queue")
+      }),
+      ("observed overdue alert stops only itself and preserves next interval", { f in
+        let old = f.request(key: "due", seconds: -10)
+        let next = f.request(key: "next", owner: old.ownerID)
+        let first = SystemAlarmRecord(request: old, soundName: "luma-alarm-4.wav")
+        let second = SystemAlarmRecord(request: next, soundName: "luma-alarm-4.wav")
+        var ledger = SystemAlarmLedger(); ledger.records = [first, second]; try f.save(ledger)
+        f.backend.queue[first.notificationID] = .init(identifier: first.notificationID,
+          metadataVisible: false, alerting: true)
+        f.backend.queue[second.notificationID] = .init(identifier: second.notificationID,
+          metadataVisible: false, alerting: false)
+        let s = f.service(); try await s.bootstrap()
+        try require(f.backend.stops == [first.notificationID], "Wrong occurrence stopped")
+        try require(s.ledger.handledKeys.contains("due") && s.ledger.records.map(\.key) == ["next"], "Series stopped")
+        try require(f.backend.queue[second.notificationID] != nil, "Next occurrence removed")
       }),
       ("ambiguous add is cancelled before returning its error", { f in
         f.backend.failAddAfterAdmission = true
@@ -223,17 +267,16 @@ private func require(_ condition: @autoclosure () -> Bool, _ message: String) th
         let restarted = f.service(); try await restarted.bootstrap()
         try require(restarted.ledger.records.isEmpty && f.backend.queue.isEmpty, "Cancellation retry failed")
       }),
-      ("other features reduce the available notification budget", { f in
-        for i in 0..<10 { f.backend.queue["other.\(i)"] = .init(identifier: "other.\(i)") }
+      ("probe and smart alarms share the bounded AlarmKit queue", { f in
         let owner = UUID(), s = f.service()
         let probe = f.request(key: "probe", kind: .probe)
         _ = try await s.reconcile([probe], activeOwners: [probe.ownerID])
         let requests = (0..<100).map { f.request(key: "cue.\($0)", owner: owner, seconds: 3600 + Double($0) * 600) }
         _ = try await s.reconcile(requests, activeOwners: [owner])
-        try require(s.ledger.records.count == 54 && f.backend.queue.count == 64, "Notification budget exceeded")
-        try require(s.ledger.records.filter { $0.kind == .smart }.count == 53, "Probe reservation ignored")
+        try require(s.ledger.records.count == 60 && f.backend.queue.count == 60, "App queue bound exceeded")
+        try require(s.ledger.records.filter { $0.kind == .smart }.count == 59, "Probe reservation ignored")
       }),
-      ("revoked notification permission does not prevent cancellation", { f in
+      ("revoked AlarmKit permission does not prevent cancellation", { f in
         let s = f.service(), r = f.request()
         let other = f.request(key: "other-smart")
         _ = try await s.reconcile([r, other], activeOwners: [r.ownerID, other.ownerID])
@@ -249,7 +292,7 @@ private func require(_ condition: @autoclosure () -> Bool, _ message: String) th
       ("invalid replacement audio leaves accepted queue intact", { f in
         let s = f.service(soundBuilder: { url in
           if url.lastPathComponent == "bad.wav" { throw CheckError.injected }
-          return "luma-tone-4.wav"
+          return "luma-alarm-4.wav"
         })
         let r = f.request()
         _ = try await s.reconcile([r], activeOwners: [r.ownerID])
@@ -259,7 +302,7 @@ private func require(_ condition: @autoclosure () -> Bool, _ message: String) th
         catch CheckError.injected {}
         try require(s.ledger.records == original && f.backend.queue.count == 1, "Working queue damaged")
       }),
-      ("overlapping rebuild cannot add duplicate notifications", { f in
+      ("overlapping rebuild cannot add duplicate alarms", { f in
         f.backend.pauseNextAdd = true
         let s = f.service(), r = f.request()
         let first = Task { @MainActor in try await s.reconcile([r], activeOwners: [r.ownerID]) }
@@ -307,9 +350,9 @@ private func require(_ condition: @autoclosure () -> Bool, _ message: String) th
       ("unexpected repeating request is replaced with a finite cue", { f in
         let r = f.request()
         var ledger = SystemAlarmLedger()
-        let record = SystemAlarmRecord(request: r, soundName: "luma-tone-4.wav")
+        let record = SystemAlarmRecord(request: r, soundName: "luma-alarm-4.wav")
         ledger.records = [record]; try f.save(ledger)
-        var corrupt = FakeNotifications.snapshot(record); corrupt.repeats = true
+        var corrupt = FakeAlarmBackend.snapshot(record); corrupt.repeats = true
         f.backend.queue[record.notificationID] = corrupt
         let s = f.service()
         _ = try await s.reconcile([r], activeOwners: [r.ownerID])
