@@ -2,7 +2,7 @@
   "version": "0.9.7",
   "build": 23,
   "base": "0.9.6 (22), reference No. 1",
-  "at_utc": "2026-11-13T07:30:42.187017+00:00",
+  "at_utc": "2026-11-13T07:45:23.532954+00:00",
   "directory": "C:\\Users\\Admin\\Desktop\\Luma\\V.0.9.7",
   "implementation": "Configurable per-occurrence AlarmKit Stop duration, default 4 / integer 3-10; existing real audio runtime and Watch transport retained",
   "checks": {
@@ -14,18 +14,48 @@
     "core_XCTest_methods_present": 128,
     "native_queue_scenarios_present": 33,
     "native_audio_cases_present": 8,
-    "core_XCTest_executed": 0,
-    "native_queue_scenarios_passed": 0
+    "core_XCTest_executed": 128,
+    "native_queue_scenarios_passed": 33,
+    "historical_original_files": 1493,
+    "reference_files_verified_deep": 411,
+    "core_XCTest_failures": 0,
+    "native_audio_cases_passed": 8
   },
   "native_CI": {
-    "status": "pending",
+    "status": "success",
     "branch": "luma/0.9.7-signal-duration",
-    "uploaded": false,
-    "reason": "New payload awaiting authorization and native execution"
+    "uploaded": true,
+    "run_url": "https://github.com/brewmaster123/Luma/actions/runs/43386887821",
+    "tested_commit": "0f20e7f9888effad5a1ad2e0d89d4eea93eed3b6",
+    "core_passed": true,
+    "AVFoundation_matrix_passed": true,
+    "queue_harness_passed": true,
+    "iPhone_build_passed": true,
+    "Watch_build_passed": true,
+    "IPA_generated": true,
+    "IPA_artifact_url": "https://github.com/brewmaster123/Luma/actions/runs/43386887821/artifacts/14019242094",
+    "IPA_SHA256": "4b54e387158d634cfc406b9ef7b82c85e464ddd497412a4005b76b05fa9cf54a",
+    "verified_log_archive_SHA256": "61fe458d8735fa320feea646b484216c84cebed674874373a21c21b218a3447b",
+    "repository_upload_explicitly_authorized": true,
+    "compiler_fixes_required": false
   },
   "physical_device_tests_executed": false,
   "locked_Stop_new_duration_confirmed": false,
   "production_ready": false,
   "reference_0_9_6_user_accepted": true,
-  "data_compatibility": "Schema 3 retained; optional field + separate UserDefaults; one-time ledger backup; AppArchive/LocalStore unchanged"
+  "data_compatibility": "Schema 3 retained; optional field + separate UserDefaults; one-time ledger backup; AppArchive/LocalStore unchanged",
+  "local_IPA": "dist/Luma-0.9.7-build23-unsigned.ipa",
+  "known_limitations": [
+    "New 3-10 second acoustic timing requires physical iPhone validation; CI is not an acoustic measurement",
+    "Existing force-quit/runtime and Watch Focus/permission limitations remain"
+  ],
+  "reference_audit": {
+    "final_status": "passed",
+    "historical_files": 1493,
+    "reference_files_deep": 411,
+    "archive_IPA_and_metadata_checksums_match": true,
+    "single_GitHub_Desktop_reflog_restored_with_explicit_user_approval": true,
+    "expected_hashes_changed": false,
+    "report": "Luma/Docs/baseline-discrepancy.json"
+  }
 }

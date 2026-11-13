@@ -1,6 +1,6 @@
 {
   "version": "0.9.7 (23)",
-  "status": "pending",
   "executed": false,
-  "note": "Inherited 0.9.6 results are not evidence for this new version."
+  "status": "not-needed",
+  "reason": "First run passed every mandatory gate; no source changes or compiler fixes followed."
 }

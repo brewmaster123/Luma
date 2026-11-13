@@ -1,6 +1,9 @@
 {
   "version": "0.9.7 (23)",
-  "stage": "Implemented and portable checks passed; native tests/builds/IPA pending",
+  "stage": "Implementation, 128 XCTest, 8 audio cases, 33 queue scenarios, both device builds and IPA packaging passed",
+  "CI_run": 43386887821,
+  "tested_commit": "0f20e7f9888effad5a1ad2e0d89d4eea93eed3b6",
   "production_ready": false,
+  "new_duration_physical_validation": false,
   "reference": "0.9.6 (22), immutable"
 }

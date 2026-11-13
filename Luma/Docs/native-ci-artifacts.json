@@ -1,6 +1,65 @@
 {
-  "version": "0.9.7 (23)",
-  "status": "pending",
-  "executed": false,
-  "note": "Inherited 0.9.6 results are not evidence for this new version."
+  "total_count": 3,
+  "artifacts": [
+    {
+      "id": 14019242094,
+      "node_id": "MDg6QXJ0aWZhY3QxNDAxOTI0MjA5NA==",
+      "name": "Luma-unsigned.ipa",
+      "size_in_bytes": 4949352,
+      "url": "https://api.github.com/repos/brewmaster123/Luma/actions/artifacts/14019242094",
+      "archive_download_url": "https://api.github.com/repos/brewmaster123/Luma/actions/artifacts/14019242094/zip",
+      "expired": false,
+      "digest": "sha256:4b54e387158d634cfc406b9ef7b82c85e464ddd497412a4005b76b05fa9cf54a",
+      "created_at": "2026-11-13T07:42:53Z",
+      "updated_at": "2026-11-13T07:42:53Z",
+      "expires_at": "2026-11-20T07:42:51Z",
+      "workflow_run": {
+        "id": 43386887821,
+        "repository_id": 1360626299,
+        "head_repository_id": 1360626299,
+        "head_branch": "luma/0.9.7-signal-duration",
+        "head_sha": "0f20e7f9888effad5a1ad2e0d89d4eea93eed3b6"
+      }
+    },
+    {
+      "id": 14018134750,
+      "node_id": "MDg6QXJ0aWZhY3QxNDAxODEzNDc1MA==",
+      "name": "Luma-0.9.7-unsigned-zip",
+      "size_in_bytes": 4927451,
+      "url": "https://api.github.com/repos/brewmaster123/Luma/actions/artifacts/14018134750",
+      "archive_download_url": "https://api.github.com/repos/brewmaster123/Luma/actions/artifacts/14018134750/zip",
+      "expired": false,
+      "digest": "sha256:24b8fd8f895459b389001069156e5ec1009c71058747d6f3cfe9375500f1f566",
+      "created_at": "2026-11-13T07:42:55Z",
+      "updated_at": "2026-11-13T07:42:55Z",
+      "expires_at": "2026-11-20T07:42:53Z",
+      "workflow_run": {
+        "id": 43386887821,
+        "repository_id": 1360626299,
+        "head_repository_id": 1360626299,
+        "head_branch": "luma/0.9.7-signal-duration",
+        "head_sha": "0f20e7f9888effad5a1ad2e0d89d4eea93eed3b6"
+      }
+    },
+    {
+      "id": 14018119769,
+      "node_id": "MDg6QXJ0aWZhY3QxNDAxODExOTc2OQ==",
+      "name": "Luma-build-logs",
+      "size_in_bytes": 81846,
+      "url": "https://api.github.com/repos/brewmaster123/Luma/actions/artifacts/14018119769",
+      "archive_download_url": "https://api.github.com/repos/brewmaster123/Luma/actions/artifacts/14018119769/zip",
+      "expired": false,
+      "digest": "sha256:61fe458d8735fa320feea646b484216c84cebed674874373a21c21b218a3447b",
+      "created_at": "2026-11-13T07:42:56Z",
+      "updated_at": "2026-11-13T07:42:56Z",
+      "expires_at": "2026-11-20T07:42:55Z",
+      "workflow_run": {
+        "id": 43386887821,
+        "repository_id": 1360626299,
+        "head_repository_id": 1360626299,
+        "head_branch": "luma/0.9.7-signal-duration",
+        "head_sha": "0f20e7f9888effad5a1ad2e0d89d4eea93eed3b6"
+      }
+    }
+  ]
 }

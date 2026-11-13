@@ -1,6 +1,9 @@
 {
   "version": "0.9.7 (23)",
-  "status": "pending",
-  "executed": false,
-  "note": "Inherited 0.9.6 results are not evidence for this new version."
+  "executed": true,
+  "scenarios_passed": 33,
+  "adapter": "fake system backend; real native service/deadline tasks",
+  "run_url": "https://github.com/brewmaster123/Luma/actions/runs/43386887821",
+  "tested_commit": "0f20e7f9888effad5a1ad2e0d89d4eea93eed3b6",
+  "physical_device_tested": false
 }

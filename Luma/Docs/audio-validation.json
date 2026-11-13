@@ -27,6 +27,8 @@
     }
   ],
   "Stop_duration_is_separate_from_asset_length": true,
-  "AVFoundation_executed": false,
-  "physical_device_tested": false
+  "AVFoundation_executed": true,
+  "physical_device_tested": false,
+  "native_cases_passed": 8,
+  "native_run_url": "https://github.com/brewmaster123/Luma/actions/runs/43386887821"
 }

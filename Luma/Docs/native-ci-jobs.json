@@ -1,0 +1,161 @@
+{
+  "total_count": 1,
+  "jobs": [
+    {
+      "id": 131757341965,
+      "run_id": 43386887821,
+      "workflow_name": "Luma - configurable AlarmKit Stop duration",
+      "head_branch": "luma/0.9.7-signal-duration",
+      "run_url": "https://api.github.com/repos/brewmaster123/Luma/actions/runs/43386887821",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOURmCe88AAAAerVl9DQ",
+      "head_sha": "0f20e7f9888effad5a1ad2e0d89d4eea93eed3b6",
+      "url": "https://api.github.com/repos/brewmaster123/Luma/actions/jobs/131757341965",
+      "html_url": "https://github.com/brewmaster123/Luma/actions/runs/43386887821/job/131757341965",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-11-13T07:35:53Z",
+      "started_at": "2026-11-13T07:35:57Z",
+      "completed_at": "2026-11-13T07:43:00Z",
+      "name": "Test and build Luma",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-13T07:36:00Z",
+          "completed_at": "2026-11-13T07:36:03Z"
+        },
+        {
+          "name": "Download source code",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-13T07:36:03Z",
+          "completed_at": "2026-11-13T07:36:07Z"
+        },
+        {
+          "name": "Check project and tools",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-13T07:36:07Z",
+          "completed_at": "2026-11-13T07:36:30Z"
+        },
+        {
+          "name": "Check native project structure",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-13T07:36:30Z",
+          "completed_at": "2026-11-13T07:36:30Z"
+        },
+        {
+          "name": "Check preserved planner, data and resources",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-11-13T07:36:30Z",
+          "completed_at": "2026-11-13T07:36:31Z"
+        },
+        {
+          "name": "Run core tests",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-11-13T07:36:31Z",
+          "completed_at": "2026-11-13T07:38:12Z"
+        },
+        {
+          "name": "Verify audio import with AVFoundation",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-11-13T07:38:12Z",
+          "completed_at": "2026-11-13T07:38:59Z"
+        },
+        {
+          "name": "Verify queue recovery and cancellation",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-11-13T07:38:59Z",
+          "completed_at": "2026-11-13T07:39:57Z"
+        },
+        {
+          "name": "Build iPhone app",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9,
+          "started_at": "2026-11-13T07:39:57Z",
+          "completed_at": "2026-11-13T07:42:09Z"
+        },
+        {
+          "name": "Build Apple Watch companion",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10,
+          "started_at": "2026-11-13T07:42:09Z",
+          "completed_at": "2026-11-13T07:42:47Z"
+        },
+        {
+          "name": "Package unsigned IPA",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-11-13T07:42:47Z",
+          "completed_at": "2026-11-13T07:42:50Z"
+        },
+        {
+          "name": "Downloadable IPA",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12,
+          "started_at": "2026-11-13T07:42:50Z",
+          "completed_at": "2026-11-13T07:42:53Z"
+        },
+        {
+          "name": "Downloadable IPA ZIP",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13,
+          "started_at": "2026-11-13T07:42:53Z",
+          "completed_at": "2026-11-13T07:42:55Z"
+        },
+        {
+          "name": "Save build logs",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 14,
+          "started_at": "2026-11-13T07:42:55Z",
+          "completed_at": "2026-11-13T07:42:56Z"
+        },
+        {
+          "name": "Post Download source code",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 28,
+          "started_at": "2026-11-13T07:42:56Z",
+          "completed_at": "2026-11-13T07:42:57Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 29,
+          "started_at": "2026-11-13T07:42:57Z",
+          "completed_at": "2026-11-13T07:42:57Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/brewmaster123/Luma/check-runs/131757341965",
+      "labels": [
+        "macos-15-intel"
+      ],
+      "runner_id": 1000000028,
+      "runner_name": "GitHub Actions 1000000028",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    }
+  ]
+}
