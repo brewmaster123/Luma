@@ -89,6 +89,10 @@
       "errors": []
     },
     {
+      "file": "Sources\\LumaCore\\AlarmSignalDuration.swift",
+      "errors": []
+    },
+    {
       "file": "Sources\\LumaCore\\AlarmStopWindow.swift",
       "errors": []
     },
@@ -190,6 +194,10 @@
     },
     {
       "file": "Tests\\LumaCoreTests\\AlarmKitWaveMigrationTests.swift",
+      "errors": []
+    },
+    {
+      "file": "Tests\\LumaCoreTests\\AlarmSignalDurationTests.swift",
       "errors": []
     },
     {

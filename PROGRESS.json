@@ -1,6 +1,6 @@
 {
-  "version": "0.9.6 (22)",
-  "stage": "Implementation and portable checks complete; preparing native CI",
+  "version": "0.9.7 (23)",
+  "stage": "Implemented and portable checks passed; native tests/builds/IPA pending",
   "production_ready": false,
-  "physical_four_second_completion_confirmed": false
+  "reference": "0.9.6 (22), immutable"
 }

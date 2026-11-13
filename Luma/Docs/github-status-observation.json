@@ -1,19 +1,6 @@
 {
-  "kind": "inherited-historical-observation-from-0.9.4",
-  "not_refetched_for_0_9_5": true,
-  "historical_snapshot": {
-    "source": "https://www.githubstatus.com/api/v2/summary.json",
-    "page_updated_at": "2026-11-11T21:21:39.501Z",
-    "overall_status": {
-      "indicator": "none",
-      "description": "All Systems Operational"
-    },
-    "actions": [
-      {
-        "name": "Actions",
-        "status": "operational"
-      }
-    ],
-    "incidents": []
-  }
+  "version": "0.9.7 (23)",
+  "status": "pending",
+  "executed": false,
+  "note": "Inherited 0.9.6 results are not evidence for this new version."
 }

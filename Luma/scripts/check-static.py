@@ -199,7 +199,28 @@ night=(ROOT/'Sources/iPhone/NightAudio.swift').read_text()
 check('next.numberOfLoops = -1' in night and 'luma-night-rain' in night and 'MPNowPlayingInfoCenter' in night,
       'User-visible genuine sleep audio, with lock-screen Stop controls')
 check('onStopRequested' in night and 'disarmForRuntimeLoss' in service, 'Runtime loss attempts durable queue cancellation')
-check('8_000_000_000' in night and '10_000_000_000' in night, 'Interruption grace and execution lease are bounded')
+duration=(ROOT/'Sources/LumaCore/AlarmSignalDuration.swift').read_text()
+plan=(ROOT/'Sources/LumaCore/SystemAlarmPlan.swift').read_text()
+model=(ROOT/'Sources/Platform/AppModel.swift').read_text()
+settings=(ROOT/'Sources/iPhone/SettingsView.swift').read_text()
+check('defaultSeconds = 4' in duration and 'range = 3...10' in duration,
+      'AlarmKit Stop preference supports integer 3-10 seconds with four as default')
+check('min(10, max(0, delta))' in duration and 'recoveryDelay = max(8, remaining + 4)' in duration
+      and 'leaseDelay = recoveryDelay + 2' in duration and 'window.leaseDelay' in night,
+      'Interruption grace and execution lease are bounded and cover ten-second Stop')
+check('stopAfterSeconds: Int?' in plan and 'TimeInterval(stopDurationSeconds)' in plan,
+      'Each occurrence snapshots its deadline; old records decode to four seconds')
+check(model.count('stopAfterSeconds: alarmStopSeconds') == 3 and 'UserDefaults.standard.set(seconds' in model,
+      'Smart, indirect and probe requests share the persisted duration preference')
+check('Stepper(value:' in settings and 'in: AlarmSignalDuration.range' in settings,
+      'Settings exposes the bounded duration control')
+check('try updateFutureStopDurations' in service and 'record.fireAt > threshold' in service
+      and '!observedDeliveries.contains' in service and 'ledger = previous; throw error' in service,
+      'Future deadline updates preserve current deliveries and roll back on persistence failure')
+check('alarms-before-duration-setting.json' in service and '!FileManager.default.fileExists(atPath: backup.path)' in service,
+      'Original ledger receives a non-overwritten recovery copy before persistence')
+check('self.systemAlarms.currentStopDeadline' in model and 'onAlertObserved?(record.stopAt)' in service,
+      'Audio interruption receives the current deadline even during queue preparation')
 with wave.open(str(ROOT/'Resources/luma-night-rain.wav'),'rb') as w:
     samples=struct.unpack('<'+'h'*w.getnframes(),w.readframes(w.getnframes()))
     check(w.getnframes()/w.getframerate()==20 and max(map(abs,samples))>1000,

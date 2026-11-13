@@ -27,6 +27,8 @@ enum CueDiagnostics {
       item["id"] = record.id.uuidString; item["kind"] = record.kind.rawValue
       item["scheduled_at"] = record.fireAt.timeIntervalSince1970
       item["sound_seconds"] = SystemAlarmPolicy.soundSeconds
+      item["stop_after_seconds"] = record.stopDurationSeconds
+      item["stop_at"] = record.stopAt.timeIntervalSince1970
     }
     if let identifier { item["system_identifier"] = identifier }
     if let detail { item["detail"] = String(detail.prefix(300)) }

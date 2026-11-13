@@ -1,6 +1,7 @@
 {
-  "version": "0.9.6 (22)",
+  "version": "0.9.7 (23)",
   "kind": "executed-resource-measurement",
+  "unchanged_from_reference": true,
   "measurements": [
     {
       "file": "luma-alarm-4.wav",
@@ -25,6 +26,7 @@
       "sha256": "760775a7bb5e76e04c74795daa436aefbd2442058b7e9aba3fec08829b0030d9"
     }
   ],
-  "native_playback_tested": false,
-  "physical_duration_tested": false
+  "Stop_duration_is_separate_from_asset_length": true,
+  "AVFoundation_executed": false,
+  "physical_device_tested": false
 }

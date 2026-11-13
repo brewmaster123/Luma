@@ -1,8 +1,8 @@
-name: Luma - night audio Stop and Watch cues
+name: Luma - configurable AlarmKit Stop duration
 
 on:
   push:
-    branches: [main, luma/0.9.6-night-audio]
+    branches: [main, luma/0.9.7-signal-duration]
   workflow_dispatch:
 
 permissions:
@@ -117,8 +117,8 @@ jobs:
           test -f "$LUMA_APP/Manrope-Regular.ttf"
           test -f "$LUMA_APP/luma-tone-4.wav"
           test -f "$LUMA_APP/luma-alarm-4.wav"
-          test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$LUMA_APP/Info.plist")" = "0.9.6"
-          test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' "$LUMA_APP/Info.plist")" = "22"
+          test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$LUMA_APP/Info.plist")" = "0.9.7"
+          test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' "$LUMA_APP/Info.plist")" = "23"
           test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleSupportedPlatforms:0' "$LUMA_APP/Info.plist")" = "iPhoneOS"
           /usr/bin/lipo "$LUMA_APP/Luma" -verify_arch arm64
           mkdir -p ../dist/Payload
@@ -134,6 +134,14 @@ jobs:
         with:
           path: dist/Luma-unsigned.ipa
           archive: false
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Downloadable IPA ZIP
+        uses: actions/upload-artifact@v7
+        with:
+          name: Luma-0.9.7-unsigned-zip
+          path: dist/Luma-unsigned.ipa
           if-no-files-found: error
           retention-days: 7
 

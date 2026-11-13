@@ -5363,5 +5363,2105 @@
     "path": "V.0.9.5/verification.json",
     "size": 7674,
     "sha256": "63016afcc93b6ad21013dcdae9ed265cbf97c746e4d0a2102bdbf76376de30dd"
+  },
+  {
+    "path": "V.0.9.6/.gitattributes",
+    "size": 405,
+    "sha256": "62959bf7fd44f1cf9771e551ad492714f40282a1d97bf2bf2e3a73ba5ddbc25b"
+  },
+  {
+    "path": "V.0.9.6/.gitignore",
+    "size": 142,
+    "sha256": "6f6f3efa550d4f0356eb7eba3f0df2196bdebd5b1160c91463db0d54f45762cf"
+  },
+  {
+    "path": "V.0.9.6/AGENTS.md",
+    "size": 6804,
+    "sha256": "49d90193808be2cde5facfeb5c6510ed49a0caf64c2d55a7e21e7c2fb7ca4929"
+  },
+  {
+    "path": "V.0.9.6/CHANGELOG.md",
+    "size": 1534,
+    "sha256": "68339bb2ab48d82777c38045f84236011111c2e69e212fa82d32f3d2bcb977ad"
+  },
+  {
+    "path": "V.0.9.6/DEVELOPMENT_STATUS.md",
+    "size": 4565,
+    "sha256": "f12378416fe14a8751a17211bfb8d3cef8cbc303557bd56abe203275bb29dc10"
+  },
+  {
+    "path": "V.0.9.6/PROGRESS.json",
+    "size": 346,
+    "sha256": "f28ad94264ab30392f11557a1020ac987d2d9fbc998e1c5488d56b38c92e64c9"
+  },
+  {
+    "path": "V.0.9.6/README.md",
+    "size": 8173,
+    "sha256": "849c3a5b6c922c8a64574b251bb478f902a3f2d82c728f60c85859ce7fe9a9f3"
+  },
+  {
+    "path": "V.0.9.6/source-sha256.json",
+    "size": 21280,
+    "sha256": "f72cf3a76343733643aa4c90e48d508ac832687974bc1b059ec156d6066c56ef"
+  },
+  {
+    "path": "V.0.9.6/verification.json",
+    "size": 2396,
+    "sha256": "1e089e46cc50fdbaa50a5a2527f9d93d6d9dc8d31d1ecbac14f883fcb7187643"
+  },
+  {
+    "path": "V.0.9.6/build-logs/audio-import.log",
+    "size": 2479,
+    "sha256": "44ef825de421637b8a8ef0c8227e5b4f81b945eaa672418d2c152f4741f16d93"
+  },
+  {
+    "path": "V.0.9.6/build-logs/core-tests.log",
+    "size": 32648,
+    "sha256": "4c68ecb7cd38066362ae88242044a5de616b5f9a601e83028313a54ee2296313"
+  },
+  {
+    "path": "V.0.9.6/build-logs/finite-queue.log",
+    "size": 1661,
+    "sha256": "63749aa88329a04ad4c1f525240ceabc5746ae4b5a1c79e510ce73071fefe4db"
+  },
+  {
+    "path": "V.0.9.6/build-logs/iphone-build.log",
+    "size": 186768,
+    "sha256": "13c4bb6253563d518cef5512f257eadbca4f43355749dbe0962ddf09a69ea797"
+  },
+  {
+    "path": "V.0.9.6/build-logs/native-ci-43271884581.zip",
+    "size": 81323,
+    "sha256": "6ddb734decc4dddca303e9960b729cd4244038561dbc398fbba54bdd5a8ceedd"
+  },
+  {
+    "path": "V.0.9.6/build-logs/watch-build.log",
+    "size": 107811,
+    "sha256": "a5bea85418e1244ede5229e8d2b8db6b055633a2e3fee4326d0905837dd14cdf"
+  },
+  {
+    "path": "V.0.9.6/Luma/Package.swift",
+    "size": 394,
+    "sha256": "07af656d4ddcca3320980342fe6c865a19662be5dc600c1e56c6947aa033f933"
+  },
+  {
+    "path": "V.0.9.6/.github/workflows/ios-build.yml",
+    "size": 5467,
+    "sha256": "c7624a7d60b8ed9c2aa2d41ef43d78f471df2395ec020a7613f88d75740aa2e3"
+  },
+  {
+    "path": "V.0.9.6/Luma/Config/Base.xcconfig",
+    "size": 434,
+    "sha256": "9d9f1a3f8981d0d7f27d4714a6637b2fb3ce87dec44196a125de5645bff24575"
+  },
+  {
+    "path": "V.0.9.6/Luma/Config/iOS-Info.plist",
+    "size": 2194,
+    "sha256": "fed7e0be89f0b85c0f5d0d77996be0df0fc4b70697dbb4d0dec7b46c87ee2557"
+  },
+  {
+    "path": "V.0.9.6/Luma/Config/iOS.entitlements",
+    "size": 239,
+    "sha256": "e82a7f6e130b0fe65a40214c15b4116c5245125329c63954d9ccdd9cc80f039e"
+  },
+  {
+    "path": "V.0.9.6/Luma/Config/Watch-Info.plist",
+    "size": 951,
+    "sha256": "44ef7c0c0ff8b73c0dfcacf92ab134107ab24fe506fe740f8d3683fb3102147b"
+  },
+  {
+    "path": "V.0.9.6/Luma/Config/Watch.entitlements",
+    "size": 181,
+    "sha256": "97704a8960b4facceef54397a08fb5d0a456247c3627359215aa2a27df22656c"
+  },
+  {
+    "path": "V.0.9.6/Luma/Docs/ALARM_RESEARCH.md",
+    "size": 4018,
+    "sha256": "e08d308e3e8fa15b67244cb1c03d427a2def00098d90c8c844a3f3f4fad66093"
+  },
+  {
+    "path": "V.0.9.6/Luma/Docs/audio-validation.json",
+    "size": 737,
+    "sha256": "eab1ba3cf44353fe54c75be952121edc02f1a5e367f3068fb6c8fb36ce3cb908"
+  },
+  {
+    "path": "V.0.9.6/Luma/Docs/CI_AUDIO_HASH_FIX.md",
+    "size": 5728,
+    "sha256": "4b3fe577769d24cf4b0362843a6c5335d750320870526b207dde646c097cfbfa"
+  },
+  {
+    "path": "V.0.9.6/Luma/Docs/CI_RUNNER_ISSUE.md",
+    "size": 4514,
+    "sha256": "0378970a720e2fc8eb8ff5d2f1d918fbb7525069d6d2fa2a0adcb23f650dff01"
+  },
+  {
+    "path": "V.0.9.6/Luma/Docs/DEVICE_TESTS.md",
+    "size": 3663,
+    "sha256": "18082757824398d25096e1a3654fe49bcfa2ed409cd8872b1f1471476dd91937"
+  },
+  {
+    "path": "V.0.9.6/Luma/Docs/external-history-additions.json",
+    "size": 297,
+    "sha256": "b352b056695328cab98b5daf9c34e2fff396d1d53f4bf66dc360e67c62852c85"
+  },
+  {
+    "path": "V.0.9.6/Luma/Docs/github-status-observation.json",
+    "size": 467,
+    "sha256": "f5c7bc0d39604430490b34da0a10cd3e1f19ceae65d7eae73230c432c118fe39"
+  },
+  {
+    "path": "V.0.9.6/Luma/Docs/IPA_VALIDATION.json",
+    "size": 833,
+    "sha256": "d52aeca96e6d05b9b33d882986ea6178c55c34364bac2d4fdb7be7f0792f3394"
+  },
+  {
+    "path": "V.0.9.6/Luma/Docs/native-audio-matrix-status.json",
+    "size": 619,
+    "sha256": "af0df42f9d70e9514a7f6a7423547fff5281332900b6e73bb965cfe1ffa13317"
+  },
+  {
+    "path": "V.0.9.6/Luma/Docs/native-ci-artifacts.json",
+    "size": 1811,
+    "sha256": "139d150701eb81b70d8e633f77d7288ad410f3badcac14a043ea668249000ef4"
+  },
+  {
+    "path": "V.0.9.6/Luma/Docs/native-ci-first-run.json",
+    "size": 5528,
+    "sha256": "9c8a6499a19f1a035d06de25c4480cfb91d5d33701fd0c43e9224aacc8ad7990"
+  },
+  {
+    "path": "V.0.9.6/Luma/Docs/native-ci-repeat-run.json",
+    "size": 5162,
+    "sha256": "21273d7ba7778f30002dfe4ef0730685cfa82ec0f027ac078bfa47795fc5f3c1"
+  },
+  {
+    "path": "V.0.9.6/Luma/Docs/native-ci-validation.json",
+    "size": 571,
+    "sha256": "9ef787b9bb0a659b4d70f18c8fbe2c1498a466c331ba32a2d8e2e477624ea213"
+  },
+  {
+    "path": "V.0.9.6/Luma/Docs/native-queue-status.json",
+    "size": 275,
+    "sha256": "c0c0454b7884c1b939457975d92880a0d3982a7190dadbdcff8fb51a5a517adb"
+  },
+  {
+    "path": "V.0.9.6/Luma/Docs/preserved-sources-checks.json",
+    "size": 8265,
+    "sha256": "ae91c218b341138d5cbcba8c2857c054fd094233bc563b5e3ea4498c0d8161e4"
+  },
+  {
+    "path": "V.0.9.6/Luma/Docs/preserved-sources.json",
+    "size": 20412,
+    "sha256": "989b639cb45656350cf6efd003c47fc7d003d10ed21d41a80c078aaac5a42505"
+  },
+  {
+    "path": "V.0.9.6/Luma/Docs/previous-versions-sha256.json",
+    "size": 181709,
+    "sha256": "1c6d07a8892a7a44e36436641daf2c3036bea14992c87170b1a722e58f31de46"
+  },
+  {
+    "path": "V.0.9.6/Luma/Docs/previous-versions-verification.json",
+    "size": 183,
+    "sha256": "06fafbf711575c574a8ff680ab10fa9ce9008aa50225e35994a968759b8ef49c"
+  },
+  {
+    "path": "V.0.9.6/Luma/Docs/python-syntax-checks.json",
+    "size": 284,
+    "sha256": "e1baff5b3b0d4bb2797d3ffe7341f79795af254139f5aea1b90998e7c378fa76"
+  },
+  {
+    "path": "V.0.9.6/Luma/Docs/source-grammar-checks.json",
+    "size": 6957,
+    "sha256": "35b6ccc1b1f2633535bc2eb462e38682fc9b2972be2cbc68603c80ab409336b2"
+  },
+  {
+    "path": "V.0.9.6/Luma/Docs/source-integrity-tests-result.json",
+    "size": 153,
+    "sha256": "3aaff1b604932c260a66d2180d5477e76b41b6dce67f092423f9e5554d6c0d15"
+  },
+  {
+    "path": "V.0.9.6/Luma/Docs/source-integrity-tests.log",
+    "size": 136,
+    "sha256": "35d0f8afd28ea92a51572bbe0e564fbd520c1aab7587b59d1d128b5a74c4d8e2"
+  },
+  {
+    "path": "V.0.9.6/Luma/Docs/static-checks.json",
+    "size": 9145,
+    "sha256": "5313182beb2459198e06d153e699a56ed88bcfa7899d5180658195192646a2a6"
+  },
+  {
+    "path": "V.0.9.6/Luma/Docs/tested-input-match.json",
+    "size": 5051,
+    "sha256": "a36a83dcb769fd8d27ebc45d9bc83c8b82c0aba34e3f5ca9f32fb6779a450070"
+  },
+  {
+    "path": "V.0.9.6/Luma/Docs/TESTER_FEEDBACK.md",
+    "size": 2103,
+    "sha256": "edcd4e897b330205ab4bd10f5ea6edc28b6876b11d8a958326fa61d8f1a41857"
+  },
+  {
+    "path": "V.0.9.6/Luma/Docs/VERSION_AUDIT.md",
+    "size": 1218,
+    "sha256": "73caac0b60260cdcf4f8f43bda71dd920f3334b5c7db637013479d926ad75ab4"
+  },
+  {
+    "path": "V.0.9.6/Luma/Docs/workflow-validation.json",
+    "size": 340,
+    "sha256": "7fede98e6150a581a2a4c3a316ee774f4020507ebe8168448f12c544bc4ba855"
+  },
+  {
+    "path": "V.0.9.6/Luma/Luma.xcodeproj/project.pbxproj",
+    "size": 31863,
+    "sha256": "ff0b869f17145ae974fa32dbd3a1e3f6df60ed32347a6c8b4fef0ce9070764c9"
+  },
+  {
+    "path": "V.0.9.6/Luma/Resources/luma-alarm-4.wav",
+    "size": 176444,
+    "sha256": "9c2784e108846aede7bf3a607e9db2babef5deadc717fa43c8952832df9d70c9"
+  },
+  {
+    "path": "V.0.9.6/Luma/Resources/luma-night-rain.wav",
+    "size": 882044,
+    "sha256": "760775a7bb5e76e04c74795daa436aefbd2442058b7e9aba3fec08829b0030d9"
+  },
+  {
+    "path": "V.0.9.6/Luma/Resources/luma-tone-15.wav",
+    "size": 661544,
+    "sha256": "beaed8a9c5145968990b619fa8dcd48e6530c6f6ea961c4d4ac3a4f40a157387"
+  },
+  {
+    "path": "V.0.9.6/Luma/Resources/luma-tone-4.wav",
+    "size": 176444,
+    "sha256": "9c2784e108846aede7bf3a607e9db2babef5deadc717fa43c8952832df9d70c9"
+  },
+  {
+    "path": "V.0.9.6/Luma/Resources/luma-tone-8.wav",
+    "size": 352844,
+    "sha256": "37d5345466972ded506efae43555eaf71e22e015b5a37ac93aa0fb99c9299826"
+  },
+  {
+    "path": "V.0.9.6/Luma/Resources/Manrope-LICENSE.txt",
+    "size": 4384,
+    "sha256": "e01b637272e0cbdfb240184dd98ea5cc671556d9894dae2668d92ab2c906787c"
+  },
+  {
+    "path": "V.0.9.6/Luma/Resources/Manrope-Medium.ttf",
+    "size": 96620,
+    "sha256": "6a21acf060627cedf46704e8484aeffc8ba94140b46cd553fa19338d301e439d"
+  },
+  {
+    "path": "V.0.9.6/Luma/Resources/Manrope-Regular.ttf",
+    "size": 96572,
+    "sha256": "8e6739a692e9b94f2e160f84029d741ee92f5a2dc8081e257bb8bba5f8680ae6"
+  },
+  {
+    "path": "V.0.9.6/Luma/Resources/Manrope-SemiBold.ttf",
+    "size": 96652,
+    "sha256": "b250ce5a3a6e5e99a79d25cbd7ffe32fae0dff6047cfaa8c27e2205234a39991"
+  },
+  {
+    "path": "V.0.9.6/Luma/Resources/Manrope-Variable.ttf",
+    "size": 165420,
+    "sha256": "d0639be45d0af36e798172419d7bd173c4bd4f29e2b76cbb69db1d11bf8b0a40"
+  },
+  {
+    "path": "V.0.9.6/Luma/Resources/PrivacyInfo.xcprivacy",
+    "size": 598,
+    "sha256": "a331d51864743ebe4e00dd22360b4a538b6b3ac26a6b3eb54094e60a36959a12"
+  },
+  {
+    "path": "V.0.9.6/Luma/scripts/check-audio-on-mac.sh",
+    "size": 474,
+    "sha256": "a325a577ca340f7fbbe927fb109768a3e65d5b596d794150292a7ef015a2aa47"
+  },
+  {
+    "path": "V.0.9.6/Luma/scripts/check-audio-on-mac.swift",
+    "size": 7941,
+    "sha256": "bafc862af15e07a24028daf1522c3de00ced0e6037c440497f646d5fc356cf1b"
+  },
+  {
+    "path": "V.0.9.6/Luma/scripts/check-finite-queue-on-mac.sh",
+    "size": 670,
+    "sha256": "21b58cdae2e6402771dd3ec3697d19631ad062848d745a18696f8ba7bf69e6f6"
+  },
+  {
+    "path": "V.0.9.6/Luma/scripts/check-finite-queue-on-mac.swift",
+    "size": 21361,
+    "sha256": "74870c2d3d08aac68a86e127559fce783e31bfccb8c37d03074bba33fecfc6c8"
+  },
+  {
+    "path": "V.0.9.6/Luma/scripts/check-on-mac.sh",
+    "size": 796,
+    "sha256": "785026f7209f55555d1ead21b1c3caff131e2fa365a71749cc805691a5b9402c"
+  },
+  {
+    "path": "V.0.9.6/Luma/scripts/check-preserved-sources.py",
+    "size": 2793,
+    "sha256": "5d7b24b2e4b0c2f28b95228237d8ef4ab38293d31939b6d3ff077f8daf9772bc"
+  },
+  {
+    "path": "V.0.9.6/Luma/scripts/check-previous-versions.py",
+    "size": 2215,
+    "sha256": "7181a8143c5a1828983d21a0c032feedca308034249959cef8687da0213c61c2"
+  },
+  {
+    "path": "V.0.9.6/Luma/scripts/check-source-grammar.py",
+    "size": 2386,
+    "sha256": "f22cb64ab8c06a5c16e3f55bdbdc4b4019cf4d90b700c83cacf9a8a47d37ac13"
+  },
+  {
+    "path": "V.0.9.6/Luma/scripts/check-static.py",
+    "size": 15879,
+    "sha256": "58741ad94abac3032d30cb5bbd1746b5f777e30b25dcd2d1451ead61c9653dcd"
+  },
+  {
+    "path": "V.0.9.6/Luma/scripts/generate_project.py",
+    "size": 11368,
+    "sha256": "31ae73d49cd348f395ea56e668018afdb812c5d5c90851c8ddbd1cdb23bf2925"
+  },
+  {
+    "path": "V.0.9.6/Luma/scripts/project-graph.json",
+    "size": 35692,
+    "sha256": "33b5d23e4e99352597ee7fd422246c994a5a6643e68a0dfd21ab6b5f57e236ce"
+  },
+  {
+    "path": "V.0.9.6/Luma/scripts/requirements-validation.txt",
+    "size": 84,
+    "sha256": "bd40560117191669717bb670fc985eaf62e6556b2a1b50d1ad04933bd8ef8b6b"
+  },
+  {
+    "path": "V.0.9.6/Luma/scripts/test-source-integrity.py",
+    "size": 5144,
+    "sha256": "a59d1f570948128b61d52f4951bb6f5eb4051f60731b556f4d0142fe976925cf"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.gitattributes",
+    "size": 405,
+    "sha256": "62959bf7fd44f1cf9771e551ad492714f40282a1d97bf2bf2e3a73ba5ddbc25b"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.gitignore",
+    "size": 142,
+    "sha256": "6f6f3efa550d4f0356eb7eba3f0df2196bdebd5b1160c91463db0d54f45762cf"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/AGENTS.md",
+    "size": 6804,
+    "sha256": "49d90193808be2cde5facfeb5c6510ed49a0caf64c2d55a7e21e7c2fb7ca4929"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/CHANGELOG.md",
+    "size": 1534,
+    "sha256": "68339bb2ab48d82777c38045f84236011111c2e69e212fa82d32f3d2bcb977ad"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/DEVELOPMENT_STATUS.md",
+    "size": 4565,
+    "sha256": "f12378416fe14a8751a17211bfb8d3cef8cbc303557bd56abe203275bb29dc10"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/PROGRESS.json",
+    "size": 346,
+    "sha256": "f28ad94264ab30392f11557a1020ac987d2d9fbc998e1c5488d56b38c92e64c9"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/README.md",
+    "size": 8173,
+    "sha256": "849c3a5b6c922c8a64574b251bb478f902a3f2d82c728f60c85859ce7fe9a9f3"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/source-sha256.json",
+    "size": 21280,
+    "sha256": "f72cf3a76343733643aa4c90e48d508ac832687974bc1b059ec156d6066c56ef"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/verification.json",
+    "size": 2151,
+    "sha256": "062bc4a503a7173d102ec43f364f8b8eb0f9c4cbde8b87bac9b0495a1cf7ad50"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/COMMIT_EDITMSG",
+    "size": 55,
+    "sha256": "bb61d3028a2fff42669bd561445cc432de546ad70ed6bd565dd2d3137791a004"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/config",
+    "size": 455,
+    "sha256": "d7ac4ff5147049461243fbfcfcfcf6adba293ce21f832fc360d279a62d4bbfab"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/description",
+    "size": 73,
+    "sha256": "85ab6c163d43a17ea9cf7788308bca1466f1b0a8d1cc92e26e9bf63da4062aee"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/FETCH_HEAD",
+    "size": 225,
+    "sha256": "d6f277642337cfaa46548dbe848b939d47a7895f50b9603175c657e8e9182f7b"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/HEAD",
+    "size": 39,
+    "sha256": "ba5bc9b4c0aaae968300d0237f617dea85798cd0d080d2a2e7f92fa8bc3cc8fe"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/index",
+    "size": 14849,
+    "sha256": "35bebe513225fbc9df6e9155254863749b680c992853f800476755587f01da60"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/packed-refs",
+    "size": 112,
+    "sha256": "a9358ffaa63b43232446f9b33c14389d69d39efcb142b2522a8dae834e8d795f"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Package.swift",
+    "size": 394,
+    "sha256": "07af656d4ddcca3320980342fe6c865a19662be5dc600c1e56c6947aa033f933"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/hooks/applypatch-msg.sample",
+    "size": 478,
+    "sha256": "0223497a0b8b033aa58a3a521b8629869386cf7ab0e2f101963d328aa62193f7"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/hooks/commit-msg.sample",
+    "size": 1972,
+    "sha256": "efc1401b0e99d1ff51494d154d98b46c1e99059bcd8bf9f73cecde19fd3eb23b"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/hooks/fsmonitor-watchman.sample",
+    "size": 4611,
+    "sha256": "9159720099ad5595b8e66645cbfd47763c1e920f46e0b50ae75e642bbec57ef0"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/hooks/post-update.sample",
+    "size": 189,
+    "sha256": "81765af2daef323061dcbc5e61fc16481cb74b3bac9ad8a174b186523586f6c5"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/hooks/pre-applypatch.sample",
+    "size": 424,
+    "sha256": "e15c5b469ea3e0a695bea6f2c82bcf8e62821074939ddd85b77e0007ff165475"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/hooks/pre-commit.sample",
+    "size": 1649,
+    "sha256": "57185b7b9f05239d7ab52db045f5b89eb31348d7b2177eab214f5eb872e1971b"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/hooks/pre-merge-commit.sample",
+    "size": 416,
+    "sha256": "d3825a70337940ebbd0a5c072984e13245920cdf8898bd225c8d27a6dfc9cb53"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/hooks/pre-push.sample",
+    "size": 1374,
+    "sha256": "ecce9c7e04d3f5dd9d8ada81753dd1d549a9634b26770042b58dda00217d086a"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/hooks/pre-rebase.sample",
+    "size": 4898,
+    "sha256": "4febce867790052338076f4e66cc47efb14879d18097d1d61c8261859eaaa7b3"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/hooks/pre-receive.sample",
+    "size": 544,
+    "sha256": "a4c3d2b9c7bb3fd8d1441c31bd4ee71a595d66b44fcf49ddb310252320169989"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/hooks/prepare-commit-msg.sample",
+    "size": 1492,
+    "sha256": "e9ddcaa4189fddd25ed97fc8c789eca7b6ca16390b2392ae3276f0c8e1aa4619"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/hooks/push-to-checkout.sample",
+    "size": 2783,
+    "sha256": "a53d0741798b287c6dd7afa64aee473f305e65d3f49463bb9d7408ec3b12bf5f"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/hooks/sendemail-validate.sample",
+    "size": 2308,
+    "sha256": "44ebfc923dc5466bc009602f0ecf067b9c65459abfe8868ddc49b78e6ced7a92"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/hooks/update.sample",
+    "size": 3650,
+    "sha256": "8d5f2fa83e103cf08b57eaa67521df9194f45cbdbcb37da52ad586097a14d106"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/info/exclude",
+    "size": 240,
+    "sha256": "6671fe83b7a07c8932ee89164d1f2793b2318058eb8b98dc5c06ee0a5a3b0ec1"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/logs/HEAD",
+    "size": 991,
+    "sha256": "62bf4b319d274fb6b1f4d77ad175840a2a2fea269bd796276fc53630c424edb6"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/logs/refs/heads/main",
+    "size": 191,
+    "sha256": "8a658720bc92f711102ab2d1f373534046cf100099507174266945fe8b5a2472"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/logs/refs/heads/luma/0.9.6-night-audio",
+    "size": 773,
+    "sha256": "8e1056ee2d768862e50851284206c4a4557a727028d5537662eceed67af4bbf4"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/logs/refs/remotes/origin/HEAD",
+    "size": 807,
+    "sha256": "7d4864d5ad9fb21ce2b6f17ece422f82da356601757ae1f63761469db1d30d7c"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/00/80da0ed197096f4f81ace3f58b0f54b313ee42",
+    "size": 3181,
+    "sha256": "22eb68e73087b5c82866805deb7d7e4bf3f974ff31a3471fe4c9dcef1e10eb68"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/08/c0e6ad9ab30cfee217894519c27e90229d1366",
+    "size": 205,
+    "sha256": "1dbd80c598b59e17496e24e5c54e42792ad316d79c59a50742b7c3d7fe081c52"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/0c/67376ebacb410fd873cac1d8d8dd431b262c02",
+    "size": 165,
+    "sha256": "f2b89712c6a0470bc0bd12218b3cb152766e846c1a35eab8759852dd65107120"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/0c/dbae6e4348840fc44b975580eec5d7699f38c7",
+    "size": 188,
+    "sha256": "7568eeebb74b2ab69c069fe016bd4afb5e0ce4cd56f3ab4af721a85d1339c253"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/13/8853d4c9713dc74b6ce0463601f897261f1c3c",
+    "size": 2862,
+    "sha256": "df94a56307da211242efce00e553141af67c60952415cf38c74384435453040e"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/16/04fe5b0bdac180e2736a24341b76acec511377",
+    "size": 495,
+    "sha256": "5a1eec96f7b66bbd0cefeecb5bf9cc3412a0b8976a8d1d199c285c4e0efad1cd"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/18/0b78417191f427172434db2f33b344ed6698e1",
+    "size": 1748,
+    "sha256": "88a92fb653633c9da35ca410a3a14d3f59bc11298c177f9b4430cac3a4cabcd8"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/18/862d0245953368ec030f0e97f8aac40591dd04",
+    "size": 353,
+    "sha256": "91a8004e318bff45e9df0455f5210774922f2b6df951aba71e7560ecb1ed1e80"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/1c/b978a2cb6a1b2f1b8c9749b05a150143d2edf7",
+    "size": 1773,
+    "sha256": "f4c0068f72fc2909b8e2e2fb923636d5260e41b94981c9182018a2307ad3ab05"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/1d/191ba24fd9e3eda0fd91df9af9f4ef0c54df28",
+    "size": 598,
+    "sha256": "dbaacd19324623d77f3b47ad8cca61f3e0a5d2f1c69516c17ae4ab8b6151e9be"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/24/8f689d03890214274c642bba95da5ebcc81c39",
+    "size": 714,
+    "sha256": "474b41145a4ba544b5d05cb666d2c4361e72d7e6a8be173425e3ea1827da07a3"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/25/2ad37a08199f5e4ad60441b5aa9551baa17160",
+    "size": 2219,
+    "sha256": "4cc2f657852d922130d7ea14f27590d2a056a3b4f176e640e4e497158f5ddb54"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/25/cad37e3059a9dd4574607258066262a1a45252",
+    "size": 3250,
+    "sha256": "10251502b050243d5f1c8d58235a3e6f81521fd4c30bf8089086aa73b707a4e7"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/26/50ef04efc1f14f249bd19bdc981f0daf09e9bd",
+    "size": 453,
+    "sha256": "0e4e9d1e3969683e238241ab775fd2ed26ea56aad0c9454297a01685aabf65e5"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/27/3cf57508e6e48af57e52f07463f617cb432180",
+    "size": 792070,
+    "sha256": "3bafd92c220ee0b0ba15c18cfd5b228fc5b8470e67f4dabcf8d46ce11e6fda67"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/28/5347c360dbecec5a2e2d50e5a4c9ec446ab0b3",
+    "size": 229,
+    "sha256": "a3c061f03bb22e4c38c0c72e57f7c1ed8c7653800104b4a6dd952e0206e58fea"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/29/8757d0323d3a74ee0a0622f227b4fc58566167",
+    "size": 6527,
+    "sha256": "3de938834e0ba78acf4c0c45acfac852227c2977f11337b61957b7bc8200ccbc"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/2f/0152f5bdd525f8158383840929d0a13a2b6714",
+    "size": 861,
+    "sha256": "84f4ec5392196d1fe95a8c3f3a3bfa032a294b6d35fd62f50a420dd7431d37b1"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/2f/a0af4a171aeba4b8b388995156eb469b979e1b",
+    "size": 2698,
+    "sha256": "d42a63bdc1211cafae74ab3c17d26cf7d2ab1ad8073bbba9abb44eb68f9fff30"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/31/e8587ea66b85386e07ee804208b5ca45a6a068",
+    "size": 1547,
+    "sha256": "e145a086928569e37cf2e362202ee417d2d52703703b73977ede58f2d66294ef"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/32/d5ea8eb51181aab5181a0a0832d05c47d64044",
+    "size": 616,
+    "sha256": "15c1163287338fdcf0d14918a506510a6bb9783972bdae6507497a407dd27375"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/32/edbb5d1d34dd14d434f991ed1a359f19840522",
+    "size": 990,
+    "sha256": "fc231e7996be18505326fa108112e7917110209c90a51eb151922371514295d5"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/34/4692d4f160c7db44987e197027636435bdc725",
+    "size": 3235,
+    "sha256": "f300a5681b76d2a047c68e51620c4dcc11015ec9041badc3a3bf55641e327325"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/35/b567df0e841db202f1280302317444b899811b",
+    "size": 276,
+    "sha256": "6cca5d7d7128c3d487352b7ac1f763c83382f6ac877cb176fb1e113765bb7ac6"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/35/c0fefd8872c470459553d6bfa1540237f418b2",
+    "size": 370,
+    "sha256": "9922a870dbbbb87aada35e935d58149ce4e0cfd17151f53c6d0d94b3eab931af"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/38/2b85728170e0bc6146c9ed72786396541fb736",
+    "size": 883,
+    "sha256": "d58ef3aa440686b925673c724413dd08c9956889a2f4bf7de0027d1c0f14fd9d"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/39/42dd65de45c40c595a73d86e74fdaa0fbd0be2",
+    "size": 198,
+    "sha256": "d128775e12faceaa180853cbe9cf976584c253312bc18a5b8e2b2931f5fefd05"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/3b/3ee8b4801c370b2df7552cc46928570f1f429c",
+    "size": 751,
+    "sha256": "d7f447f7b48bcbdc526b14698b2ee85ba2fc130c4c8d1bf843a317ed42515dd9"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/3c/ce34e758b2e6b7d4a7415cc912adba0dca2ef5",
+    "size": 96,
+    "sha256": "0c9cef18de80161ad47aae08c680dc88a2270164e1daa4c8f27eb190a5c241b4"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/3d/63c6b0324900a4d5f368858ad0f49c4a4f6495",
+    "size": 954,
+    "sha256": "bb8353faeb688e95ae735ddded081da9343b66a7875b6c6cb77ebbb3fd31e294"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/3d/99e493c380b4dd5d524ba9f10d6a752f0c94ca",
+    "size": 229,
+    "sha256": "138d2426a5c9df6f45e14555927723323d4e3584505c0991667cef6578eb808a"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/3d/f3f786d2c9010eeb20c8f190c098a871aeeef2",
+    "size": 635,
+    "sha256": "c0c34b4bc917f39a8814d405ac53f5c5d5b9137a2b35d5efd411a7b96cb9e7b4"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/3e/fdd7a522b67666c00c50c8ee312659599f80d7",
+    "size": 51,
+    "sha256": "2efeed5e7ea030192c5f31ad81e5b877ecfef653ee06bb542b4e72d2a25b312c"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/3f/efa58b8b2ddafd063a687c4eab95bd57d9ffe2",
+    "size": 5149,
+    "sha256": "ee251f8fc7dfae4e9b0cc0b299c88838aa2700b9d3e430b7548537290fac309b"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/40/3196381976eb59684bc549db3842b5982623fb",
+    "size": 143,
+    "sha256": "bd89b2ab847ba95d7f803c19c99b99036df3ef122f1ed0fe1cf519501f092609"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/43/2b11aba2b86a8c7a84967524f925e631ee6bf6",
+    "size": 400,
+    "sha256": "d2ff741ed0e2e7fccfc1ea29b9f7331d36bcff7148e86b3b41ea9cc229d6e6a7"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/45/80df169b6b89060a5526945228787df3d1288a",
+    "size": 499,
+    "sha256": "ec6d098c0418870d613c48b2fba432c8eaf631f1405d1c03f786e8ea56171569"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/45/bcb6d2cc78003ba22b5a57109a7539a9dac4d6",
+    "size": 142,
+    "sha256": "0a8fb4d564fd1d7ff0e5f013ad5ec6998f2e58291a295f232a3ca6f40377f109"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/49/c9882678bae540d91f8ac2ff3d5751d522ca51",
+    "size": 1032,
+    "sha256": "ff735587afa7626b9613ef7250ea671506b69d89ed77fea27f7b04ff8923af98"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/4a/c729a426cf9643ab2ff3f93cc3e2aa1d714c74",
+    "size": 6530,
+    "sha256": "4d0e9f92e96b6aa3b708bbca5c4107c966b7b76cbb328f0131ddd23d83c11bc2"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/4f/28d364922ca3c9db6fcb257fb459c94811539c",
+    "size": 6700,
+    "sha256": "226a783a0eb946c5cee7a1bebe527b73fd7562ee6846c62ac837bda06fcbd5b5"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/55/848b6f7bd6c610de25ed378a974eb0bcf181b1",
+    "size": 3079,
+    "sha256": "16fcc24e403eb1e06f43af46147f13b82142c9703ebd1234f1ccad6a8348f79b"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/5c/d92c8e12ab63101fe8f94739dd2ad457780826",
+    "size": 1074,
+    "sha256": "65be1a325834d935b74f71ac45f4ded3e64e0ce6ff061b21f44734c9a07ffbdf"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/5f/2e16b7fb93710a7743ef5c3d81c342b70f3298",
+    "size": 4128,
+    "sha256": "c7b95f47d9accbbfc0f371cfcb1acd1172bcbc2a7857cd485255584743985bf2"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/62/b9e5bf074f5fb15b09c87b54b7ec8f55c2269a",
+    "size": 394,
+    "sha256": "5edb338150afd04f867d251c59f20d06fe225e2335810e7c69d5b951929a8291"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/66/84780ce7097780c95e71cfab0fe3e2879c8d60",
+    "size": 143,
+    "sha256": "8c4111283ec26f44c7edfb902ca09e261eeb6c85a42ea58cf575c8cbb08a3fd3"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/67/36a6fb856bb619efa15fc4a9126475ecdc7ab0",
+    "size": 2670,
+    "sha256": "e3b796b98497b84cc73cc9d80ff9cea75cf79708883cdcdd6213531a2b9e8b94"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/6e/dee4c18957a015fca6070948300085c4952a22",
+    "size": 316,
+    "sha256": "5e21579a0d30b6e6147809bad43ac2cefcc7017929ec23dd0496e4072d2f242f"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/71/1a2dbbc9269fc975d2b89ffa2fb5da93def151",
+    "size": 7803,
+    "sha256": "932903f3e25af6dd390dcb84a1896bff1bba6c0d2e511986873bab23e6264a18"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/75/16de07c020d014f1f4b13bb751ef1b2f39928e",
+    "size": 277,
+    "sha256": "2fbdf6538fdacb846c2e8510cc1cad87bd145aa44dd2a3b4ad4f814c586b254d"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/78/c9238b3ba8d9f6348f5ceba2c4757b30bef58f",
+    "size": 7661,
+    "sha256": "7b0aed37238f7de0a7b4bc22e443c111990e6a49ca12b515ff954783ae8efff3"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/79/f5aa574473d4d09bcd9568e65644899a46537e",
+    "size": 1777,
+    "sha256": "0c35dd9fc84fb44f9d8eb7aaea687728810b574edd266985fb8c58cd9d5a6a13"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/7d/060e6cc7c2ab281e713a0d43e52157065ec876",
+    "size": 1007,
+    "sha256": "20a3b98b179cd4888e3af6ca663b5359f0d7484bf7b900ab2f28128172a751f1"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/7d/69cc23e2b440eed0485f13d84d4be0690288d5",
+    "size": 6046,
+    "sha256": "dd527dda24a70ace7f4305496e26e32c1111eb31fabae05aedbb7f87c25e5b9d"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/7e/163c3a84dab4b2d59859c2190611aeb262f340",
+    "size": 3186,
+    "sha256": "4aa0c4a7de88394aa874ce120ebd0a573381ca3464dd171d5556f210a5eca412"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/81/3ae99f96b9b8453f35167ed61fb845978701df",
+    "size": 1868,
+    "sha256": "f6afa3e6597ab1b12de4ebabfc0bb4a7749247c3061c3f1184a42e735369f2bb"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/87/c0096018126e24d5d7eebac3812904a78aee24",
+    "size": 3208,
+    "sha256": "547b7ed46ddd3907870c2af1ed07a86376a27fc4ccc047bda13f99f19044da67"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/92/8a1a89d6a9efddaf44812034f4314de67b04b1",
+    "size": 1911,
+    "sha256": "346f1e28f748f37583b8c9036e8982510f63bff0879a556610f46ac9e4ef5c49"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/93/62a6624288797298be44fddb98185fd972d9f2",
+    "size": 133,
+    "sha256": "a407a648b761d0657f50e742639c6b9715806801c1ea020f5a555b7b32f021c1"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/93/cb9b0ac67df66cd5cc3c9df7529e3350f58e98",
+    "size": 307,
+    "sha256": "9268c8d73b38d3af71c18df5173508f2803d8f07b8275679dd26f5f8fdc709be"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/98/c53bc3d99a069b73cb743c6366b4e336a3fa03",
+    "size": 96,
+    "sha256": "554a7820f1704ac27ad6a664bb4f01d19b8e5232480a3a1f2f5d451d9d1305e0"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/9b/35fd6063325ce0d67e9754103879998d939e05",
+    "size": 90,
+    "sha256": "1caca2fa38553d3cf49d6336388378ae0c33007a9b8e9fc380e053ff9ff276a0"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/9b/89acd59dfe1d930ef23ca8027cb72293a1cb64",
+    "size": 1046,
+    "sha256": "6ff9c284beaff5fadd6e53ab0db09dc7afe525b8a3929bb37f78eed1958851a8"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/9b/c712b17b0c4b5c263d751e743331b1e53c2231",
+    "size": 186,
+    "sha256": "051444dfc78da3aab5756adc90e42223cbe47b6e7e4225912e8c148013664c42"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/a4/ebb88975af6f7ba10c11c2477e6b2cc5c1b8f3",
+    "size": 3701,
+    "sha256": "e98c859ac4a9d7c28d0ea18d1139d8307eb3131134fb0a13a6d29f2d5240c89f"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/a5/da8c7390a70f74263fd6d4cc15b493970c0ed7",
+    "size": 499,
+    "sha256": "130806fe5c9512074e52e17c57d28224c5ca29aa64f4587d14eeaebed191c0de"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/a7/89876603d0a763225fdd71eb15ffed986eaf32",
+    "size": 6945,
+    "sha256": "95f5743ccfca3df621308d994b63178916338e8b20c8e599130ca812c7bbfd2c"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/a7/ba2d3e4a8906b7481006bcfaf34c4785a0debc",
+    "size": 825,
+    "sha256": "d0c0620b1a9e7c2425ff7b15ef1f628fc845719df3fd0b0f4979ea7048ca8ba0"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/aa/52040283865325dda613e68be1396f01610b71",
+    "size": 573,
+    "sha256": "d08f8bf5d05e8c1aac243f27e1cc756c698b3e2070d7d276b25b22aeca0a8750"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/ab/3a5ffeb013daecc76afbc4a08453121c875e81",
+    "size": 1229,
+    "sha256": "92d6d23b3cd13b3c6003ccc8eea6fecdb226a78234b37da54fe01c432497149b"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/af/7ad6741e04743b8d69782904b07508606651c5",
+    "size": 200,
+    "sha256": "b7e9ec120b62e4dcef816cc0518ff21c7e48b0a23944b45fd2f4cd2e91e2b349"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/b1/3429accd7701df4b5dfd05b017ed7a7a5d7612",
+    "size": 6579,
+    "sha256": "a62540a9d4b6cc1a3e26fbfc8241baba7c91f8bcfa4fab07240f5aa86c1b9450"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/b3/5d9f1695879daae886bd69a6de2d113a688da5",
+    "size": 4137,
+    "sha256": "ecf857f04d6095b59fbe5ada7d4713a22edda37de7631c21209fdb6661d39356"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/bc/72424ab3354bfb47cfe48e1fb5970f5710ca51",
+    "size": 135,
+    "sha256": "3cfa13d04576f448983b73e9ebe83d087dbdf855af52afae045be20d71c07a95"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/c3/041d486b6a2c7c6fb56e41d620ad7b734f59bc",
+    "size": 672,
+    "sha256": "9d616356944c576088014a51766bc0365d5cd7cf34828246781e55dbdc5b10b5"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/c7/b354dfc40f10bd729557d5949be2cb22be226e",
+    "size": 159,
+    "sha256": "a96ef1cd4fbcad25cac77ea74075d1eae8f27743cd272a68d675248fb2f9348e"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/cb/e0c44c0ae56e9c42c14812348ea01e6c613a7b",
+    "size": 635,
+    "sha256": "6627ab0cd225c911ecad12deb8e3a0202d38d4289949e71df37901756f17a9c4"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/ce/b729c545da142d7cc9a3737ea104ead23d4d5b",
+    "size": 723,
+    "sha256": "cb195e530021046f571920d339b7854de972cbe27ba1e4b7e5766877ecf7be13"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/d0/3ca843dd0c8f787f4ca98f976b190d7240153e",
+    "size": 3880,
+    "sha256": "62ee281fe610f97b544470f4fe3dae87296a5c3c39d9cee6cf58114572542625"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/d1/0d7a965ac9be01b6e5eb3def8de465e3242350",
+    "size": 58,
+    "sha256": "fafa9da18e55a4f47e37270ab0dad3caad46260a3e5997b78d3e9d4da864d4ae"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/d1/d02e68bc5172504431a8dd6c7ab177a824caed",
+    "size": 197,
+    "sha256": "db80cb8a7f6a87b808f672fd68a832a1be702677e9df6065a44ab53fbe4a8704"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/d7/07b440abbb6ac7a93df2b6bd1c731b28a4de60",
+    "size": 7060,
+    "sha256": "71f42bb59bca57255ae6fe3b27a2a7c90e35d4b04516cb37b1fd5461d03f9375"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/d8/68662985f40f0b722d94704db1428cdb4d58ca",
+    "size": 400,
+    "sha256": "fd8e984f3aa4cf9f6ec5300866b82ab2c69d0c31861477689f7e203c157afb0c"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/d9/69d02e08daeda158094bd76fa83b29ab7a5131",
+    "size": 97,
+    "sha256": "d20a21630b5b8e8ff6e86825c6a899b643dfb88b5c713746887cfcebd1c0b5d7"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/d9/8802eb0d97c68db396918c5c45210caa76e572",
+    "size": 275,
+    "sha256": "06fe27cdc6d451090f4bb27c14b40b4550941879ba6817bad4194ceeb1d68c9d"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/da/1f116356b3e10c07ca6dc192ad6f397f8378ea",
+    "size": 97,
+    "sha256": "eafc9b1e196cee92d2c0be029aca857197f3ca00d2b97c302b9572a9e671d196"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/db/5906a2cfa211840f66623f2ed3d417474785b7",
+    "size": 2300,
+    "sha256": "768c73e6eebbf8e168ba130599bf7ea6b2d33f03dc600bfe51a8f58478a70e11"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/e0/f51209d336096c21a5311672c0e84f9c2b3b18",
+    "size": 1042,
+    "sha256": "a1e38cea00ad774b0f42f7657771c028328a3706be9f2b1ba9973144b3a4af8f"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/e2/e5e201329fdb024658dcb4709184d252fdec4a",
+    "size": 3384,
+    "sha256": "029de5caa5536dec7d5f037f801d6389a88268b9e5e975803bb2528580410f61"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/e5/9a02425ade8715edc109fe65d3bcfd40f66f1e",
+    "size": 7085,
+    "sha256": "4655d8c250ade663804643b4dee7fff9df0394d159b09c6e5eb2faef24903ff3"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/ea/3e9df3143fc7e356ee399ffcfccc78376381f1",
+    "size": 603,
+    "sha256": "a3100043db862be0a754055e83baa780b47895adb2a86b30e2b0bc5e1bb4c08f"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/ec/4f3c2d0e35e5feb72047ffe88d8738eef9a7fe",
+    "size": 999,
+    "sha256": "d7822d8452148c072ac45ba75ee95d8d23ce8584f5822a451328696da80d1de8"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/ed/52bf2d30733eb7519ea85b37523a6685a2244f",
+    "size": 998,
+    "sha256": "7fda3ad71a36d4a0b9b84ee74b55708bd4a0f97c192e43b057f2d699f0b9cfd6"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/f0/f2f36fabf6d8a9a96cca7181ca13b0e10e07a3",
+    "size": 2680,
+    "sha256": "6a90b2ee2717da2b91e01b3f8028dbbe17d18367ab90a8a40aca5713f3e4d796"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/f1/fe35252b65158972e96f8ee5071a4089a51ca1",
+    "size": 6550,
+    "sha256": "afc10ece92be6031f08939f4499b8de248a32cb7d598e57debffdeae4f0270f1"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/f3/c6b0a11aeabdefaea31cda44523e35525348a4",
+    "size": 55,
+    "sha256": "7b5e37ce0722f7c68e5d2c69eb0cc5b504f124d454e4e5675f9afc8208ebe19e"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/f5/f3a51fd4dfbb86c6be2f19ab5948d87c04dfbf",
+    "size": 261,
+    "sha256": "25cd1565e8aebcb8d24e602470c8a1470ac3bf5c890c103d9c24f57a4d18684d"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/f7/23f08994e391a4f32a6a62f0540f4a1ff6fb8d",
+    "size": 1143,
+    "sha256": "d867ec28d0b346bcf01a88dc08dad684a1e56c23129118dcd9b9171a55c8cd85"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/f9/98e9684f2a6788ab1d630df259248c99c38e5e",
+    "size": 441,
+    "sha256": "60c4d0b2903742afc6cc1f8dbbbbd59819bf13c94deaa89285e7e92c286e133c"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/f9/be76034b5d34986c295ab469933c037e9fe648",
+    "size": 449,
+    "sha256": "d1989152b0264c5aa46b2a75e2bb9c23626dd9fb32d1ddf00601a8d3554208d2"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/fa/ff02a17881e24238d50b289e3972dbad8b1863",
+    "size": 6970,
+    "sha256": "ed1fde565ea260a88c7a1333c46821040bee1c5dca1bff185af80993e46a2124"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/fb/6885f389f19d544f5756e3964eefeb8d73f81f",
+    "size": 3223,
+    "sha256": "86e0c993d667fdc6a5ac1918d5be27abdc4a7847d1084d4404c22e8bb04b381b"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/fc/ffeb1a6339081fc1dce54c76667f1811ddbe55",
+    "size": 314,
+    "sha256": "111f3073cbc536eb3c43e8a7dc7def55eef4e6501eb34b228782baf2cac69497"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/fe/b58a326fbbab370b106bf3cfd3aba8dc7ad68c",
+    "size": 37987,
+    "sha256": "489f81c2df5cdf9381ad33f1c751df0a550594c8dcb3ab06a963e9e5bcd44f50"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/ff/89649c6ca08c4f7be19d33949cdfc8397131d3",
+    "size": 400,
+    "sha256": "f4bcbe440fdbeb42d4b9bbb5f74a728e9a761295f2b8f99860628d36b8e62fb9"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/pack/pack-3a7805035b6bbc73bba85523e2a1f1486c82adf5.idx",
+    "size": 21484,
+    "sha256": "284ce4f5510627ddf728992375a96290621be1e8cc4c73a97c9ffe41cafe59df"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/pack/pack-3a7805035b6bbc73bba85523e2a1f1486c82adf5.pack",
+    "size": 4827657,
+    "sha256": "f00e838d1f1fefff39bea145bc45dae0aeaecd7574a1f63cdf3661a1e95d92e3"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/objects/pack/pack-3a7805035b6bbc73bba85523e2a1f1486c82adf5.rev",
+    "size": 2968,
+    "sha256": "c5f719b5814171098e788d1bbdf06e51ca2a802bafb203f49b21f85ec7911362"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/refs/heads/main",
+    "size": 41,
+    "sha256": "8697b80f5c461cb6fe28312269d369c1b6ac8847b7517a318b8758fe362797a0"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/refs/heads/luma/0.9.6-night-audio",
+    "size": 41,
+    "sha256": "54bdeb13cdce5f14c7aa98cb1adb5d78e8ff54d5bcea4c63122784640f1e0ec0"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/refs/remotes/origin/HEAD",
+    "size": 30,
+    "sha256": "2bb6a24aa0fc6c484100f5d51a29bbad841cd2c755f5d93faa204e5dbb4eb2b4"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.github/workflows/ios-build.yml",
+    "size": 5467,
+    "sha256": "c7624a7d60b8ed9c2aa2d41ef43d78f471df2395ec020a7613f88d75740aa2e3"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Config/Base.xcconfig",
+    "size": 434,
+    "sha256": "9d9f1a3f8981d0d7f27d4714a6637b2fb3ce87dec44196a125de5645bff24575"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Config/iOS-Info.plist",
+    "size": 2194,
+    "sha256": "fed7e0be89f0b85c0f5d0d77996be0df0fc4b70697dbb4d0dec7b46c87ee2557"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Config/iOS.entitlements",
+    "size": 239,
+    "sha256": "e82a7f6e130b0fe65a40214c15b4116c5245125329c63954d9ccdd9cc80f039e"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Config/Watch-Info.plist",
+    "size": 951,
+    "sha256": "44ef7c0c0ff8b73c0dfcacf92ab134107ab24fe506fe740f8d3683fb3102147b"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Config/Watch.entitlements",
+    "size": 181,
+    "sha256": "97704a8960b4facceef54397a08fb5d0a456247c3627359215aa2a27df22656c"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Docs/ALARM_RESEARCH.md",
+    "size": 4018,
+    "sha256": "e08d308e3e8fa15b67244cb1c03d427a2def00098d90c8c844a3f3f4fad66093"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Docs/audio-validation.json",
+    "size": 737,
+    "sha256": "eab1ba3cf44353fe54c75be952121edc02f1a5e367f3068fb6c8fb36ce3cb908"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Docs/CI_AUDIO_HASH_FIX.md",
+    "size": 5728,
+    "sha256": "4b3fe577769d24cf4b0362843a6c5335d750320870526b207dde646c097cfbfa"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Docs/CI_RUNNER_ISSUE.md",
+    "size": 4514,
+    "sha256": "0378970a720e2fc8eb8ff5d2f1d918fbb7525069d6d2fa2a0adcb23f650dff01"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Docs/DEVICE_TESTS.md",
+    "size": 3663,
+    "sha256": "18082757824398d25096e1a3654fe49bcfa2ed409cd8872b1f1471476dd91937"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Docs/external-history-additions.json",
+    "size": 297,
+    "sha256": "b352b056695328cab98b5daf9c34e2fff396d1d53f4bf66dc360e67c62852c85"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Docs/github-status-observation.json",
+    "size": 467,
+    "sha256": "f5c7bc0d39604430490b34da0a10cd3e1f19ceae65d7eae73230c432c118fe39"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Docs/IPA_VALIDATION.json",
+    "size": 833,
+    "sha256": "d52aeca96e6d05b9b33d882986ea6178c55c34364bac2d4fdb7be7f0792f3394"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Docs/native-audio-matrix-status.json",
+    "size": 619,
+    "sha256": "af0df42f9d70e9514a7f6a7423547fff5281332900b6e73bb965cfe1ffa13317"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Docs/native-ci-artifacts.json",
+    "size": 1811,
+    "sha256": "139d150701eb81b70d8e633f77d7288ad410f3badcac14a043ea668249000ef4"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Docs/native-ci-first-run.json",
+    "size": 5528,
+    "sha256": "9c8a6499a19f1a035d06de25c4480cfb91d5d33701fd0c43e9224aacc8ad7990"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Docs/native-ci-repeat-run.json",
+    "size": 5162,
+    "sha256": "21273d7ba7778f30002dfe4ef0730685cfa82ec0f027ac078bfa47795fc5f3c1"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Docs/native-ci-validation.json",
+    "size": 571,
+    "sha256": "9ef787b9bb0a659b4d70f18c8fbe2c1498a466c331ba32a2d8e2e477624ea213"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Docs/native-queue-status.json",
+    "size": 275,
+    "sha256": "c0c0454b7884c1b939457975d92880a0d3982a7190dadbdcff8fb51a5a517adb"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Docs/preserved-sources-checks.json",
+    "size": 8265,
+    "sha256": "ae91c218b341138d5cbcba8c2857c054fd094233bc563b5e3ea4498c0d8161e4"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Docs/preserved-sources.json",
+    "size": 20412,
+    "sha256": "989b639cb45656350cf6efd003c47fc7d003d10ed21d41a80c078aaac5a42505"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Docs/previous-versions-sha256.json",
+    "size": 181709,
+    "sha256": "1c6d07a8892a7a44e36436641daf2c3036bea14992c87170b1a722e58f31de46"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Docs/previous-versions-verification.json",
+    "size": 183,
+    "sha256": "06fafbf711575c574a8ff680ab10fa9ce9008aa50225e35994a968759b8ef49c"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Docs/python-syntax-checks.json",
+    "size": 284,
+    "sha256": "e1baff5b3b0d4bb2797d3ffe7341f79795af254139f5aea1b90998e7c378fa76"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Docs/source-grammar-checks.json",
+    "size": 6957,
+    "sha256": "35b6ccc1b1f2633535bc2eb462e38682fc9b2972be2cbc68603c80ab409336b2"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Docs/source-integrity-tests-result.json",
+    "size": 153,
+    "sha256": "3aaff1b604932c260a66d2180d5477e76b41b6dce67f092423f9e5554d6c0d15"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Docs/source-integrity-tests.log",
+    "size": 136,
+    "sha256": "35d0f8afd28ea92a51572bbe0e564fbd520c1aab7587b59d1d128b5a74c4d8e2"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Docs/static-checks.json",
+    "size": 9145,
+    "sha256": "5313182beb2459198e06d153e699a56ed88bcfa7899d5180658195192646a2a6"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Docs/tested-input-match.json",
+    "size": 5051,
+    "sha256": "a36a83dcb769fd8d27ebc45d9bc83c8b82c0aba34e3f5ca9f32fb6779a450070"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Docs/TESTER_FEEDBACK.md",
+    "size": 2103,
+    "sha256": "edcd4e897b330205ab4bd10f5ea6edc28b6876b11d8a958326fa61d8f1a41857"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Docs/VERSION_AUDIT.md",
+    "size": 1218,
+    "sha256": "73caac0b60260cdcf4f8f43bda71dd920f3334b5c7db637013479d926ad75ab4"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Docs/workflow-validation.json",
+    "size": 340,
+    "sha256": "7fede98e6150a581a2a4c3a316ee774f4020507ebe8168448f12c544bc4ba855"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Luma.xcodeproj/project.pbxproj",
+    "size": 31863,
+    "sha256": "ff0b869f17145ae974fa32dbd3a1e3f6df60ed32347a6c8b4fef0ce9070764c9"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Resources/luma-alarm-4.wav",
+    "size": 176444,
+    "sha256": "9c2784e108846aede7bf3a607e9db2babef5deadc717fa43c8952832df9d70c9"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Resources/luma-night-rain.wav",
+    "size": 882044,
+    "sha256": "760775a7bb5e76e04c74795daa436aefbd2442058b7e9aba3fec08829b0030d9"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Resources/luma-tone-15.wav",
+    "size": 661544,
+    "sha256": "beaed8a9c5145968990b619fa8dcd48e6530c6f6ea961c4d4ac3a4f40a157387"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Resources/luma-tone-4.wav",
+    "size": 176444,
+    "sha256": "9c2784e108846aede7bf3a607e9db2babef5deadc717fa43c8952832df9d70c9"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Resources/luma-tone-8.wav",
+    "size": 352844,
+    "sha256": "37d5345466972ded506efae43555eaf71e22e015b5a37ac93aa0fb99c9299826"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Resources/Manrope-LICENSE.txt",
+    "size": 4384,
+    "sha256": "e01b637272e0cbdfb240184dd98ea5cc671556d9894dae2668d92ab2c906787c"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Resources/Manrope-Medium.ttf",
+    "size": 96620,
+    "sha256": "6a21acf060627cedf46704e8484aeffc8ba94140b46cd553fa19338d301e439d"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Resources/Manrope-Regular.ttf",
+    "size": 96572,
+    "sha256": "8e6739a692e9b94f2e160f84029d741ee92f5a2dc8081e257bb8bba5f8680ae6"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Resources/Manrope-SemiBold.ttf",
+    "size": 96652,
+    "sha256": "b250ce5a3a6e5e99a79d25cbd7ffe32fae0dff6047cfaa8c27e2205234a39991"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Resources/Manrope-Variable.ttf",
+    "size": 165420,
+    "sha256": "d0639be45d0af36e798172419d7bd173c4bd4f29e2b76cbb69db1d11bf8b0a40"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Resources/PrivacyInfo.xcprivacy",
+    "size": 598,
+    "sha256": "a331d51864743ebe4e00dd22360b4a538b6b3ac26a6b3eb54094e60a36959a12"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/scripts/check-audio-on-mac.sh",
+    "size": 474,
+    "sha256": "a325a577ca340f7fbbe927fb109768a3e65d5b596d794150292a7ef015a2aa47"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/scripts/check-audio-on-mac.swift",
+    "size": 7941,
+    "sha256": "bafc862af15e07a24028daf1522c3de00ced0e6037c440497f646d5fc356cf1b"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/scripts/check-finite-queue-on-mac.sh",
+    "size": 670,
+    "sha256": "21b58cdae2e6402771dd3ec3697d19631ad062848d745a18696f8ba7bf69e6f6"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/scripts/check-finite-queue-on-mac.swift",
+    "size": 21361,
+    "sha256": "74870c2d3d08aac68a86e127559fce783e31bfccb8c37d03074bba33fecfc6c8"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/scripts/check-on-mac.sh",
+    "size": 796,
+    "sha256": "785026f7209f55555d1ead21b1c3caff131e2fa365a71749cc805691a5b9402c"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/scripts/check-preserved-sources.py",
+    "size": 2793,
+    "sha256": "5d7b24b2e4b0c2f28b95228237d8ef4ab38293d31939b6d3ff077f8daf9772bc"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/scripts/check-previous-versions.py",
+    "size": 2215,
+    "sha256": "7181a8143c5a1828983d21a0c032feedca308034249959cef8687da0213c61c2"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/scripts/check-source-grammar.py",
+    "size": 2386,
+    "sha256": "f22cb64ab8c06a5c16e3f55bdbdc4b4019cf4d90b700c83cacf9a8a47d37ac13"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/scripts/check-static.py",
+    "size": 15879,
+    "sha256": "58741ad94abac3032d30cb5bbd1746b5f777e30b25dcd2d1451ead61c9653dcd"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/scripts/generate_project.py",
+    "size": 11368,
+    "sha256": "31ae73d49cd348f395ea56e668018afdb812c5d5c90851c8ddbd1cdb23bf2925"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/scripts/project-graph.json",
+    "size": 35692,
+    "sha256": "33b5d23e4e99352597ee7fd422246c994a5a6643e68a0dfd21ab6b5f57e236ce"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/scripts/requirements-validation.txt",
+    "size": 84,
+    "sha256": "bd40560117191669717bb670fc985eaf62e6556b2a1b50d1ad04933bd8ef8b6b"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/scripts/test-source-integrity.py",
+    "size": 5144,
+    "sha256": "a59d1f570948128b61d52f4951bb6f5eb4051f60731b556f4d0142fe976925cf"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Luma.xcodeproj/xcshareddata/xcschemes/Luma Watch.xcscheme",
+    "size": 2027,
+    "sha256": "85b23944ab4ff685ae72b9a74054d12aa767980143ef5973f39ed2e0b747ef26"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Luma.xcodeproj/xcshareddata/xcschemes/Luma.xcscheme",
+    "size": 1991,
+    "sha256": "9d50e3111cc2b17e62e43632802457fc24409bed1f4045908163d94756e0fdba"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Resources/iOSAssets.xcassets/Contents.json",
+    "size": 59,
+    "sha256": "a3393322cd7b4c1e0aa93bebe09abaa91ad891290d1225b0b5d10b5c6f216025"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Resources/WatchAssets.xcassets/Contents.json",
+    "size": 59,
+    "sha256": "a3393322cd7b4c1e0aa93bebe09abaa91ad891290d1225b0b5d10b5c6f216025"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Resources/iOSAssets.xcassets/AppIcon.appiconset/AppIcon.png",
+    "size": 57928,
+    "sha256": "4ee127bb7a7e65108cd6e5e966af7f639d9a441c84b6dba2d8f9ec41fdc0bc35"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Resources/iOSAssets.xcassets/AppIcon.appiconset/Contents.json",
+    "size": 202,
+    "sha256": "9239900ca4c37dc860feb154216409f05d906e26f2d79550e1e8e8b8db6324c7"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Resources/WatchAssets.xcassets/AppIcon.appiconset/AppIcon.png",
+    "size": 57928,
+    "sha256": "4ee127bb7a7e65108cd6e5e966af7f639d9a441c84b6dba2d8f9ec41fdc0bc35"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Resources/WatchAssets.xcassets/AppIcon.appiconset/Contents.json",
+    "size": 206,
+    "sha256": "81a9a236c9662c9ff13ef208ce045a13f2b50a2f0917310289c0dc839184966b"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Sources/iPhone/AlarmEditor.swift",
+    "size": 4923,
+    "sha256": "84fd90cc52c2742b80c9288721f0928aa827a7d8470e95cae03faa9dd4a723b7"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Sources/iPhone/AlarmKitScheduler.swift",
+    "size": 7266,
+    "sha256": "1a66a4da3dc0444b179054248d06dde9700199ad8240f69671d6d572462d7386"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Sources/iPhone/AlarmKitSoundBuilder.swift",
+    "size": 8303,
+    "sha256": "9b81914e2c6cb2997268687e5eb4fce1a0a1f44bf0a39bb13f199907bbcba559"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Sources/iPhone/CueAudioImporter.swift",
+    "size": 5825,
+    "sha256": "e52c18e283386a600b406ab70cd2467968652f2f339d374f378ca443daa61577"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Sources/iPhone/DesignSystem.swift",
+    "size": 5585,
+    "sha256": "09d4a84debb3216cf16f02153cba4869bdae196ebd505926129d650619d6abda"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Sources/iPhone/IndirectMethodView.swift",
+    "size": 8019,
+    "sha256": "ed39479ef1787ca177e2f99fb97a8c9dff250ae9601a22ff3879cdc8c36cac6c"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Sources/iPhone/JournalView.swift",
+    "size": 14988,
+    "sha256": "5e56dbb3838c6bed77df9b6b9c23ff88994e445c21c16bb8f5977d6904634133"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Sources/iPhone/JournalVoiceComposer.swift",
+    "size": 4137,
+    "sha256": "0e725c45bb9263a62a5813414989b7090662017efd186a1ce3754266c449a862"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Sources/iPhone/LegacyAlarmCleanup.swift",
+    "size": 3579,
+    "sha256": "94c1ec8d554ae54d0ea39d263c5f1e96c9170e32750bb6a9650452502c5c5532"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Sources/iPhone/LumaApp.swift",
+    "size": 725,
+    "sha256": "4498678e24a6119855a9044008c3bac013f6be7d881503d05e0ece303560b537"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Sources/iPhone/NightAudio.swift",
+    "size": 8502,
+    "sha256": "cf906f69ee0a91c1b75f257b6d5e5e8ab8d4429414839d64d0ef745681b2bb13"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Sources/iPhone/PhoneRootView.swift",
+    "size": 9446,
+    "sha256": "c12ab81895e3094a2f74a96636bd1b58c5d6bf7f12e96fdc932e8956a096ca5b"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Sources/iPhone/SettingsView.swift",
+    "size": 10693,
+    "sha256": "43e4b8fa3a46f72dade8f6dae2e5593cba94ee5de11cf69d3b1099ca72fd134d"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Sources/iPhone/SignalReadinessView.swift",
+    "size": 5092,
+    "sha256": "8b9a9d658e557fd079928ae664540bfe926a96a41b54883255f9cf221783ed76"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Sources/iPhone/SoundLibraryView.swift",
+    "size": 2702,
+    "sha256": "d8a4e847764847891dcd3fa87402e3d5bb8c3b5546a4c2fde6522dd2e9cdcfeb"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Sources/iPhone/SystemAlarmService.swift",
+    "size": 24325,
+    "sha256": "e950f94c1a8487db68bc036da80a4703c5c641128afcdaceea4c5719ccb5ef73"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Sources/iPhone/WatchCueLink.swift",
+    "size": 4519,
+    "sha256": "48de62379dd0572763538592524673aedd0144f5511e9c9af832233a509b2e94"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Sources/LumaCore/AcousticFeatures.swift",
+    "size": 1321,
+    "sha256": "56dc961def8e779f756abdd8e2bf96beecb0ae3d4954918142de41f602f6efdd"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Sources/LumaCore/AlarmStopWindow.swift",
+    "size": 1902,
+    "sha256": "be2e29fb7224b69e627fd3538cd9e82c99ab3651fb97a3f782fdb3229193f8e7"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Sources/LumaCore/CueEngine.swift",
+    "size": 4267,
+    "sha256": "b0a2ad7cbc65cc30066a4f928b8c9f244db935787734b6976eb7a28e5603c3e5"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Sources/LumaCore/CuePlaybackStopper.swift",
+    "size": 1695,
+    "sha256": "756d99516095ab5c45820b13687fb0b3241d57622db661da09d173effd02e239"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Sources/LumaCore/FiniteCuePolicy.swift",
+    "size": 2193,
+    "sha256": "adc8a6135d3b0495cde9d0a59a0bf07daeb83b1e0652c7dbc660678b1ac58ab9"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Sources/LumaCore/IndirectMethod.swift",
+    "size": 1517,
+    "sha256": "bb2164e5d71ef3277a4696c04f06728945fca734595d4c65d2398b3225ba6516"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Sources/LumaCore/iPhoneOnlyMigration.swift",
+    "size": 1481,
+    "sha256": "b1cf2d8f782f6fcf75a1054fe1fd209c7b1c2224cbd331fedd1afcabe3b70be1"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Sources/LumaCore/LumaV2.swift",
+    "size": 12536,
+    "sha256": "c4e58a2545de088b25802d13f6dd583fbe7f3bc65f273407dc3923f0fbaaa785"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Sources/LumaCore/Models.swift",
+    "size": 7608,
+    "sha256": "eb7e625ef32b7931bada0b61257a7bc1ab79adc8bdf33b2805fc01e2ae0485d8"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Sources/LumaCore/MultimodalEstimator.swift",
+    "size": 7736,
+    "sha256": "7340f93c968fcd1b8e6538dc958a11ad33b1a352aeaea0aa067d3eed77ea6a52"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Sources/LumaCore/PairedCuePolicy.swift",
+    "size": 2130,
+    "sha256": "6e914d0130feb5cda406af6cd4a7ca657b08ac598885f3c39bfe3f28309e8d40"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Sources/LumaCore/RealtimeREMEngine.swift",
+    "size": 7092,
+    "sha256": "ff3d05a9bc7adfb8eb2f775e05f695feadfa7ef56a336f46b72320fc0aa639b6"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Sources/LumaCore/REMEstimator.swift",
+    "size": 4417,
+    "sha256": "4f00c0fa6bcf223e9486c299ca3d3d8e211f2ec99ef029960a252cef0a6e3da8"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Sources/LumaCore/SystemAlarmPlan.swift",
+    "size": 6199,
+    "sha256": "24242058004063f52efa76ab1083eec98dc3ee678ce1392906ce321f2b8b1ec8"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Sources/LumaCore/WatchCuePlan.swift",
+    "size": 1406,
+    "sha256": "b6395148f653d3d3e34f1bb0ebbf9e46b47ea10811742d7c92d01e80a73ff059"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Sources/LumaCore/WaveCueInspector.swift",
+    "size": 2666,
+    "sha256": "013c31b9431bfefb2bf47972c1591e70c180442ade91080785a200d60fbd87d2"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Sources/Platform/AlarmScheduling.swift",
+    "size": 929,
+    "sha256": "aaaa2401e1361a7b8e0e7917f49be0445c34710d05a7a0a9d54a47c781338f87"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Sources/Platform/AppError.swift",
+    "size": 183,
+    "sha256": "cba4f687407841f56b963d3e66f0487d06b2428db5e349d74084f163251e6d63"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Sources/Platform/AppModel.swift",
+    "size": 20988,
+    "sha256": "0232285a5a0dd99804e0a70346313ea260f0eb7523d4a38fe83917307987099f"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Sources/Platform/CueDiagnostics.swift",
+    "size": 2812,
+    "sha256": "cafb87d82b69f2a60a775399cd52414e0e2d9d63844d6208ea4799a93e9ee5ad"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Sources/Platform/HealthService.swift",
+    "size": 2566,
+    "sha256": "2ef20bee400debb95a0435d6b71f387903c46040fb034ded48bf5f9bea956285"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Sources/Platform/LocalStore.swift",
+    "size": 1185,
+    "sha256": "be5aaeff856b5ff77f9bb0cf08bacb47b364b3c2a0eb3f8ed11bef241be85e8f"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Sources/Platform/NotificationService.swift",
+    "size": 1230,
+    "sha256": "8036a2e74c5b0d38d8723a408eb30122fa8bcd9d45ffd5f2757d88abd65c473e"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Sources/Platform/PhoneAudio.swift",
+    "size": 23736,
+    "sha256": "6592c35c5d3e5d07bc1ffe702f77ef6a853bc135e11a1d17c95dd707c4dc5e82"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Sources/Watch/LumaWatchApp.swift",
+    "size": 1899,
+    "sha256": "666ddde2a8b8aca975629b261ad55be8e965e78620f20e9e38db8ead767c1b2e"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Sources/Watch/WatchCueStore.swift",
+    "size": 8977,
+    "sha256": "5e5cbddfe1893b58d355b35bf6170d941a4524ae1e77cc154835e5f01381cb89"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Tests/LumaCoreTests/AlarmKitWaveMigrationTests.swift",
+    "size": 3148,
+    "sha256": "4e7b80b96a80382f124e7f4399900d35907bf6393f09bf7bf2bfa72dd5cf654b"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Tests/LumaCoreTests/AlarmStopWindowTests.swift",
+    "size": 2683,
+    "sha256": "241480eca1c356da1fe0a7c7112e84e49e79bc6e393f0664d93dcc08e92a1946"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Tests/LumaCoreTests/AudioAndAlarmTests.swift",
+    "size": 5332,
+    "sha256": "4b7ec5255c3b06d951c3556aa2aefdd29280228ba0e5004d368d10b2802331b7"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Tests/LumaCoreTests/CoreSafetyTests.swift",
+    "size": 6898,
+    "sha256": "b129ec5a60ff1dff795f28b9aec5ce20a43b30a99eeae7da5ff24c266e8660ca"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Tests/LumaCoreTests/CuePlaybackStopperTests.swift",
+    "size": 4398,
+    "sha256": "5405952b34ea06435742f7537b575f517ba0cdc2edc500d4fb47f59509c30db3"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Tests/LumaCoreTests/FiniteCuePolicyTests.swift",
+    "size": 4934,
+    "sha256": "d3615b42ae29e0586d5d61f3e5a059292acb856538e1d71aaf7266efe3eca889"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Tests/LumaCoreTests/IndirectMethodTests.swift",
+    "size": 2420,
+    "sha256": "8c7934ff47c979d22bd9f5f57ba653eec26ad076a9a28334937f20d9ac9869ff"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Tests/LumaCoreTests/iPhoneOnlyMigrationTests.swift",
+    "size": 5994,
+    "sha256": "eda3d4c4fa1a2c1d7091188466f91d0da5ae965ac0552e12d389fe0ae4214b6f"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Tests/LumaCoreTests/NotificationMigrationTests.swift",
+    "size": 2979,
+    "sha256": "217352f731f29ec135f8592c9fd1a3982a7d513fa7758730760f0dfa8bea3555"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Tests/LumaCoreTests/PairedCueTests.swift",
+    "size": 4220,
+    "sha256": "ebeb0724675839be9835e2816b3f465ed979416f1df3b9f19ab164558e526caa"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Tests/LumaCoreTests/RealtimeREMTests.swift",
+    "size": 6105,
+    "sha256": "77797503906418695a9cf3e6b18e962f8354b1999cfc41f9a5af53c68a20f40b"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Tests/LumaCoreTests/SystemAlarmPlanTests.swift",
+    "size": 4713,
+    "sha256": "bd4fc88edf10df2eb0de12b858ae6bff78de0cf25d186075d077e2447117c6a5"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Tests/LumaCoreTests/V2Tests.swift",
+    "size": 11548,
+    "sha256": "b9b4b8b4597eaa42cbaf5f191dbdf02cb951364bc3d4f41ce0fa210f94f8f1db"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Tests/LumaCoreTests/WatchCuePlanTests.swift",
+    "size": 1761,
+    "sha256": "6ebbf757c61d113245d03cb4e69ed58a506e80c553ac48df65adaff1d27402d2"
+  },
+  {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/Luma/Tests/LumaCoreTests/WaveCueInspectorTests.swift",
+    "size": 2787,
+    "sha256": "fa111410c8724bf7b27253ccc81e14ff43949f14917f319e7e74365b36321b74"
+  },
+  {
+    "path": "V.0.9.6/Luma/Luma.xcodeproj/xcshareddata/xcschemes/Luma Watch.xcscheme",
+    "size": 2027,
+    "sha256": "85b23944ab4ff685ae72b9a74054d12aa767980143ef5973f39ed2e0b747ef26"
+  },
+  {
+    "path": "V.0.9.6/Luma/Luma.xcodeproj/xcshareddata/xcschemes/Luma.xcscheme",
+    "size": 1991,
+    "sha256": "9d50e3111cc2b17e62e43632802457fc24409bed1f4045908163d94756e0fdba"
+  },
+  {
+    "path": "V.0.9.6/Luma/Resources/iOSAssets.xcassets/Contents.json",
+    "size": 59,
+    "sha256": "a3393322cd7b4c1e0aa93bebe09abaa91ad891290d1225b0b5d10b5c6f216025"
+  },
+  {
+    "path": "V.0.9.6/Luma/Resources/WatchAssets.xcassets/Contents.json",
+    "size": 59,
+    "sha256": "a3393322cd7b4c1e0aa93bebe09abaa91ad891290d1225b0b5d10b5c6f216025"
+  },
+  {
+    "path": "V.0.9.6/Luma/Resources/iOSAssets.xcassets/AppIcon.appiconset/AppIcon.png",
+    "size": 57928,
+    "sha256": "4ee127bb7a7e65108cd6e5e966af7f639d9a441c84b6dba2d8f9ec41fdc0bc35"
+  },
+  {
+    "path": "V.0.9.6/Luma/Resources/iOSAssets.xcassets/AppIcon.appiconset/Contents.json",
+    "size": 202,
+    "sha256": "9239900ca4c37dc860feb154216409f05d906e26f2d79550e1e8e8b8db6324c7"
+  },
+  {
+    "path": "V.0.9.6/Luma/Resources/WatchAssets.xcassets/AppIcon.appiconset/AppIcon.png",
+    "size": 57928,
+    "sha256": "4ee127bb7a7e65108cd6e5e966af7f639d9a441c84b6dba2d8f9ec41fdc0bc35"
+  },
+  {
+    "path": "V.0.9.6/Luma/Resources/WatchAssets.xcassets/AppIcon.appiconset/Contents.json",
+    "size": 206,
+    "sha256": "81a9a236c9662c9ff13ef208ce045a13f2b50a2f0917310289c0dc839184966b"
+  },
+  {
+    "path": "V.0.9.6/Luma/Sources/iPhone/AlarmEditor.swift",
+    "size": 4923,
+    "sha256": "84fd90cc52c2742b80c9288721f0928aa827a7d8470e95cae03faa9dd4a723b7"
+  },
+  {
+    "path": "V.0.9.6/Luma/Sources/iPhone/AlarmKitScheduler.swift",
+    "size": 7266,
+    "sha256": "1a66a4da3dc0444b179054248d06dde9700199ad8240f69671d6d572462d7386"
+  },
+  {
+    "path": "V.0.9.6/Luma/Sources/iPhone/AlarmKitSoundBuilder.swift",
+    "size": 8303,
+    "sha256": "9b81914e2c6cb2997268687e5eb4fce1a0a1f44bf0a39bb13f199907bbcba559"
+  },
+  {
+    "path": "V.0.9.6/Luma/Sources/iPhone/CueAudioImporter.swift",
+    "size": 5825,
+    "sha256": "e52c18e283386a600b406ab70cd2467968652f2f339d374f378ca443daa61577"
+  },
+  {
+    "path": "V.0.9.6/Luma/Sources/iPhone/DesignSystem.swift",
+    "size": 5585,
+    "sha256": "09d4a84debb3216cf16f02153cba4869bdae196ebd505926129d650619d6abda"
+  },
+  {
+    "path": "V.0.9.6/Luma/Sources/iPhone/IndirectMethodView.swift",
+    "size": 8019,
+    "sha256": "ed39479ef1787ca177e2f99fb97a8c9dff250ae9601a22ff3879cdc8c36cac6c"
+  },
+  {
+    "path": "V.0.9.6/Luma/Sources/iPhone/JournalView.swift",
+    "size": 14988,
+    "sha256": "5e56dbb3838c6bed77df9b6b9c23ff88994e445c21c16bb8f5977d6904634133"
+  },
+  {
+    "path": "V.0.9.6/Luma/Sources/iPhone/JournalVoiceComposer.swift",
+    "size": 4137,
+    "sha256": "0e725c45bb9263a62a5813414989b7090662017efd186a1ce3754266c449a862"
+  },
+  {
+    "path": "V.0.9.6/Luma/Sources/iPhone/LegacyAlarmCleanup.swift",
+    "size": 3579,
+    "sha256": "94c1ec8d554ae54d0ea39d263c5f1e96c9170e32750bb6a9650452502c5c5532"
+  },
+  {
+    "path": "V.0.9.6/Luma/Sources/iPhone/LumaApp.swift",
+    "size": 725,
+    "sha256": "4498678e24a6119855a9044008c3bac013f6be7d881503d05e0ece303560b537"
+  },
+  {
+    "path": "V.0.9.6/Luma/Sources/iPhone/NightAudio.swift",
+    "size": 8502,
+    "sha256": "cf906f69ee0a91c1b75f257b6d5e5e8ab8d4429414839d64d0ef745681b2bb13"
+  },
+  {
+    "path": "V.0.9.6/Luma/Sources/iPhone/PhoneRootView.swift",
+    "size": 9446,
+    "sha256": "c12ab81895e3094a2f74a96636bd1b58c5d6bf7f12e96fdc932e8956a096ca5b"
+  },
+  {
+    "path": "V.0.9.6/Luma/Sources/iPhone/SettingsView.swift",
+    "size": 10693,
+    "sha256": "43e4b8fa3a46f72dade8f6dae2e5593cba94ee5de11cf69d3b1099ca72fd134d"
+  },
+  {
+    "path": "V.0.9.6/Luma/Sources/iPhone/SignalReadinessView.swift",
+    "size": 5092,
+    "sha256": "8b9a9d658e557fd079928ae664540bfe926a96a41b54883255f9cf221783ed76"
+  },
+  {
+    "path": "V.0.9.6/Luma/Sources/iPhone/SoundLibraryView.swift",
+    "size": 2702,
+    "sha256": "d8a4e847764847891dcd3fa87402e3d5bb8c3b5546a4c2fde6522dd2e9cdcfeb"
+  },
+  {
+    "path": "V.0.9.6/Luma/Sources/iPhone/SystemAlarmService.swift",
+    "size": 24325,
+    "sha256": "e950f94c1a8487db68bc036da80a4703c5c641128afcdaceea4c5719ccb5ef73"
+  },
+  {
+    "path": "V.0.9.6/Luma/Sources/iPhone/WatchCueLink.swift",
+    "size": 4519,
+    "sha256": "48de62379dd0572763538592524673aedd0144f5511e9c9af832233a509b2e94"
+  },
+  {
+    "path": "V.0.9.6/Luma/Sources/LumaCore/AcousticFeatures.swift",
+    "size": 1321,
+    "sha256": "56dc961def8e779f756abdd8e2bf96beecb0ae3d4954918142de41f602f6efdd"
+  },
+  {
+    "path": "V.0.9.6/Luma/Sources/LumaCore/AlarmStopWindow.swift",
+    "size": 1902,
+    "sha256": "be2e29fb7224b69e627fd3538cd9e82c99ab3651fb97a3f782fdb3229193f8e7"
+  },
+  {
+    "path": "V.0.9.6/Luma/Sources/LumaCore/CueEngine.swift",
+    "size": 4267,
+    "sha256": "b0a2ad7cbc65cc30066a4f928b8c9f244db935787734b6976eb7a28e5603c3e5"
+  },
+  {
+    "path": "V.0.9.6/Luma/Sources/LumaCore/CuePlaybackStopper.swift",
+    "size": 1695,
+    "sha256": "756d99516095ab5c45820b13687fb0b3241d57622db661da09d173effd02e239"
+  },
+  {
+    "path": "V.0.9.6/Luma/Sources/LumaCore/FiniteCuePolicy.swift",
+    "size": 2193,
+    "sha256": "adc8a6135d3b0495cde9d0a59a0bf07daeb83b1e0652c7dbc660678b1ac58ab9"
+  },
+  {
+    "path": "V.0.9.6/Luma/Sources/LumaCore/IndirectMethod.swift",
+    "size": 1517,
+    "sha256": "bb2164e5d71ef3277a4696c04f06728945fca734595d4c65d2398b3225ba6516"
+  },
+  {
+    "path": "V.0.9.6/Luma/Sources/LumaCore/iPhoneOnlyMigration.swift",
+    "size": 1481,
+    "sha256": "b1cf2d8f782f6fcf75a1054fe1fd209c7b1c2224cbd331fedd1afcabe3b70be1"
+  },
+  {
+    "path": "V.0.9.6/Luma/Sources/LumaCore/LumaV2.swift",
+    "size": 12536,
+    "sha256": "c4e58a2545de088b25802d13f6dd583fbe7f3bc65f273407dc3923f0fbaaa785"
+  },
+  {
+    "path": "V.0.9.6/Luma/Sources/LumaCore/Models.swift",
+    "size": 7608,
+    "sha256": "eb7e625ef32b7931bada0b61257a7bc1ab79adc8bdf33b2805fc01e2ae0485d8"
+  },
+  {
+    "path": "V.0.9.6/Luma/Sources/LumaCore/MultimodalEstimator.swift",
+    "size": 7736,
+    "sha256": "7340f93c968fcd1b8e6538dc958a11ad33b1a352aeaea0aa067d3eed77ea6a52"
+  },
+  {
+    "path": "V.0.9.6/Luma/Sources/LumaCore/PairedCuePolicy.swift",
+    "size": 2130,
+    "sha256": "6e914d0130feb5cda406af6cd4a7ca657b08ac598885f3c39bfe3f28309e8d40"
+  },
+  {
+    "path": "V.0.9.6/Luma/Sources/LumaCore/RealtimeREMEngine.swift",
+    "size": 7092,
+    "sha256": "ff3d05a9bc7adfb8eb2f775e05f695feadfa7ef56a336f46b72320fc0aa639b6"
+  },
+  {
+    "path": "V.0.9.6/Luma/Sources/LumaCore/REMEstimator.swift",
+    "size": 4417,
+    "sha256": "4f00c0fa6bcf223e9486c299ca3d3d8e211f2ec99ef029960a252cef0a6e3da8"
+  },
+  {
+    "path": "V.0.9.6/Luma/Sources/LumaCore/SystemAlarmPlan.swift",
+    "size": 6199,
+    "sha256": "24242058004063f52efa76ab1083eec98dc3ee678ce1392906ce321f2b8b1ec8"
+  },
+  {
+    "path": "V.0.9.6/Luma/Sources/LumaCore/WatchCuePlan.swift",
+    "size": 1406,
+    "sha256": "b6395148f653d3d3e34f1bb0ebbf9e46b47ea10811742d7c92d01e80a73ff059"
+  },
+  {
+    "path": "V.0.9.6/Luma/Sources/LumaCore/WaveCueInspector.swift",
+    "size": 2666,
+    "sha256": "013c31b9431bfefb2bf47972c1591e70c180442ade91080785a200d60fbd87d2"
+  },
+  {
+    "path": "V.0.9.6/Luma/Sources/Platform/AlarmScheduling.swift",
+    "size": 929,
+    "sha256": "aaaa2401e1361a7b8e0e7917f49be0445c34710d05a7a0a9d54a47c781338f87"
+  },
+  {
+    "path": "V.0.9.6/Luma/Sources/Platform/AppError.swift",
+    "size": 183,
+    "sha256": "cba4f687407841f56b963d3e66f0487d06b2428db5e349d74084f163251e6d63"
+  },
+  {
+    "path": "V.0.9.6/Luma/Sources/Platform/AppModel.swift",
+    "size": 20988,
+    "sha256": "0232285a5a0dd99804e0a70346313ea260f0eb7523d4a38fe83917307987099f"
+  },
+  {
+    "path": "V.0.9.6/Luma/Sources/Platform/CueDiagnostics.swift",
+    "size": 2812,
+    "sha256": "cafb87d82b69f2a60a775399cd52414e0e2d9d63844d6208ea4799a93e9ee5ad"
+  },
+  {
+    "path": "V.0.9.6/Luma/Sources/Platform/HealthService.swift",
+    "size": 2566,
+    "sha256": "2ef20bee400debb95a0435d6b71f387903c46040fb034ded48bf5f9bea956285"
+  },
+  {
+    "path": "V.0.9.6/Luma/Sources/Platform/LocalStore.swift",
+    "size": 1185,
+    "sha256": "be5aaeff856b5ff77f9bb0cf08bacb47b364b3c2a0eb3f8ed11bef241be85e8f"
+  },
+  {
+    "path": "V.0.9.6/Luma/Sources/Platform/NotificationService.swift",
+    "size": 1230,
+    "sha256": "8036a2e74c5b0d38d8723a408eb30122fa8bcd9d45ffd5f2757d88abd65c473e"
+  },
+  {
+    "path": "V.0.9.6/Luma/Sources/Platform/PhoneAudio.swift",
+    "size": 23736,
+    "sha256": "6592c35c5d3e5d07bc1ffe702f77ef6a853bc135e11a1d17c95dd707c4dc5e82"
+  },
+  {
+    "path": "V.0.9.6/Luma/Sources/Watch/LumaWatchApp.swift",
+    "size": 1899,
+    "sha256": "666ddde2a8b8aca975629b261ad55be8e965e78620f20e9e38db8ead767c1b2e"
+  },
+  {
+    "path": "V.0.9.6/Luma/Sources/Watch/WatchCueStore.swift",
+    "size": 8977,
+    "sha256": "5e5cbddfe1893b58d355b35bf6170d941a4524ae1e77cc154835e5f01381cb89"
+  },
+  {
+    "path": "V.0.9.6/Luma/Tests/LumaCoreTests/AlarmKitWaveMigrationTests.swift",
+    "size": 3148,
+    "sha256": "4e7b80b96a80382f124e7f4399900d35907bf6393f09bf7bf2bfa72dd5cf654b"
+  },
+  {
+    "path": "V.0.9.6/Luma/Tests/LumaCoreTests/AlarmStopWindowTests.swift",
+    "size": 2683,
+    "sha256": "241480eca1c356da1fe0a7c7112e84e49e79bc6e393f0664d93dcc08e92a1946"
+  },
+  {
+    "path": "V.0.9.6/Luma/Tests/LumaCoreTests/AudioAndAlarmTests.swift",
+    "size": 5332,
+    "sha256": "4b7ec5255c3b06d951c3556aa2aefdd29280228ba0e5004d368d10b2802331b7"
+  },
+  {
+    "path": "V.0.9.6/Luma/Tests/LumaCoreTests/CoreSafetyTests.swift",
+    "size": 6898,
+    "sha256": "b129ec5a60ff1dff795f28b9aec5ce20a43b30a99eeae7da5ff24c266e8660ca"
+  },
+  {
+    "path": "V.0.9.6/Luma/Tests/LumaCoreTests/CuePlaybackStopperTests.swift",
+    "size": 4398,
+    "sha256": "5405952b34ea06435742f7537b575f517ba0cdc2edc500d4fb47f59509c30db3"
+  },
+  {
+    "path": "V.0.9.6/Luma/Tests/LumaCoreTests/FiniteCuePolicyTests.swift",
+    "size": 4934,
+    "sha256": "d3615b42ae29e0586d5d61f3e5a059292acb856538e1d71aaf7266efe3eca889"
+  },
+  {
+    "path": "V.0.9.6/Luma/Tests/LumaCoreTests/IndirectMethodTests.swift",
+    "size": 2420,
+    "sha256": "8c7934ff47c979d22bd9f5f57ba653eec26ad076a9a28334937f20d9ac9869ff"
+  },
+  {
+    "path": "V.0.9.6/Luma/Tests/LumaCoreTests/iPhoneOnlyMigrationTests.swift",
+    "size": 5994,
+    "sha256": "eda3d4c4fa1a2c1d7091188466f91d0da5ae965ac0552e12d389fe0ae4214b6f"
+  },
+  {
+    "path": "V.0.9.6/Luma/Tests/LumaCoreTests/NotificationMigrationTests.swift",
+    "size": 2979,
+    "sha256": "217352f731f29ec135f8592c9fd1a3982a7d513fa7758730760f0dfa8bea3555"
+  },
+  {
+    "path": "V.0.9.6/Luma/Tests/LumaCoreTests/PairedCueTests.swift",
+    "size": 4220,
+    "sha256": "ebeb0724675839be9835e2816b3f465ed979416f1df3b9f19ab164558e526caa"
+  },
+  {
+    "path": "V.0.9.6/Luma/Tests/LumaCoreTests/RealtimeREMTests.swift",
+    "size": 6105,
+    "sha256": "77797503906418695a9cf3e6b18e962f8354b1999cfc41f9a5af53c68a20f40b"
+  },
+  {
+    "path": "V.0.9.6/Luma/Tests/LumaCoreTests/SystemAlarmPlanTests.swift",
+    "size": 4713,
+    "sha256": "bd4fc88edf10df2eb0de12b858ae6bff78de0cf25d186075d077e2447117c6a5"
+  },
+  {
+    "path": "V.0.9.6/Luma/Tests/LumaCoreTests/V2Tests.swift",
+    "size": 11548,
+    "sha256": "b9b4b8b4597eaa42cbaf5f191dbdf02cb951364bc3d4f41ce0fa210f94f8f1db"
+  },
+  {
+    "path": "V.0.9.6/Luma/Tests/LumaCoreTests/WatchCuePlanTests.swift",
+    "size": 1761,
+    "sha256": "6ebbf757c61d113245d03cb4e69ed58a506e80c553ac48df65adaff1d27402d2"
+  },
+  {
+    "path": "V.0.9.6/Luma/Tests/LumaCoreTests/WaveCueInspectorTests.swift",
+    "size": 2787,
+    "sha256": "fa111410c8724bf7b27253ccc81e14ff43949f14917f319e7e74365b36321b74"
+  },
+  {
+    "path": "Baselines/V.0.9.6/Luma-0.9.6-build22-etalon.zip",
+    "size": 11154865,
+    "sha256": "604ec73f0e4ce0701403acdb06d40ade18b6c7233d597fe13f841240789c643b"
+  },
+  {
+    "path": "Baselines/V.0.9.6/Luma-0.9.6-build22-unsigned.ipa",
+    "size": 4921821,
+    "sha256": "5ccedce82390bd78911eec9f6372673181187299692853e53905e3e2baab244a"
+  },
+  {
+    "path": "Baselines/V.0.9.6/manifest.json",
+    "size": 90429,
+    "sha256": "28b63b34705eec32dee62646b1fa2a58317acf5cba3eee423c86ba4881ca92eb"
+  },
+  {
+    "path": "Baselines/V.0.9.6/README.md",
+    "size": 4187,
+    "sha256": "66c384d8d7a241247060b91b4f1da20a7afb831d6ef30d9a1927c34d231b393d"
+  },
+  {
+    "path": "Baselines/V.0.9.6/SHA256SUMS.txt",
+    "size": 435,
+    "sha256": "fca9d870dfb15c2a4e60295ca0adcd378af861ffb1f0b7058772c964b5d41e04"
+  },
+  {
+    "path": "Baselines/V.0.9.6/verify-baseline.py",
+    "size": 3682,
+    "sha256": "96d9597edcc607127bda3a8478a6c96693256131f6e2432a930003268e42e3dc"
+  },
+  {
+    "path": "AGENTS.md",
+    "size": 4917,
+    "sha256": "92d70ffa73630db39a0a46ade110a6170a13666fc06c095c307a41b6c5a0e2fd"
+  },
+  {
+    "path": "IPA files/v 0.9.5 AlarmKit.ipa",
+    "size": 2921669,
+    "sha256": "ddc3696057d83db6ffa2afbacbe18450240b18b0d6afb3cf74a82bafd1f887b7"
+  },
+  {
+    "path": "IPA files/v 0.9.6.ipa",
+    "size": 4921821,
+    "sha256": "5ccedce82390bd78911eec9f6372673181187299692853e53905e3e2baab244a"
   }
 ]

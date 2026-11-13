@@ -6,6 +6,12 @@
       "path": "AcousticFeatures.swift",
       "sourceTree": "<group>"
     },
+    "401C71BDE171234F61712832": {
+      "isa": "PBXFileReference",
+      "lastKnownFileType": "sourcecode.swift",
+      "path": "AlarmSignalDuration.swift",
+      "sourceTree": "<group>"
+    },
     "4670571C5E80FD03FFEB0958": {
       "isa": "PBXFileReference",
       "lastKnownFileType": "sourcecode.swift",
@@ -100,6 +106,7 @@
       "isa": "PBXGroup",
       "children": [
         "682DE1125CDA0A2F77E98CD8",
+        "401C71BDE171234F61712832",
         "4670571C5E80FD03FFEB0958",
         "11243E79560A1B4C66C6423B",
         "8C4AD6B797268FBD924DEA60",
@@ -644,6 +651,10 @@
       "isa": "PBXBuildFile",
       "fileRef": "682DE1125CDA0A2F77E98CD8"
     },
+    "4699382D3403318FEE6BCBB5": {
+      "isa": "PBXBuildFile",
+      "fileRef": "401C71BDE171234F61712832"
+    },
     "07A604C338A35D51D0028240": {
       "isa": "PBXBuildFile",
       "fileRef": "4670571C5E80FD03FFEB0958"
@@ -809,6 +820,7 @@
       "buildActionMask": 2147483647,
       "files": [
         "B4216FCCFC74B86FE9291531",
+        "4699382D3403318FEE6BCBB5",
         "07A604C338A35D51D0028240",
         "057A1FA6B42B3D7B4B3AC06A",
         "448A71044ED81F7C234C3E1B",
@@ -855,6 +867,10 @@
     "7E2F1B80873CEE91F74D512C": {
       "isa": "PBXBuildFile",
       "fileRef": "682DE1125CDA0A2F77E98CD8"
+    },
+    "E7467902F14C775549A06B62": {
+      "isa": "PBXBuildFile",
+      "fileRef": "401C71BDE171234F61712832"
     },
     "0976C025407BA96B6D504A5F": {
       "isa": "PBXBuildFile",
@@ -929,6 +945,7 @@
       "buildActionMask": 2147483647,
       "files": [
         "7E2F1B80873CEE91F74D512C",
+        "E7467902F14C775549A06B62",
         "0976C025407BA96B6D504A5F",
         "60AA3112C01E96416A7EECC2",
         "5399402597BD67D067E413E6",

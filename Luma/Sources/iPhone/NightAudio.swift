@@ -21,6 +21,7 @@ import MediaPlayer
   private var recovery: Task<Void, Never>?
   private var lease: UIBackgroundTaskIdentifier = .invalid
   private var leaseEnd: Task<Void, Never>?
+  private var protectedStopDeadline: Date?
   private var stopping = false
   var ready: Bool {
     enabled && !stopping && !interrupted && player?.isPlaying == true
@@ -63,6 +64,7 @@ import MediaPlayer
       next.delegate = self; next.numberOfLoops = -1; next.volume = min(0.6, max(0.08, volume))
       guard next.prepareToPlay(), next.play() else { throw AppError.message("Ночной фон не начал воспроизведение.") }
       player = next; enabled = true; interrupted = false
+      protectedStopDeadline = nil
       until = Date().addingTimeInterval(12 * 3600)
       status = "Тихий дождь включён · до \(until!.formatted(date: .omitted, time: .shortened))"
       MPNowPlayingInfoCenter.default().nowPlayingInfo = [
@@ -83,8 +85,14 @@ import MediaPlayer
   }
   /// Finish a short Stop operation if AlarmKit interrupts the playing audio.
   /// This bounded assertion does not schedule future background launches.
-  func protectStopWindow() {
+  func protectStopWindow(until deadline: Date? = nil) {
     guard enabled else { return }
+    var extended = false
+    if let deadline, deadline.timeIntervalSince1970.isFinite,
+      deadline > (protectedStopDeadline ?? .distantPast) {
+      protectedStopDeadline = deadline; extended = true
+    }
+    let window = AlarmInterruptionWindow(now: Date(), stopAt: protectedStopDeadline)
     if lease == .invalid {
       lease = UIApplication.shared.beginBackgroundTask(withName: "Luma finish alarm Stop") { [weak self] in
         Task { @MainActor in await self?.stopSafely("Время фоновой остановки истекло") }
@@ -96,8 +104,17 @@ import MediaPlayer
     }
     leaseEnd?.cancel()
     leaseEnd = Task { @MainActor [weak self] in
-      do { try await Task.sleep(nanoseconds: 10_000_000_000) } catch { return }
+      do { try await Task.sleep(nanoseconds: UInt64(window.leaseDelay * 1_000_000_000)) } catch { return }
       self?.endLease()
+    }
+    if interrupted && (extended || recovery == nil) { armRecovery(after: window.recoveryDelay) }
+  }
+  private func armRecovery(after delay: TimeInterval) {
+    recovery?.cancel()
+    recovery = Task { @MainActor [weak self] in
+      do { try await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000)) } catch { return }
+      guard let self, self.interrupted else { return }
+      await self.stopSafely("Аудиофон не возобновился; будущие сигналы сняты")
     }
   }
   private func interruption(_ raw: UInt?, suspended: Bool, options: UInt) async {
@@ -106,12 +123,6 @@ import MediaPlayer
       interrupted = true; status = "Фон прерван · проверяем остановку будильника"
       protectStopWindow()
       await onCheckAlarms?()
-      recovery?.cancel()
-      recovery = Task { @MainActor [weak self] in
-        do { try await Task.sleep(nanoseconds: 8_000_000_000) } catch { return }
-        guard let self, self.interrupted else { return }
-        await self.stopSafely("Аудиофон не возобновился; будущие сигналы сняты")
-      }
       CueDiagnostics.event("night_audio_interrupted", detail: "suspended=\(suspended); no wake guarantee")
     } else if raw == AVAudioSession.InterruptionType.ended.rawValue {
       guard AVAudioSession.InterruptionOptions(rawValue: options).contains(.shouldResume) else {
@@ -121,6 +132,7 @@ import MediaPlayer
         try AVAudioSession.sharedInstance().setActive(true)
         guard player?.play() == true else { throw AppError.message("Фон не возобновился") }
         interrupted = false; recovery?.cancel(); recovery = nil
+        protectedStopDeadline = nil
         status = "Тихий дождь включён"
         CueDiagnostics.event("night_audio_resumed")
       } catch { await stopSafely("Не удалось возобновить ночной фон") }
@@ -134,6 +146,7 @@ import MediaPlayer
     do { try await onStopRequested?() } catch { cancellationError = error.localizedDescription }
     recovery?.cancel(); recovery = nil; monitor?.invalidate(); monitor = nil
     player?.stop(); player = nil; enabled = false; interrupted = false; until = nil
+    protectedStopDeadline = nil
     MPNowPlayingInfoCenter.default().nowPlayingInfo = nil
     try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
     endLease(); status = cancellationError.map { "Отмена очереди не подтверждена: " + $0 } ?? reason; stopping = false

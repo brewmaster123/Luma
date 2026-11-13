@@ -1,5 +1,6 @@
 {
-  "version": "0.9.6 (22)",
-  "scenarios_present": 25,
-  "executed_here": false
+  "version": "0.9.7 (23)",
+  "status": "pending",
+  "executed": false,
+  "note": "Inherited 0.9.6 results are not evidence for this new version."
 }

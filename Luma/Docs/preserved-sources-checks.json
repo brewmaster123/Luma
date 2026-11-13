@@ -1,131 +1,11 @@
 {
-  "baseline": "0.9.5 (21)",
+  "baseline": "0.9.6 (22), reference No. 1",
   "kind": "sha256-with-explicit-text-normalization",
   "manifest_schema": 2,
   "passed": true,
   "files": [
     {
-      "path": "Config/iOS-Info.plist",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
-      "path": "Config/iOS.entitlements",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
-      "path": "Luma.xcodeproj/xcshareddata/xcschemes/Luma.xcscheme",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
-      "path": "Package.swift",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
-      "path": "Resources/iOSAssets.xcassets/AppIcon.appiconset/AppIcon.png",
-      "hash_mode": "raw",
-      "unchanged": true
-    },
-    {
-      "path": "Resources/iOSAssets.xcassets/AppIcon.appiconset/Contents.json",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
-      "path": "Resources/iOSAssets.xcassets/Contents.json",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
-      "path": "Resources/luma-alarm-4.wav",
-      "hash_mode": "raw",
-      "unchanged": true
-    },
-    {
-      "path": "Resources/luma-tone-15.wav",
-      "hash_mode": "raw",
-      "unchanged": true
-    },
-    {
-      "path": "Resources/luma-tone-4.wav",
-      "hash_mode": "raw",
-      "unchanged": true
-    },
-    {
-      "path": "Resources/luma-tone-8.wav",
-      "hash_mode": "raw",
-      "unchanged": true
-    },
-    {
-      "path": "Resources/Manrope-LICENSE.txt",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
-      "path": "Resources/Manrope-Medium.ttf",
-      "hash_mode": "raw",
-      "unchanged": true
-    },
-    {
-      "path": "Resources/Manrope-Regular.ttf",
-      "hash_mode": "raw",
-      "unchanged": true
-    },
-    {
-      "path": "Resources/Manrope-SemiBold.ttf",
-      "hash_mode": "raw",
-      "unchanged": true
-    },
-    {
-      "path": "Resources/Manrope-Variable.ttf",
-      "hash_mode": "raw",
-      "unchanged": true
-    },
-    {
-      "path": "Resources/PrivacyInfo.xcprivacy",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
-      "path": "scripts/check-audio-on-mac.sh",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
-      "path": "scripts/check-audio-on-mac.swift",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
-      "path": "scripts/check-finite-queue-on-mac.sh",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
-      "path": "scripts/check-preserved-sources.py",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
-      "path": "scripts/check-source-grammar.py",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
-      "path": "scripts/requirements-validation.txt",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
-      "path": "scripts/test-source-integrity.py",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
-      "path": "Sources/iPhone/AlarmEditor.swift",
+      "path": "Sources/iPhone/AlarmKitScheduler.swift",
       "hash_mode": "lf-text",
       "unchanged": true
     },
@@ -175,6 +55,11 @@
       "unchanged": true
     },
     {
+      "path": "Sources/iPhone/WatchCueLink.swift",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
       "path": "Sources/LumaCore/AcousticFeatures.swift",
       "hash_mode": "lf-text",
       "unchanged": true
@@ -191,6 +76,16 @@
     },
     {
       "path": "Sources/LumaCore/CuePlaybackStopper.swift",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/LumaCore/FiniteCuePolicy.swift",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/LumaCore/IndirectMethod.swift",
       "hash_mode": "lf-text",
       "unchanged": true
     },
@@ -230,7 +125,7 @@
       "unchanged": true
     },
     {
-      "path": "Sources/LumaCore/SystemAlarmPlan.swift",
+      "path": "Sources/LumaCore/WatchCuePlan.swift",
       "hash_mode": "lf-text",
       "unchanged": true
     },
@@ -250,11 +145,6 @@
       "unchanged": true
     },
     {
-      "path": "Sources/Platform/CueDiagnostics.swift",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
       "path": "Sources/Platform/HealthService.swift",
       "hash_mode": "lf-text",
       "unchanged": true
@@ -266,6 +156,21 @@
     },
     {
       "path": "Sources/Platform/NotificationService.swift",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/Platform/PhoneAudio.swift",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/Watch/LumaWatchApp.swift",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/Watch/WatchCueStore.swift",
       "hash_mode": "lf-text",
       "unchanged": true
     },
@@ -335,7 +240,177 @@
       "unchanged": true
     },
     {
+      "path": "Tests/LumaCoreTests/WatchCuePlanTests.swift",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
       "path": "Tests/LumaCoreTests/WaveCueInspectorTests.swift",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Resources/iOSAssets.xcassets/AppIcon.appiconset/AppIcon.png",
+      "hash_mode": "raw",
+      "unchanged": true
+    },
+    {
+      "path": "Resources/iOSAssets.xcassets/AppIcon.appiconset/Contents.json",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Resources/iOSAssets.xcassets/Contents.json",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Resources/luma-alarm-4.wav",
+      "hash_mode": "raw",
+      "unchanged": true
+    },
+    {
+      "path": "Resources/luma-night-rain.wav",
+      "hash_mode": "raw",
+      "unchanged": true
+    },
+    {
+      "path": "Resources/luma-tone-15.wav",
+      "hash_mode": "raw",
+      "unchanged": true
+    },
+    {
+      "path": "Resources/luma-tone-4.wav",
+      "hash_mode": "raw",
+      "unchanged": true
+    },
+    {
+      "path": "Resources/luma-tone-8.wav",
+      "hash_mode": "raw",
+      "unchanged": true
+    },
+    {
+      "path": "Resources/Manrope-LICENSE.txt",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Resources/Manrope-Medium.ttf",
+      "hash_mode": "raw",
+      "unchanged": true
+    },
+    {
+      "path": "Resources/Manrope-Regular.ttf",
+      "hash_mode": "raw",
+      "unchanged": true
+    },
+    {
+      "path": "Resources/Manrope-SemiBold.ttf",
+      "hash_mode": "raw",
+      "unchanged": true
+    },
+    {
+      "path": "Resources/Manrope-Variable.ttf",
+      "hash_mode": "raw",
+      "unchanged": true
+    },
+    {
+      "path": "Resources/PrivacyInfo.xcprivacy",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Resources/WatchAssets.xcassets/AppIcon.appiconset/AppIcon.png",
+      "hash_mode": "raw",
+      "unchanged": true
+    },
+    {
+      "path": "Resources/WatchAssets.xcassets/AppIcon.appiconset/Contents.json",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Resources/WatchAssets.xcassets/Contents.json",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Config/iOS-Info.plist",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Config/iOS.entitlements",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Config/Watch-Info.plist",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Config/Watch.entitlements",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "scripts/check-audio-on-mac.sh",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "scripts/check-audio-on-mac.swift",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "scripts/check-finite-queue-on-mac.sh",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "scripts/check-on-mac.sh",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "scripts/check-preserved-sources.py",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "scripts/check-previous-versions.py",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "scripts/check-source-grammar.py",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "scripts/generate_project.py",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "scripts/requirements-validation.txt",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "scripts/test-source-integrity.py",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Luma.xcodeproj/xcshareddata/xcschemes/Luma Watch.xcscheme",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Luma.xcodeproj/xcshareddata/xcschemes/Luma.xcscheme",
       "hash_mode": "lf-text",
       "unchanged": true
     }

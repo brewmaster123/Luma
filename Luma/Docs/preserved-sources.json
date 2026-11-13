@@ -1,429 +1,438 @@
 {
   "schema": 2,
-  "baseline": "0.9.5 (21)",
+  "baseline": "0.9.6 (22), reference No. 1",
   "text_normalization": "CRLF to LF only",
   "binary_normalization": "none",
   "intentional_changes": {
-    "Config/Base.xcconfig": "0.9.6 (22)",
-    "Luma.xcodeproj/project.pbxproj": "iPhone and Watch companion source/resource membership",
-    "scripts/check-finite-queue-on-mac.swift": "Runtime-loss and prearmed-deadline regressions",
-    "scripts/check-on-mac.sh": "Mandatory companion simulator build",
-    "scripts/check-static.py": "Two-target project, genuine sleep audio and independent Watch invariants",
-    "scripts/generate_project.py": "Generate companion target/embed/scheme and sleep audio resources",
-    "scripts/project-graph.json": "Actual regenerated native object graph",
-    "Sources/iPhone/AlarmKitScheduler.swift": "Stop current ID and tolerate concurrent system dismissal",
-    "Sources/iPhone/IndirectMethodView.swift": "Disclose real night audio, per-occurrence Stop and Watch plan",
-    "Sources/iPhone/SettingsView.swift": "Night audio controls, independent Watch acknowledgement",
-    "Sources/iPhone/SignalReadinessView.swift": "Explicit night-audio runtime requirement and Watch setup",
-    "Sources/iPhone/SystemAlarmService.swift": "Prearmed deadlines, runtime gate and durable runtime-loss disarm",
-    "Sources/LumaCore/FiniteCuePolicy.swift": "New night-audio version of signal consent",
-    "Sources/LumaCore/IndirectMethod.swift": "Unverified new runtime and Watch device flags",
-    "Sources/Platform/AppModel.swift": "Integrate night audio, real runtime checks and full Watch plans",
-    "Sources/Platform/PhoneAudio.swift": "Share audio-session ownership and block conflicting recording",
-    "scripts/check-previous-versions.py": "Track new user-added IPA separately, while verifying every original historical hash unchanged"
+    "Config/Base.xcconfig": "Version 0.9.7 (23)",
+    "Luma.xcodeproj/project.pbxproj": "New core duration source membership",
+    "scripts/project-graph.json": "Regenerated native graph for new core source",
+    "scripts/check-static.py": "Duration preference, snapshots, backup and interruption invariants",
+    "scripts/check-finite-queue-on-mac.swift": "Duration, relaunch, rollback and deadline integration regressions",
+    "Sources/LumaCore/SystemAlarmPlan.swift": "Backward-compatible per-occurrence Stop duration snapshot",
+    "Sources/Platform/AppModel.swift": "Persist and apply global preference to all three request kinds",
+    "Sources/Platform/CueDiagnostics.swift": "Separate PCM asset length and actual Stop deadline",
+    "Sources/iPhone/AlarmEditor.swift": "Describe configurable duration",
+    "Sources/iPhone/IndirectMethodView.swift": "Describe configurable duration",
+    "Sources/iPhone/SignalReadinessView.swift": "Describe configurable duration",
+    "Sources/iPhone/SettingsView.swift": "3-10 second Stepper and selected-duration descriptions",
+    "Sources/iPhone/NightAudio.swift": "Bounded interruption budget covering ten-second cues",
+    "Sources/iPhone/SystemAlarmService.swift": "Transactional future deadline updates, active-cue preservation and ledger backup"
   },
+  "new_files": [
+    "Sources/LumaCore/AlarmSignalDuration.swift",
+    "Tests/LumaCoreTests/AlarmSignalDurationTests.swift"
+  ],
   "files": [
     {
-      "path": "Config/iOS-Info.plist",
+      "path": "Sources/iPhone/AlarmKitScheduler.swift",
       "hash_mode": "lf-text",
-      "sha256": "fed7e0be89f0b85c0f5d0d77996be0df0fc4b70697dbb4d0dec7b46c87ee2557",
-      "baseline_raw_sha256": "fed7e0be89f0b85c0f5d0d77996be0df0fc4b70697dbb4d0dec7b46c87ee2557"
-    },
-    {
-      "path": "Config/iOS.entitlements",
-      "hash_mode": "lf-text",
-      "sha256": "e82a7f6e130b0fe65a40214c15b4116c5245125329c63954d9ccdd9cc80f039e",
-      "baseline_raw_sha256": "e82a7f6e130b0fe65a40214c15b4116c5245125329c63954d9ccdd9cc80f039e"
-    },
-    {
-      "path": "Luma.xcodeproj/xcshareddata/xcschemes/Luma.xcscheme",
-      "hash_mode": "lf-text",
-      "sha256": "9d50e3111cc2b17e62e43632802457fc24409bed1f4045908163d94756e0fdba",
-      "baseline_raw_sha256": "9d50e3111cc2b17e62e43632802457fc24409bed1f4045908163d94756e0fdba"
-    },
-    {
-      "path": "Package.swift",
-      "hash_mode": "lf-text",
-      "sha256": "07af656d4ddcca3320980342fe6c865a19662be5dc600c1e56c6947aa033f933",
-      "baseline_raw_sha256": "07af656d4ddcca3320980342fe6c865a19662be5dc600c1e56c6947aa033f933"
-    },
-    {
-      "path": "Resources/iOSAssets.xcassets/AppIcon.appiconset/AppIcon.png",
-      "hash_mode": "raw",
-      "sha256": "4ee127bb7a7e65108cd6e5e966af7f639d9a441c84b6dba2d8f9ec41fdc0bc35",
-      "baseline_raw_sha256": "4ee127bb7a7e65108cd6e5e966af7f639d9a441c84b6dba2d8f9ec41fdc0bc35"
-    },
-    {
-      "path": "Resources/iOSAssets.xcassets/AppIcon.appiconset/Contents.json",
-      "hash_mode": "lf-text",
-      "sha256": "9239900ca4c37dc860feb154216409f05d906e26f2d79550e1e8e8b8db6324c7",
-      "baseline_raw_sha256": "9239900ca4c37dc860feb154216409f05d906e26f2d79550e1e8e8b8db6324c7"
-    },
-    {
-      "path": "Resources/iOSAssets.xcassets/Contents.json",
-      "hash_mode": "lf-text",
-      "sha256": "a3393322cd7b4c1e0aa93bebe09abaa91ad891290d1225b0b5d10b5c6f216025",
-      "baseline_raw_sha256": "a3393322cd7b4c1e0aa93bebe09abaa91ad891290d1225b0b5d10b5c6f216025"
-    },
-    {
-      "path": "Resources/luma-alarm-4.wav",
-      "hash_mode": "raw",
-      "sha256": "9c2784e108846aede7bf3a607e9db2babef5deadc717fa43c8952832df9d70c9",
-      "baseline_raw_sha256": "9c2784e108846aede7bf3a607e9db2babef5deadc717fa43c8952832df9d70c9"
-    },
-    {
-      "path": "Resources/luma-tone-15.wav",
-      "hash_mode": "raw",
-      "sha256": "beaed8a9c5145968990b619fa8dcd48e6530c6f6ea961c4d4ac3a4f40a157387",
-      "baseline_raw_sha256": "beaed8a9c5145968990b619fa8dcd48e6530c6f6ea961c4d4ac3a4f40a157387"
-    },
-    {
-      "path": "Resources/luma-tone-4.wav",
-      "hash_mode": "raw",
-      "sha256": "9c2784e108846aede7bf3a607e9db2babef5deadc717fa43c8952832df9d70c9",
-      "baseline_raw_sha256": "9c2784e108846aede7bf3a607e9db2babef5deadc717fa43c8952832df9d70c9"
-    },
-    {
-      "path": "Resources/luma-tone-8.wav",
-      "hash_mode": "raw",
-      "sha256": "37d5345466972ded506efae43555eaf71e22e015b5a37ac93aa0fb99c9299826",
-      "baseline_raw_sha256": "37d5345466972ded506efae43555eaf71e22e015b5a37ac93aa0fb99c9299826"
-    },
-    {
-      "path": "Resources/Manrope-LICENSE.txt",
-      "hash_mode": "lf-text",
-      "sha256": "e01b637272e0cbdfb240184dd98ea5cc671556d9894dae2668d92ab2c906787c",
-      "baseline_raw_sha256": "e01b637272e0cbdfb240184dd98ea5cc671556d9894dae2668d92ab2c906787c"
-    },
-    {
-      "path": "Resources/Manrope-Medium.ttf",
-      "hash_mode": "raw",
-      "sha256": "6a21acf060627cedf46704e8484aeffc8ba94140b46cd553fa19338d301e439d",
-      "baseline_raw_sha256": "6a21acf060627cedf46704e8484aeffc8ba94140b46cd553fa19338d301e439d"
-    },
-    {
-      "path": "Resources/Manrope-Regular.ttf",
-      "hash_mode": "raw",
-      "sha256": "8e6739a692e9b94f2e160f84029d741ee92f5a2dc8081e257bb8bba5f8680ae6",
-      "baseline_raw_sha256": "8e6739a692e9b94f2e160f84029d741ee92f5a2dc8081e257bb8bba5f8680ae6"
-    },
-    {
-      "path": "Resources/Manrope-SemiBold.ttf",
-      "hash_mode": "raw",
-      "sha256": "b250ce5a3a6e5e99a79d25cbd7ffe32fae0dff6047cfaa8c27e2205234a39991",
-      "baseline_raw_sha256": "b250ce5a3a6e5e99a79d25cbd7ffe32fae0dff6047cfaa8c27e2205234a39991"
-    },
-    {
-      "path": "Resources/Manrope-Variable.ttf",
-      "hash_mode": "raw",
-      "sha256": "d0639be45d0af36e798172419d7bd173c4bd4f29e2b76cbb69db1d11bf8b0a40",
-      "baseline_raw_sha256": "d0639be45d0af36e798172419d7bd173c4bd4f29e2b76cbb69db1d11bf8b0a40"
-    },
-    {
-      "path": "Resources/PrivacyInfo.xcprivacy",
-      "hash_mode": "lf-text",
-      "sha256": "a331d51864743ebe4e00dd22360b4a538b6b3ac26a6b3eb54094e60a36959a12",
-      "baseline_raw_sha256": "a331d51864743ebe4e00dd22360b4a538b6b3ac26a6b3eb54094e60a36959a12"
-    },
-    {
-      "path": "scripts/check-audio-on-mac.sh",
-      "hash_mode": "lf-text",
-      "sha256": "a325a577ca340f7fbbe927fb109768a3e65d5b596d794150292a7ef015a2aa47",
-      "baseline_raw_sha256": "a325a577ca340f7fbbe927fb109768a3e65d5b596d794150292a7ef015a2aa47"
-    },
-    {
-      "path": "scripts/check-audio-on-mac.swift",
-      "hash_mode": "lf-text",
-      "sha256": "bafc862af15e07a24028daf1522c3de00ced0e6037c440497f646d5fc356cf1b",
-      "baseline_raw_sha256": "bafc862af15e07a24028daf1522c3de00ced0e6037c440497f646d5fc356cf1b"
-    },
-    {
-      "path": "scripts/check-finite-queue-on-mac.sh",
-      "hash_mode": "lf-text",
-      "sha256": "21b58cdae2e6402771dd3ec3697d19631ad062848d745a18696f8ba7bf69e6f6",
-      "baseline_raw_sha256": "21b58cdae2e6402771dd3ec3697d19631ad062848d745a18696f8ba7bf69e6f6"
-    },
-    {
-      "path": "scripts/check-preserved-sources.py",
-      "hash_mode": "lf-text",
-      "sha256": "5d7b24b2e4b0c2f28b95228237d8ef4ab38293d31939b6d3ff077f8daf9772bc",
-      "baseline_raw_sha256": "5d7b24b2e4b0c2f28b95228237d8ef4ab38293d31939b6d3ff077f8daf9772bc"
-    },
-    {
-      "path": "scripts/check-source-grammar.py",
-      "hash_mode": "lf-text",
-      "sha256": "f22cb64ab8c06a5c16e3f55bdbdc4b4019cf4d90b700c83cacf9a8a47d37ac13",
-      "baseline_raw_sha256": "f22cb64ab8c06a5c16e3f55bdbdc4b4019cf4d90b700c83cacf9a8a47d37ac13"
-    },
-    {
-      "path": "scripts/requirements-validation.txt",
-      "hash_mode": "lf-text",
-      "sha256": "bd40560117191669717bb670fc985eaf62e6556b2a1b50d1ad04933bd8ef8b6b",
-      "baseline_raw_sha256": "bd40560117191669717bb670fc985eaf62e6556b2a1b50d1ad04933bd8ef8b6b"
-    },
-    {
-      "path": "scripts/test-source-integrity.py",
-      "hash_mode": "lf-text",
-      "sha256": "a59d1f570948128b61d52f4951bb6f5eb4051f60731b556f4d0142fe976925cf",
-      "baseline_raw_sha256": "a59d1f570948128b61d52f4951bb6f5eb4051f60731b556f4d0142fe976925cf"
-    },
-    {
-      "path": "Sources/iPhone/AlarmEditor.swift",
-      "hash_mode": "lf-text",
-      "sha256": "84fd90cc52c2742b80c9288721f0928aa827a7d8470e95cae03faa9dd4a723b7",
-      "baseline_raw_sha256": "84fd90cc52c2742b80c9288721f0928aa827a7d8470e95cae03faa9dd4a723b7"
+      "sha256": "1a66a4da3dc0444b179054248d06dde9700199ad8240f69671d6d572462d7386"
     },
     {
       "path": "Sources/iPhone/AlarmKitSoundBuilder.swift",
       "hash_mode": "lf-text",
-      "sha256": "9b81914e2c6cb2997268687e5eb4fce1a0a1f44bf0a39bb13f199907bbcba559",
-      "baseline_raw_sha256": "9b81914e2c6cb2997268687e5eb4fce1a0a1f44bf0a39bb13f199907bbcba559"
+      "sha256": "9b81914e2c6cb2997268687e5eb4fce1a0a1f44bf0a39bb13f199907bbcba559"
     },
     {
       "path": "Sources/iPhone/CueAudioImporter.swift",
       "hash_mode": "lf-text",
-      "sha256": "e52c18e283386a600b406ab70cd2467968652f2f339d374f378ca443daa61577",
-      "baseline_raw_sha256": "e52c18e283386a600b406ab70cd2467968652f2f339d374f378ca443daa61577"
+      "sha256": "e52c18e283386a600b406ab70cd2467968652f2f339d374f378ca443daa61577"
     },
     {
       "path": "Sources/iPhone/DesignSystem.swift",
       "hash_mode": "lf-text",
-      "sha256": "09d4a84debb3216cf16f02153cba4869bdae196ebd505926129d650619d6abda",
-      "baseline_raw_sha256": "09d4a84debb3216cf16f02153cba4869bdae196ebd505926129d650619d6abda"
+      "sha256": "09d4a84debb3216cf16f02153cba4869bdae196ebd505926129d650619d6abda"
     },
     {
       "path": "Sources/iPhone/JournalView.swift",
       "hash_mode": "lf-text",
-      "sha256": "5e56dbb3838c6bed77df9b6b9c23ff88994e445c21c16bb8f5977d6904634133",
-      "baseline_raw_sha256": "5e56dbb3838c6bed77df9b6b9c23ff88994e445c21c16bb8f5977d6904634133"
+      "sha256": "5e56dbb3838c6bed77df9b6b9c23ff88994e445c21c16bb8f5977d6904634133"
     },
     {
       "path": "Sources/iPhone/JournalVoiceComposer.swift",
       "hash_mode": "lf-text",
-      "sha256": "0e725c45bb9263a62a5813414989b7090662017efd186a1ce3754266c449a862",
-      "baseline_raw_sha256": "0e725c45bb9263a62a5813414989b7090662017efd186a1ce3754266c449a862"
+      "sha256": "0e725c45bb9263a62a5813414989b7090662017efd186a1ce3754266c449a862"
     },
     {
       "path": "Sources/iPhone/LegacyAlarmCleanup.swift",
       "hash_mode": "lf-text",
-      "sha256": "94c1ec8d554ae54d0ea39d263c5f1e96c9170e32750bb6a9650452502c5c5532",
-      "baseline_raw_sha256": "94c1ec8d554ae54d0ea39d263c5f1e96c9170e32750bb6a9650452502c5c5532"
+      "sha256": "94c1ec8d554ae54d0ea39d263c5f1e96c9170e32750bb6a9650452502c5c5532"
     },
     {
       "path": "Sources/iPhone/LumaApp.swift",
       "hash_mode": "lf-text",
-      "sha256": "4498678e24a6119855a9044008c3bac013f6be7d881503d05e0ece303560b537",
-      "baseline_raw_sha256": "4498678e24a6119855a9044008c3bac013f6be7d881503d05e0ece303560b537"
+      "sha256": "4498678e24a6119855a9044008c3bac013f6be7d881503d05e0ece303560b537"
     },
     {
       "path": "Sources/iPhone/PhoneRootView.swift",
       "hash_mode": "lf-text",
-      "sha256": "c12ab81895e3094a2f74a96636bd1b58c5d6bf7f12e96fdc932e8956a096ca5b",
-      "baseline_raw_sha256": "c12ab81895e3094a2f74a96636bd1b58c5d6bf7f12e96fdc932e8956a096ca5b"
+      "sha256": "c12ab81895e3094a2f74a96636bd1b58c5d6bf7f12e96fdc932e8956a096ca5b"
     },
     {
       "path": "Sources/iPhone/SoundLibraryView.swift",
       "hash_mode": "lf-text",
-      "sha256": "d8a4e847764847891dcd3fa87402e3d5bb8c3b5546a4c2fde6522dd2e9cdcfeb",
-      "baseline_raw_sha256": "d8a4e847764847891dcd3fa87402e3d5bb8c3b5546a4c2fde6522dd2e9cdcfeb"
+      "sha256": "d8a4e847764847891dcd3fa87402e3d5bb8c3b5546a4c2fde6522dd2e9cdcfeb"
+    },
+    {
+      "path": "Sources/iPhone/WatchCueLink.swift",
+      "hash_mode": "lf-text",
+      "sha256": "48de62379dd0572763538592524673aedd0144f5511e9c9af832233a509b2e94"
     },
     {
       "path": "Sources/LumaCore/AcousticFeatures.swift",
       "hash_mode": "lf-text",
-      "sha256": "56dc961def8e779f756abdd8e2bf96beecb0ae3d4954918142de41f602f6efdd",
-      "baseline_raw_sha256": "56dc961def8e779f756abdd8e2bf96beecb0ae3d4954918142de41f602f6efdd"
+      "sha256": "56dc961def8e779f756abdd8e2bf96beecb0ae3d4954918142de41f602f6efdd"
     },
     {
       "path": "Sources/LumaCore/AlarmStopWindow.swift",
       "hash_mode": "lf-text",
-      "sha256": "be2e29fb7224b69e627fd3538cd9e82c99ab3651fb97a3f782fdb3229193f8e7",
-      "baseline_raw_sha256": "be2e29fb7224b69e627fd3538cd9e82c99ab3651fb97a3f782fdb3229193f8e7"
+      "sha256": "be2e29fb7224b69e627fd3538cd9e82c99ab3651fb97a3f782fdb3229193f8e7"
     },
     {
       "path": "Sources/LumaCore/CueEngine.swift",
       "hash_mode": "lf-text",
-      "sha256": "b0a2ad7cbc65cc30066a4f928b8c9f244db935787734b6976eb7a28e5603c3e5",
-      "baseline_raw_sha256": "b0a2ad7cbc65cc30066a4f928b8c9f244db935787734b6976eb7a28e5603c3e5"
+      "sha256": "b0a2ad7cbc65cc30066a4f928b8c9f244db935787734b6976eb7a28e5603c3e5"
     },
     {
       "path": "Sources/LumaCore/CuePlaybackStopper.swift",
       "hash_mode": "lf-text",
-      "sha256": "756d99516095ab5c45820b13687fb0b3241d57622db661da09d173effd02e239",
-      "baseline_raw_sha256": "756d99516095ab5c45820b13687fb0b3241d57622db661da09d173effd02e239"
+      "sha256": "756d99516095ab5c45820b13687fb0b3241d57622db661da09d173effd02e239"
+    },
+    {
+      "path": "Sources/LumaCore/FiniteCuePolicy.swift",
+      "hash_mode": "lf-text",
+      "sha256": "adc8a6135d3b0495cde9d0a59a0bf07daeb83b1e0652c7dbc660678b1ac58ab9"
+    },
+    {
+      "path": "Sources/LumaCore/IndirectMethod.swift",
+      "hash_mode": "lf-text",
+      "sha256": "bb2164e5d71ef3277a4696c04f06728945fca734595d4c65d2398b3225ba6516"
     },
     {
       "path": "Sources/LumaCore/iPhoneOnlyMigration.swift",
       "hash_mode": "lf-text",
-      "sha256": "b1cf2d8f782f6fcf75a1054fe1fd209c7b1c2224cbd331fedd1afcabe3b70be1",
-      "baseline_raw_sha256": "b1cf2d8f782f6fcf75a1054fe1fd209c7b1c2224cbd331fedd1afcabe3b70be1"
+      "sha256": "b1cf2d8f782f6fcf75a1054fe1fd209c7b1c2224cbd331fedd1afcabe3b70be1"
     },
     {
       "path": "Sources/LumaCore/LumaV2.swift",
       "hash_mode": "lf-text",
-      "sha256": "c4e58a2545de088b25802d13f6dd583fbe7f3bc65f273407dc3923f0fbaaa785",
-      "baseline_raw_sha256": "c4e58a2545de088b25802d13f6dd583fbe7f3bc65f273407dc3923f0fbaaa785"
+      "sha256": "c4e58a2545de088b25802d13f6dd583fbe7f3bc65f273407dc3923f0fbaaa785"
     },
     {
       "path": "Sources/LumaCore/Models.swift",
       "hash_mode": "lf-text",
-      "sha256": "eb7e625ef32b7931bada0b61257a7bc1ab79adc8bdf33b2805fc01e2ae0485d8",
-      "baseline_raw_sha256": "eb7e625ef32b7931bada0b61257a7bc1ab79adc8bdf33b2805fc01e2ae0485d8"
+      "sha256": "eb7e625ef32b7931bada0b61257a7bc1ab79adc8bdf33b2805fc01e2ae0485d8"
     },
     {
       "path": "Sources/LumaCore/MultimodalEstimator.swift",
       "hash_mode": "lf-text",
-      "sha256": "7340f93c968fcd1b8e6538dc958a11ad33b1a352aeaea0aa067d3eed77ea6a52",
-      "baseline_raw_sha256": "7340f93c968fcd1b8e6538dc958a11ad33b1a352aeaea0aa067d3eed77ea6a52"
+      "sha256": "7340f93c968fcd1b8e6538dc958a11ad33b1a352aeaea0aa067d3eed77ea6a52"
     },
     {
       "path": "Sources/LumaCore/PairedCuePolicy.swift",
       "hash_mode": "lf-text",
-      "sha256": "6e914d0130feb5cda406af6cd4a7ca657b08ac598885f3c39bfe3f28309e8d40",
-      "baseline_raw_sha256": "6e914d0130feb5cda406af6cd4a7ca657b08ac598885f3c39bfe3f28309e8d40"
+      "sha256": "6e914d0130feb5cda406af6cd4a7ca657b08ac598885f3c39bfe3f28309e8d40"
     },
     {
       "path": "Sources/LumaCore/RealtimeREMEngine.swift",
       "hash_mode": "lf-text",
-      "sha256": "ff3d05a9bc7adfb8eb2f775e05f695feadfa7ef56a336f46b72320fc0aa639b6",
-      "baseline_raw_sha256": "ff3d05a9bc7adfb8eb2f775e05f695feadfa7ef56a336f46b72320fc0aa639b6"
+      "sha256": "ff3d05a9bc7adfb8eb2f775e05f695feadfa7ef56a336f46b72320fc0aa639b6"
     },
     {
       "path": "Sources/LumaCore/REMEstimator.swift",
       "hash_mode": "lf-text",
-      "sha256": "4f00c0fa6bcf223e9486c299ca3d3d8e211f2ec99ef029960a252cef0a6e3da8",
-      "baseline_raw_sha256": "4f00c0fa6bcf223e9486c299ca3d3d8e211f2ec99ef029960a252cef0a6e3da8"
+      "sha256": "4f00c0fa6bcf223e9486c299ca3d3d8e211f2ec99ef029960a252cef0a6e3da8"
     },
     {
-      "path": "Sources/LumaCore/SystemAlarmPlan.swift",
+      "path": "Sources/LumaCore/WatchCuePlan.swift",
       "hash_mode": "lf-text",
-      "sha256": "24242058004063f52efa76ab1083eec98dc3ee678ce1392906ce321f2b8b1ec8",
-      "baseline_raw_sha256": "24242058004063f52efa76ab1083eec98dc3ee678ce1392906ce321f2b8b1ec8"
+      "sha256": "b6395148f653d3d3e34f1bb0ebbf9e46b47ea10811742d7c92d01e80a73ff059"
     },
     {
       "path": "Sources/LumaCore/WaveCueInspector.swift",
       "hash_mode": "lf-text",
-      "sha256": "013c31b9431bfefb2bf47972c1591e70c180442ade91080785a200d60fbd87d2",
-      "baseline_raw_sha256": "013c31b9431bfefb2bf47972c1591e70c180442ade91080785a200d60fbd87d2"
+      "sha256": "013c31b9431bfefb2bf47972c1591e70c180442ade91080785a200d60fbd87d2"
     },
     {
       "path": "Sources/Platform/AlarmScheduling.swift",
       "hash_mode": "lf-text",
-      "sha256": "aaaa2401e1361a7b8e0e7917f49be0445c34710d05a7a0a9d54a47c781338f87",
-      "baseline_raw_sha256": "aaaa2401e1361a7b8e0e7917f49be0445c34710d05a7a0a9d54a47c781338f87"
+      "sha256": "aaaa2401e1361a7b8e0e7917f49be0445c34710d05a7a0a9d54a47c781338f87"
     },
     {
       "path": "Sources/Platform/AppError.swift",
       "hash_mode": "lf-text",
-      "sha256": "cba4f687407841f56b963d3e66f0487d06b2428db5e349d74084f163251e6d63",
-      "baseline_raw_sha256": "cba4f687407841f56b963d3e66f0487d06b2428db5e349d74084f163251e6d63"
-    },
-    {
-      "path": "Sources/Platform/CueDiagnostics.swift",
-      "hash_mode": "lf-text",
-      "sha256": "cafb87d82b69f2a60a775399cd52414e0e2d9d63844d6208ea4799a93e9ee5ad",
-      "baseline_raw_sha256": "cafb87d82b69f2a60a775399cd52414e0e2d9d63844d6208ea4799a93e9ee5ad"
+      "sha256": "cba4f687407841f56b963d3e66f0487d06b2428db5e349d74084f163251e6d63"
     },
     {
       "path": "Sources/Platform/HealthService.swift",
       "hash_mode": "lf-text",
-      "sha256": "2ef20bee400debb95a0435d6b71f387903c46040fb034ded48bf5f9bea956285",
-      "baseline_raw_sha256": "2ef20bee400debb95a0435d6b71f387903c46040fb034ded48bf5f9bea956285"
+      "sha256": "2ef20bee400debb95a0435d6b71f387903c46040fb034ded48bf5f9bea956285"
     },
     {
       "path": "Sources/Platform/LocalStore.swift",
       "hash_mode": "lf-text",
-      "sha256": "be5aaeff856b5ff77f9bb0cf08bacb47b364b3c2a0eb3f8ed11bef241be85e8f",
-      "baseline_raw_sha256": "be5aaeff856b5ff77f9bb0cf08bacb47b364b3c2a0eb3f8ed11bef241be85e8f"
+      "sha256": "be5aaeff856b5ff77f9bb0cf08bacb47b364b3c2a0eb3f8ed11bef241be85e8f"
     },
     {
       "path": "Sources/Platform/NotificationService.swift",
       "hash_mode": "lf-text",
-      "sha256": "90d3ad55c0139a355ce15a45a0db41c49024ddd368a2feb1c1e05151f33818ac",
-      "baseline_raw_sha256": "8036a2e74c5b0d38d8723a408eb30122fa8bcd9d45ffd5f2757d88abd65c473e"
+      "sha256": "90d3ad55c0139a355ce15a45a0db41c49024ddd368a2feb1c1e05151f33818ac"
+    },
+    {
+      "path": "Sources/Platform/PhoneAudio.swift",
+      "hash_mode": "lf-text",
+      "sha256": "6592c35c5d3e5d07bc1ffe702f77ef6a853bc135e11a1d17c95dd707c4dc5e82"
+    },
+    {
+      "path": "Sources/Watch/LumaWatchApp.swift",
+      "hash_mode": "lf-text",
+      "sha256": "666ddde2a8b8aca975629b261ad55be8e965e78620f20e9e38db8ead767c1b2e"
+    },
+    {
+      "path": "Sources/Watch/WatchCueStore.swift",
+      "hash_mode": "lf-text",
+      "sha256": "5e5cbddfe1893b58d355b35bf6170d941a4524ae1e77cc154835e5f01381cb89"
     },
     {
       "path": "Tests/LumaCoreTests/AlarmKitWaveMigrationTests.swift",
       "hash_mode": "lf-text",
-      "sha256": "4e7b80b96a80382f124e7f4399900d35907bf6393f09bf7bf2bfa72dd5cf654b",
-      "baseline_raw_sha256": "4e7b80b96a80382f124e7f4399900d35907bf6393f09bf7bf2bfa72dd5cf654b"
+      "sha256": "4e7b80b96a80382f124e7f4399900d35907bf6393f09bf7bf2bfa72dd5cf654b"
     },
     {
       "path": "Tests/LumaCoreTests/AlarmStopWindowTests.swift",
       "hash_mode": "lf-text",
-      "sha256": "241480eca1c356da1fe0a7c7112e84e49e79bc6e393f0664d93dcc08e92a1946",
-      "baseline_raw_sha256": "241480eca1c356da1fe0a7c7112e84e49e79bc6e393f0664d93dcc08e92a1946"
+      "sha256": "241480eca1c356da1fe0a7c7112e84e49e79bc6e393f0664d93dcc08e92a1946"
     },
     {
       "path": "Tests/LumaCoreTests/AudioAndAlarmTests.swift",
       "hash_mode": "lf-text",
-      "sha256": "4b7ec5255c3b06d951c3556aa2aefdd29280228ba0e5004d368d10b2802331b7",
-      "baseline_raw_sha256": "4b7ec5255c3b06d951c3556aa2aefdd29280228ba0e5004d368d10b2802331b7"
+      "sha256": "4b7ec5255c3b06d951c3556aa2aefdd29280228ba0e5004d368d10b2802331b7"
     },
     {
       "path": "Tests/LumaCoreTests/CoreSafetyTests.swift",
       "hash_mode": "lf-text",
-      "sha256": "b129ec5a60ff1dff795f28b9aec5ce20a43b30a99eeae7da5ff24c266e8660ca",
-      "baseline_raw_sha256": "b129ec5a60ff1dff795f28b9aec5ce20a43b30a99eeae7da5ff24c266e8660ca"
+      "sha256": "b129ec5a60ff1dff795f28b9aec5ce20a43b30a99eeae7da5ff24c266e8660ca"
     },
     {
       "path": "Tests/LumaCoreTests/CuePlaybackStopperTests.swift",
       "hash_mode": "lf-text",
-      "sha256": "5405952b34ea06435742f7537b575f517ba0cdc2edc500d4fb47f59509c30db3",
-      "baseline_raw_sha256": "5405952b34ea06435742f7537b575f517ba0cdc2edc500d4fb47f59509c30db3"
+      "sha256": "5405952b34ea06435742f7537b575f517ba0cdc2edc500d4fb47f59509c30db3"
     },
     {
       "path": "Tests/LumaCoreTests/FiniteCuePolicyTests.swift",
       "hash_mode": "lf-text",
-      "sha256": "d3615b42ae29e0586d5d61f3e5a059292acb856538e1d71aaf7266efe3eca889",
-      "baseline_raw_sha256": "d3615b42ae29e0586d5d61f3e5a059292acb856538e1d71aaf7266efe3eca889"
+      "sha256": "d3615b42ae29e0586d5d61f3e5a059292acb856538e1d71aaf7266efe3eca889"
     },
     {
       "path": "Tests/LumaCoreTests/IndirectMethodTests.swift",
       "hash_mode": "lf-text",
-      "sha256": "8c7934ff47c979d22bd9f5f57ba653eec26ad076a9a28334937f20d9ac9869ff",
-      "baseline_raw_sha256": "8c7934ff47c979d22bd9f5f57ba653eec26ad076a9a28334937f20d9ac9869ff"
+      "sha256": "8c7934ff47c979d22bd9f5f57ba653eec26ad076a9a28334937f20d9ac9869ff"
     },
     {
       "path": "Tests/LumaCoreTests/iPhoneOnlyMigrationTests.swift",
       "hash_mode": "lf-text",
-      "sha256": "eda3d4c4fa1a2c1d7091188466f91d0da5ae965ac0552e12d389fe0ae4214b6f",
-      "baseline_raw_sha256": "eda3d4c4fa1a2c1d7091188466f91d0da5ae965ac0552e12d389fe0ae4214b6f"
+      "sha256": "eda3d4c4fa1a2c1d7091188466f91d0da5ae965ac0552e12d389fe0ae4214b6f"
     },
     {
       "path": "Tests/LumaCoreTests/NotificationMigrationTests.swift",
       "hash_mode": "lf-text",
-      "sha256": "217352f731f29ec135f8592c9fd1a3982a7d513fa7758730760f0dfa8bea3555",
-      "baseline_raw_sha256": "217352f731f29ec135f8592c9fd1a3982a7d513fa7758730760f0dfa8bea3555"
+      "sha256": "217352f731f29ec135f8592c9fd1a3982a7d513fa7758730760f0dfa8bea3555"
     },
     {
       "path": "Tests/LumaCoreTests/PairedCueTests.swift",
       "hash_mode": "lf-text",
-      "sha256": "ebeb0724675839be9835e2816b3f465ed979416f1df3b9f19ab164558e526caa",
-      "baseline_raw_sha256": "ebeb0724675839be9835e2816b3f465ed979416f1df3b9f19ab164558e526caa"
+      "sha256": "ebeb0724675839be9835e2816b3f465ed979416f1df3b9f19ab164558e526caa"
     },
     {
       "path": "Tests/LumaCoreTests/RealtimeREMTests.swift",
       "hash_mode": "lf-text",
-      "sha256": "77797503906418695a9cf3e6b18e962f8354b1999cfc41f9a5af53c68a20f40b",
-      "baseline_raw_sha256": "77797503906418695a9cf3e6b18e962f8354b1999cfc41f9a5af53c68a20f40b"
+      "sha256": "77797503906418695a9cf3e6b18e962f8354b1999cfc41f9a5af53c68a20f40b"
     },
     {
       "path": "Tests/LumaCoreTests/SystemAlarmPlanTests.swift",
       "hash_mode": "lf-text",
-      "sha256": "bd4fc88edf10df2eb0de12b858ae6bff78de0cf25d186075d077e2447117c6a5",
-      "baseline_raw_sha256": "bd4fc88edf10df2eb0de12b858ae6bff78de0cf25d186075d077e2447117c6a5"
+      "sha256": "bd4fc88edf10df2eb0de12b858ae6bff78de0cf25d186075d077e2447117c6a5"
     },
     {
       "path": "Tests/LumaCoreTests/V2Tests.swift",
       "hash_mode": "lf-text",
-      "sha256": "b9b4b8b4597eaa42cbaf5f191dbdf02cb951364bc3d4f41ce0fa210f94f8f1db",
-      "baseline_raw_sha256": "b9b4b8b4597eaa42cbaf5f191dbdf02cb951364bc3d4f41ce0fa210f94f8f1db"
+      "sha256": "b9b4b8b4597eaa42cbaf5f191dbdf02cb951364bc3d4f41ce0fa210f94f8f1db"
+    },
+    {
+      "path": "Tests/LumaCoreTests/WatchCuePlanTests.swift",
+      "hash_mode": "lf-text",
+      "sha256": "6ebbf757c61d113245d03cb4e69ed58a506e80c553ac48df65adaff1d27402d2"
     },
     {
       "path": "Tests/LumaCoreTests/WaveCueInspectorTests.swift",
       "hash_mode": "lf-text",
-      "sha256": "fa111410c8724bf7b27253ccc81e14ff43949f14917f319e7e74365b36321b74",
-      "baseline_raw_sha256": "fa111410c8724bf7b27253ccc81e14ff43949f14917f319e7e74365b36321b74"
+      "sha256": "fa111410c8724bf7b27253ccc81e14ff43949f14917f319e7e74365b36321b74"
+    },
+    {
+      "path": "Resources/iOSAssets.xcassets/AppIcon.appiconset/AppIcon.png",
+      "hash_mode": "raw",
+      "sha256": "4ee127bb7a7e65108cd6e5e966af7f639d9a441c84b6dba2d8f9ec41fdc0bc35"
+    },
+    {
+      "path": "Resources/iOSAssets.xcassets/AppIcon.appiconset/Contents.json",
+      "hash_mode": "lf-text",
+      "sha256": "9239900ca4c37dc860feb154216409f05d906e26f2d79550e1e8e8b8db6324c7"
+    },
+    {
+      "path": "Resources/iOSAssets.xcassets/Contents.json",
+      "hash_mode": "lf-text",
+      "sha256": "a3393322cd7b4c1e0aa93bebe09abaa91ad891290d1225b0b5d10b5c6f216025"
+    },
+    {
+      "path": "Resources/luma-alarm-4.wav",
+      "hash_mode": "raw",
+      "sha256": "9c2784e108846aede7bf3a607e9db2babef5deadc717fa43c8952832df9d70c9"
+    },
+    {
+      "path": "Resources/luma-night-rain.wav",
+      "hash_mode": "raw",
+      "sha256": "760775a7bb5e76e04c74795daa436aefbd2442058b7e9aba3fec08829b0030d9"
+    },
+    {
+      "path": "Resources/luma-tone-15.wav",
+      "hash_mode": "raw",
+      "sha256": "beaed8a9c5145968990b619fa8dcd48e6530c6f6ea961c4d4ac3a4f40a157387"
+    },
+    {
+      "path": "Resources/luma-tone-4.wav",
+      "hash_mode": "raw",
+      "sha256": "9c2784e108846aede7bf3a607e9db2babef5deadc717fa43c8952832df9d70c9"
+    },
+    {
+      "path": "Resources/luma-tone-8.wav",
+      "hash_mode": "raw",
+      "sha256": "37d5345466972ded506efae43555eaf71e22e015b5a37ac93aa0fb99c9299826"
+    },
+    {
+      "path": "Resources/Manrope-LICENSE.txt",
+      "hash_mode": "lf-text",
+      "sha256": "e01b637272e0cbdfb240184dd98ea5cc671556d9894dae2668d92ab2c906787c"
+    },
+    {
+      "path": "Resources/Manrope-Medium.ttf",
+      "hash_mode": "raw",
+      "sha256": "6a21acf060627cedf46704e8484aeffc8ba94140b46cd553fa19338d301e439d"
+    },
+    {
+      "path": "Resources/Manrope-Regular.ttf",
+      "hash_mode": "raw",
+      "sha256": "8e6739a692e9b94f2e160f84029d741ee92f5a2dc8081e257bb8bba5f8680ae6"
+    },
+    {
+      "path": "Resources/Manrope-SemiBold.ttf",
+      "hash_mode": "raw",
+      "sha256": "b250ce5a3a6e5e99a79d25cbd7ffe32fae0dff6047cfaa8c27e2205234a39991"
+    },
+    {
+      "path": "Resources/Manrope-Variable.ttf",
+      "hash_mode": "raw",
+      "sha256": "d0639be45d0af36e798172419d7bd173c4bd4f29e2b76cbb69db1d11bf8b0a40"
+    },
+    {
+      "path": "Resources/PrivacyInfo.xcprivacy",
+      "hash_mode": "lf-text",
+      "sha256": "a331d51864743ebe4e00dd22360b4a538b6b3ac26a6b3eb54094e60a36959a12"
+    },
+    {
+      "path": "Resources/WatchAssets.xcassets/AppIcon.appiconset/AppIcon.png",
+      "hash_mode": "raw",
+      "sha256": "4ee127bb7a7e65108cd6e5e966af7f639d9a441c84b6dba2d8f9ec41fdc0bc35"
+    },
+    {
+      "path": "Resources/WatchAssets.xcassets/AppIcon.appiconset/Contents.json",
+      "hash_mode": "lf-text",
+      "sha256": "81a9a236c9662c9ff13ef208ce045a13f2b50a2f0917310289c0dc839184966b"
+    },
+    {
+      "path": "Resources/WatchAssets.xcassets/Contents.json",
+      "hash_mode": "lf-text",
+      "sha256": "a3393322cd7b4c1e0aa93bebe09abaa91ad891290d1225b0b5d10b5c6f216025"
+    },
+    {
+      "path": "Config/iOS-Info.plist",
+      "hash_mode": "lf-text",
+      "sha256": "fed7e0be89f0b85c0f5d0d77996be0df0fc4b70697dbb4d0dec7b46c87ee2557"
+    },
+    {
+      "path": "Config/iOS.entitlements",
+      "hash_mode": "lf-text",
+      "sha256": "e82a7f6e130b0fe65a40214c15b4116c5245125329c63954d9ccdd9cc80f039e"
+    },
+    {
+      "path": "Config/Watch-Info.plist",
+      "hash_mode": "lf-text",
+      "sha256": "44ef7c0c0ff8b73c0dfcacf92ab134107ab24fe506fe740f8d3683fb3102147b"
+    },
+    {
+      "path": "Config/Watch.entitlements",
+      "hash_mode": "lf-text",
+      "sha256": "97704a8960b4facceef54397a08fb5d0a456247c3627359215aa2a27df22656c"
+    },
+    {
+      "path": "scripts/check-audio-on-mac.sh",
+      "hash_mode": "lf-text",
+      "sha256": "a325a577ca340f7fbbe927fb109768a3e65d5b596d794150292a7ef015a2aa47"
+    },
+    {
+      "path": "scripts/check-audio-on-mac.swift",
+      "hash_mode": "lf-text",
+      "sha256": "bafc862af15e07a24028daf1522c3de00ced0e6037c440497f646d5fc356cf1b"
+    },
+    {
+      "path": "scripts/check-finite-queue-on-mac.sh",
+      "hash_mode": "lf-text",
+      "sha256": "21b58cdae2e6402771dd3ec3697d19631ad062848d745a18696f8ba7bf69e6f6"
+    },
+    {
+      "path": "scripts/check-on-mac.sh",
+      "hash_mode": "lf-text",
+      "sha256": "785026f7209f55555d1ead21b1c3caff131e2fa365a71749cc805691a5b9402c"
+    },
+    {
+      "path": "scripts/check-preserved-sources.py",
+      "hash_mode": "lf-text",
+      "sha256": "5d7b24b2e4b0c2f28b95228237d8ef4ab38293d31939b6d3ff077f8daf9772bc"
+    },
+    {
+      "path": "scripts/check-previous-versions.py",
+      "hash_mode": "lf-text",
+      "sha256": "7181a8143c5a1828983d21a0c032feedca308034249959cef8687da0213c61c2"
+    },
+    {
+      "path": "scripts/check-source-grammar.py",
+      "hash_mode": "lf-text",
+      "sha256": "f22cb64ab8c06a5c16e3f55bdbdc4b4019cf4d90b700c83cacf9a8a47d37ac13"
+    },
+    {
+      "path": "scripts/generate_project.py",
+      "hash_mode": "lf-text",
+      "sha256": "31ae73d49cd348f395ea56e668018afdb812c5d5c90851c8ddbd1cdb23bf2925"
+    },
+    {
+      "path": "scripts/requirements-validation.txt",
+      "hash_mode": "lf-text",
+      "sha256": "bd40560117191669717bb670fc985eaf62e6556b2a1b50d1ad04933bd8ef8b6b"
+    },
+    {
+      "path": "scripts/test-source-integrity.py",
+      "hash_mode": "lf-text",
+      "sha256": "a59d1f570948128b61d52f4951bb6f5eb4051f60731b556f4d0142fe976925cf"
+    },
+    {
+      "path": "Luma.xcodeproj/xcshareddata/xcschemes/Luma Watch.xcscheme",
+      "hash_mode": "lf-text",
+      "sha256": "85b23944ab4ff685ae72b9a74054d12aa767980143ef5973f39ed2e0b747ef26"
+    },
+    {
+      "path": "Luma.xcodeproj/xcshareddata/xcschemes/Luma.xcscheme",
+      "hash_mode": "lf-text",
+      "sha256": "9d50e3111cc2b17e62e43632802457fc24409bed1f4045908163d94756e0fdba"
     }
   ]
 }

@@ -1,36 +1,31 @@
 {
-  "version": "0.9.6",
-  "build": 22,
-  "base": "0.9.5 (21)",
-  "date": "2026-11-12",
-  "at_utc": "2026-11-12T10:49:38.177549+00:00",
-  "directory": "C:\\Users\\Admin\\Desktop\\Luma\\V.0.9.6",
-  "implementation": "Real sleep-audio runtime, prearmed per-occurrence AlarmKit Stop, independent Watch local queue",
+  "version": "0.9.7",
+  "build": 23,
+  "base": "0.9.6 (22), reference No. 1",
+  "at_utc": "2026-11-13T07:30:42.187017+00:00",
+  "directory": "C:\\Users\\Admin\\Desktop\\Luma\\V.0.9.7",
+  "implementation": "Configurable per-occurrence AlarmKit Stop duration, default 4 / integer 3-10; existing real audio runtime and Watch transport retained",
   "checks": {
-    "structural_checks_passed": 148,
-    "grammar_inputs_passed": 73,
+    "structural_checks_passed": 155,
+    "grammar_inputs_passed": 75,
     "Python_tests_executed": 13,
     "Python_test_failures": 0,
-    "preserved_inputs_verified": 67,
-    "historical_original_files": 1073,
-    "external_user_IPA_additions": 1,
-    "core_XCTest_methods_present": 119,
-    "native_queue_scenarios_present": 25,
-    "native_audio_cases_present": 8
+    "preserved_inputs_verified": 82,
+    "core_XCTest_methods_present": 128,
+    "native_queue_scenarios_present": 33,
+    "native_audio_cases_present": 8,
+    "core_XCTest_executed": 0,
+    "native_queue_scenarios_passed": 0
   },
   "native_CI": {
-    "status": "not-started",
-    "branch": "luma/0.9.6-night-audio"
+    "status": "pending",
+    "branch": "luma/0.9.7-signal-duration",
+    "uploaded": false,
+    "reason": "New payload awaiting authorization and native execution"
   },
   "physical_device_tests_executed": false,
-  "locked_Stop_confirmed": false,
-  "Watch_delivery_confirmed": false,
+  "locked_Stop_new_duration_confirmed": false,
   "production_ready": false,
-  "known_limitations": [
-    "Force quit/termination removes audio runtime but may leave persistent AlarmKit alarms",
-    "Audio interruptions require device validation",
-    "Watch Focus/permission/locked wrist can suppress local cues",
-    "Independent Watch cue plus AlarmKit forwarding may duplicate alerts"
-  ],
-  "external_sources": "Luma/Docs/ALARM_RESEARCH.md"
+  "reference_0_9_6_user_accepted": true,
+  "data_compatibility": "Schema 3 retained; optional field + separate UserDefaults; one-time ledger backup; AppArchive/LocalStore unchanged"
 }

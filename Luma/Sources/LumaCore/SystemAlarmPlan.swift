@@ -10,10 +10,12 @@ public struct SystemAlarmRequest: Equatable, Sendable {
   public var fireAt: Date
   public var title: String
   public var source: URL
+  public var stopAfterSeconds: Int
   public init(key: String, ownerID: UUID, kind: SystemAlarmKind, fireAt: Date,
-    title: String, source: URL) {
+    title: String, source: URL, stopAfterSeconds: Int = AlarmSignalDuration.defaultSeconds) {
     self.key = key; self.ownerID = ownerID; self.kind = kind
     self.fireAt = fireAt; self.title = title; self.source = source
+    self.stopAfterSeconds = AlarmSignalDuration.validated(stopAfterSeconds)
   }
 }
 public struct SystemAlarmRecord: Codable, Equatable, Identifiable, Sendable {
@@ -26,11 +28,16 @@ public struct SystemAlarmRecord: Codable, Equatable, Identifiable, Sendable {
   public var soundName: String
   /// Written before schedule() and cleared only after the system accepts it.
   public var pending: Bool
-  public var stopAt: Date { fireAt.addingTimeInterval(SystemAlarmPolicy.soundSeconds) }
+  /// Optional for schema-3 records written by 0.9.6; absent/invalid means four.
+  /// Older releases ignore this additive field when decoding the ledger.
+  public var stopAfterSeconds: Int?
+  public var stopDurationSeconds: Int { AlarmSignalDuration.validated(stopAfterSeconds) }
+  public var stopAt: Date { fireAt.addingTimeInterval(TimeInterval(stopDurationSeconds)) }
   public var notificationID: String { FiniteCuePolicy.identifier(for: id) }
   public init(id: UUID = UUID(), request: SystemAlarmRequest, soundName: String) {
     self.id = id; key = request.key; ownerID = request.ownerID; kind = request.kind
     fireAt = request.fireAt; title = request.title; self.soundName = soundName; pending = true
+    stopAfterSeconds = AlarmSignalDuration.validated(request.stopAfterSeconds)
   }
 }
 public struct IndirectAlarmSession: Codable, Equatable, Sendable {
@@ -100,6 +107,7 @@ public struct SystemAlarmLedger: Codable, Equatable, Sendable {
   }
 }
 public enum SystemAlarmPolicy {
+  /// PCM asset length, not the configurable per-occurrence Stop delay.
   public static let soundSeconds: TimeInterval = 4
   /// A finite system queue, replenished while the app executes; not an infinite OS timer.
   public static let queueHorizon: TimeInterval = 12 * 60 * 60
@@ -113,7 +121,7 @@ public enum SystemAlarmPolicy {
   }
   public static func stopAction(record: SystemAlarmRecord, alerting: Bool, now: Date) -> StopAction {
     guard alerting else { return .none }
-    // Never grant another four seconds after a delayed update or relaunch.
+    // Never grant a fresh duration after a delayed update or relaunch.
     if now >= record.stopAt { return .stop(lateBy: now.timeIntervalSince(record.stopAt)) }
     return .wait(until: record.stopAt)
   }

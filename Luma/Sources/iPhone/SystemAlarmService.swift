@@ -6,12 +6,12 @@ import Combine
 @MainActor final class SystemAlarmService: ObservableObject {
   @Published private(set) var ledger = SystemAlarmLedger()
   @Published private(set) var summary = "РџСЂРѕРІРµСЂСЏРµРј AlarmKitвЂ¦"
-  @Published private(set) var lastStopReport = "WAV вЂ” 4,0 СЃРµРє. РћРєРѕРЅС‡Р°РЅРёРµ СЃРёРіРЅР°Р»Р° AlarmKit РЅР° iPhone РµС‰С‘ РЅРµ РїСЂРѕРІРµСЂРµРЅРѕ."
+  @Published private(set) var lastStopReport = "Длительность сигнала: 3–10 с, по умолчанию 4. Проверьте остановку на iPhone."
   @Published private(set) var preparing = false
   @Published private(set) var authorized = false
   var supported: Bool { scheduler.supported }
   var runtimeReady: () -> Bool = { true } // Production injects the live NightAudio check.
-  var onAlertObserved: (() -> Void)?
+  var onAlertObserved: ((Date) -> Void)?
   var onQueueChanged: ((SystemAlarmLedger) -> Void)?
   private let scheduler: any ShortAlarmScheduling
   private let cleanup: (Bool) throws -> Void
@@ -173,9 +173,10 @@ import Combine
       }
       for record in ledger.records {
         // Do not cancel a just-due pending delivery merely because its time is
-        // no longer in the future. Its sound still ends independently of us.
+        // no longer in the future. Keep its original Stop deadline.
         let justDue = activeOwners.contains(record.ownerID)
-          && (-5...1).contains(record.fireAt.timeIntervalSinceNow)
+          && record.fireAt <= Date().addingTimeInterval(1)
+          && Date() <= record.stopAt.addingTimeInterval(1)
         if !wanted.contains(record.key) && record.kind != .probe && !justDue {
           try await cancel(record, includingDelivered: false)
         }
@@ -184,7 +185,10 @@ import Combine
         guard operation == generation, !Task.isCancelled else { throw CancellationError() }
         guard let sound = sounds[request.source] else { continue }
         if let previous = ledger.records.first(where: { $0.key == request.key }) {
-          if previous.soundName == sound && previous.title == request.title && !previous.pending { continue }
+          if previous.soundName == sound && previous.title == request.title && !previous.pending {
+            try updateFutureStopDurations([previous.id: request.stopAfterSeconds])
+            continue
+          }
           try await cancel(previous, includingDelivered: false)
         }
         guard operation == generation, !Task.isCancelled else { throw CancellationError() }
@@ -323,6 +327,46 @@ import Combine
     try await bootstrap()
   }
 
+  /// Available even during a queue rebuild, when refresh() intentionally returns.
+  var currentStopDeadline: Date? {
+    let now = Date(), cancelled = Set(ledger.cancelledOwners ?? [])
+    guard ledger.cancelAllRequested != true else { return nil }
+    return ledger.records.filter {
+      !cancelled.contains($0.ownerID) && $0.fireAt <= now.addingTimeInterval(1) && $0.stopAt > now
+    }.map(\.stopAt).max()
+  }
+
+  /// No daemon rescheduling: only future local deadlines change, transactionally.
+  func setFutureStopDuration(_ seconds: Int) throws {
+    guard AlarmSignalDuration.range.contains(seconds) else {
+      throw AppError.message("Выберите длительность от 3 до 10 секунд.")
+    }
+    guard !preparing, !bootstrapping else {
+      throw AppError.message("Дождитесь завершения подготовки сигналов.")
+    }
+    try load()
+    try updateFutureStopDurations(Dictionary(uniqueKeysWithValues: ledger.records.map { ($0.id, seconds) }))
+  }
+
+  private func updateFutureStopDurations(_ durations: [UUID: Int]) throws {
+    guard ledger.schema == 3 else { return }
+    let previous = ledger, threshold = Date().addingTimeInterval(1)
+    var changed: [SystemAlarmRecord] = []
+    for index in ledger.records.indices {
+      let record = ledger.records[index]
+      guard let seconds = durations[record.id], record.fireAt > threshold,
+        !observedDeliveries.contains(record.notificationID), record.stopDurationSeconds != seconds else { continue }
+      ledger.records[index].stopAfterSeconds = AlarmSignalDuration.validated(seconds)
+      changed.append(ledger.records[index])
+    }
+    guard !changed.isEmpty else { return }
+    do { try persist() } catch { ledger = previous; throw error }
+    for record in changed {
+      deadlines.removeValue(forKey: record.id)?.cancel()
+      armBackup(record)
+    }
+  }
+
   private func refreshRecords() async throws {
     let pending = try await scheduler.pending()
     let known = Set(ledger.records.map(\.notificationID))
@@ -339,7 +383,7 @@ import Combine
         }
         if snapshot.alerting {
           if observedDeliveries.insert(record.notificationID).inserted {
-            onAlertObserved?()
+            onAlertObserved?(record.stopAt)
             CueDiagnostics.event("alarmkit_alert_observed", record: record,
               detail: "state observed in process; actual acoustic start/EOF not observable")
           }
@@ -393,7 +437,7 @@ import Combine
   private func expire(_ record: SystemAlarmRecord) async throws {
     guard ledger.records.contains(where: { $0.id == record.id }), Date() >= record.stopAt else { return }
     // Do not wait for a queue rebuild or an alert-update callback to finish.
-    onAlertObserved?()
+    onAlertObserved?(record.stopAt)
     CueDiagnostics.event("deadline_stop_attempt", record: record)
     try await scheduler.stop(record.notificationID)
     guard ledger.records.contains(where: { $0.id == record.id }) else { return }
@@ -420,7 +464,7 @@ import Combine
     guard supported else { summary = "AlarmKit В· С‚СЂРµР±СѓРµС‚СЃСЏ iOS 26 РёР»Рё РЅРѕРІРµРµ"; return }
     guard authorized else { summary = "Р Р°Р·СЂРµС€РёС‚Рµ Р±СѓРґРёР»СЊРЅРёРєРё Luma С‡РµСЂРµР· AlarmKit"; return }
     let count = ledger.records.filter { !$0.pending }.count
-    summary = "AlarmKit В· РІ РѕС‡РµСЂРµРґРё \(count) В· WAV 4,0 СЃРµРє"
+    summary = "AlarmKit · в очереди \(count)"
     if let summaryWarning { summary += " В· \(summaryWarning)" }
   }
   private func directory() throws -> URL {
@@ -452,6 +496,17 @@ import Combine
   }
   private func persist() throws {
     let file = try directory().appendingPathComponent("alarms.json")
+    // Keep the pre-upgrade bytes once; never replace an existing recovery copy.
+    let backup = file.deletingLastPathComponent().appendingPathComponent("alarms-before-duration-setting.json")
+    if FileManager.default.fileExists(atPath: file.path),
+      !FileManager.default.fileExists(atPath: backup.path) {
+      let original = try Data(contentsOf: file)
+      #if os(iOS)
+      try original.write(to: backup, options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])
+      #else
+      try original.write(to: backup, options: .atomic)
+      #endif
+    }
     #if os(iOS)
     try JSONEncoder().encode(ledger).write(to: file, options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])
     #else

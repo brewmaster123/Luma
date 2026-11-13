@@ -1,8 +1,8 @@
 {
-  "version": "0.9.6 (22)",
-  "kind": "executed-YAML-and-release-gates-validation",
+  "version": "0.9.7 (23)",
+  "kind": "YAML-and-gate-check",
   "passed": true,
-  "native_mandatory_gates": [
+  "mandatory_gates": [
     "preserved",
     "core",
     "audio",
@@ -10,7 +10,5 @@
     "iphone",
     "watch"
   ],
-  "IPA_version_assertions_match_config": true,
-  "companion_required": true,
-  "native_execution_performed_here": false
+  "native_executed": false
 }

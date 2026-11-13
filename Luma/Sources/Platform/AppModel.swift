@@ -1,8 +1,7 @@
 import Combine
 import Foundation
 
-/// iPhone-only application state. AlarmKit owns alarms and system Watch
-/// forwarding; there is no watch app, WCSession, workout mirroring or cue bridge.
+/// iPhone state, AlarmKit deadlines, real night-audio runtime and Watch plan.
 @MainActor final class AppModel: ObservableObject {
   @Published private(set) var archive = AppArchive()
   @Published private(set) var state = LumaState()
@@ -13,6 +12,7 @@ import Foundation
   @Published private(set) var alarmOrderDate = Date()
   @Published private(set) var alarmPermissionSummary = "Проверяем системные будильники…"
   @Published private(set) var alarmPermissionReady = false
+  @Published private(set) var alarmStopSeconds = AlarmSignalDuration.defaultSeconds
   @Published var message: String?
   @Published var showOnboarding = false
   @Published var showSignalMigration = false
@@ -35,6 +35,8 @@ import Foundation
   private var systemAlarmChanges: AnyCancellable?
 
   init() {
+    alarmStopSeconds = AlarmSignalDuration.validated(
+      UserDefaults.standard.object(forKey: AlarmSignalDuration.preferenceKey) as? Int)
     do {
       let local = try LocalStore()
       archive = try local.load()
@@ -57,13 +59,17 @@ import Foundation
     nightAudioChanges = nightAudio.objectWillChange.sink { [weak self] _ in self?.objectWillChange.send() }
     watchChanges = watchLink.objectWillChange.sink { [weak self] _ in self?.objectWillChange.send() }
     systemAlarms.runtimeReady = { [weak self] in self?.nightAudio.ready == true }
-    systemAlarms.onAlertObserved = { [weak self] in self?.nightAudio.protectStopWindow() }
+    systemAlarms.onAlertObserved = { [weak self] deadline in self?.nightAudio.protectStopWindow(until: deadline) }
     systemAlarms.onQueueChanged = { [weak self] ledger in
       let owners = Set(ledger.cancelledOwners ?? [])
       self?.watchLink.publish(ledger.cancelAllRequested == true ? []
         : ledger.records.filter { !owners.contains($0.ownerID) })
     }
-    nightAudio.onCheckAlarms = { [weak self] in try? await self?.systemAlarms.refresh() }
+    nightAudio.onCheckAlarms = { [weak self] in
+      guard let self else { return }
+      self.nightAudio.protectStopWindow(until: self.systemAlarms.currentStopDeadline)
+      try? await self.systemAlarms.refresh()
+    }
     nightAudio.onStopRequested = { [weak self] in
       guard let self else { return }
       do { try await self.systemAlarms.disarmForRuntimeLoss() }
@@ -76,6 +82,15 @@ import Foundation
     audio.onInterruption = { [weak self] text in self?.message = text }
   }
   var hasPlan: Bool { indirectRunning }
+  @discardableResult func setAlarmStopSeconds(_ seconds: Int) -> Bool {
+    guard AlarmSignalDuration.range.contains(seconds), !busy else { return false }
+    do {
+      try systemAlarms.setFutureStopDuration(seconds)
+      UserDefaults.standard.set(seconds, forKey: AlarmSignalDuration.preferenceKey)
+      alarmStopSeconds = seconds
+      return true
+    } catch { message = error.localizedDescription; return false }
+  }
   var indirectRunning: Bool { systemAlarms.indirectSession != nil }
   var stateTitle: String { "Ночь начинается с вас" }
   var sortedAlarms: [LumaAlarm] { AlarmPlanner.sorted(state.alarms, after: alarmOrderDate) }
@@ -206,13 +221,13 @@ import Foundation
       let signal = state.signal.systemAlarmSignal
       let request = SystemAlarmRequest(key: "luma.probe.\(id.uuidString)", ownerID: id,
         kind: .probe, fireAt: date, title: "Проба AlarmKit · Luma",
-        source: try audio.soundURL(signal, clips: state.voices))
+        source: try audio.soundURL(signal, clips: state.voices), stopAfterSeconds: alarmStopSeconds)
       let requests = try systemAlarmRequests() + [request]
       let queued = try await systemAlarms.reconcile(requests, activeOwners: systemAlarmOwners.union([id]))
       guard queued.contains(id) else {
         throw AppError.message("Пробный сигнал не поставлен. Повторите пробу с задержкой 60 секунд.")
       }
-      message = "Проба через \(Int(max(3, min(60, seconds)))) сек. Сигнал через AlarmKit: WAV длиной 4 секунды. Заблокируйте iPhone и проверьте звук. Если он повторяется, нажмите «Остановить»."
+      message = "Проба через \(Int(max(3, min(60, seconds)))) сек. Остановка AlarmKit через \(alarmStopSeconds) сек. Заблокируйте iPhone и проверьте звук."
     } catch { message = error.localizedDescription }
   }
 
@@ -403,13 +418,13 @@ import Foundation
         var signal = a.signal; signal.melodySeconds = 4
         return SystemAlarmRequest(key: a.id, ownerID: a.alarmID, kind: .smart,
           fireAt: a.date, title: a.title.isEmpty ? "Умный будильник · Luma" : a.title,
-          source: try audio.soundURL(signal, clips: state.voices))
+          source: try audio.soundURL(signal, clips: state.voices), stopAfterSeconds: alarmStopSeconds)
       }
     if let session = systemAlarms.indirectSession {
       let source = try audio.soundURL(session.signal, clips: state.voices)
       result += session.dates(after: now).map {
         SystemAlarmRequest(key: session.key(for: $0), ownerID: session.id, kind: .indirect,
-          fireAt: $0, title: "Непрямой метод · Luma", source: source)
+          fireAt: $0, title: "Непрямой метод · Luma", source: source, stopAfterSeconds: alarmStopSeconds)
       }
     }
     return result

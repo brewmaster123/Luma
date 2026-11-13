@@ -101,15 +101,109 @@ private func require(_ condition: @autoclosure () -> Bool, _ message: String) th
     try JSONDecoder().decode(SystemAlarmLedger.self, from: Data(contentsOf: directory.appendingPathComponent("alarms.json")))
   }
   func request(key: String = "one", owner: UUID = UUID(), kind: SystemAlarmKind = .smart,
-    seconds: Double = 3600, source: String = "sound.wav") -> SystemAlarmRequest {
+    seconds: Double = 3600, source: String = "sound.wav", stopAfterSeconds: Int = 4) -> SystemAlarmRequest {
     .init(key: key, ownerID: owner, kind: kind, fireAt: Date().addingTimeInterval(seconds),
-      title: "Luma", source: directory.appendingPathComponent(source))
+      title: "Luma", source: directory.appendingPathComponent(source), stopAfterSeconds: stopAfterSeconds)
   }
 }
 
 @main private struct FiniteQueueCheck {
   @MainActor static func main() async throws {
     let tests: [(String, @MainActor (Fixture) async throws -> Void)] = [
+      ("duration setting updates all future kinds without touching native IDs or cadence", { f in
+        let s = f.service()
+        let requests = [SystemAlarmKind.smart, .indirect, .probe].enumerated().map {
+          f.request(key: "kind.\($0.offset)", kind: $0.element)
+        }
+        _ = try await s.reconcile(requests, activeOwners: Set(requests.map(\.ownerID)))
+        let ids = s.ledger.records.map(\.id), times = s.ledger.records.map(\.fireAt)
+        try s.setFutureStopDuration(10)
+        try require(s.ledger.records.map(\.id) == ids && s.ledger.records.map(\.fireAt) == times,
+          "Duration changed native identity or cadence")
+        try require(s.ledger.records.allSatisfy { $0.stopDurationSeconds == 10 }, "A mode kept four seconds")
+        try require(f.backend.adds == 3 && f.backend.queue.count == 3, "Duration rescheduled native alarms")
+        let restarted = f.service(); try await restarted.bootstrap()
+        try require(restarted.ledger.records.map(\.stopDurationSeconds) == [10, 10, 10], "Duration lost on relaunch")
+      }),
+      ("duration reconciliation reuses accepted UUID", { f in
+        let s = f.service(); var r = f.request(stopAfterSeconds: 10)
+        _ = try await s.reconcile([r], activeOwners: [r.ownerID])
+        let id = s.ledger.records.first!.id
+        r.stopAfterSeconds = 3
+        _ = try await s.reconcile([r], activeOwners: [r.ownerID])
+        try require(s.ledger.records.first?.id == id && f.backend.adds == 1, "Duration caused re-admission")
+        try require(s.ledger.records.first?.stopDurationSeconds == 3, "Request duration not applied")
+      }),
+      ("active ten-second cue keeps its deadline through settings and rebuild", { f in
+        let current = f.request(key: "current", seconds: -6, stopAfterSeconds: 10)
+        let future = f.request(key: "future", owner: current.ownerID)
+        let record = SystemAlarmRecord(request: current, soundName: "luma-alarm-4.wav")
+        var ledger = SystemAlarmLedger(); ledger.records = [record]; try f.save(ledger)
+        var snapshot = FakeAlarmBackend.snapshot(record); snapshot.alerting = true
+        f.backend.queue[record.notificationID] = snapshot
+        let s = f.service(); var observed: Date?
+        s.onAlertObserved = { observed = $0 }
+        try await s.bootstrap()
+        try s.setFutureStopDuration(3)
+        _ = try await s.reconcile([future], activeOwners: [current.ownerID])
+        try require(s.ledger.records.contains { $0.id == record.id && $0.stopAt == record.stopAt },
+          "Active ten-second cue cancelled or shortened")
+        try require(observed == record.stopAt && s.currentStopDeadline == record.stopAt,
+          "Audio interruption lost the active deadline")
+        try require(f.backend.stops.isEmpty && f.backend.queue[record.notificationID] != nil, "Early Stop")
+      }),
+      ("duration writes preserve the original ledger backup once", { f in
+        let r = f.request(), record = SystemAlarmRecord(request: r, soundName: "luma-alarm-4.wav")
+        var ledger = SystemAlarmLedger(); ledger.records = [record]; try f.save(ledger)
+        let original = try Data(contentsOf: f.directory.appendingPathComponent("alarms.json"))
+        f.backend.queue[record.notificationID] = FakeAlarmBackend.snapshot(record)
+        let s = f.service(); try await s.bootstrap()
+        try s.setFutureStopDuration(10); try s.setFutureStopDuration(3)
+        let backup = try Data(contentsOf: f.directory.appendingPathComponent("alarms-before-duration-setting.json"))
+        try require(backup == original, "Pre-upgrade bytes lost or backup overwritten")
+      }),
+      ("failed duration persistence restores memory and accepted native queue", { f in
+        let s = f.service(), r = f.request()
+        _ = try await s.reconcile([r], activeOwners: [r.ownerID])
+        let original = s.ledger.records, file = f.directory.appendingPathComponent("alarms.json")
+        try FileManager.default.removeItem(at: file)
+        try FileManager.default.createDirectory(at: file, withIntermediateDirectories: false)
+        var rejected = false
+        do { try s.setFutureStopDuration(10) } catch { rejected = true }
+        try require(rejected && s.ledger.records == original && f.backend.adds == 1,
+          "Failed setting damaged the working queue")
+      }),
+      ("invalid and in-flight duration edits cannot change the queue", { f in
+        f.backend.pauseNextAdd = true
+        let s = f.service(), r = f.request()
+        let planning = Task { @MainActor in try await s.reconcile([r], activeOwners: [r.ownerID]) }
+        await f.backend.waitForAdd()
+        var rejected = 0
+        for duration in [2, 11, 10] {
+          do { try s.setFutureStopDuration(duration) } catch { rejected += 1 }
+        }
+        f.backend.releaseAdd(); _ = try await planning.value
+        try require(rejected == 3 && s.ledger.records.first?.stopDurationSeconds == 4,
+          "Unsafe setting accepted during admission")
+      }),
+      ("shorter duration replaces the previously armed Stop task", { f in
+        let s = f.service(), r = f.request(seconds: 2, stopAfterSeconds: 10)
+        _ = try await s.reconcile([r], activeOwners: [r.ownerID])
+        let id = s.ledger.records.first!.notificationID
+        try s.setFutureStopDuration(3)
+        try await Task.sleep(nanoseconds: 5_500_000_000)
+        try require(f.backend.stops == [id] && s.ledger.records.isEmpty,
+          "Shorter duration retained the old ten-second timer")
+      }),
+      ("longer duration cancels the old shorter Stop task", { f in
+        let s = f.service(), r = f.request(seconds: 2, stopAfterSeconds: 3)
+        _ = try await s.reconcile([r], activeOwners: [r.ownerID])
+        try s.setFutureStopDuration(10)
+        try await Task.sleep(nanoseconds: 5_500_000_000)
+        try require(f.backend.stops.isEmpty && s.ledger.records.first?.stopDurationSeconds == 10,
+          "Old shorter timer stopped the extended signal")
+        try await s.stopAll()
+      }),
       ("accepted cues survive reconciliation without duplicate adds", { f in
         let s = f.service(), r = f.request()
         _ = try await s.reconcile([r], activeOwners: [r.ownerID])
