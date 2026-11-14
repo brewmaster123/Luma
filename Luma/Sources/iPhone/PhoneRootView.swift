@@ -108,7 +108,7 @@ private struct ReferenceTabBar: View {
         .accessibilityIdentifier("reference.tab.\(tab.title)")
       }
     }
-    .padding(.horizontal, 9)
+    .padding(.horizontal, 80 * scale)
     .background {
       LinearGradient(colors: [.clear, ReferenceNightStyle.sky.opacity(0.18)],
         startPoint: .top, endPoint: .bottom)

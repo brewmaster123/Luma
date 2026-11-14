@@ -105,7 +105,7 @@ jobs:
             CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" \
             build 2>&1 | tee ../build-logs/watch-build.log
 
-      - name: Build and capture the actual reference screen
+      - name: Build simulator for actual reference capture
         id: simulator
         timeout-minutes: 12
         if: ${{ !cancelled() && steps.project.outcome == 'success' && steps.structure.outcome == 'success' }}
@@ -125,16 +125,8 @@ jobs:
           xcrun simctl ui "$UDID" appearance dark
           xcrun simctl status_bar "$UDID" override --time "9:41" --dataNetwork wifi \
             --wifiMode active --wifiBars 3 --cellularMode active --cellularBars 4 \
-            --batteryState charged --batteryLevel 100
+            --batteryState discharging --batteryLevel 100
           xcrun simctl install "$UDID" ../build/reference-simulator/Build/Products/Debug-iphonesimulator/Luma.app
-          xcrun simctl launch --terminate-running-process "$UDID" com.sevchlenko.luma -reference-screenshot
-          sleep 5
-          mkdir -p ../build-logs/reference-screen
-          xcrun simctl io "$UDID" screenshot ../build-logs/reference-screen/native-night.png
-          sips -g pixelWidth -g pixelHeight ../build-logs/reference-screen/native-night.png \
-            > ../build-logs/reference-screen/viewport.txt
-          printf '{"source":"actual iOS Simulator app","launchArgument":"-reference-screenshot","animationTime":0,"moonAngleDegrees":0,"welcomeSheet":false,"fixture":"one 07:00 weekday alarm; no services scheduled"}\n' \
-            > ../build-logs/reference-screen/capture.json
 
       - name: Exercise the actual app interactions
         id: ui
@@ -149,6 +141,25 @@ jobs:
             -resultBundlePath ../build-logs/reference-ui-tests.xcresult \
             CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" \
             test 2>&1 | tee ../build-logs/reference-ui-tests.log
+
+      - name: Export the actual ready Night screen
+        if: ${{ !cancelled() && steps.simulator.outcome == 'success' }}
+        run: |
+          set -euo pipefail
+          xcrun xcresulttool export attachments --path ../build-logs/reference-ui-tests.xcresult \
+            --output-path ../build-logs/reference-attachments
+          python3 scripts/export-reference-capture.py ../build-logs/reference-attachments \
+            ../build-logs/reference-screen
+          swift scripts/check-native-capture.swift ../build-logs/reference-screen/native-night.png
+
+      - name: Save native reference screenshot
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: Luma-0.9.9-native-reference-screen
+          path: build-logs/reference-screen/
+          if-no-files-found: warn
+          retention-days: 7
 
       - name: Surface native compiler diagnostics
         if: always()
@@ -169,15 +180,6 @@ jobs:
                   message = ("Native compiler: " + line).replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
                   print("::error::" + message)
           PY
-
-      - name: Save native reference screenshot
-        if: always()
-        uses: actions/upload-artifact@v7
-        with:
-          name: Luma-0.9.9-native-reference-screen
-          path: build-logs/reference-screen/
-          if-no-files-found: warn
-          retention-days: 7
 
       - name: Stop the isolated reference simulator
         if: always()

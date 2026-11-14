@@ -1,0 +1,17 @@
+{
+  "checkedAtUTC": "2026-11-14T22:11:57.775774+00:00",
+  "command": "python Baselines/V.0.9.6/verify-baseline.py --deep",
+  "result": "One mismatch: Git remote HEAD reflog; all other baseline entries matched",
+  "path": "C:\\Users\\Admin\\Desktop\\Luma\\V.0.9.6\\Luma\\.validation-tools\\ci-repo\\.git\\logs\\refs\\remotes\\origin\\HEAD",
+  "expectedBytes": 807,
+  "actualBytes": 1115,
+  "expectedSHA256": "7d4864d5ad9fb21ce2b6f17ece422f82da356601757ae1f63761469db1d30d7c",
+  "actualSHA256": "894805ab3ea203e89d741f2c38e5472ef137833762fb18907c5d8117b4b94560",
+  "archiveEntrySHA256": "7d4864d5ad9fb21ce2b6f17ece422f82da356601757ae1f63761469db1d30d7c",
+  "lastModifiedUTC": "2026-11-14T21:59:50.868014+00:00",
+  "originalOverwritten": false,
+  "manifestUpdated": false,
+  "automaticRestorePerformed": false,
+  "cause": "Not proven. This is a Git service log, not application source. GitHub Desktop was used for the separate experimental checkout; no Git command was intentionally run in V.0.9.6.",
+  "followUp": "Keep the recorded baseline and original folder unchanged; do not normalize the manifest or restore over the original."
+}
