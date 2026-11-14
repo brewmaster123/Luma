@@ -78,6 +78,7 @@ struct IndirectMethodCard: View {
           .position(x: geometry.size.width / 2, y: 12 * sy)
         Text("Непрямой метод")
           .font(ReferenceNightStyle.serif(31 * sx))
+          .tracking(2.08 * sx)
           .foregroundStyle(Color(hex: 0xF9EBC8))
           .lineLimit(1).minimumScaleFactor(0.75)
           .position(x: geometry.size.width / 2, y: 48 * sy)
@@ -170,12 +171,13 @@ struct IndirectMethodCard: View {
 
   private var sessionButton: some View {
     Button(action: sessionTapped) {
-      HStack(spacing: max(10, 26 * sx)) {
+      HStack(spacing: max(10, 46 * sx)) {
         Image(systemName: model.indirectRunning ? "stop.fill" : "play.fill")
           .font(.system(size: max(13, 30 * sx), weight: .regular))
           .foregroundStyle(ReferenceNightStyle.amber)
         Text(model.indirectRunning ? "Завершить сеанс" : "Начать сеанс")
           .font(ReferenceNightStyle.serif(max(15, 36 * sx)))
+          .tracking(1.8 * sx)
           .foregroundStyle(Color(hex: 0xF8EBCA))
           .lineLimit(1).minimumScaleFactor(0.65)
       }.frame(maxWidth: .infinity, maxHeight: .infinity)

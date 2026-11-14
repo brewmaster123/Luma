@@ -69,8 +69,10 @@ private struct ReferenceNightArtwork: View {
         artwork("ReferenceCloudNear", height: 520, scale: scale, origin: origin)
           .offset(x: -sin(time * 2 * .pi / 87) * 1.8 * scale,
             y: sin(time * 2 * .pi / 121) * 0.35 * scale)
-        Image("ReferenceMoon")
-          .resizable().interpolation(.high)
+        ZStack {
+          Image("ReferenceMoonHalo").resizable().interpolation(.high)
+          Image("ReferenceMoon").resizable().interpolation(.high)
+        }
           .frame(width: 1024 * scale, height: 520 * scale)
           .rotationEffect(.degrees(moonAngle), anchor: UnitPoint(x: 554.0 / 1024.0, y: 0))
           .opacity(0.9875 + 0.0125 * cos(time * 2 * .pi / 12))

@@ -190,7 +190,8 @@ struct NightView: View {
               .foregroundStyle(ReferenceNightStyle.amber)
               .frame(width: 78 * sx)
             VStack(alignment: .leading, spacing: 7 * sy) {
-              Text("Умный будильник").font(ReferenceNightStyle.serif(max(16, 34 * sx)))
+              Text("Умный будильник").font(ReferenceNightStyle.serif(max(16, 36 * sx)))
+                .tracking(1.5 * sx)
                 .foregroundStyle(Color(hex: 0xF2F0F3))
               Text("Автоматические пробуждения")
                 .font(ReferenceNightStyle.sans(max(11, 24 * sx)))
@@ -235,7 +236,7 @@ struct NightView: View {
   private func alarmRow(_ item: LumaAlarm, scaleX sx: CGFloat, scaleY sy: CGFloat) -> some View {
     HStack(spacing: 12 * sx) {
       Button { alarm = item } label: {
-        HStack(spacing: 32 * sx) {
+        HStack(spacing: 39 * sx) {
           Image(systemName: "clock")
             .font(.system(size: max(22, 44 * sx), weight: .regular))
             .foregroundStyle(ReferenceNightStyle.inactive)
@@ -243,6 +244,7 @@ struct NightView: View {
           VStack(alignment: .leading, spacing: 5 * sy) {
             Text(String(format: "%02d:%02d", item.hour, item.minute))
               .font(ReferenceNightStyle.serif(max(22, 50 * sx)))
+              .tracking(0.7 * sx)
               .foregroundStyle(Color(hex: 0xF2F0F3)).monospacedDigit()
             Text(alarmSubtitle(item))
               .font(ReferenceNightStyle.sans(max(11, 24 * sx)))
