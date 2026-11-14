@@ -1,15 +1,19 @@
-# AlarmKit WAV: реализация 0.9.5
+# Источники и решение 0.9.6
 
-В этой работе документация Apple и интернет не открывались по прямому указанию пользователя. Реализация использует API из имеющейся кодовой базы. Прежнее исследование 0.9.2 доступно в неизменённой соседней папке; его выводы не выдаются за новую проверку.
+Проверены 12 ноября 2026 с разрешения пользователя; ниже выводы из API, а не протокол испытания устройства.
 
-Умный будильник, непрямой метод и проба проходят через SystemAlarmService → AlarmKitScheduler. Настройка — fixed date, собственный .named WAV, отдельный UUID. Нет secondary action/snooze/countdown/repeat configuration. Пользовательский WAV ограничен 88 200 отсчётами; валидатор исключает встроенные smpl/plst loops. Готовый файл передаётся целиком системному проигрывателю.
+[AlarmConfiguration](https://developer.apple.com/documentation/alarmkit/alarmmanager/alarmconfiguration) задаёт расписание, presentation, intents и звук. Публичного параметра четырёхсекундного ringing duration в рассмотренной конфигурации нет. Это вывод по перечисленным API. [AlertSound](https://developer.apple.com/documentation/activitykit/alertconfiguration/alertsound) выбирает default/named звук, не loop policy. Гипотеза WAV EOF не прошла по сообщению пользователя.
 
-Это реализует запрошенную гипотезу EOF. Отсутствие повторяющегося расписания и loop chunks **не управляет внутренним повторением звука системой**. Никакой выдуманный параметр playOnce/loopCount/autoDismiss не добавлен. Конец акустического звука и конец alarm state — разные наблюдения, оба требуют устройства.
+[FAQ инженера Apple](https://developer.apple.com/forums/thread/797158): запланированные alarms переживают завершение процесса; stopIntent относится к остановке пользователем. Поэтому таймер внутри приостановленного приложения не решает задачу.
 
-Резерв: после наблюдения alerting работающий процесс ждёт исходный fireAt+4s, вызывает Stop, при необходимости Cancel и проверяет отсутствие UUID. Поздно полученный update не даёт ещё четыре секунды. Stop затрагивает только это событие; следующие fixed IDs серии остаются. Task.sleep и alarmUpdates не обещают выполнение после suspension. UIKit background keep-alive и постоянная тишина отсутствуют.
+[AVAudioSession.playback](https://developer.apple.com/documentation/avfaudio/avaudiosession/category-swift.struct/playback): background audio mode позволяет продолжать настоящее воспроизведение после блокировки. [Interruption](https://developer.apple.com/documentation/avfaudio/avaudiosession/interruptionnotification): прерывание деактивирует сессию; уведомление после suspension может быть задержано. Вывод: реальный ночной звук — источник runtime с условиями, не гарантия бессмертного процесса.
 
-Нативная очередь подтверждает ID и состояние. AlarmKit snapshot не объявляет невидимые поля sound/title/длительность подтверждёнными. В журнале есть schedule_attempt, schedule_accepted, alarmkit_alert_observed, backup_stop_attempt/verified/failed и manual_alarmkit_stop. Ни одно из них не является физическим callback начала/EOF звука.
+[Extending background execution](https://developer.apple.com/documentation/uikit/extending-your-app-s-background-execution-time): ограниченное время завершения работы, не планировщик запуска в будущем. NightAudio использует короткое окно только для окончания Stop при interruption, не на всю ночь.
 
-Schema 1/2 очищается до постановки новой очереди; schema 3 переживает relaunch. Ошибка чтения manager.alarms выбрасывается, а не заменяется пустым массивом. Календарные даты и исходное начало 30-минутного сеанса не сдвигаются.
+[Watch notification forwarding](https://developer.apple.com/documentation/watchos-apps/taking-advantage-of-notification-forwarding): локальное оповещение, созданное watchOS-приложением, предназначено самим Watch; обычный iOS-origin notification маршрутизируется по активности устройств. Поэтому в 0.9.6 Watch получают расписание заранее и ставят собственные cues.
 
-Фактическое прекращение без прикосновения на locked/suspended устройстве остаётся непроверенным. Допуск к ночному использованию — только после измерения по DEVICE_TESTS.md.
+[WatchConnectivity sample](https://developer.apple.com/documentation/watchconnectivity/transferring-data-with-watch-connectivity) описывает передачу full context и завершение фоновых WC tasks. Подтверждение принятой очереди учитывается отдельно от посылки сообщения. Передача не является точным alarm-time wake-up.
+
+Не выбран WKExtendedRuntimeSession как способ бесконечной 30-минутной серии: [runtime sessions](https://developer.apple.com/documentation/watchkit/using-extended-runtime-sessions) требуют foreground для планирования и допускают только одну scheduled session. Не возвращены фиктивные workout/keep-alive датчики.
+
+Результирующий код: genuine sleep audio + absolute Stop deadlines + bounded interruption completion + independent Watch local queue. Остались условия runtime/permissions/Focus и необходимость физического теста.

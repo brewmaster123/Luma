@@ -1,9 +1,8 @@
 {
   "kind": "historical-directories-sha256-audit",
-  "checked_files": 959,
+  "checked_files": 1493,
+  "external_additions_checked": 0,
   "passed": true,
   "changes": [],
-  "unexpected_new_files": [],
-  "version": "0.9.5 (21)",
-  "date": "2026-11-12"
+  "unexpected_new_files": []
 }

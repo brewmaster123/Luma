@@ -1,0 +1,14 @@
+{
+  "kind": "Swift grammar only; not type checking",
+  "files": [
+    {
+      "file": "Sources\\iPhone\\IndirectMethodView.swift",
+      "grammarErrors": false
+    },
+    {
+      "file": "Sources\\Platform\\AppModel.swift",
+      "grammarErrors": false
+    }
+  ],
+  "passed": true
+}

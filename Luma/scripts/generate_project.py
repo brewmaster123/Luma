@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate a dependency-free, single-target iPhone Xcode project and its app icons."""
+"""Generate a dependency-free, iPhone and companion Watch Xcode project and its app icons."""
 from pathlib import Path
 import hashlib
 import json
@@ -29,7 +29,8 @@ def dump(value, indent=0):
 refs = {}
 groups = []
 for folder, title in [("Sources/LumaCore", "Core"), ("Sources/Platform", "Services"),
-                      ("Sources/iPhone", "iPhone")]:
+                      ("Sources/iPhone", "iPhone"), ("Sources/Watch", "Watch"),
+                      ("Tests/ReferenceNightUITests", "Reference UI Tests")]:
     children = []
     for file in sorted((ROOT / folder).glob("*.swift")):
         relative = file.relative_to(ROOT).as_posix()
@@ -38,21 +39,23 @@ for folder, title in [("Sources/LumaCore", "Core"), ("Sources/Platform", "Servic
     groups.append(obj(folder, "PBXGroup", children=children, name=title, path=folder, sourceTree="<group>"))
 
 resource_children = []
-for filename, kind in [("iOSAssets.xcassets", "folder.assetcatalog"),
-                       ("PrivacyInfo.xcprivacy", "text.xml")] + [(f"Manrope-{style}.ttf", "file") for style in ["Regular", "Medium", "SemiBold"]] + [(f"luma-tone-{n}.wav", "audio.wav") for n in [4,8,15]] + [("luma-alarm-4.wav", "audio.wav")]:
+for filename, kind in [("iOSAssets.xcassets", "folder.assetcatalog"), ("WatchAssets.xcassets", "folder.assetcatalog"),
+                       ("PrivacyInfo.xcprivacy", "text.xml")] + [(f"Manrope-{style}.ttf", "file") for style in ["Regular", "Medium", "SemiBold"]] + [(f"luma-tone-{n}.wav", "audio.wav") for n in [4,8,15]] + [("luma-alarm-4.wav", "audio.wav"), ("luma-night-rain.wav", "audio.wav")]:
     path = "Resources/" + filename
     refs[path] = obj(path, "PBXFileReference", lastKnownFileType=kind, path=filename, sourceTree="<group>")
     resource_children.append(refs[path])
 groups.append(obj("Resources", "PBXGroup", children=resource_children, path="Resources", sourceTree="<group>"))
 config_children = []
-for filename in ["Base.xcconfig", "iOS-Info.plist", "iOS.entitlements"]:
+for filename in ["Base.xcconfig", "iOS-Info.plist", "iOS.entitlements", "Watch-Info.plist", "Watch.entitlements"]:
     path = "Config/" + filename
     refs[path] = obj(path, "PBXFileReference", lastKnownFileType="text.xcconfig" if filename.endswith("xcconfig") else "text.plist.xml", path=filename, sourceTree="<group>")
     config_children.append(refs[path])
 groups.append(obj("Config", "PBXGroup", children=config_children, path="Config", sourceTree="<group>"))
 
 phone_product = obj("product.phone", "PBXFileReference", explicitFileType="wrapper.application", path="Luma.app", sourceTree="BUILT_PRODUCTS_DIR", includeInIndex=0)
-product_group = obj("products", "PBXGroup", name="Products", children=[phone_product], sourceTree="<group>")
+watch_product = obj("product.watch", "PBXFileReference", explicitFileType="wrapper.application", path="Luma Watch.app", sourceTree="BUILT_PRODUCTS_DIR", includeInIndex=0)
+ui_test_product = obj("product.ui-tests", "PBXFileReference", explicitFileType="wrapper.cfbundle", path="ReferenceNightUITests.xctest", sourceTree="BUILT_PRODUCTS_DIR", includeInIndex=0)
+product_group = obj("products", "PBXGroup", name="Products", children=[phone_product, watch_product, ui_test_product], sourceTree="<group>")
 main_group = obj("main", "PBXGroup", children=groups + [product_group], sourceTree="<group>")
 
 def configurations(key, settings, base=False):
@@ -76,6 +79,25 @@ phone_configs = configurations("phone.config", {
     "SUPPORTS_MACCATALYST": "NO", "SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD": "NO", "ENABLE_PREVIEWS": "YES"
 })
 
+watch_configs = configurations("watch.config", {
+    "PRODUCT_NAME": "Luma Watch", "PRODUCT_BUNDLE_IDENTIFIER": "$(LUMA_BUNDLE_PREFIX).watchkitapp",
+    "SDKROOT": "watchos", "SUPPORTED_PLATFORMS": "watchos watchsimulator", "TARGETED_DEVICE_FAMILY": "4",
+    "WATCHOS_DEPLOYMENT_TARGET": "10.0", "INFOPLIST_FILE": "Config/Watch-Info.plist",
+    "CODE_SIGN_ENTITLEMENTS": "Config/Watch.entitlements", "ASSETCATALOG_COMPILER_APPICON_NAME": "AppIcon",
+    "GENERATE_INFOPLIST_FILE": "NO", "SKIP_INSTALL": "YES", "ENABLE_PREVIEWS": "YES",
+    "LD_RUNPATH_SEARCH_PATHS": "$(inherited) @executable_path/Frameworks"
+})
+
+ui_test_configs = configurations("ui-test.config", {
+    "PRODUCT_NAME": "ReferenceNightUITests",
+    "PRODUCT_BUNDLE_IDENTIFIER": "$(LUMA_BUNDLE_PREFIX).reference-uitests",
+    "SDKROOT": "iphoneos", "SUPPORTED_PLATFORMS": "iphoneos iphonesimulator",
+    "TARGETED_DEVICE_FAMILY": "1", "IPHONEOS_DEPLOYMENT_TARGET": "17.0",
+    "GENERATE_INFOPLIST_FILE": "YES", "TEST_TARGET_NAME": "Luma",
+    "SWIFT_VERSION": "5.0", "ENABLE_TESTING_SEARCH_PATHS": "YES",
+    "LD_RUNPATH_SEARCH_PATHS": "$(inherited) @executable_path/Frameworks @loader_path/Frameworks"
+})
+
 def sources_phase(key, prefixes):
     files = [obj(key + path, "PBXBuildFile", fileRef=ref) for path, ref in refs.items() if path.endswith(".swift") and any(path.startswith(p) for p in prefixes)]
     return obj(key, "PBXSourcesBuildPhase", buildActionMask=2147483647, files=files, runOnlyForDeploymentPostprocessing=0)
@@ -85,19 +107,33 @@ def resources_phase(key, paths):
     return obj(key, "PBXResourcesBuildPhase", buildActionMask=2147483647, files=files, runOnlyForDeploymentPostprocessing=0)
 
 phone_sources = sources_phase("phone.sources", ["Sources/LumaCore/", "Sources/Platform/", "Sources/iPhone/"])
+watch_sources = sources_phase("watch.sources", ["Sources/LumaCore/", "Sources/Watch/"])
 fonts = [f"Resources/Manrope-{s}.ttf" for s in ["Regular", "Medium", "SemiBold"]]
 tones = [f"Resources/luma-tone-{n}.wav" for n in [4,8,15]] + ["Resources/luma-alarm-4.wav"]
-phone_resources = resources_phase("phone.resources", ["Resources/iOSAssets.xcassets", "Resources/PrivacyInfo.xcprivacy"] + fonts + tones)
+phone_resources = resources_phase("phone.resources", ["Resources/iOSAssets.xcassets", "Resources/PrivacyInfo.xcprivacy"] + fonts + tones + ["Resources/luma-night-rain.wav"])
+watch_resources = resources_phase("watch.resources", ["Resources/WatchAssets.xcassets", "Resources/PrivacyInfo.xcprivacy"])
 phone_frameworks = obj("phone.frameworks", "PBXFrameworksBuildPhase", buildActionMask=2147483647, files=[], runOnlyForDeploymentPostprocessing=0)
-phone_target = obj("phone.target", "PBXNativeTarget", buildConfigurationList=phone_configs, buildPhases=[phone_sources, phone_frameworks, phone_resources], buildRules=[], dependencies=[], name="Luma", productName="Luma", productReference=phone_product, productType="com.apple.product-type.application")
-project = obj("project", "PBXProject", attributes={"BuildIndependentTargetsInParallel": "YES", "LastSwiftUpdateCheck": "1600", "LastUpgradeCheck": "1600", "TargetAttributes": {phone_target: {"CreatedOnToolsVersion": "16.0"}}}, buildConfigurationList=project_configs, compatibilityVersion="Xcode 14.0", developmentRegion="ru", hasScannedForEncodings=0, knownRegions=["ru", "en", "Base"], mainGroup=main_group, productRefGroup=product_group, projectDirPath="", projectRoot="", targets=[phone_target])
+watch_frameworks = obj("watch.frameworks", "PBXFrameworksBuildPhase", buildActionMask=2147483647, files=[], runOnlyForDeploymentPostprocessing=0)
+embed_file = obj("embed.watch.file", "PBXBuildFile", fileRef=watch_product, settings={"ATTRIBUTES": ["RemoveHeadersOnCopy"]})
+embed = obj("embed.watch", "PBXCopyFilesBuildPhase", buildActionMask=2147483647, dstPath="$(CONTENTS_FOLDER_PATH)/Watch", dstSubfolderSpec=16, files=[embed_file], name="Embed Watch Content", runOnlyForDeploymentPostprocessing=0)
+proxy = obj("watch.proxy", "PBXContainerItemProxy", containerPortal=ident("project"), proxyType=1, remoteGlobalIDString=ident("watch.target"), remoteInfo="Luma Watch")
+dependency = obj("watch.dependency", "PBXTargetDependency", target=ident("watch.target"), targetProxy=proxy)
+phone_target = obj("phone.target", "PBXNativeTarget", buildConfigurationList=phone_configs, buildPhases=[phone_sources, phone_frameworks, phone_resources, embed], buildRules=[], dependencies=[dependency], name="Luma", productName="Luma", productReference=phone_product, productType="com.apple.product-type.application")
+watch_target = obj("watch.target", "PBXNativeTarget", buildConfigurationList=watch_configs, buildPhases=[watch_sources, watch_frameworks, watch_resources], buildRules=[], dependencies=[], name="Luma Watch", productName="Luma Watch", productReference=watch_product, productType="com.apple.product-type.application")
+ui_sources = sources_phase("ui-test.sources", ["Tests/ReferenceNightUITests/"])
+ui_resources = obj("ui-test.resources", "PBXResourcesBuildPhase", buildActionMask=2147483647, files=[], runOnlyForDeploymentPostprocessing=0)
+ui_frameworks = obj("ui-test.frameworks", "PBXFrameworksBuildPhase", buildActionMask=2147483647, files=[], runOnlyForDeploymentPostprocessing=0)
+ui_proxy = obj("ui-test.app-proxy", "PBXContainerItemProxy", containerPortal=ident("project"), proxyType=1, remoteGlobalIDString=phone_target, remoteInfo="Luma")
+ui_dependency = obj("ui-test.app-dependency", "PBXTargetDependency", target=phone_target, targetProxy=ui_proxy)
+ui_target = obj("ui-test.target", "PBXNativeTarget", buildConfigurationList=ui_test_configs, buildPhases=[ui_sources, ui_frameworks, ui_resources], buildRules=[], dependencies=[ui_dependency], name="ReferenceNightUITests", productName="ReferenceNightUITests", productReference=ui_test_product, productType="com.apple.product-type.bundle.ui-testing")
+project = obj("project", "PBXProject", attributes={"BuildIndependentTargetsInParallel": "YES", "LastSwiftUpdateCheck": "1600", "LastUpgradeCheck": "1600", "TargetAttributes": {phone_target: {"CreatedOnToolsVersion": "16.0"}, watch_target: {"CreatedOnToolsVersion": "16.0"}, ui_target: {"CreatedOnToolsVersion": "26.0", "TestTargetID": phone_target}}}, buildConfigurationList=project_configs, compatibilityVersion="Xcode 14.0", developmentRegion="ru", hasScannedForEncodings=0, knownRegions=["ru", "en", "Base"], mainGroup=main_group, productRefGroup=product_group, projectDirPath="", projectRoot="", targets=[phone_target, watch_target, ui_target])
 output = ROOT / "Luma.xcodeproj"
 output.mkdir(exist_ok=True)
 (output / "project.pbxproj").write_text("// !$*UTF8*$!\n" + dump({"archiveVersion": 1, "classes": {}, "objectVersion": 56, "objects": objects, "rootObject": project}) + "\n", encoding="utf-8", newline="\n")
 
 schemes = output / "xcshareddata" / "xcschemes"
 schemes.mkdir(parents=True, exist_ok=True)
-for name, target, product in [("Luma", phone_target, "Luma.app")]:
+for name, target, product in [("Luma", phone_target, "Luma.app"), ("Luma Watch", watch_target, "Luma Watch.app")]:
     reference = f'<BuildableReference BuildableIdentifier="primary" BlueprintIdentifier="{target}" BuildableName="{product}" BlueprintName="{name}" ReferencedContainer="container:Luma.xcodeproj"/>'
     text = f'''<?xml version="1.0" encoding="UTF-8"?>
 <Scheme LastUpgradeVersion="1600" version="1.3">
@@ -108,6 +144,25 @@ for name, target, product in [("Luma", phone_target, "Luma.app")]:
   <AnalyzeAction buildConfiguration="Debug"/><ArchiveAction buildConfiguration="Release" revealArchiveInOrganizer="YES"/>
 </Scheme>'''
     (schemes / (name + ".xcscheme")).write_text(text, encoding="utf-8", newline="\n")
+
+# The UI tests run against the real app in an isolated simulator. Screenshot-only launch
+# fixtures are not used by these interaction tests.
+app_ref = f'<BuildableReference BuildableIdentifier="primary" BlueprintIdentifier="{phone_target}" BuildableName="Luma.app" BlueprintName="Luma" ReferencedContainer="container:Luma.xcodeproj"/>'
+test_ref = f'<BuildableReference BuildableIdentifier="primary" BlueprintIdentifier="{ui_target}" BuildableName="ReferenceNightUITests.xctest" BlueprintName="ReferenceNightUITests" ReferencedContainer="container:Luma.xcodeproj"/>'
+ui_scheme = f'''<?xml version="1.0" encoding="UTF-8"?>
+<Scheme LastUpgradeVersion="2600" version="1.3">
+  <BuildAction parallelizeBuildables="YES" buildImplicitDependencies="YES"><BuildActionEntries>
+    <BuildActionEntry buildForTesting="YES" buildForRunning="YES" buildForProfiling="NO" buildForArchiving="NO" buildForAnalyzing="YES">{app_ref}</BuildActionEntry>
+    <BuildActionEntry buildForTesting="YES" buildForRunning="NO" buildForProfiling="NO" buildForArchiving="NO" buildForAnalyzing="YES">{test_ref}</BuildActionEntry>
+  </BuildActionEntries></BuildAction>
+  <TestAction buildConfiguration="Debug" selectedDebuggerIdentifier="Xcode.DebuggerFoundation.Debugger.LLDB" selectedLauncherIdentifier="Xcode.IDEFoundation.Launcher.LLDB" shouldUseLaunchSchemeArgsEnv="YES">
+    <Testables><TestableReference skipped="NO" parallelizable="NO">{test_ref}</TestableReference></Testables>
+    <MacroExpansion>{app_ref}</MacroExpansion>
+  </TestAction>
+  <LaunchAction buildConfiguration="Debug" selectedDebuggerIdentifier="Xcode.DebuggerFoundation.Debugger.LLDB" selectedLauncherIdentifier="Xcode.IDEFoundation.Launcher.LLDB" launchStyle="0" useCustomWorkingDirectory="NO" ignoresPersistentStateOnLaunch="NO" debugDocumentVersioning="YES"><BuildableProductRunnable runnableDebuggingMode="0">{app_ref}</BuildableProductRunnable></LaunchAction>
+  <AnalyzeAction buildConfiguration="Debug"/>
+</Scheme>'''
+(schemes / "LumaReferenceUITests.xcscheme").write_text(ui_scheme, encoding="utf-8", newline="\n")
 
 # Metadata used by the static verifier; regenerated from the same project object graph.
 (ROOT / "scripts/project-graph.json").write_text(json.dumps({"objects": objects, "rootObject": project}, indent=2), encoding="utf-8", newline="\n")

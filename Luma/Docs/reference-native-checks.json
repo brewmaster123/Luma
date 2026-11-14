@@ -1,0 +1,39 @@
+{
+  "version": "0.9.9",
+  "build": 25,
+  "kind": "isolated-reference-night-experiment",
+  "basis": "Design Experiments/V.0.9.8-Night-Sky (0.9.8 build 24), itself based on V.0.9.7 (23)",
+  "directory": "C:\\Users\\Admin\\Desktop\\Luma\\Design Experiments\\V.0.9.9-Reference-Night",
+  "user_local_date": "2026-11-14",
+  "checks": {
+    "structural_checks_passed": 161,
+    "grammar_inputs": 81,
+    "grammar_errors": 0,
+    "source_integrity_regression_tests_passed": 13,
+    "unchanged_preserved_inputs": 80,
+    "preserved_hashes_passed": true,
+    "intentional_preserved_scope_changes": [
+      "Sources/iPhone/PhoneRootView.swift",
+      "scripts/generate_project.py"
+    ],
+    "UI_test_cases_configured_not_yet_executed": 7
+  },
+  "ci_branch": "design/0.9.9-reference-night",
+  "Xcode_build_verified": false,
+  "native_UI_tests_executed": false,
+  "native_screenshot_received": false,
+  "CI_status": "pending",
+  "physical_device_tests_executed": false,
+  "production_ready": false,
+  "installed": false,
+  "bundle_ID": "com.sevchlenko.luma",
+  "storage_formats_changed": false,
+  "signing_configuration_changed": false,
+  "existing_version_folders_changed": false,
+  "visual_limitations": [
+    "Times New Roman is measured as closest; original source font is not identified.",
+    "SF Symbols and accessible minimum hit areas differ from illustration pixels.",
+    "Uniform art crop and adaptive controls differ on taller aspect ratios.",
+    "Clean background plate requires comparison against the actual simulator PNG."
+  ]
+}

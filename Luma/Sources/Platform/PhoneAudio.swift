@@ -27,6 +27,7 @@
     private var playbackStopper: CuePlaybackStopper?
     private var playbackGeneration = UUID()
     private var backgroundTask: UIBackgroundTaskIdentifier = .invalid
+    var externalPlaybackActive: () -> Bool = { false }
     var onEpoch: ((AudioEpoch) -> Void)?
     var onClip: ((VoiceClip) -> Void)?
     var onError: ((String) -> Void)?
@@ -253,7 +254,7 @@
       try await startCapture(name: "", journal: completion)
     }
     private func startCapture(name: String, journal: ((JournalVoice) -> Void)?) async throws {
-      guard !monitoring, !recording, !preparingCapture else { throw AppError.message("Записывайте голос между сеансами.") }
+      guard !monitoring, !recording, !preparingCapture, !externalPlaybackActive() else { throw AppError.message("Остановите ночной фон перед записью.") }
       preparingCapture = true
       defer { preparingCapture = false }
       stopPlayback()
@@ -316,7 +317,7 @@
         cueDuration: sound.duration)
     }
     func playJournal(_ voice: JournalVoice) throws {
-      guard !recording, !monitoring else { throw AppError.message("Завершите запись или ночной сеанс перед прослушиванием.") }
+      guard !recording, !monitoring, !externalPlaybackActive() else { throw AppError.message("Завершите запись или ночной фон перед прослушиванием.") }
       try playFile(journalURL(voice), id: voice.id, vibrate: false)
     }
     /// Real finite playback independent of notification mirroring; no background wake-up.
@@ -405,7 +406,7 @@
       UIApplication.shared.endBackgroundTask(id)
     }
     private func deactivate() {
-      if !monitoring && !recording && !playing {
+      if !monitoring && !recording && !playing && !externalPlaybackActive() {
         try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
       }
     }

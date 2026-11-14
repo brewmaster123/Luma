@@ -1,6 +1,7 @@
 {
-  "version": "0.9.5 (21)",
-  "kind": "executed-Python-AST-parse",
+  "version": "0.9.7 (23)",
+  "kind": "python-ast-parse",
+  "passed": true,
   "files": [
     "check-preserved-sources.py",
     "check-previous-versions.py",
@@ -8,6 +9,5 @@
     "check-static.py",
     "generate_project.py",
     "test-source-integrity.py"
-  ],
-  "passed": true
+  ]
 }

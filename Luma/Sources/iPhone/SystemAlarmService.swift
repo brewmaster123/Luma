@@ -1,15 +1,18 @@
 import Foundation
 import Combine
 
-/// AlarmKit-only delivery. A four-second WAV is the primary EOF experiment.
-/// A stop deadline is an execution-only backup; it cannot wake a suspended app.
+/// AlarmKit delivery with absolute per-occurrence Stop deadlines.
+/// NightAudio supplies runtime while real sleep audio plays; no suspended wake claim.
 @MainActor final class SystemAlarmService: ObservableObject {
   @Published private(set) var ledger = SystemAlarmLedger()
   @Published private(set) var summary = "РџСЂРѕРІРµСЂСЏРµРј AlarmKitвЂ¦"
-  @Published private(set) var lastStopReport = "WAV вЂ” 4,0 СЃРµРє. РћРєРѕРЅС‡Р°РЅРёРµ СЃРёРіРЅР°Р»Р° AlarmKit РЅР° iPhone РµС‰С‘ РЅРµ РїСЂРѕРІРµСЂРµРЅРѕ."
+  @Published private(set) var lastStopReport = "Длительность сигнала: 3–10 с, по умолчанию 4. Проверьте остановку на iPhone."
   @Published private(set) var preparing = false
   @Published private(set) var authorized = false
   var supported: Bool { scheduler.supported }
+  var runtimeReady: () -> Bool = { true } // Production injects the live NightAudio check.
+  var onAlertObserved: ((Date) -> Void)?
+  var onQueueChanged: ((SystemAlarmLedger) -> Void)?
   private let scheduler: any ShortAlarmScheduling
   private let cleanup: (Bool) throws -> Void
   private let legacyNotificationCleanup: () async throws -> Void
@@ -150,6 +153,9 @@ import Combine
       guard authorized || requests.isEmpty else {
         throw AppError.message("Р”РѕСЃС‚СѓРї Рє AlarmKit РІС‹РєР»СЋС‡РµРЅ. РџСЂРѕРІРµСЂСЊС‚Рµ СЂР°Р·СЂРµС€РµРЅРёРµ РЅР° Р±СѓРґРёР»СЊРЅРёРєРё Luma.")
       }
+      guard requests.isEmpty || runtimeReady() else {
+        throw AppError.message("Включите тихий ночной фон: он нужен для выполнения остановки AlarmKit после блокировки.")
+      }
       let requestedKeys = Set(requests.map(\.key))
       let protectedProbes = ledger.records.filter { $0.kind == .probe && !requestedKeys.contains($0.key) }.count
       let capacity = max(0, SystemAlarmPolicy.queueLimit - protectedProbes)
@@ -167,9 +173,10 @@ import Combine
       }
       for record in ledger.records {
         // Do not cancel a just-due pending delivery merely because its time is
-        // no longer in the future. Its sound still ends independently of us.
+        // no longer in the future. Keep its original Stop deadline.
         let justDue = activeOwners.contains(record.ownerID)
-          && (-5...1).contains(record.fireAt.timeIntervalSinceNow)
+          && record.fireAt <= Date().addingTimeInterval(1)
+          && Date() <= record.stopAt.addingTimeInterval(1)
         if !wanted.contains(record.key) && record.kind != .probe && !justDue {
           try await cancel(record, includingDelivered: false)
         }
@@ -178,7 +185,10 @@ import Combine
         guard operation == generation, !Task.isCancelled else { throw CancellationError() }
         guard let sound = sounds[request.source] else { continue }
         if let previous = ledger.records.first(where: { $0.key == request.key }) {
-          if previous.soundName == sound && previous.title == request.title && !previous.pending { continue }
+          if previous.soundName == sound && previous.title == request.title && !previous.pending {
+            try updateFutureStopDurations([previous.id: request.stopAfterSeconds])
+            continue
+          }
           try await cancel(previous, includingDelivered: false)
         }
         guard operation == generation, !Task.isCancelled else { throw CancellationError() }
@@ -194,6 +204,7 @@ import Combine
           try await scheduler.add(record)
           guard operation == generation, !Task.isCancelled,
             ledger.records.contains(where: { $0.id == record.id }) else { throw CancellationError() }
+          guard runtimeReady() else { throw AppError.message("Ночной фон прерван во время подготовки.") }
           // Verify admission; add() returning is not acoustic confirmation.
           let admitted = try await scheduler.pending()
           guard operation == generation, !Task.isCancelled else { throw CancellationError() }
@@ -203,6 +214,7 @@ import Combine
           if let i = ledger.records.firstIndex(where: { $0.id == record.id }) { ledger.records[i].pending = false }
           try persist()
           inFlightID = nil
+          armBackup(record)
           CueDiagnostics.event("schedule_accepted", record: record, detail: "AlarmKit fixed occurrence; verified 4-second PCM WAV")
         } catch {
           // A failed or cancelled await may still have admitted a request.
@@ -269,6 +281,15 @@ import Combine
     try cleanup(ledger.schema < 3)
     try await completeCancellations(); updateSummary()
   }
+  /// Loss of the real audio runtime disarms the daemon queue. Preserve cadence
+  /// and user settings so a later explicit restart can plan future occurrences.
+  func disarmForRuntimeLoss() async throws {
+    try load(); generation = UUID()
+    let previous = ledger
+    ledger.cancelAllRequested = true
+    do { try persist() } catch { ledger = previous; throw error }
+    try await completeCancellations(); updateSummary()
+  }
   private func completeCancellations() async throws {
     guard ledger.cancelAllRequested == true || !(ledger.cancelledOwners ?? []).isEmpty else { return }
     let cancellationGeneration = generation
@@ -299,11 +320,51 @@ import Combine
     do { try await bootstrap() } catch { summary = error.localizedDescription }
   }
   func appBecameInactive() {
-    CueDiagnostics.event("app_inactive", detail: "WAV EOF primary; backup Stop only while the process executes")
+    CueDiagnostics.event("app_inactive", detail: "NightAudio must be playing; deadlines do not wake a suspended process")
   }
   func refresh() async throws {
     guard !preparing else { return }
     try await bootstrap()
+  }
+
+  /// Available even during a queue rebuild, when refresh() intentionally returns.
+  var currentStopDeadline: Date? {
+    let now = Date(), cancelled = Set(ledger.cancelledOwners ?? [])
+    guard ledger.cancelAllRequested != true else { return nil }
+    return ledger.records.filter {
+      !cancelled.contains($0.ownerID) && $0.fireAt <= now.addingTimeInterval(1) && $0.stopAt > now
+    }.map(\.stopAt).max()
+  }
+
+  /// No daemon rescheduling: only future local deadlines change, transactionally.
+  func setFutureStopDuration(_ seconds: Int) throws {
+    guard AlarmSignalDuration.range.contains(seconds) else {
+      throw AppError.message("Выберите длительность от 3 до 10 секунд.")
+    }
+    guard !preparing, !bootstrapping else {
+      throw AppError.message("Дождитесь завершения подготовки сигналов.")
+    }
+    try load()
+    try updateFutureStopDurations(Dictionary(uniqueKeysWithValues: ledger.records.map { ($0.id, seconds) }))
+  }
+
+  private func updateFutureStopDurations(_ durations: [UUID: Int]) throws {
+    guard ledger.schema == 3 else { return }
+    let previous = ledger, threshold = Date().addingTimeInterval(1)
+    var changed: [SystemAlarmRecord] = []
+    for index in ledger.records.indices {
+      let record = ledger.records[index]
+      guard let seconds = durations[record.id], record.fireAt > threshold,
+        !observedDeliveries.contains(record.notificationID), record.stopDurationSeconds != seconds else { continue }
+      ledger.records[index].stopAfterSeconds = AlarmSignalDuration.validated(seconds)
+      changed.append(ledger.records[index])
+    }
+    guard !changed.isEmpty else { return }
+    do { try persist() } catch { ledger = previous; throw error }
+    for record in changed {
+      deadlines.removeValue(forKey: record.id)?.cancel()
+      armBackup(record)
+    }
   }
 
   private func refreshRecords() async throws {
@@ -322,25 +383,26 @@ import Combine
         }
         if snapshot.alerting {
           if observedDeliveries.insert(record.notificationID).inserted {
+            onAlertObserved?(record.stopAt)
             CueDiagnostics.event("alarmkit_alert_observed", record: record,
               detail: "state observed in process; actual acoustic start/EOF not observable")
           }
-          if Date() >= record.stopAt {
-            CueDiagnostics.event("backup_stop_attempt", record: record)
-            do {
-              try await scheduler.stop(record.notificationID)
-              ledger.markHandled(record); changed = true
-              deadlines.removeValue(forKey: record.id)?.cancel()
-              lastStopReport = "AlarmKit РїРѕРґС‚РІРµСЂРґРёР» СЂРµР·РµСЂРІРЅСѓСЋ Stop; РґР»РёС‚РµР»СЊРЅРѕСЃС‚СЊ Р·РІСѓС‡Р°РЅРёСЏ РЅСѓР¶РЅРѕ РёР·РјРµСЂРёС‚СЊ."
-              CueDiagnostics.event("backup_stop_verified", record: record,
-                detail: "system ID removed; not acoustic proof or a background guarantee")
-            } catch {
-              lastStopReport = "Р РµР·РµСЂРІРЅР°СЏ Stop РЅРµ РїРѕРґС‚РІРµСЂР¶РґРµРЅР°. РџСЂРё РїРѕРІС‚РѕСЂРµ РЅР°Р¶РјРёС‚Рµ В«РћСЃС‚Р°РЅРѕРІРёС‚СЊВ»."
-              CueDiagnostics.event("backup_stop_failed", record: record, detail: error.localizedDescription)
-              throw error
-            }
-          } else { armBackup(record) }
         }
+        if Date() >= record.stopAt {
+          CueDiagnostics.event("deadline_stop_attempt", record: record,
+            detail: snapshot.alerting ? "alerting" : "late scheduled occurrence cancelled")
+          do {
+            try await scheduler.stop(record.notificationID)
+            ledger.markHandled(record); changed = true
+            deadlines.removeValue(forKey: record.id)?.cancel()
+            lastStopReport = "AlarmKit подтвердил Stop текущего ID; длительность проверьте внешней записью."
+            CueDiagnostics.event("deadline_stop_verified", record: record)
+          } catch {
+            lastStopReport = "Остановка не подтверждена: " + error.localizedDescription
+            CueDiagnostics.event("deadline_stop_failed", record: record, detail: error.localizedDescription)
+            throw error
+          }
+        } else { armBackup(record) }
       } else {
         if byID[record.notificationID] != nil {
           try await scheduler.cancel([record.notificationID], includingDelivered: true)
@@ -363,14 +425,26 @@ import Combine
     guard deadlines[record.id] == nil else { return }
     let delay = max(0, record.stopAt.timeIntervalSinceNow)
     guard delay.isFinite else { return }
-    // Execution-only backup after an observed alert, not a wake-up mechanism.
-    // The finite WAV is used regardless of whether this task can execute.
+    // Armed before the future alarm fires, so a missing alarmUpdates callback
+    // is not required to create the deadline. Runs only with actual process runtime.
     deadlines[record.id] = Task { @MainActor [weak self] in
       do { try await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000)) } catch { return }
       guard let self, !Task.isCancelled else { return }
       self.deadlines[record.id] = nil
-      do { try await self.refresh() } catch { self.summary = error.localizedDescription }
+      do { try await self.expire(record) } catch { self.summary = error.localizedDescription }
     }
+  }
+  private func expire(_ record: SystemAlarmRecord) async throws {
+    guard ledger.records.contains(where: { $0.id == record.id }), Date() >= record.stopAt else { return }
+    // Do not wait for a queue rebuild or an alert-update callback to finish.
+    onAlertObserved?(record.stopAt)
+    CueDiagnostics.event("deadline_stop_attempt", record: record)
+    try await scheduler.stop(record.notificationID)
+    guard ledger.records.contains(where: { $0.id == record.id }) else { return }
+    ledger.markHandled(record); deadlines.removeValue(forKey: record.id)?.cancel()
+    try persist()
+    lastStopReport = "AlarmKit подтвердил Stop текущего ID; измерьте звук внешней записью."
+    CueDiagnostics.event("deadline_stop_verified", record: record)
   }
   private func cancel(_ record: SystemAlarmRecord, includingDelivered: Bool) async throws {
     CueDiagnostics.event("cancel_attempt", record: record)
@@ -390,7 +464,7 @@ import Combine
     guard supported else { summary = "AlarmKit В· С‚СЂРµР±СѓРµС‚СЃСЏ iOS 26 РёР»Рё РЅРѕРІРµРµ"; return }
     guard authorized else { summary = "Р Р°Р·СЂРµС€РёС‚Рµ Р±СѓРґРёР»СЊРЅРёРєРё Luma С‡РµСЂРµР· AlarmKit"; return }
     let count = ledger.records.filter { !$0.pending }.count
-    summary = "AlarmKit В· РІ РѕС‡РµСЂРµРґРё \(count) В· WAV 4,0 СЃРµРє"
+    summary = "AlarmKit · в очереди \(count)"
     if let summaryWarning { summary += " В· \(summaryWarning)" }
   }
   private func directory() throws -> URL {
@@ -422,10 +496,22 @@ import Combine
   }
   private func persist() throws {
     let file = try directory().appendingPathComponent("alarms.json")
+    // Keep the pre-upgrade bytes once; never replace an existing recovery copy.
+    let backup = file.deletingLastPathComponent().appendingPathComponent("alarms-before-duration-setting.json")
+    if FileManager.default.fileExists(atPath: file.path),
+      !FileManager.default.fileExists(atPath: backup.path) {
+      let original = try Data(contentsOf: file)
+      #if os(iOS)
+      try original.write(to: backup, options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])
+      #else
+      try original.write(to: backup, options: .atomic)
+      #endif
+    }
     #if os(iOS)
     try JSONEncoder().encode(ledger).write(to: file, options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])
     #else
     try JSONEncoder().encode(ledger).write(to: file, options: .atomic)
     #endif
+    onQueueChanged?(ledger)
   }
 }

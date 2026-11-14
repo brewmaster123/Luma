@@ -1,0 +1,252 @@
+{
+  "version": "0.9.8 (24)",
+  "basis": "V.0.9.7 (23)",
+  "kind": "grammar-and-preservation-only",
+  "swift_sources_parsed": 44,
+  "syntax_failures": [],
+  "other_swift_sources": [
+    {
+      "path": "Sources/iPhone/AlarmEditor.swift",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/iPhone/AlarmKitScheduler.swift",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/iPhone/AlarmKitSoundBuilder.swift",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/iPhone/CueAudioImporter.swift",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/iPhone/DesignSystem.swift",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/iPhone/JournalView.swift",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/iPhone/JournalVoiceComposer.swift",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/iPhone/LegacyAlarmCleanup.swift",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/iPhone/LumaApp.swift",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/iPhone/NightAudio.swift",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/iPhone/PhoneRootView.swift",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/iPhone/SettingsView.swift",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/iPhone/SignalReadinessView.swift",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/iPhone/SoundLibraryView.swift",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/iPhone/SystemAlarmService.swift",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/iPhone/WatchCueLink.swift",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/LumaCore/AcousticFeatures.swift",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/LumaCore/AlarmSignalDuration.swift",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/LumaCore/AlarmStopWindow.swift",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/LumaCore/CueEngine.swift",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/LumaCore/CuePlaybackStopper.swift",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/LumaCore/FiniteCuePolicy.swift",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/LumaCore/IndirectMethod.swift",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/LumaCore/iPhoneOnlyMigration.swift",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/LumaCore/LumaV2.swift",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/LumaCore/Models.swift",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/LumaCore/MultimodalEstimator.swift",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/LumaCore/PairedCuePolicy.swift",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/LumaCore/RealtimeREMEngine.swift",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/LumaCore/REMEstimator.swift",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/LumaCore/SystemAlarmPlan.swift",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/LumaCore/WatchCuePlan.swift",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/LumaCore/WaveCueInspector.swift",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/Platform/AlarmScheduling.swift",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/Platform/AppError.swift",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/Platform/AppModel.swift",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/Platform/CueDiagnostics.swift",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/Platform/HealthService.swift",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/Platform/LocalStore.swift",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/Platform/NotificationService.swift",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/Platform/PhoneAudio.swift",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/Watch/LumaWatchApp.swift",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/Watch/WatchCueStore.swift",
+      "unchanged": true
+    }
+  ],
+  "preserved_action_contracts": [
+    {
+      "contract": "await model.stopIndirectMethod()",
+      "present": true
+    },
+    {
+      "contract": "await model.requestIndirectMethodStart()",
+      "present": true
+    },
+    {
+      "contract": "model.systemAlarms.acceptedLimitations",
+      "present": true
+    },
+    {
+      "contract": ".disabled(model.busy || model.systemAlarms.preparing)",
+      "present": true
+    },
+    {
+      "contract": ".disabled(model.indirectRunning || model.busy)",
+      "present": true
+    },
+    {
+      "contract": "await model.setIndirectInterval(minutes)",
+      "present": true
+    },
+    {
+      "contract": "ForEach(10...60, id: \\.self)",
+      "present": true
+    },
+    {
+      "contract": "model.systemAlarms.indirectRecords.first(where:",
+      "present": true
+    },
+    {
+      "contract": ".accessibilityIdentifier(\"indirect.help\")",
+      "present": true
+    },
+    {
+      "contract": ".accessibilityIdentifier(\"indirect.interval\")",
+      "present": true
+    },
+    {
+      "contract": ".accessibilityIdentifier(\"indirect.start\")",
+      "present": true
+    },
+    {
+      "contract": ".accessibilityIdentifier(\"indirect.minutes\")",
+      "present": true
+    },
+    {
+      "contract": ".accessibilityIdentifier(\"indirect.save\")",
+      "present": true
+    },
+    {
+      "contract": "SignalReadinessView(continueTitle:",
+      "present": true
+    },
+    {
+      "contract": "IndirectHelpView().environmentObject(model)",
+      "present": true
+    },
+    {
+      "contract": "IndirectIntervalSheet().environmentObject(model)",
+      "present": true
+    }
+  ],
+  "only_version_and_build_changed_in_Base_xcconfig": true,
+  "swift_compiled": false,
+  "xctest_executed": false,
+  "device_visuals_checked": false,
+  "passed": true
+}

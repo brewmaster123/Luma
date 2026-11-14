@@ -1,0 +1,113 @@
+{
+  "kind": "static source/flow contracts; not Xcode typecheck or native UI tests",
+  "passed": true,
+  "checks": [
+    {
+      "name": "Existing indirect help exact paragraphs and queue sentence retained",
+      "passed": true
+    },
+    {
+      "name": "Smart help reuses existing AlarmEditor paragraph verbatim",
+      "passed": true
+    },
+    {
+      "name": "Existing interval picker retained unchanged",
+      "passed": true
+    },
+    {
+      "name": "func setIndirectInterval business implementation unchanged",
+      "passed": true
+    },
+    {
+      "name": "func requestIndirectMethodStart business implementation unchanged",
+      "passed": true
+    },
+    {
+      "name": "func stopIndirectMethod business implementation unchanged",
+      "passed": true
+    },
+    {
+      "name": "Alarm editor unchanged",
+      "passed": true
+    },
+    {
+      "name": "New namespaced preference defaults false",
+      "passed": true
+    },
+    {
+      "name": "Help Continue commits preference and arms one dismissal intent",
+      "passed": true
+    },
+    {
+      "name": "Help Cancel cannot start or persist opt-out",
+      "passed": true
+    },
+    {
+      "name": "Help dismissal consumes intent once before readiness",
+      "passed": true
+    },
+    {
+      "name": "Help Continue respects busy/preparing",
+      "passed": true
+    },
+    {
+      "name": "Skip preference bypasses only help, preserving readiness path",
+      "passed": true
+    },
+    {
+      "name": "One centralized model start, one stop call",
+      "passed": true
+    },
+    {
+      "name": "Readiness Continue intent required",
+      "passed": true
+    },
+    {
+      "name": "Interval guards and min/max retained",
+      "passed": true
+    },
+    {
+      "name": "No visible question icon in indirect control",
+      "passed": true
+    },
+    {
+      "name": "Two rules with no decorative star",
+      "passed": true
+    },
+    {
+      "name": "Source-scaled geometry matches reference anchors",
+      "passed": true
+    },
+    {
+      "name": "New helper types are in existing project source",
+      "passed": true
+    },
+    {
+      "name": "Fixture uses explicit process flag",
+      "passed": true
+    },
+    {
+      "name": "Fixture before store load/defaults read",
+      "passed": true
+    },
+    {
+      "name": "Fixture in-memory state is deterministic",
+      "passed": true
+    },
+    {
+      "name": "Fixture does not open archives or write defaults",
+      "passed": true
+    },
+    {
+      "name": "Fixture start/resume/suspend short-circuit scheduling",
+      "passed": true
+    },
+    {
+      "name": "Production service initialization preserved",
+      "passed": true
+    }
+  ],
+  "helpTextParagraphs": 7,
+  "productionAlarmCoreChanged": false,
+  "fixtureServicesNote": "Existing service constructors unchanged. Capture uses a fresh unpaired simulator and the root blocks interaction for the screenshot flag."
+}

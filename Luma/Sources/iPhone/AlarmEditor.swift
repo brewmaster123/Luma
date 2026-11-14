@@ -70,7 +70,7 @@ struct AlarmEditor: View {
           ).font(LumaStyle.font(12)).foregroundStyle(LumaStyle.secondary)
           LumaCard { SignalEditor(signal: $alarm.signal, voices: model.state.voices) }
           Group {
-            Text("Будильник через AlarmKit с WAV длиной 4 секунды. Перед ночью проверьте звук и его завершение с заблокированным iPhone.")
+            Text("Будильник через AlarmKit. Длительность сигнала выбирается в настройках: от 3 до 10 секунд. Перед ночью проверьте звук и его завершение с заблокированным iPhone.")
               .font(LumaStyle.font(12)).foregroundStyle(LumaStyle.secondary)
           }
           if let saveError { Text(saveError).font(LumaStyle.font(12)).foregroundStyle(LumaStyle.amber) }

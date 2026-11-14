@@ -13,3 +13,4 @@ swift test
 bash scripts/check-audio-on-mac.sh
 bash scripts/check-finite-queue-on-mac.sh
 xcodebuild -project Luma.xcodeproj -scheme Luma -destination 'generic/platform=iOS Simulator' -derivedDataPath .build/phone CODE_SIGNING_ALLOWED=NO build
+xcodebuild -project Luma.xcodeproj -scheme "Luma Watch" -destination "generic/platform=watchOS Simulator" -derivedDataPath .build/watch CODE_SIGNING_ALLOWED=NO build

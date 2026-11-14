@@ -1,0 +1,123 @@
+{
+  "referenceCanvas": [
+    1024,
+    1536
+  ],
+  "coordinateSystem": "top-left origin, pixels, uniform width scaling",
+  "moonAnchor": [
+    554,
+    0
+  ],
+  "moonBodyBounds": [
+    377,
+    156,
+    272,
+    282
+  ],
+  "layers": [
+    {
+      "asset": "reference-clean-backdrop.png",
+      "native": "ReferenceNightBackdrop",
+      "pixels": [
+        1024,
+        1536
+      ],
+      "frameInReference": [
+        0,
+        0,
+        1024,
+        1536
+      ],
+      "compact": "reference-clean-backdrop-compact.jpg",
+      "compactPixels": [
+        640,
+        960
+      ],
+      "provenance": "ImageGen clean plate; all UI, moon, chain, baked stars and comet removed; clouds reconstructed to reference"
+    },
+    {
+      "asset": "reference-moon.png",
+      "native": "ReferenceMoon",
+      "pixels": [
+        1024,
+        520
+      ],
+      "frameInReference": [
+        0,
+        0,
+        1024,
+        520
+      ],
+      "compact": "reference-moon-compact.webp",
+      "compactPixels": [
+        640,
+        325
+      ],
+      "provenance": "Unmodified source pixels extracted with FigCraft contour mask; transparent outside moon and chain"
+    },
+    {
+      "asset": "reference-cloud-far.png",
+      "native": "ReferenceCloudFar",
+      "pixels": [
+        1024,
+        520
+      ],
+      "frameInReference": [
+        0,
+        0,
+        1024,
+        520
+      ],
+      "compact": "reference-cloud-far-compact.webp",
+      "compactPixels": [
+        640,
+        325
+      ],
+      "provenance": "Original left clouds and left stars, radial alpha mask ending x362; outside crescent opening"
+    },
+    {
+      "asset": "reference-cloud-near.png",
+      "native": "ReferenceCloudNear",
+      "pixels": [
+        1024,
+        520
+      ],
+      "frameInReference": [
+        0,
+        0,
+        1024,
+        520
+      ],
+      "compact": "reference-cloud-near-compact.webp",
+      "compactPixels": [
+        640,
+        325
+      ],
+      "provenance": "Right cloud foreground extracted from cleaned plate with blurred alpha; no baked opening stars"
+    },
+    {
+      "asset": "reference-cloud-bottom.png",
+      "native": "ReferenceCloudBottom",
+      "pixels": [
+        1024,
+        1536
+      ],
+      "frameInReference": [
+        0,
+        0,
+        1024,
+        1536
+      ],
+      "compact": "reference-cloud-bottom-compact.webp",
+      "compactPixels": [
+        640,
+        960
+      ],
+      "contentY": [
+        1256,
+        1392
+      ],
+      "provenance": "Original bottom-cloud pixels with vertical alpha falloff; no UI"
+    }
+  ]
+}

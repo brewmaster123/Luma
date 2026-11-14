@@ -111,7 +111,10 @@ struct LumaStopAlarmIntent: LiveActivityIntent {
     if #available(iOS 26.0, *) {
       let manager = AlarmManager.shared
       let current = Set(try manager.alarms.map(\.id))
-      for id in ids where current.contains(id) { try manager.cancel(id: id) }
+      for id in ids where current.contains(id) {
+        do { try manager.cancel(id: id) }
+        catch { if try manager.alarms.contains(where: { $0.id == id }) { throw error } }
+      }
       let remaining = Set(try manager.alarms.map(\.id))
       guard remaining.isDisjoint(with: ids) else {
         throw AppError.message("AlarmKit ещё не подтвердил отмену прежнего сигнала.")
@@ -127,7 +130,14 @@ struct LumaStopAlarmIntent: LiveActivityIntent {
     if #available(iOS 26.0, *) {
       let manager = AlarmManager.shared
       let current = try manager.alarms
-      if current.contains(where: { $0.id == alarmID }) { try manager.stop(id: alarmID) }
+      if let alarm = current.first(where: { $0.id == alarmID }) {
+        do {
+          if alarm.state == .alerting { try manager.stop(id: alarmID) }
+          else { try manager.cancel(id: alarmID) }
+        } catch {
+          if try manager.alarms.contains(where: { $0.id == alarmID }) { throw error }
+        }
+      }
       let afterStop = try manager.alarms
       if afterStop.contains(where: { $0.id == alarmID }) { try manager.cancel(id: alarmID) }
       let verified = try manager.alarms

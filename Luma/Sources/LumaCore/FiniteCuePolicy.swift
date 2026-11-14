@@ -31,7 +31,7 @@ public struct FiniteCueSnapshot: Equatable, Sendable {
 
 public enum FiniteCuePolicy {
   public static let prefix = "luma.alarmkit."
-  public static let consentKey = "luma.alarmkit.four-second-wave.v2"
+  public static let consentKey = "luma.alarmkit.night-audio-stop.v3"
   public static func identifier(for id: UUID) -> String { prefix + id.uuidString }
   /// Historical notification-budget helper; AlarmKit uses queueLimit directly.
   public static func capacity(otherPending: Int) -> Int {

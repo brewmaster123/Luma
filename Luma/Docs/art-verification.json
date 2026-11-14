@@ -1,0 +1,12 @@
+{
+  "opaqueMoonPixelsCompared": 34886,
+  "opaqueMoonPixelsDifferent": 0,
+  "maximumOpaqueMoonRGBDifference": 0,
+  "transparentPixels": 496453,
+  "canvas": [
+    1024,
+    520
+  ],
+  "nativeImageSet": "ReferenceMoon",
+  "warning": "Clean backdrop was reconstructed by ImageGen. Pixel identity applies to extracted opaque moon pixels only, not generated background."
+}

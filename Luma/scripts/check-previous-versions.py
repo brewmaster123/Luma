@@ -23,11 +23,17 @@ for relative, item in expected.items():
             digest.update(block)
     if path.stat().st_size != item['size'] or digest.hexdigest() != item['sha256']:
         changes.append({'path': relative, 'error': 'content changed'})
-new = sorted(actual - expected.keys())
+external_file = ROOT / 'Docs/external-history-additions.json'
+external = json.loads(external_file.read_text(encoding='utf-8-sig')) if external_file.exists() else []
+for item in external:
+    path = WORKSPACE / item['path']
+    if not path.is_file() or path.stat().st_size != item['size'] or hashlib.sha256(path.read_bytes()).hexdigest() != item['sha256']:
+        changes.append({'path': item['path'], 'error': 'acknowledged external addition changed/missing'})
+new = sorted(actual - expected.keys() - {item['path'] for item in external})
 report = {'kind': 'historical-directories-sha256-audit', 'checked_files': len(expected),
-          'passed': not changes and not new, 'changes': changes, 'unexpected_new_files': new}
+          'external_additions_checked': len(external), 'passed': not changes and not new, 'changes': changes, 'unexpected_new_files': new}
 (ROOT / 'Docs/previous-versions-verification.json').write_text(
     json.dumps(report, ensure_ascii=False, indent=2), encoding='utf-8')
 if not report['passed']:
     raise SystemExit(json.dumps(report, ensure_ascii=False))
-print(f"PASS: {len(expected)} historical files unchanged; no additions or removals in previous directories.")
+print(f"PASS: {len(expected)} historical files unchanged; original snapshot intact; {len(external)} external additions tracked separately.")

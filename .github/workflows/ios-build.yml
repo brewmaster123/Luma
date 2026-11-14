@@ -1,8 +1,8 @@
-name: Luma - AlarmKit four-second WAV
+name: Luma - reference Night design and native checks
 
 on:
   push:
-    branches: [main]
+    branches: [main, design/0.9.9-reference-night]
   workflow_dispatch:
 
 permissions:
@@ -17,7 +17,7 @@ jobs:
     name: Test and build Luma
     # macos-15 selects ARM64. Use the standard Intel pool explicitly.
     runs-on: macos-15-intel
-    timeout-minutes: 30
+    timeout-minutes: 45
     env:
       DEVELOPER_DIR: /Applications/Xcode_26.3.app/Contents/Developer
     defaults:
@@ -95,19 +95,92 @@ jobs:
             CODE_SIGN_IDENTITY="" \
             clean build 2>&1 | tee ../build-logs/iphone-build.log
 
+      - name: Build Apple Watch companion
+        id: watch
+        if: ${{ !cancelled() && steps.project.outcome == 'success' && steps.structure.outcome == 'success' }}
+        run: |
+          set -euo pipefail
+          xcodebuild -project Luma.xcodeproj -scheme "Luma Watch" -configuration Debug \
+            -destination "generic/platform=watchOS" -derivedDataPath ../build/watch \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" \
+            build 2>&1 | tee ../build-logs/watch-build.log
+
+      - name: Build and capture the actual reference screen
+        id: simulator
+        timeout-minutes: 12
+        if: ${{ !cancelled() && steps.project.outcome == 'success' && steps.structure.outcome == 'success' }}
+        run: |
+          set -euo pipefail
+          xcodebuild -project Luma.xcodeproj -scheme Luma -configuration Debug \
+            -destination "generic/platform=iOS Simulator" \
+            -derivedDataPath ../build/reference-simulator \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" \
+            build 2>&1 | tee ../build-logs/reference-simulator-build.log
+          RUNTIME="$(xcrun simctl list runtimes -j | python3 -c 'import json,sys; r=[i for i in json.load(sys.stdin)["runtimes"] if i.get("isAvailable") and "iOS" in i["name"]]; r.sort(key=lambda i:tuple(map(int,i["version"].split(".")))); print(r[-1]["identifier"])')"
+          DEVICE_TYPE="$(xcrun simctl list devicetypes -j | python3 -c 'import json,sys; d=[i for i in json.load(sys.stdin)["devicetypes"] if i["name"].startswith("iPhone")]; p=next((i for n in ["iPhone 17 Pro","iPhone 16 Pro","iPhone 15 Pro"] for i in d if i["name"]==n),d[-1]); print(p["identifier"])')"
+          UDID="$(xcrun simctl create "Luma Reference Night" "$DEVICE_TYPE" "$RUNTIME")"
+          echo "REF_SIM_UDID=$UDID" >> "$GITHUB_ENV"
+          xcrun simctl boot "$UDID"
+          xcrun simctl bootstatus "$UDID" -b
+          xcrun simctl ui "$UDID" appearance dark
+          xcrun simctl status_bar "$UDID" override --time "9:41" --dataNetwork wifi \
+            --wifiMode active --wifiBars 3 --cellularMode active --cellularBars 4 \
+            --batteryState charged --batteryLevel 100
+          xcrun simctl install "$UDID" ../build/reference-simulator/Build/Products/Debug-iphonesimulator/Luma.app
+          xcrun simctl launch --terminate-running-process "$UDID" com.sevchlenko.luma -reference-screenshot
+          sleep 5
+          mkdir -p ../build-logs/reference-screen
+          xcrun simctl io "$UDID" screenshot ../build-logs/reference-screen/native-night.png
+          sips -g pixelWidth -g pixelHeight ../build-logs/reference-screen/native-night.png \
+            > ../build-logs/reference-screen/viewport.txt
+          printf '{"source":"actual iOS Simulator app","launchArgument":"-reference-screenshot","animationTime":0,"moonAngleDegrees":0,"welcomeSheet":false,"fixture":"one 07:00 weekday alarm; no services scheduled"}\n' \
+            > ../build-logs/reference-screen/capture.json
+
+      - name: Exercise the actual app interactions
+        id: ui
+        timeout-minutes: 12
+        if: ${{ !cancelled() && steps.simulator.outcome == 'success' }}
+        run: |
+          set -euo pipefail
+          xcrun simctl terminate "$REF_SIM_UDID" com.sevchlenko.luma || true
+          xcodebuild -project Luma.xcodeproj -scheme LumaReferenceUITests \
+            -configuration Debug -destination "platform=iOS Simulator,id=$REF_SIM_UDID" \
+            -derivedDataPath ../build/reference-simulator \
+            -resultBundlePath ../build-logs/reference-ui-tests.xcresult \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" \
+            test 2>&1 | tee ../build-logs/reference-ui-tests.log
+
+      - name: Save native reference screenshot
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: Luma-0.9.9-native-reference-screen
+          path: build-logs/reference-screen/
+          if-no-files-found: warn
+          retention-days: 7
+
+      - name: Stop the isolated reference simulator
+        if: always()
+        run: |
+          if [ -n "${REF_SIM_UDID:-}" ]; then
+            xcrun simctl shutdown "$REF_SIM_UDID" || true
+            xcrun simctl delete "$REF_SIM_UDID" || true
+          fi
+
       - name: Package unsigned IPA
-        if: ${{ success() && steps.preserved.outcome == 'success' && steps.core.outcome == 'success' && steps.audio.outcome == 'success' && steps.queue.outcome == 'success' && steps.iphone.outcome == 'success' }}
+        if: ${{ success() && steps.preserved.outcome == 'success' && steps.core.outcome == 'success' && steps.audio.outcome == 'success' && steps.queue.outcome == 'success' && steps.iphone.outcome == 'success' && steps.watch.outcome == 'success' }}
         run: |
           set -euo pipefail
           LUMA_APP="../build/iphone/Build/Products/Debug-iphoneos/Luma.app"
           test -f "$LUMA_APP/Luma"
           test -f "$LUMA_APP/Info.plist"
-          test ! -d "$LUMA_APP/Watch"
+          test -d "$LUMA_APP/Watch/Luma Watch.app"
+          test -f "$LUMA_APP/luma-night-rain.wav"
           test -f "$LUMA_APP/Manrope-Regular.ttf"
           test -f "$LUMA_APP/luma-tone-4.wav"
           test -f "$LUMA_APP/luma-alarm-4.wav"
-          test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$LUMA_APP/Info.plist")" = "0.9.5"
-          test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' "$LUMA_APP/Info.plist")" = "21"
+          test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$LUMA_APP/Info.plist")" = "0.9.9"
+          test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' "$LUMA_APP/Info.plist")" = "25"
           test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleSupportedPlatforms:0' "$LUMA_APP/Info.plist")" = "iPhoneOS"
           /usr/bin/lipo "$LUMA_APP/Luma" -verify_arch arm64
           mkdir -p ../dist/Payload
@@ -123,6 +196,14 @@ jobs:
         with:
           path: dist/Luma-unsigned.ipa
           archive: false
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Downloadable IPA ZIP
+        uses: actions/upload-artifact@v7
+        with:
+          name: Luma-0.9.9-unsigned-zip
+          path: dist/Luma-unsigned.ipa
           if-no-files-found: error
           retention-days: 7
 

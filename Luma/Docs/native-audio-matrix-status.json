@@ -1,20 +1,9 @@
 {
-  "version": "0.9.5 (21)",
-  "kind": "prepared-native-AVFoundation-matrix",
-  "case_count": 8,
-  "invalid_input_check": true,
-  "formats": [
-    "Float32 stereo 48kHz WAV",
-    "PCM16 mono 22.05kHz WAV"
-  ],
-  "source_seconds": [
-    0.32,
-    2,
-    4,
-    40
-  ],
-  "expected_output": "WAV PCM16 mono 22050Hz, 88200 frames, no smpl/plst",
-  "processing": "Float32 non-interleaved",
-  "executed_here": false,
+  "version": "0.9.7 (23)",
+  "executed": true,
+  "cases_passed": 8,
+  "invalid_input_rejected": true,
+  "run_url": "https://github.com/brewmaster123/Luma/actions/runs/43386887821",
+  "tested_commit": "0f20e7f9888effad5a1ad2e0d89d4eea93eed3b6",
   "physical_device_tested": false
 }

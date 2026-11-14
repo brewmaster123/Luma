@@ -2,74 +2,167 @@ import SwiftUI
 
 struct PhoneRootView: View {
   @EnvironmentObject private var model: AppModel
+  @State private var selected: ReferenceTab = .night
+  private var isReferenceFixture: Bool {
+    ProcessInfo.processInfo.arguments.contains("-reference-screenshot")
+  }
+
   var body: some View {
-    TabView {
-      NavigationStack { NightView() }.tabItem { Label("Ночь", systemImage: "moon") }
-      NavigationStack { JournalView() }.tabItem { Label("Дневник", systemImage: "book.closed") }
-      NavigationStack { SettingsView() }.tabItem {
-        Label("Настройки", systemImage: "slider.horizontal.3")
+    GeometryReader { geometry in
+      let viewport = ReferenceNightViewport(
+        size: CGSize(width: geometry.size.width,
+          height: geometry.size.height + geometry.safeAreaInsets.top + geometry.safeAreaInsets.bottom),
+        topInset: geometry.safeAreaInsets.top, bottomInset: geometry.safeAreaInsets.bottom)
+      ZStack {
+        if selected == .night {
+          ReferenceNightScene().ignoresSafeArea().accessibilityHidden(true)
+        } else {
+          LumaStyle.background.ignoresSafeArea()
+        }
+        TabView(selection: $selected) {
+          NavigationStack { NightView() }.tag(ReferenceTab.night)
+          NavigationStack {
+            if isReferenceFixture { Color.clear } else { JournalView() }
+          }.tag(ReferenceTab.journal)
+          NavigationStack {
+            if isReferenceFixture { Color.clear } else { SettingsView() }
+          }.tag(ReferenceTab.settings)
+        }
+        .toolbar(.hidden, for: .tabBar)
+        .safeAreaInset(edge: .bottom, spacing: 0) {
+          ReferenceTabBar(selection: $selected, scale: viewport.scaleX)
+        }
       }
-    }.tint(LumaStyle.lavender)
-      .alert(
-        "Luma",
-        isPresented: Binding(get: { model.message != nil }, set: { if !$0 { model.message = nil } })
-      ) {
-        Button("Понятно") { model.message = nil }
-      } message: {
-        Text(model.message ?? "")
-      }
-      .sheet(isPresented: $model.showOnboarding) {
-        IntroductionView().environmentObject(model).interactiveDismissDisabled()
-      }
-      .sheet(isPresented: $model.showSignalMigration) {
-        SignalReadinessView(continueTitle: "Включить сохранённые сигналы")
-          .environmentObject(model)
-      }
+      .environment(\.referenceNightViewport, viewport)
+    }
+    .tint(ReferenceNightStyle.amber)
+    .allowsHitTesting(!isReferenceFixture)
+    .task {
+      if model.showOnboarding { model.completeIntroduction() }
+    }
+    .alert(
+      "Luma",
+      isPresented: Binding(get: { model.message != nil }, set: { if !$0 { model.message = nil } })
+    ) {
+      Button("Понятно") { model.message = nil }
+    } message: {
+      Text(model.message ?? "")
+    }
+    // No introduction sheet: the app opens Night immediately.
+    // Readiness/migration consent remains separate from the obsolete welcome page.
+    .sheet(isPresented: $model.showSignalMigration) {
+      SignalReadinessView(continueTitle: "Включить сохранённые сигналы")
+        .environmentObject(model)
+    }
   }
 }
+
+private enum ReferenceTab: Hashable {
+  case night, journal, settings
+  var symbol: String {
+    switch self { case .night: return "moon"; case .journal: return "book"; case .settings: return "gearshape" }
+  }
+  var title: String {
+    switch self { case .night: return "Ночь"; case .journal: return "Дневник"; case .settings: return "Настройки" }
+  }
+}
+
+private struct ReferenceTabBar: View {
+  @Binding var selection: ReferenceTab
+  @Environment(\.accessibilityReduceMotion) private var reduced
+  @Namespace private var indicator
+  var scale: CGFloat
+  private let tabs: [ReferenceTab] = [.night, .journal, .settings]
+
+  var body: some View {
+    HStack(spacing: 0) {
+      ForEach(tabs, id: \.self) { tab in
+        Button {
+          if reduced { selection = tab }
+          else { withAnimation(.easeInOut(duration: 0.28)) { selection = tab } }
+        } label: {
+          VStack(spacing: 8) {
+            Image(systemName: tab.symbol)
+              .font(.system(size: max(24, 50 * scale), weight: .regular))
+              .frame(height: 32)
+              .foregroundStyle(selection == tab ? ReferenceNightStyle.text : ReferenceNightStyle.inactive)
+              .shadow(color: selection == tab ? ReferenceNightStyle.amber.opacity(0.20) : .clear,
+                radius: 5)
+            ZStack {
+              Color.clear
+              if selection == tab {
+                Capsule().fill(ReferenceNightStyle.text)
+                  .shadow(color: ReferenceNightStyle.amber.opacity(0.70), radius: 5, y: 1)
+                  .matchedGeometryEffect(id: "selected-tab", in: indicator)
+              }
+            }
+            .frame(width: max(28, 76 * scale), height: 2)
+          }
+          .padding(.top, 16)
+          .frame(maxWidth: .infinity, minHeight: 60, alignment: .top)
+          .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(tab.title)
+        .accessibilityAddTraits(selection == tab ? [.isSelected] : [])
+        .accessibilityIdentifier("reference.tab.\(tab.title)")
+      }
+    }
+    .padding(.horizontal, 9)
+    .background {
+      LinearGradient(colors: [.clear, ReferenceNightStyle.sky.opacity(0.18)],
+        startPoint: .top, endPoint: .bottom)
+        .allowsHitTesting(false)
+    }
+  }
+}
+
 struct NightView: View {
   @EnvironmentObject private var model: AppModel
+  @Environment(\.referenceNightViewport) private var viewport
   @State private var alarm: LumaAlarm?
   @State private var signalAction: SignalAction?
   @State private var preparedAction: SignalAction?
+  @State private var showingAlarmHelp = false
+
   private enum SignalAction: Identifiable {
     case enable(UUID)
     var id: UUID { switch self { case .enable(let id): return id } }
     var title: String { "Включить будильник" }
   }
+
   private func prepare(_ action: SignalAction) {
     if model.systemAlarms.acceptedLimitations { Task { await perform(action) } }
     else { signalAction = action }
   }
+
   private func perform(_ action: SignalAction) async {
     switch action { case .enable(let id): await model.toggleAlarm(id) }
   }
 
   var body: some View {
     GeometryReader { geometry in
+      let sx = viewport.scaleX
+      let sy = viewport.scaleY
       ScrollView {
-        let isEmpty = model.state.alarms.isEmpty
-        let layout = isEmpty
-          ? AnyLayout(NightEmptyLayout(availableHeight: max(0, geometry.size.height - 28)))
-          : AnyLayout(VStackLayout(spacing: 22))
-
-        layout {
-          brandHeader
-          MoonOrb()
-            .frame(height: isEmpty ? nil : 210)
-            .clipped()
-          nightHeading
-          IndirectMethodCard()
-          alarmsSection
+        VStack(spacing: 0) {
+          Color.clear.frame(height: max(0, 522 * sy - viewport.topInset))
+            .accessibilityHidden(true)
+          IndirectMethodCard(referenceScale: sx, referenceVerticalScale: sy)
+          Color.clear.frame(height: 64 * sy).accessibilityHidden(true)
+          alarmsSection(scaleX: sx, scaleY: sy)
+            .padding(.horizontal, 104 * sx)
+          Color.clear.frame(height: max(24, 90 * sy)).accessibilityHidden(true)
         }
-        .padding(.horizontal, 22)
-        .padding(.vertical, 14)
+        .frame(maxWidth: .infinity, minHeight: geometry.size.height, alignment: .top)
       }
       .scrollIndicators(.hidden)
-      .scrollBounceBehavior(.always, axes: .vertical)
+      .scrollBounceBehavior(.basedOnSize, axes: .vertical)
     }
-    .lumaScreen()
+    .foregroundStyle(ReferenceNightStyle.text)
+    .background(Color.clear)
     .toolbar(.hidden, for: .navigationBar)
+    .toolbarBackground(.hidden, for: .navigationBar)
     .sheet(item: $signalAction, onDismiss: {
       guard let action = preparedAction else { return }
       preparedAction = nil
@@ -79,37 +172,38 @@ struct NightView: View {
         .environmentObject(model)
     }
     .sheet(item: $alarm) { AlarmEditor(alarm: $0).environmentObject(model) }
+    .sheet(isPresented: $showingAlarmHelp) { SmartAlarmReferenceHelp() }
   }
 
-  private var brandHeader: some View {
-    HStack {
-      Text("luma").font(LumaStyle.font(26, "SemiBold"))
-      Spacer()
-      Label("ВАШЕ ПРОСТРАНСТВО СНА", systemImage: "sparkle")
-        .font(LumaStyle.font(9, "Medium"))
-        .foregroundStyle(LumaStyle.secondary)
-    }
-  }
-
-  private var nightHeading: some View {
-    VStack(spacing: 10) {
-      Text(model.stateTitle)
-        .font(LumaStyle.font(27, "Medium", relativeTo: .title))
-        .multilineTextAlignment(.center)
-        .fixedSize(horizontal: false, vertical: true)
-      Text("Осознанные Сновидения и Выход из Тела")
-        .font(LumaStyle.font(13))
-        .foregroundStyle(LumaStyle.secondary)
-        .multilineTextAlignment(.center)
-        .fixedSize(horizontal: false, vertical: true)
-    }
-  }
-
-  private var alarmsSection: some View {
-    LazyVStack(spacing: 12) {
-      HStack {
-        Text("Умный Будильник").font(LumaStyle.font(21, "Medium"))
-        Spacer()
+  private func alarmsSection(scaleX sx: CGFloat, scaleY sy: CGFloat) -> some View {
+    LazyVStack(spacing: 0) {
+      Rectangle()
+        .fill(LinearGradient(
+          colors: [.clear, ReferenceNightStyle.text.opacity(0.62), .clear],
+          startPoint: .leading, endPoint: .trailing))
+        .frame(height: 0.5)
+      HStack(spacing: 12) {
+        Button { showingAlarmHelp = true } label: {
+          HStack(spacing: 36 * sx) {
+            Image(systemName: "alarm")
+              .font(.system(size: max(22, 50 * sx), weight: .regular))
+              .foregroundStyle(ReferenceNightStyle.amber)
+              .frame(width: 78 * sx)
+            VStack(alignment: .leading, spacing: 7 * sy) {
+              Text("Умный будильник").font(ReferenceNightStyle.serif(max(16, 34 * sx)))
+                .foregroundStyle(Color(hex: 0xF2F0F3))
+              Text("Автоматические пробуждения")
+                .font(ReferenceNightStyle.sans(max(11, 24 * sx)))
+                .foregroundStyle(ReferenceNightStyle.secondary)
+            }
+          }
+          .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
+          .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel("Умный будильник. Автоматические пробуждения")
+        .accessibilityHint("Открывает справку")
+        .accessibilityIdentifier("alarm.help")
         Button {
           var item = LumaAlarm()
           item.signal = model.state.signal
@@ -117,118 +211,85 @@ struct NightView: View {
           alarm = item
         } label: {
           Image(systemName: "plus")
-            .frame(width: 44, height: 44)
-            .background(LumaStyle.surface, in: Circle())
+            .font(.system(size: max(22, 31 * sx), weight: .light))
+            .foregroundStyle(ReferenceNightStyle.text)
         }
+        .buttonStyle(ReferenceRoundButtonStyle(diameter: 58 * sx))
         .accessibilityLabel("Добавить будильник")
+        .accessibilityIdentifier("alarm.add")
       }
+      .padding(.top, 44 * sy)
+      .padding(.bottom, 30 * sy)
       if model.state.alarms.isEmpty {
         Text("Пока нет будильников")
-          .font(LumaStyle.font(13))
-          .foregroundStyle(LumaStyle.secondary)
-          .frame(maxWidth: .infinity, alignment: .leading)
+          .font(ReferenceNightStyle.sans(max(12, 24 * sx)))
+          .foregroundStyle(ReferenceNightStyle.secondary)
+          .frame(maxWidth: .infinity, minHeight: 112 * sy, alignment: .leading)
       }
       ForEach(model.sortedAlarms) { item in
-        LumaCard {
-          HStack(spacing: 12) {
-            Button { alarm = item } label: {
-              VStack(alignment: .leading, spacing: 5) {
-                Text(String(format: "%02d:%02d", item.hour, item.minute))
-                  .font(LumaStyle.font(31, "Medium"))
-                  .monospacedDigit()
-                Text(item.title).font(LumaStyle.font(13))
-                Text(
-                  item.weekdays.isEmpty ? "Один раз" : "Повтор по дням"
-                ).font(LumaStyle.font(10)).foregroundStyle(LumaStyle.secondary)
-                if item.enabled && item.weekdays.isEmpty && item.onceAt < Date() {
-                  Text("Завершён")
-                    .font(LumaStyle.font(10)).foregroundStyle(LumaStyle.secondary)
-                } else if item.enabled
-                  && !model.queuedAlarmIDs.contains(item.id)
-                {
-                  Text("Пока вне очереди iPhone")
-                    .font(LumaStyle.font(10)).foregroundStyle(LumaStyle.amber)
-                }
-              }
-              .frame(maxWidth: .infinity, minHeight: 88, alignment: .leading)
-              .padding(.vertical, 4)
-              .contentShape(Rectangle())
-            }
-            .buttonStyle(.plain)
-            .accessibilityLabel(
-              "Изменить будильник \(String(format: "%02d:%02d", item.hour, item.minute)), \(item.title)"
-            )
-            .accessibilityHint("Открывает настройку времени и сигнала")
-            Toggle(
-              "Включить будильник",
-              isOn: Binding(
-                get: { item.enabled }, set: { _ in
-                  if item.enabled { Task { await model.toggleAlarm(item.id) } }
-                  else { prepare(.enable(item.id)) }
-                })
-            ).labelsHidden().tint(LumaStyle.lavender)
-          }
-        }
+        alarmRow(item, scaleX: sx, scaleY: sy).padding(.bottom, 16 * sy)
       }
     }
   }
 
-}
-
-/// The moon is the flexible second child. Measure actual text before assigning it space.
-/// Normal empty content occupies exactly the available viewport, so only elastic bounce remains.
-/// Exceptionally large accessibility text can expand the page instead of becoming clipped.
-private struct NightEmptyLayout: Layout {
-  var availableHeight: CGFloat
-
-  private func metrics(width: CGFloat, subviews: Subviews) -> (heights: [CGFloat], gap: CGFloat) {
-    var heights = subviews.enumerated().map { index, view in
-      index == 1 ? CGFloat.zero
-        : view.sizeThatFits(ProposedViewSize(width: width, height: nil)).height
+  private func alarmRow(_ item: LumaAlarm, scaleX sx: CGFloat, scaleY sy: CGFloat) -> some View {
+    HStack(spacing: 12 * sx) {
+      Button { alarm = item } label: {
+        HStack(spacing: 32 * sx) {
+          Image(systemName: "clock")
+            .font(.system(size: max(22, 44 * sx), weight: .regular))
+            .foregroundStyle(ReferenceNightStyle.inactive)
+            .frame(width: 48 * sx)
+          VStack(alignment: .leading, spacing: 5 * sy) {
+            Text(String(format: "%02d:%02d", item.hour, item.minute))
+              .font(ReferenceNightStyle.serif(max(22, 50 * sx)))
+              .foregroundStyle(Color(hex: 0xF2F0F3)).monospacedDigit()
+            Text(alarmSubtitle(item))
+              .font(ReferenceNightStyle.sans(max(11, 24 * sx)))
+              .foregroundStyle(ReferenceNightStyle.secondary)
+            if item.enabled && item.weekdays.isEmpty && item.onceAt < Date() {
+              Text("Завершён").font(ReferenceNightStyle.sans(11))
+                .foregroundStyle(ReferenceNightStyle.secondary)
+            } else if item.enabled && !model.queuedAlarmIDs.contains(item.id) {
+              Text("Пока вне очереди iPhone").font(ReferenceNightStyle.sans(11))
+                .foregroundStyle(ReferenceNightStyle.amber)
+            }
+          }
+          .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .frame(maxWidth: .infinity, minHeight: max(44, 100 * sy), alignment: .leading)
+        .contentShape(Rectangle())
+      }
+      .buttonStyle(.plain)
+      .accessibilityLabel("Изменить будильник \(String(format: "%02d:%02d", item.hour, item.minute)), \(item.title)")
+      .accessibilityHint("Открывает настройку времени и сигнала")
+      .accessibilityIdentifier("alarm.edit.\(item.id.uuidString)")
+      Toggle("Включить будильник",
+        isOn: Binding(get: { item.enabled }, set: { _ in
+          if item.enabled { Task { await model.toggleAlarm(item.id) } }
+          else { prepare(.enable(item.id)) }
+        }))
+        .labelsHidden()
+        .toggleStyle(ReferenceAlarmToggleStyle(scaleX: sx, scaleY: sy))
+        .accessibilityIdentifier("alarm.toggle.\(item.id.uuidString)")
     }
-    let fixedHeight = heights.reduce(0, +)
-    let gapCount = max(0, subviews.count - 1)
-    let gap = min(22, max(8, (availableHeight - fixedHeight - 100) / CGFloat(max(1, gapCount))))
-    if heights.count > 1 {
-      heights[1] = min(240, max(0, availableHeight - fixedHeight - CGFloat(gapCount) * gap))
+    .padding(.horizontal, 44 * sx)
+    .padding(.vertical, 6 * sy)
+    .frame(maxWidth: .infinity, minHeight: 112 * sy)
+    .background {
+      RoundedRectangle(cornerRadius: 42 * sx, style: .continuous)
+        .fill(LinearGradient(colors: [ReferenceNightStyle.cardTop, ReferenceNightStyle.cardBottom],
+          startPoint: .top, endPoint: .bottom))
+        .overlay(RoundedRectangle(cornerRadius: 42 * sx, style: .continuous)
+          .stroke(ReferenceNightStyle.inactive.opacity(0.15), lineWidth: 0.6))
     }
-    return (heights, gap)
   }
 
-  func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
-    let width = proposal.width ?? 320
-    let result = metrics(width: width, subviews: subviews)
-    let naturalHeight = result.heights.reduce(0, +) + CGFloat(max(0, subviews.count - 1)) * result.gap
-    return CGSize(width: width, height: max(availableHeight, naturalHeight))
-  }
-
-  func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
-    let result = metrics(width: bounds.width, subviews: subviews)
-    var y = bounds.minY
-    for index in subviews.indices {
-      subviews[index].place(
-        at: CGPoint(x: bounds.midX, y: y), anchor: .top,
-        proposal: ProposedViewSize(width: bounds.width, height: result.heights[index]))
-      y += result.heights[index] + result.gap
-    }
-  }
-}
-
-struct IntroductionView: View {
-  @EnvironmentObject private var model: AppModel
-  var body: some View {
-    VStack(spacing: 24) {
-      MoonOrb().frame(height: 220)
-      Text("Доброй ночи.\nЭто Luma.").font(LumaStyle.font(32, "Medium", relativeTo: .largeTitle))
-        .multilineTextAlignment(.center)
-      Text(
-        "Короткие сигналы, ваш голос и личный дневник — чтобы внимательнее исследовать сновидения."
-      ).multilineTextAlignment(.center)
-      Text(
-        "Настраивайте сигналы и сохраняйте сновидения. Личные записи остаются на iPhone."
-      ).font(LumaStyle.font(13)).foregroundStyle(LumaStyle.secondary).multilineTextAlignment(
-        .center)
-      Button("Начать знакомство") { model.completeIntroduction() }.buttonStyle(PrimaryButtonStyle())
-    }.padding(30).frame(maxWidth: .infinity, maxHeight: .infinity).lumaScreen()
+  private func alarmSubtitle(_ item: LumaAlarm) -> String {
+    let repetition: String
+    if item.weekdays.isEmpty { repetition = "один раз" }
+    else if item.weekdays == Set([2, 3, 4, 5, 6]) { repetition = "по будням" }
+    else { repetition = "по выбранным дням" }
+    return item.title.isEmpty ? repetition : "\(item.title) · \(repetition)"
   }
 }

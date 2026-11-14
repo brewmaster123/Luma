@@ -1,0 +1,35 @@
+{
+  "basis": "C:\\Users\\Admin\\Desktop\\Luma\\V.0.9.7",
+  "experiment": "C:\\Users\\Admin\\Desktop\\Luma\\Design Experiments\\V.0.9.8-Night-Sky",
+  "excluded_directory_names": [
+    ".build",
+    ".git",
+    ".validation-tools",
+    "DerivedData",
+    "__pycache__",
+    "build-logs",
+    "dist"
+  ],
+  "unchanged_files": 130,
+  "changed_files": [
+    ".github/workflows/ios-build.yml",
+    "AGENTS.md",
+    "CHANGELOG.md",
+    "DEVELOPMENT_STATUS.md",
+    "Luma/Config/Base.xcconfig",
+    "Luma/Sources/iPhone/IndirectMethodView.swift",
+    "PROGRESS.json",
+    "README.md",
+    "source-sha256.json",
+    "verification.json"
+  ],
+  "added_files": [
+    "Luma/Docs/design-experiment-checks.json",
+    "Luma/Docs/experiment-diff.json",
+    "Luma/scripts/check-design-experiment.py",
+    "Luma/scripts/report-experiment-diff.py",
+    "basis-0.9.7-source-sha256.json"
+  ],
+  "removed_files": [],
+  "note": "source-sha256.json is an experiment snapshot; the inherited original snapshot is retained as basis-0.9.7-source-sha256.json. No original version file is written by this script."
+}

@@ -1,0 +1,21 @@
+{
+  "at_utc": "2026-11-13T07:47:49.499141+00:00",
+  "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/logs/refs/remotes/origin/HEAD",
+  "expected_SHA256": "7d4864d5ad9fb21ce2b6f17ece422f82da356601757ae1f63761469db1d30d7c",
+  "actual_SHA256": "46d0807fde6ea2d7e515d3488e89b84afa8bfa7c59a50bc4493efdea4a63f660",
+  "expected_bytes": 807,
+  "actual_bytes": 961,
+  "original_bytes_unchanged_prefix": true,
+  "appended_lines": 1,
+  "appended_action": "remote set-head; target commit unchanged",
+  "all_other_1492_historical_files_unchanged": true,
+  "reference_archive_and_IPA_intact": true,
+  "archived_original_matches_expected_SHA256": true,
+  "automatic_restoration_performed": false,
+  "expected_hashes_changed": false,
+  "restoration_explicitly_authorized_by_user": true,
+  "restored_at_utc": "2026-11-13T07:49:02.638295+00:00",
+  "restored_SHA256": "7d4864d5ad9fb21ce2b6f17ece422f82da356601757ae1f63761469db1d30d7c",
+  "restored_bytes": 807,
+  "status": "restored-to-original-by-explicit-user-instruction"
+}

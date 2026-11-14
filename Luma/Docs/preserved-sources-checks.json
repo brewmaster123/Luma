@@ -1,21 +1,246 @@
 {
-  "baseline": "0.9.4 (20)",
+  "baseline": "0.9.6 (22), reference No. 1",
   "kind": "sha256-with-explicit-text-normalization",
   "manifest_schema": 2,
   "passed": true,
   "files": [
     {
-      "path": "Config/iOS.entitlements",
+      "path": "Sources/iPhone/AlarmKitScheduler.swift",
       "hash_mode": "lf-text",
       "unchanged": true
     },
     {
-      "path": "Luma.xcodeproj/xcshareddata/xcschemes/Luma.xcscheme",
+      "path": "Sources/iPhone/AlarmKitSoundBuilder.swift",
       "hash_mode": "lf-text",
       "unchanged": true
     },
     {
-      "path": "Package.swift",
+      "path": "Sources/iPhone/CueAudioImporter.swift",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/iPhone/DesignSystem.swift",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/iPhone/JournalView.swift",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/iPhone/JournalVoiceComposer.swift",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/iPhone/LegacyAlarmCleanup.swift",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/iPhone/LumaApp.swift",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/iPhone/SoundLibraryView.swift",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/iPhone/WatchCueLink.swift",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/LumaCore/AcousticFeatures.swift",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/LumaCore/AlarmStopWindow.swift",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/LumaCore/CueEngine.swift",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/LumaCore/CuePlaybackStopper.swift",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/LumaCore/FiniteCuePolicy.swift",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/LumaCore/IndirectMethod.swift",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/LumaCore/iPhoneOnlyMigration.swift",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/LumaCore/LumaV2.swift",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/LumaCore/Models.swift",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/LumaCore/MultimodalEstimator.swift",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/LumaCore/PairedCuePolicy.swift",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/LumaCore/RealtimeREMEngine.swift",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/LumaCore/REMEstimator.swift",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/LumaCore/WatchCuePlan.swift",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/LumaCore/WaveCueInspector.swift",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/Platform/AlarmScheduling.swift",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/Platform/AppError.swift",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/Platform/HealthService.swift",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/Platform/LocalStore.swift",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/Platform/NotificationService.swift",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/Platform/PhoneAudio.swift",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/Watch/LumaWatchApp.swift",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Sources/Watch/WatchCueStore.swift",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Tests/LumaCoreTests/AlarmKitWaveMigrationTests.swift",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Tests/LumaCoreTests/AlarmStopWindowTests.swift",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Tests/LumaCoreTests/AudioAndAlarmTests.swift",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Tests/LumaCoreTests/CoreSafetyTests.swift",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Tests/LumaCoreTests/CuePlaybackStopperTests.swift",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Tests/LumaCoreTests/FiniteCuePolicyTests.swift",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Tests/LumaCoreTests/IndirectMethodTests.swift",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Tests/LumaCoreTests/iPhoneOnlyMigrationTests.swift",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Tests/LumaCoreTests/NotificationMigrationTests.swift",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Tests/LumaCoreTests/PairedCueTests.swift",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Tests/LumaCoreTests/RealtimeREMTests.swift",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Tests/LumaCoreTests/SystemAlarmPlanTests.swift",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Tests/LumaCoreTests/V2Tests.swift",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Tests/LumaCoreTests/WatchCuePlanTests.swift",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Tests/LumaCoreTests/WaveCueInspectorTests.swift",
       "hash_mode": "lf-text",
       "unchanged": true
     },
@@ -32,6 +257,16 @@
     {
       "path": "Resources/iOSAssets.xcassets/Contents.json",
       "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Resources/luma-alarm-4.wav",
+      "hash_mode": "raw",
+      "unchanged": true
+    },
+    {
+      "path": "Resources/luma-night-rain.wav",
+      "hash_mode": "raw",
       "unchanged": true
     },
     {
@@ -80,6 +315,56 @@
       "unchanged": true
     },
     {
+      "path": "Resources/WatchAssets.xcassets/AppIcon.appiconset/AppIcon.png",
+      "hash_mode": "raw",
+      "unchanged": true
+    },
+    {
+      "path": "Resources/WatchAssets.xcassets/AppIcon.appiconset/Contents.json",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Resources/WatchAssets.xcassets/Contents.json",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Config/iOS-Info.plist",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Config/iOS.entitlements",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Config/Watch-Info.plist",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "Config/Watch.entitlements",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "scripts/check-audio-on-mac.sh",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "scripts/check-audio-on-mac.swift",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
+      "path": "scripts/check-finite-queue-on-mac.sh",
+      "hash_mode": "lf-text",
+      "unchanged": true
+    },
+    {
       "path": "scripts/check-on-mac.sh",
       "hash_mode": "lf-text",
       "unchanged": true
@@ -110,156 +395,14 @@
       "unchanged": true
     },
     {
-      "path": "Sources/iPhone/CueAudioImporter.swift",
+      "path": "Luma.xcodeproj/xcshareddata/xcschemes/Luma Watch.xcscheme",
       "hash_mode": "lf-text",
       "unchanged": true
     },
     {
-      "path": "Sources/iPhone/DesignSystem.swift",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
-      "path": "Sources/iPhone/JournalView.swift",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
-      "path": "Sources/iPhone/JournalVoiceComposer.swift",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
-      "path": "Sources/iPhone/PhoneRootView.swift",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
-      "path": "Sources/iPhone/SoundLibraryView.swift",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
-      "path": "Sources/LumaCore/AcousticFeatures.swift",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
-      "path": "Sources/LumaCore/AlarmStopWindow.swift",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
-      "path": "Sources/LumaCore/CueEngine.swift",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
-      "path": "Sources/LumaCore/CuePlaybackStopper.swift",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
-      "path": "Sources/LumaCore/LumaV2.swift",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
-      "path": "Sources/LumaCore/Models.swift",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
-      "path": "Sources/LumaCore/MultimodalEstimator.swift",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
-      "path": "Sources/LumaCore/PairedCuePolicy.swift",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
-      "path": "Sources/LumaCore/RealtimeREMEngine.swift",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
-      "path": "Sources/LumaCore/REMEstimator.swift",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
-      "path": "Sources/Platform/AppError.swift",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
-      "path": "Sources/Platform/HealthService.swift",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
-      "path": "Sources/Platform/LocalStore.swift",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
-      "path": "Sources/Platform/PhoneAudio.swift",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
-      "path": "Tests/LumaCoreTests/AlarmStopWindowTests.swift",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
-      "path": "Tests/LumaCoreTests/AudioAndAlarmTests.swift",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
-      "path": "Tests/LumaCoreTests/CoreSafetyTests.swift",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
-      "path": "Tests/LumaCoreTests/CuePlaybackStopperTests.swift",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
-      "path": "Tests/LumaCoreTests/IndirectMethodTests.swift",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
-      "path": "Tests/LumaCoreTests/NotificationMigrationTests.swift",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
-      "path": "Tests/LumaCoreTests/PairedCueTests.swift",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
-      "path": "Tests/LumaCoreTests/RealtimeREMTests.swift",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
-      "path": "Tests/LumaCoreTests/SystemAlarmPlanTests.swift",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
-      "path": "Tests/LumaCoreTests/V2Tests.swift",
+      "path": "Luma.xcodeproj/xcshareddata/xcschemes/Luma.xcscheme",
       "hash_mode": "lf-text",
       "unchanged": true
     }
-  ],
-  "version": "0.9.5 (21)",
-  "date": "2026-11-12"
+  ]
 }
