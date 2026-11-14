@@ -90,19 +90,29 @@ private struct ReferenceNightArtwork: View {
   }
 
   private func starField(scale: CGFloat, origin: CGPoint) -> some View {
-    Canvas(opaque: false, rendersAsynchronously: true) { context, _ in
-      context.translateBy(x: origin.x, y: origin.y)
-      context.scaleBy(x: scale, y: scale)
-      for (index, point) in ReferenceMoonGeometry.stars.enumerated() {
-        guard !ReferenceMoonGeometry.excludes(point, angle: moonAngle) else { continue }
-        let radius: CGFloat = index % 7 == 0 ? 1.1 : 0.65
-        let alpha = 0.22 + 0.10 * sin(time * 2 * .pi / (9 + Double(index % 11)) + Double(index))
-        context.fill(Path(ellipseIn: CGRect(x: point.x - radius, y: point.y - radius,
-          width: 2 * radius, height: 2 * radius)),
-          with: .color(ReferenceNightStyle.text.opacity(alpha)))
-      }
-      if animate { drawMeteor(context: &context) }
+    Canvas(opaque: false, rendersAsynchronously: true) {
+      (context: inout GraphicsContext, _: CGSize) in
+      renderStarField(context: &context, scale: scale, origin: origin)
     }
+  }
+
+  private func renderStarField(context: inout GraphicsContext, scale: CGFloat, origin: CGPoint) {
+    context.translateBy(x: origin.x, y: origin.y)
+    context.scaleBy(x: scale, y: scale)
+    let angle: Double = moonAngle
+    for (index, point) in ReferenceMoonGeometry.stars.enumerated() {
+      guard !ReferenceMoonGeometry.excludes(point, angle: angle) else { continue }
+      let radius: CGFloat = index % 7 == 0 ? 1.1 : 0.65
+      let period: Double = 9.0 + Double(index % 11)
+      let phase: Double = time * (2.0 * Double.pi) / period + Double(index)
+      let alpha: Double = 0.22 + 0.10 * sin(phase)
+      let bounds = CGRect(x: point.x - radius, y: point.y - radius,
+        width: 2.0 * radius, height: 2.0 * radius)
+      let dot = Path(ellipseIn: bounds)
+      let shade: GraphicsContext.Shading = .color(ReferenceNightStyle.text.opacity(alpha))
+      context.fill(dot, with: shade)
+    }
+    if animate { drawMeteor(context: &context) }
   }
 
   private func drawMeteor(context: inout GraphicsContext) {
@@ -115,21 +125,24 @@ private struct ReferenceNightArtwork: View {
         y: meteor.from.y + (meteor.to.y - meteor.from.y) * fraction)
       if ReferenceMoonGeometry.excludes(point, angle: moonAngle) { return }
     }
-    let progress = CGFloat(meteor.progress)
-    let x = meteor.from.x + (meteor.to.x - meteor.from.x) * progress
-    let y = meteor.from.y + (meteor.to.y - meteor.from.y) * progress
-    let dx = meteor.to.x - meteor.from.x, dy = meteor.to.y - meteor.from.y
-    let distance = max(1, hypot(dx, dy))
-    let tail = 34 * sin(progress * .pi)
+    let progress: CGFloat = CGFloat(meteor.progress)
+    let x: CGFloat = meteor.from.x + (meteor.to.x - meteor.from.x) * progress
+    let y: CGFloat = meteor.from.y + (meteor.to.y - meteor.from.y) * progress
+    let dx: CGFloat = meteor.to.x - meteor.from.x
+    let dy: CGFloat = meteor.to.y - meteor.from.y
+    let distance: CGFloat = max(1.0, hypot(dx, dy))
+    let tail: CGFloat = 34.0 * sin(progress * CGFloat.pi)
     let start = CGPoint(x: x - dx / distance * tail, y: y - dy / distance * tail)
     let end = CGPoint(x: x, y: y)
     guard !ReferenceMoonGeometry.excludes(start, angle: moonAngle) else { return }
     var trail = Path()
     trail.move(to: start); trail.addLine(to: end)
-    context.opacity = 0.42 * sin(Double(progress) * .pi)
-    context.stroke(trail, with: .linearGradient(
-      Gradient(colors: [.clear, ReferenceNightStyle.text]),
-      startPoint: start, endPoint: end), style: StrokeStyle(lineWidth: 1.0, lineCap: .round))
+    context.opacity = 0.42 * sin(meteor.progress * Double.pi)
+    let trailGradient = Gradient(colors: [Color.clear, ReferenceNightStyle.text])
+    let trailShade: GraphicsContext.Shading = .linearGradient(
+      trailGradient, startPoint: start, endPoint: end)
+    let trailStyle = StrokeStyle(lineWidth: 1.0, lineCap: .round)
+    context.stroke(trail, with: trailShade, style: trailStyle)
   }
 }
 

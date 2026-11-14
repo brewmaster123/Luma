@@ -321,6 +321,10 @@
       "errors": []
     },
     {
+      "file": "workflow: Surface native compiler diagnostics",
+      "errors": []
+    },
+    {
       "file": "workflow: Stop the isolated reference simulator",
       "errors": []
     },

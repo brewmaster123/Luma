@@ -150,6 +150,26 @@ jobs:
             CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" \
             test 2>&1 | tee ../build-logs/reference-ui-tests.log
 
+      - name: Surface native compiler diagnostics
+        if: always()
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          seen = set()
+          for name in ["iphone-build.log", "reference-simulator-build.log", "reference-ui-tests.log"]:
+              file = Path("../build-logs") / name
+              if not file.exists():
+                  continue
+              for line in file.read_text(errors="replace").splitlines():
+                  if "error:" not in line or line in seen:
+                      continue
+                  seen.add(line)
+                  if len(seen) > 40:
+                      break
+                  message = ("Native compiler: " + line).replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
+                  print("::error::" + message)
+          PY
+
       - name: Save native reference screenshot
         if: always()
         uses: actions/upload-artifact@v7
