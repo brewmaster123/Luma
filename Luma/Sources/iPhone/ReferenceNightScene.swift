@@ -3,6 +3,7 @@ import SwiftUI
 /// Only this decorative subtree ticks; timers, controls and the rest of the app do not redraw
 /// at the animation cadence. PNG layers retain their original aspect and colour profile.
 struct ReferenceNightScene: View {
+  var isActive = true
   @Environment(\.scenePhase) private var scenePhase
   @Environment(\.accessibilityReduceMotion) private var reduceMotion
   @State private var visible = false
@@ -18,7 +19,7 @@ struct ReferenceNightScene: View {
       .flatMap { Double($0.dropFirst("-reference-time=".count)) }
   }
   private var shouldAnimate: Bool {
-    fixedTime == nil && visible && scenePhase == .active && !reduceMotion
+    isActive && fixedTime == nil && visible && scenePhase == .active && !reduceMotion
   }
 
   var body: some View {

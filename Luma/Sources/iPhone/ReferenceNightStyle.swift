@@ -52,7 +52,7 @@ struct ReferenceRoundButtonStyle: ButtonStyle {
 
   func makeBody(configuration: Configuration) -> some View {
     configuration.label
-      .frame(width: max(44, diameter), height: max(44, diameter))
+      .frame(width: diameter, height: diameter)
       .background {
         Circle()
           .fill(LinearGradient(
@@ -64,6 +64,8 @@ struct ReferenceRoundButtonStyle: ButtonStyle {
                 ReferenceNightStyle.amber.opacity(0.16), .clear],
               startPoint: .topLeading, endPoint: .bottomTrailing), lineWidth: 0.6))
       }
+      .frame(width: max(44, diameter), height: max(44, diameter))
+      .contentShape(Rectangle())
       .opacity(configuration.isPressed ? 0.82 : 1)
       .scaleEffect(configuration.isPressed && !reduced ? 0.97 : 1)
       .animation(reduced ? nil : .easeOut(duration: 0.16), value: configuration.isPressed)

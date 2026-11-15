@@ -15,23 +15,36 @@ struct PhoneRootView: View {
         topInset: geometry.safeAreaInsets.top, bottomInset: geometry.safeAreaInsets.bottom)
       ZStack {
         if selected == .night {
-          ReferenceNightScene().ignoresSafeArea().accessibilityHidden(true)
+          // Only the footer needs art outside the navigation content. Keep this
+          // backdrop static; the single animated scene lives inside NightView.
+          ReferenceNightStaticBackdrop().ignoresSafeArea()
         } else {
           LumaStyle.background.ignoresSafeArea()
         }
-        TabView(selection: $selected) {
-          NavigationStack { NightView() }.tag(ReferenceTab.night)
-          NavigationStack {
-            if isReferenceFixture { Color.clear } else { JournalView() }
-          }.tag(ReferenceTab.journal)
-          NavigationStack {
-            if isReferenceFixture { Color.clear } else { SettingsView() }
-          }.tag(ReferenceTab.settings)
+        // Preserve each navigation stack's state without a system TabView. A
+        // TabView can paint an opaque background and its own Liquid Glass bar.
+        NavigationStack { NightView(isActive: selected == .night) }
+          .opacity(selected == .night ? 1 : 0)
+          .allowsHitTesting(selected == .night)
+          .accessibilityHidden(selected != .night)
+          .zIndex(selected == .night ? 1 : 0)
+        NavigationStack {
+          if isReferenceFixture { Color.clear } else { JournalView() }
         }
-        .toolbar(.hidden, for: .tabBar)
-        .safeAreaInset(edge: .bottom, spacing: 0) {
-          ReferenceTabBar(selection: $selected, scale: viewport.scaleX)
+          .opacity(selected == .journal ? 1 : 0)
+          .allowsHitTesting(selected == .journal)
+          .accessibilityHidden(selected != .journal)
+          .zIndex(selected == .journal ? 1 : 0)
+        NavigationStack {
+          if isReferenceFixture { Color.clear } else { SettingsView() }
         }
+          .opacity(selected == .settings ? 1 : 0)
+          .allowsHitTesting(selected == .settings)
+          .accessibilityHidden(selected != .settings)
+          .zIndex(selected == .settings ? 1 : 0)
+      }
+      .safeAreaInset(edge: .bottom, spacing: 0) {
+        ReferenceTabBar(selection: $selected, scale: viewport.scaleX)
       }
       .environment(\.referenceNightViewport, viewport)
     }
@@ -54,6 +67,31 @@ struct PhoneRootView: View {
       SignalReadinessView(continueTitle: "Включить сохранённые сигналы")
         .environmentObject(model)
     }
+  }
+}
+
+/// Static continuation behind the custom footer. Native navigation backgrounds
+/// may cover the root art, so the animated Night scene is attached inside NightView.
+private struct ReferenceNightStaticBackdrop: View {
+  var body: some View {
+    GeometryReader { geometry in
+      let scale = max(geometry.size.width / 1024, geometry.size.height / 1536)
+      let origin = CGPoint(x: (geometry.size.width - 1024 * scale) / 2,
+        y: (geometry.size.height - 1536 * scale) / 2)
+      ZStack(alignment: .topLeading) {
+        ReferenceNightStyle.sky
+        Image("ReferenceNightBackdrop").resizable().interpolation(.high)
+          .frame(width: 1024 * scale, height: 1536 * scale)
+          .offset(x: origin.x, y: origin.y)
+        Image("ReferenceCloudBottom").resizable().interpolation(.high)
+          .frame(width: 1024 * scale, height: 1536 * scale)
+          .offset(x: origin.x, y: origin.y)
+      }
+      .frame(width: geometry.size.width, height: geometry.size.height, alignment: .topLeading)
+      .clipped()
+    }
+    .accessibilityHidden(true)
+    .allowsHitTesting(false)
   }
 }
 
@@ -83,7 +121,7 @@ private struct ReferenceTabBar: View {
         } label: {
           VStack(spacing: 8) {
             Image(systemName: tab.symbol)
-              .font(.system(size: max(24, 50 * scale), weight: .regular))
+              .font(.system(size: max(18, 50 * scale), weight: .light))
               .frame(height: 32)
               .foregroundStyle(selection == tab ? ReferenceNightStyle.text : ReferenceNightStyle.inactive)
               .shadow(color: selection == tab ? ReferenceNightStyle.amber.opacity(0.20) : .clear,
@@ -118,6 +156,7 @@ private struct ReferenceTabBar: View {
 }
 
 struct NightView: View {
+  var isActive = true
   @EnvironmentObject private var model: AppModel
   @Environment(\.referenceNightViewport) private var viewport
   @State private var alarm: LumaAlarm?
@@ -160,7 +199,14 @@ struct NightView: View {
       .scrollBounceBehavior(.basedOnSize, axes: .vertical)
     }
     .foregroundStyle(ReferenceNightStyle.text)
-    .background(Color.clear)
+    .background(alignment: .top) {
+      // This is inside NavigationStack's content: its opaque backing can no
+      // longer hide the moon. Use the full screen canvas, including safe areas
+      // and the custom footer, without stretching the source artwork.
+      ReferenceNightScene(isActive: isActive)
+        .frame(width: viewport.size.width, height: viewport.size.height)
+        .offset(y: -viewport.topInset)
+    }
     .toolbar(.hidden, for: .navigationBar)
     .toolbarBackground(.hidden, for: .navigationBar)
     .sheet(item: $signalAction, onDismiss: {
@@ -190,7 +236,7 @@ struct NightView: View {
               .foregroundStyle(ReferenceNightStyle.amber)
               .frame(width: 78 * sx)
             VStack(alignment: .leading, spacing: 7 * sy) {
-              Text("Умный будильник").font(ReferenceNightStyle.serif(max(16, 36 * sx)))
+              Text("Умный будильник").font(ReferenceNightStyle.serif(max(12, 36 * sx)))
                 .tracking(1.5 * sx)
                 .foregroundStyle(Color(hex: 0xF2F0F3))
               Text("Автоматические пробуждения")
@@ -212,10 +258,11 @@ struct NightView: View {
           alarm = item
         } label: {
           Image(systemName: "plus")
-            .font(.system(size: max(22, 31 * sx), weight: .light))
+            .font(.system(size: max(11, 31 * sx), weight: .light))
             .foregroundStyle(ReferenceNightStyle.text)
         }
         .buttonStyle(ReferenceRoundButtonStyle(diameter: 58 * sx))
+        .offset(x: 21 * sx)
         .accessibilityLabel("Добавить будильник")
         .accessibilityIdentifier("alarm.add")
       }
@@ -243,7 +290,7 @@ struct NightView: View {
             .frame(width: 48 * sx)
           VStack(alignment: .leading, spacing: 5 * sy) {
             Text(String(format: "%02d:%02d", item.hour, item.minute))
-              .font(ReferenceNightStyle.serif(max(22, 50 * sx)))
+              .font(ReferenceNightStyle.serif(max(18, 50 * sx)))
               .tracking(0.7 * sx)
               .foregroundStyle(Color(hex: 0xF2F0F3)).monospacedDigit()
             Text(alarmSubtitle(item))

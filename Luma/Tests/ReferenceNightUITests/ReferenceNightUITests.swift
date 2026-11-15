@@ -157,7 +157,14 @@ final class ReferenceNightUITests: XCTestCase {
     try selectInterval(10, in: app)
     XCTAssertFalse(app.buttons["indirect.decrease"].isEnabled)
     XCTAssertTrue(app.buttons["indirect.increase"].isEnabled)
-    try selectInterval(60, in: app)
+    // Keep an exact picker assertion away from its final two rows: the simulator
+    // can ignore a short drag there. Reach and verify the upper bound through
+    // the real main-screen plus control, not a model or preference override.
+    try selectInterval(58, in: app)
+    tap(app.buttons["indirect.increase"], in: app)
+    expectInterval(59, in: app)
+    tap(app.buttons["indirect.increase"], in: app)
+    expectInterval(60, in: app)
     XCTAssertFalse(app.buttons["indirect.increase"].isEnabled)
     XCTAssertTrue(app.buttons["indirect.decrease"].isEnabled)
 
