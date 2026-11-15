@@ -69,20 +69,28 @@ final class ReferenceNightUITests: XCTestCase {
     // SwiftUI's wheel exposes value but the simulator AX driver can omit possibleValues,
     // which makes adjust(toPickerWheelValue:) fail before sending any interaction.
     // Drive the actual wheel with slow physical gestures and verify its exposed value.
+    var consecutiveNoMovement = 0
     for _ in 0..<80 {
       let current = try wheelMinutes(wheel)
       if current == minutes { break }
-      let previousValue = try XCTUnwrap(wheel.value as? String)
-      let distance: CGFloat = abs(minutes - current) > 3 ? min(60, wheel.frame.height * 0.32) : 32
+      let baseDistance: CGFloat = abs(minutes - current) > 3 ? min(60, wheel.frame.height * 0.32) : 32
+      let distance: CGFloat = consecutiveNoMovement == 1
+        ? (baseDistance > 32 ? 32 : 60) : baseDistance
       let center = wheel.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
       let destination = center.withOffset(CGVector(dx: 0, dy: minutes > current ? -distance : distance))
       center.press(forDuration: 0.05, thenDragTo: destination,
         withVelocity: .slow, thenHoldForDuration: 0.10)
-      let changed = XCTNSPredicateExpectation(
-        predicate: NSPredicate(format: "value != %@", previousValue), object: wheel)
-      guard XCTWaiter.wait(for: [changed], timeout: 3) == .completed else {
-        XCTFail("The minute wheel did not respond to a physical gesture from \(previousValue)")
-        return
+      // Read a fresh AX value directly. The predicate waiter timed out in CI even
+      // while its own trace showed the wheel had already moved from 20 to 18.
+      let observed = try wheelMinutes(wheel)
+      if observed == current {
+        consecutiveNoMovement += 1
+        guard consecutiveNoMovement < 3 else {
+          XCTFail("The minute wheel remained at \(observed) after three physical gestures")
+          return
+        }
+      } else {
+        consecutiveNoMovement = 0
       }
     }
     let selected = try wheelMinutes(wheel)
@@ -245,7 +253,7 @@ final class ReferenceNightUITests: XCTestCase {
   }
 
   @MainActor
-  func testReferenceScreenshot() throws {
+  func testAAReferenceScreenshot() throws {
     let app = XCUIApplication()
     app.launchArguments = ["-reference-screenshot"]
     app.launch()

@@ -232,7 +232,7 @@ struct NightView: View {
         Button { showingAlarmHelp = true } label: {
           HStack(spacing: 36 * sx) {
             Image(systemName: "alarm")
-              .font(.system(size: max(22, 50 * sx), weight: .regular))
+              .font(.system(size: max(20, 50 * sx), weight: .light))
               .foregroundStyle(ReferenceNightStyle.amber)
               .frame(width: 78 * sx)
             VStack(alignment: .leading, spacing: 7 * sy) {
@@ -285,7 +285,7 @@ struct NightView: View {
       Button { alarm = item } label: {
         HStack(spacing: 39 * sx) {
           Image(systemName: "clock")
-            .font(.system(size: max(22, 44 * sx), weight: .regular))
+            .font(.system(size: max(16, 44 * sx), weight: .light))
             .foregroundStyle(ReferenceNightStyle.inactive)
             .frame(width: 48 * sx)
           VStack(alignment: .leading, spacing: 5 * sy) {

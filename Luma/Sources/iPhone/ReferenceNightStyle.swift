@@ -79,7 +79,8 @@ struct ReferenceAlarmToggleStyle: ToggleStyle {
 
   func makeBody(configuration: Configuration) -> some View {
     let width = max(32, 94 * scaleX)
-    let height = max(26, min(38, 46 * scaleY))
+    // Scale the visible track uniformly; its separate 44pt target stays accessible.
+    let height = max(16, 46 * scaleX)
     Button { configuration.isOn.toggle() } label: {
       Capsule().fill(configuration.isOn
         ? ReferenceNightStyle.toggleTrack : ReferenceNightStyle.cardTop)
@@ -89,7 +90,7 @@ struct ReferenceAlarmToggleStyle: ToggleStyle {
         .overlay(alignment: configuration.isOn ? .trailing : .leading) {
           Circle().fill(configuration.isOn
             ? ReferenceNightStyle.toggleThumb : ReferenceNightStyle.inactive)
-            .padding(2)
+            .padding(3 * scaleX)
             .frame(width: height, height: height)
             .shadow(color: .black.opacity(0.2), radius: 2, y: 1)
         }

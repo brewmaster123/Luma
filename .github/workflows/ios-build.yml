@@ -128,9 +128,11 @@ jobs:
             --batteryState discharging --batteryLevel 100
           xcrun simctl install "$UDID" ../build/reference-simulator/Build/Products/Debug-iphonesimulator/Luma.app
 
-      - name: Exercise the actual app interactions
-        id: ui
-        timeout-minutes: 12
+      - name: Capture the actual ready Night screen
+        id: capture
+        # A cold UI-test build on the hosted Mac took over seven minutes.
+        # Finalize and save this independent result before the interaction suite.
+        timeout-minutes: 20
         if: ${{ !cancelled() && steps.simulator.outcome == 'success' }}
         run: |
           set -euo pipefail
@@ -138,15 +140,16 @@ jobs:
           xcodebuild -project Luma.xcodeproj -scheme LumaReferenceUITests \
             -configuration Debug -destination "platform=iOS Simulator,id=$REF_SIM_UDID" \
             -derivedDataPath ../build/reference-simulator \
-            -resultBundlePath ../build-logs/reference-ui-tests.xcresult \
+            -resultBundlePath ../build-logs/reference-capture.xcresult \
+            -only-testing:ReferenceNightUITests/ReferenceNightUITests/testAAReferenceScreenshot \
             CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" \
-            test 2>&1 | tee ../build-logs/reference-ui-tests.log
+            test 2>&1 | tee ../build-logs/reference-capture.log
 
       - name: Export the actual ready Night screen
         if: ${{ !cancelled() && steps.simulator.outcome == 'success' }}
         run: |
           set -euo pipefail
-          xcrun xcresulttool export attachments --path ../build-logs/reference-ui-tests.xcresult \
+          xcrun xcresulttool export attachments --path ../build-logs/reference-capture.xcresult \
             --output-path ../build-logs/reference-attachments
           python3 scripts/export-reference-capture.py ../build-logs/reference-attachments \
             ../build-logs/reference-screen
@@ -161,13 +164,28 @@ jobs:
           if-no-files-found: warn
           retention-days: 7
 
+      - name: Exercise the actual app interactions
+        id: ui
+        timeout-minutes: 16
+        if: ${{ !cancelled() && steps.simulator.outcome == 'success' }}
+        run: |
+          set -euo pipefail
+          xcrun simctl terminate "$REF_SIM_UDID" com.sevchlenko.luma || true
+          xcodebuild -project Luma.xcodeproj -scheme LumaReferenceUITests \
+            -configuration Debug -destination "platform=iOS Simulator,id=$REF_SIM_UDID" \
+            -derivedDataPath ../build/reference-simulator \
+            -resultBundlePath ../build-logs/reference-ui-tests.xcresult \
+            -skip-testing:ReferenceNightUITests/ReferenceNightUITests/testAAReferenceScreenshot \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" \
+            test 2>&1 | tee ../build-logs/reference-ui-tests.log
+
       - name: Surface native compiler diagnostics
         if: always()
         run: |
           python3 - <<'PY'
           from pathlib import Path
           seen = set()
-          for name in ["iphone-build.log", "reference-simulator-build.log", "reference-ui-tests.log"]:
+          for name in ["iphone-build.log", "reference-simulator-build.log", "reference-capture.log", "reference-ui-tests.log"]:
               file = Path("../build-logs") / name
               if not file.exists():
                   continue
