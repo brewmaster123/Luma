@@ -37,6 +37,8 @@ jobs:
           echo "93af93a97a14393ebb9a32532456d6c69d7730916d0e9d43b18437618c1557af  atelier-source.zip" | shasum -a 256 -c -
           mkdir -p atelier-source
           unzip -q atelier-source.zip -d atelier-source
+          mkdir -p atelier-source/.github/workflows
+          cp .github/workflows/atelier-design.yml atelier-source/.github/workflows/ios-build.yml
 
       - name: Check project and tools
         id: project
@@ -55,7 +57,9 @@ jobs:
 
       - name: Check native project structure
         id: structure
-        run: python3 scripts/check-static.py
+        run: |
+          set -euo pipefail
+          python3 scripts/check-static.py 2>&1 | tee ../build-logs/project-structure.log
 
       - name: Check preserved planner, data and resources
         id: preserved
