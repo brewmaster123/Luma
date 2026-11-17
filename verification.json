@@ -54,23 +54,43 @@
     "core_XCTest_methods_present": 130,
     "independent_read_through_of_new_Swift": "finished on 2026-11-16: no definite compile error found (checked against iOS 17/18 SDK knowledge, not iOS 26); five small changes made from its remarks, then all six local checks rerun and passed; not a substitute for compilation"
   },
+  "verified_by_native_CI": {
+    "swift_compiled": true,
+    "core_XCTest_executed": true,
+    "AVFoundation_matrix_executed": true,
+    "queue_harness_executed": true,
+    "iPhone_build": true,
+    "Watch_build": true,
+    "IPA_generated": true,
+    "lproj_folder_references_in_bundle_confirmed": true
+  },
   "not_verified": {
-    "swift_compiled": false,
-    "core_XCTest_executed": false,
-    "AVFoundation_matrix_executed": false,
-    "queue_harness_executed": false,
-    "iPhone_build": false,
-    "Watch_build": false,
-    "IPA_generated": false,
     "physical_device_tests_executed": false,
     "locked_Stop_20_seconds_confirmed": false,
-    "lproj_folder_references_in_bundle_confirmed": false,
     "app_icon_and_name_on_device_confirmed": false
   },
   "native_CI": {
-    "status": "not run",
-    "reason": "The user said on 16 Nov 2026 that he builds on GitHub himself; the agent did not open GitHub or push anything",
-    "how_to": "Luma/Docs/BUILD_ON_GITHUB.md"
+    "status": "success",
+    "run_url": "https://github.com/brewmaster123/Luma/actions/runs/44076006890",
+    "branch": "luma/0.9.8-lumenoir",
+    "tested_commit": "30ea0d50b7bd9e2299877fe414692f8e56db2783",
+    "XCTest_executed": 130,
+    "XCTest_failures": 0,
+    "audio_matrix_cases_passed": 8,
+    "invalid_audio_rejected": true,
+    "queue_cases_passed": 34,
+    "iPhone_device_build": "success",
+    "Watch_device_build": "success",
+    "IPA_packaging": "success",
+    "IPA_artifact_url": "https://github.com/brewmaster123/Luma/actions/runs/44076006890/artifacts/14325557397",
+    "IPA_ZIP_artifact_url": "https://github.com/brewmaster123/Luma/actions/runs/44076006890/artifacts/14325711888",
+    "IPA_SHA256": "c33ef40c59473b5e31be9a99f6248da5fdf1f1645eae000e3dab8c89adaf2e2a",
+    "official_artifact_digests_verified": true,
+    "local_IPA": "dist/Lumenoir-0.9.8-build27-unsigned.ipa",
+    "native_inputs_matching_local_sources": 170,
+    "ru_en_lproj_in_both_bundles_confirmed": true,
+    "compiler_fixes_required": false,
+    "explicit_upload_authorization_received": true
   },
   "data_compatibility": "Bundle ID, signing team, AppArchive/LocalStore, journal, recordings and the schema-3 alarm ledger are unchanged. New UserDefaults key com.sevchlenko.luma.interfaceLanguage.v1 stores only the interface language. Durations above 10 s read as 4 s in 0.9.7 and 0.9.6.",
   "V_0_9_7_untouched": {
@@ -89,9 +109,11 @@
     ]
   },
   "known_risks": [
-    "New interface code has never been compiled; the first GitHub build may report errors",
+    "Compiled and packaged on GitHub, but not yet installed or run on a device",
     "A 20-second signal needs a 26-second background lease; iOS grants about 30 seconds; the margin is unmeasured",
     "Texts drawn by the system follow the iPhone language, not the language chosen in the app",
     "Existing force-quit/runtime and Watch Focus/permission limitations remain"
-  ]
+  ],
+  "at_utc": "2026-11-17T11:51:43.736085+00:00",
+  "current_build_historical_audit": "Luma/Docs/build-history-audit.json; one automatic GitHub Desktop reflog append; no source/resource/archive changes; no restoration or expected-hash changes"
 }

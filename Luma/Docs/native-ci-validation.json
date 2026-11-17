@@ -1,0 +1,21 @@
+{
+  "version": "0.9.8 (27)",
+  "run_url": "https://github.com/brewmaster123/Luma/actions/runs/44076006890",
+  "tested_commit": "30ea0d50b7bd9e2299877fe414692f8e56db2783",
+  "status": "success",
+  "at_utc": "2026-11-17T11:51:43.736085+00:00",
+  "XCTest_executed": 130,
+  "XCTest_failures": 0,
+  "audio_matrix_cases_passed": 8,
+  "invalid_audio_rejected": true,
+  "queue_cases_passed": 34,
+  "iPhone_device_build": "success",
+  "Watch_device_build": "success",
+  "IPA_packaging": "success",
+  "log_archive_SHA256_verified": true,
+  "log_archive_SHA256": "f410a3a065224542359d0853b534f6990806b84a75c2eae5b2d63adc0d0777f5",
+  "IPA_artifact_url": "https://github.com/brewmaster123/Luma/actions/runs/44076006890/artifacts/14325557397",
+  "IPA_SHA256": "c33ef40c59473b5e31be9a99f6248da5fdf1f1645eae000e3dab8c89adaf2e2a",
+  "physical_device_tested": false,
+  "compiler_fixes_required": false
+}

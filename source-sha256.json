@@ -1,7 +1,7 @@
 {
   "version": "0.9.8 (27)",
   "kind": "project-input-sha256-with-explicit-modes",
-  "note": "Everything that goes to the repository, except reports that the checks rewrite.",
+  "note": "Current 0.9.8 repository inputs after native result documentation; tested application inputs are separately matched to 30ea0d5 in Luma/Docs/tested-input-match.json.",
   "files": [
     {
       "path": ".gitattributes",
@@ -16,7 +16,7 @@
     {
       "path": "AGENTS.md",
       "hash_mode": "lf-text",
-      "sha256": "12125adbec3d3a3b33f2cfc0d06bba8d9155afa93c879b04e456cc4d6f50ee67"
+      "sha256": "fabb9cde2e44b8ddeca96246bc1876345303b11b9ffbd9d2523c63ba26a3229f"
     },
     {
       "path": "CHANGELOG.md",
@@ -26,22 +26,22 @@
     {
       "path": "DEVELOPMENT_STATUS.md",
       "hash_mode": "lf-text",
-      "sha256": "edebb03af12d15cd433ed7070942e1139c54422f01e42c7a5190c535d6aec673"
+      "sha256": "96e358727c1b530ae8de2a41320ac510b0b5eaf9d8516584fb07a1e48d59e2dd"
     },
     {
       "path": "PROGRESS.json",
       "hash_mode": "lf-text",
-      "sha256": "79450da07703a49edd4f1f690601b812354ce6942590386980f5bb2a5e96e098"
+      "sha256": "2802db921938f2c9a6fb6f012616d31ccafe2e974396874a60aef36415baf597"
     },
     {
       "path": "README.md",
       "hash_mode": "lf-text",
-      "sha256": "49e389e293e8178619a8363b6dabd10fd7538db3ed0b43dcaa4a7a442c2fd827"
+      "sha256": "ca705a792c1c2932de155452999d34512f07d71e02c1d339098e61ddd7c0c535"
     },
     {
       "path": "verification.json",
       "hash_mode": "lf-text",
-      "sha256": "c79f816f50756090073d4626d3708a3a9be9c01878c1a5871a47bb4078651472"
+      "sha256": "899b66c7b789fcc72bca2a29ca820c4ee251272e658d3e208b6f93ddde94ff31"
     },
     {
       "path": ".github/workflows/ios-build.yml",
@@ -86,7 +86,7 @@
     {
       "path": "Luma/Docs/BUILD_ON_GITHUB.md",
       "hash_mode": "lf-text",
-      "sha256": "ca453034c22fac043f000c1e8365af670346598f848efee240b8e18d6af88226"
+      "sha256": "edcec11b85d63cf5adac5e001404da5bd3abf905f7113fa8faba2511a9ff72d2"
     },
     {
       "path": "Luma/Docs/CI_AUDIO_HASH_FIX.md",
@@ -106,7 +106,7 @@
     {
       "path": "Luma/Docs/DEVICE_TESTS.md",
       "hash_mode": "lf-text",
-      "sha256": "efc339ede65ca3074303c6040a65f81b666fe0e01c9269bb759af060401f9faf"
+      "sha256": "babf950beb46cb036b03eebcf426217afcd245ebde8e50e4244c4f5fc68483cd"
     },
     {
       "path": "Luma/Docs/SIGNAL_DURATION.md",

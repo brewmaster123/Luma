@@ -1,0 +1,80 @@
+{
+  "version": "0.9.8 (27)",
+  "IPA_path": "C:\\Users\\Admin\\Desktop\\Luma\\V.0.9.8\\dist\\Lumenoir-0.9.8-build27-unsigned.ipa",
+  "SHA256": "c33ef40c59473b5e31be9a99f6248da5fdf1f1645eae000e3dab8c89adaf2e2a",
+  "zip_integrity_passed": true,
+  "bundles": [
+    {
+      "identifier": "com.sevchlenko.luma",
+      "display_name": "Lumenoir",
+      "version": "0.9.8",
+      "build": "27",
+      "platforms": [
+        "iPhoneOS"
+      ],
+      "architectures": [
+        {
+          "cpu_type": "0x100000c",
+          "architecture": "arm64",
+          "code_signature_command_present": false
+        }
+      ]
+    },
+    {
+      "identifier": "com.sevchlenko.luma.watchkitapp",
+      "display_name": "Lumenoir",
+      "version": "0.9.8",
+      "build": "27",
+      "platforms": [
+        "WatchOS"
+      ],
+      "architectures": [
+        {
+          "cpu_type": "0x200000c",
+          "architecture": "arm64_32",
+          "code_signature_command_present": false
+        },
+        {
+          "cpu_type": "0x100000c",
+          "architecture": "arm64",
+          "code_signature_command_present": false
+        }
+      ]
+    }
+  ],
+  "localization_files": [
+    {
+      "path": "Payload/Luma.app/en.lproj/Localizable.strings",
+      "bytes": 874
+    },
+    {
+      "path": "Payload/Luma.app/en.lproj/InfoPlist.strings",
+      "bytes": 739
+    },
+    {
+      "path": "Payload/Luma.app/ru.lproj/Localizable.strings",
+      "bytes": 798
+    },
+    {
+      "path": "Payload/Luma.app/ru.lproj/InfoPlist.strings",
+      "bytes": 1014
+    },
+    {
+      "path": "Payload/Luma.app/Watch/Luma Watch.app/en.lproj/Localizable.strings",
+      "bytes": 2453
+    },
+    {
+      "path": "Payload/Luma.app/Watch/Luma Watch.app/ru.lproj/Localizable.strings",
+      "bytes": 1280
+    }
+  ],
+  "resource_matches": {
+    "luma-alarm-4.wav": "9c2784e108846aede7bf3a607e9db2babef5deadc717fa43c8952832df9d70c9",
+    "luma-night-rain.wav": "760775a7bb5e76e04c74795daa436aefbd2442058b7e9aba3fec08829b0030d9",
+    "luma-tone-4.wav": "9c2784e108846aede7bf3a607e9db2babef5deadc717fa43c8952832df9d70c9",
+    "PoiretOne-Regular.ttf": "457f2d03263f58e5a6dbcc1b607b10dff6581e7cf9c4ebdf330ec3e6772a3558",
+    "Manrope-Regular.ttf": "8e6739a692e9b94f2e160f84029d741ee92f5a2dc8081e257bb8bba5f8680ae6"
+  },
+  "unsigned": true,
+  "physical_device_tested": false
+}

@@ -1,0 +1,22 @@
+{
+  "at_utc": "2026-11-17T11:41:04.712250+00:00",
+  "kind": "changes-during-this-build-task-only",
+  "checked_files": 906,
+  "changed": [
+    "V.0.9.6/Luma/.validation-tools/ci-repo/.git/logs/refs/remotes/origin/HEAD"
+  ],
+  "added": [],
+  "passed": false,
+  "original_baseline_expected_hashes_not_modified": true,
+  "preexisting_original_baseline_mismatch": true,
+  "changed_file_details": {
+    "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/logs/refs/remotes/origin/HEAD",
+    "before_bytes": 1577,
+    "after_bytes": 1731,
+    "original_prefix_matches_start_of_task": true,
+    "appended_lines": 1,
+    "kind": "GitHub Desktop automatic remote set-head bookkeeping"
+  },
+  "restored": false,
+  "expected_hashes_changed": false
+}

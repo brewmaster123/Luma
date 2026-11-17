@@ -1,14 +1,17 @@
 {
   "version": "0.9.8 (27)",
-  "stage": "Sources ready; local structural, grammar, integrity and localization checks passed; Swift not compiled; CI not run (the user builds on GitHub himself)",
+  "stage": "Native CI passed first try: 130 XCTest, 8 audio cases, 34 queue cases, iPhone/Watch builds and unsigned IPA. No application source fixes.",
   "base_functions": "0.9.7 (23), carried over file for file",
   "base_design": "Design Experiments/Atelier-Night-Prototype-06, approved by the user on 16 Nov 2026",
   "final_mockup": "Design Experiments/Atelier-Night-Prototype-14",
   "app_name": "Lumenoir (internal project name Luma)",
-  "CI_run": null,
-  "swift_compiled": false,
+  "CI_run": 44076006890,
+  "swift_compiled": true,
   "device_tested": false,
   "production_ready": false,
   "twenty_second_signal_physical_validation": false,
-  "reference": "0.9.6 (22), immutable"
+  "reference": "0.9.6 (22), immutable",
+  "tested_commit": "30ea0d50b7bd9e2299877fe414692f8e56db2783",
+  "IPA_generated": true,
+  "IPA_artifact_url": "https://github.com/brewmaster123/Luma/actions/runs/44076006890/artifacts/14325557397"
 }
