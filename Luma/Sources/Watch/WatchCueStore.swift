@@ -96,7 +96,10 @@ import WatchKit
         let delay = cue.fireAt.timeIntervalSinceNow
         guard delay > 1 else { continue }
         let content = UNMutableNotificationContent()
-        content.title = cue.title; content.body = "Короткий сигнал Luma"
+        // 0.9.8: text only. Both strings pass through the Watch bundle's string table
+        // (en.lproj / ru.lproj); with a Russian watch they come back unchanged.
+        content.title = NSLocalizedString(cue.title, comment: "")
+        content.body = NSLocalizedString("Короткий сигнал Luma", comment: "")
         content.sound = .default // watchOS does not support custom named notification sounds.
         content.threadIdentifier = "luma.watch.cues"
         content.userInfo = ["cueID": cue.id.uuidString]

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Luma</key>
+	<string>Lumenoir</string>
+	<key>Разрешить и обновить</key>
+	<string>Allow and refresh</string>
+	<key>Следующий: %@</key>
+	<string>Next: %@</string>
+	<key>Расписание хранится на часах. Для сигнала часы должны быть надеты, разблокированы, а уведомления Luma разрешены в текущем фокусировании.</key>
+	<string>The schedule is kept on your watch. For a signal to come through, the watch has to be on your wrist and unlocked, with Lumenoir notifications allowed in the current Focus.</string>
+	<key>Откройте Luma на iPhone</key>
+	<string>Open Lumenoir on your iPhone</string>
+	<key>Разрешите уведомления и звуки Luma на часах</key>
+	<string>Allow Lumenoir notifications and sounds on your watch</string>
+	<key>Передача не завершена; откройте Luma на часах</key>
+	<string>The transfer didn’t finish. Open Lumenoir on your watch</string>
+	<key>Некорректное расписание</key>
+	<string>The schedule is invalid</string>
+	<key>Некорректное или устаревшее расписание</key>
+	<string>The schedule is invalid or out of date</string>
+	<key>Получено более новое расписание</key>
+	<string>A newer schedule has arrived</string>
+	<key>Заменено новым расписанием</key>
+	<string>Replaced by a newer schedule</string>
+	<key>Есть более новое расписание</key>
+	<string>A newer schedule already exists</string>
+	<key>Нет расписания</key>
+	<string>No schedule</string>
+	<key>watchOS не подтвердила очередь</key>
+	<string>watchOS didn’t confirm the queue</string>
+	<key>Короткий сигнал Luma</key>
+	<string>A short Lumenoir signal</string>
+	<key>Непрямой метод · Luma</key>
+	<string>Indirect method · Lumenoir</string>
+	<key>Умный будильник · Luma</key>
+	<string>Smart alarm · Lumenoir</string>
+	<key>Проба AlarmKit · Luma</key>
+	<string>Signal test · Lumenoir</string>
+	<key>Подсказка во сне</key>
+	<string>Dream cue</string>
+</dict>
+</plist>

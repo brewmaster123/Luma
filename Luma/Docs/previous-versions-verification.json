@@ -2,7 +2,18 @@
   "kind": "historical-directories-sha256-audit",
   "checked_files": 1493,
   "external_additions_checked": 0,
-  "passed": true,
-  "changes": [],
-  "unexpected_new_files": []
+  "passed": false,
+  "changes": [
+    {
+      "path": "V.0.9.6/Luma/.validation-tools/ci-repo/.git/logs/refs/remotes/origin/HEAD",
+      "error": "content changed"
+    },
+    {
+      "path": "AGENTS.md",
+      "error": "content changed"
+    }
+  ],
+  "unexpected_new_files": [
+    "IPA files/v 0.9.7.ipa"
+  ]
 }

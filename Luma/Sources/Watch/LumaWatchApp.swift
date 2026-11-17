@@ -27,7 +27,7 @@ import UserNotifications
       ScrollView {
         VStack(alignment: .leading, spacing: 12) {
           Text("Luma").font(.title2)
-          Text(store.summary).font(.footnote)
+          Text(WatchText.show(store.summary)).font(.footnote)
           if let next = store.next {
             Text("Следующий: \(next.formatted(date: .omitted, time: .shortened))").font(.caption)
           }

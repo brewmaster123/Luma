@@ -11,12 +11,18 @@ final class AlarmSignalDurationTests: XCTestCase {
   }
   func testDefaultAndInvalidSettingsRemainFourSeconds() {
     XCTAssertEqual(AlarmSignalDuration.defaultSeconds, 4)
-    for value: Int? in [nil, Int.min, -1, 0, 2, 11, Int.max] {
+    for value: Int? in [nil, Int.min, -1, 0, 2, 21, Int.max] {
       XCTAssertEqual(AlarmSignalDuration.validated(value), 4)
     }
   }
+  func testRangeIsThreeToTwentySeconds() {
+    XCTAssertEqual(AlarmSignalDuration.range, 3...20)
+    for value in [3, 10, 11, 20] {
+      XCTAssertEqual(AlarmSignalDuration.validated(value), value)
+    }
+  }
   func testEverySupportedDurationHasItsOwnAbsoluteDeadline() {
-    for seconds in 3...10 {
+    for seconds in 3...20 {
       let value = record(seconds: seconds)
       XCTAssertEqual(value.stopDurationSeconds, seconds)
       XCTAssertEqual(value.stopAt.timeIntervalSince(start), Double(seconds))
@@ -70,12 +76,18 @@ final class AlarmSignalDurationTests: XCTestCase {
     let longest = AlarmInterruptionWindow(now: start, stopAt: start.addingTimeInterval(10))
     XCTAssertEqual(longest.recoveryDelay, 14); XCTAssertEqual(longest.leaseDelay, 16)
   }
+  func testTwentySecondSignalIsProtectedByTheSameFormula() {
+    let twenty = AlarmInterruptionWindow(now: start, stopAt: start.addingTimeInterval(20))
+    XCTAssertEqual(twenty.recoveryDelay, 24); XCTAssertEqual(twenty.leaseDelay, 26)
+    let fifteen = AlarmInterruptionWindow(now: start, stopAt: start.addingTimeInterval(15))
+    XCTAssertEqual(fifteen.recoveryDelay, 19); XCTAssertEqual(fifteen.leaseDelay, 21)
+  }
   func testInterruptionBudgetsStayFiniteAndBounded() {
     for deadline in [nil, start.addingTimeInterval(-100), start.addingTimeInterval(10_000),
       Date(timeIntervalSince1970: .infinity), Date(timeIntervalSince1970: .nan)] {
       let window = AlarmInterruptionWindow(now: start, stopAt: deadline)
-      XCTAssertTrue((8.0...14.0).contains(window.recoveryDelay))
-      XCTAssertTrue((10.0...16.0).contains(window.leaseDelay))
+      XCTAssertTrue((8.0...24.0).contains(window.recoveryDelay))
+      XCTAssertTrue((10.0...26.0).contains(window.leaseDelay))
     }
   }
 }

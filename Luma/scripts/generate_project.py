@@ -39,7 +39,7 @@ for folder, title in [("Sources/LumaCore", "Core"), ("Sources/Platform", "Servic
 
 resource_children = []
 for filename, kind in [("iOSAssets.xcassets", "folder.assetcatalog"), ("WatchAssets.xcassets", "folder.assetcatalog"),
-                       ("PrivacyInfo.xcprivacy", "text.xml")] + [(f"Manrope-{style}.ttf", "file") for style in ["Regular", "Medium", "SemiBold"]] + [(f"luma-tone-{n}.wav", "audio.wav") for n in [4,8,15]] + [("luma-alarm-4.wav", "audio.wav"), ("luma-night-rain.wav", "audio.wav")]:
+                       ("PrivacyInfo.xcprivacy", "text.xml")] + [(f"Manrope-{style}.ttf", "file") for style in ["Regular", "Medium", "SemiBold"]] + [("PoiretOne-Regular.ttf", "file")] + [(f"luma-tone-{n}.wav", "audio.wav") for n in [4,8,15]] + [("luma-alarm-4.wav", "audio.wav"), ("luma-night-rain.wav", "audio.wav")] + [(f"Localization/{device}/{language}.lproj", "folder") for device in ["iPhone", "Watch"] for language in ["en", "ru"]]:
     path = "Resources/" + filename
     refs[path] = obj(path, "PBXFileReference", lastKnownFileType=kind, path=filename, sourceTree="<group>")
     resource_children.append(refs[path])
@@ -96,10 +96,14 @@ def resources_phase(key, paths):
 
 phone_sources = sources_phase("phone.sources", ["Sources/LumaCore/", "Sources/Platform/", "Sources/iPhone/"])
 watch_sources = sources_phase("watch.sources", ["Sources/LumaCore/", "Sources/Watch/"])
-fonts = [f"Resources/Manrope-{s}.ttf" for s in ["Regular", "Medium", "SemiBold"]]
+fonts = [f"Resources/Manrope-{s}.ttf" for s in ["Regular", "Medium", "SemiBold"]] + ["Resources/PoiretOne-Regular.ttf"]
 tones = [f"Resources/luma-tone-{n}.wav" for n in [4,8,15]] + ["Resources/luma-alarm-4.wav"]
-phone_resources = resources_phase("phone.resources", ["Resources/iOSAssets.xcassets", "Resources/PrivacyInfo.xcprivacy"] + fonts + tones + ["Resources/luma-night-rain.wav"])
-watch_resources = resources_phase("watch.resources", ["Resources/WatchAssets.xcassets", "Resources/PrivacyInfo.xcprivacy"])
+# 0.9.8: each bundle carries en.lproj and ru.lproj as plain folders (system-rendered strings only:
+# permission prompts, the AlarmKit alert, Watch labels). The app's own interface is translated in code.
+phone_strings = [f"Resources/Localization/iPhone/{language}.lproj" for language in ["en", "ru"]]
+watch_strings = [f"Resources/Localization/Watch/{language}.lproj" for language in ["en", "ru"]]
+phone_resources = resources_phase("phone.resources", ["Resources/iOSAssets.xcassets", "Resources/PrivacyInfo.xcprivacy"] + fonts + tones + ["Resources/luma-night-rain.wav"] + phone_strings)
+watch_resources = resources_phase("watch.resources", ["Resources/WatchAssets.xcassets", "Resources/PrivacyInfo.xcprivacy"] + watch_strings)
 phone_frameworks = obj("phone.frameworks", "PBXFrameworksBuildPhase", buildActionMask=2147483647, files=[], runOnlyForDeploymentPostprocessing=0)
 watch_frameworks = obj("watch.frameworks", "PBXFrameworksBuildPhase", buildActionMask=2147483647, files=[], runOnlyForDeploymentPostprocessing=0)
 embed_file = obj("embed.watch.file", "PBXBuildFile", fileRef=watch_product, settings={"ATTRIBUTES": ["RemoveHeadersOnCopy"]})

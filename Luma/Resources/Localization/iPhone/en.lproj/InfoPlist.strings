@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>NSHealthShareUsageDescription</key>
+	<string>Lumenoir can show your saved sleep history in the Journal. Access to Health is optional and is not needed for the alarms to work.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>The microphone is used to record your own voice cues and notes about your dreams. Recordings stay on your iPhone.</string>
+	<key>NSAlarmKitUsageDescription</key>
+	<string>Lumenoir sets system alarms for the smart alarm and the indirect method: short signals that also sound when your iPhone is locked.</string>
+</dict>
+</plist>

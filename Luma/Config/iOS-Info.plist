@@ -3,9 +3,14 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
-	<string>ru</string>
+	<string>en</string>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>en</string>
+		<string>ru</string>
+	</array>
 	<key>CFBundleDisplayName</key>
-	<string>Luma Lab</string>
+	<string>Lumenoir</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -23,14 +28,15 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSHealthShareUsageDescription</key>
-	<string>Luma может показывать сохранённую историю сна в дневнике. Доступ к «Здоровью» необязателен и не нужен для работы будильников.</string>
+	<string>Lumenoir can show your saved sleep history in the Journal. Access to Health is optional and is not needed for the alarms to work.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Микрофон нужен для записи личных голосовых подсказок и заметок о сновидениях. Записи сохраняются на iPhone.</string>
+	<string>The microphone is used to record your own voice cues and notes about your dreams. Recordings stay on your iPhone.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Manrope-Regular.ttf</string>
 		<string>Manrope-Medium.ttf</string>
 		<string>Manrope-SemiBold.ttf</string>
+		<string>PoiretOne-Regular.ttf</string>
 	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
@@ -50,6 +56,6 @@
 	<key>UIUserInterfaceStyle</key>
 	<string>Dark</string>
 	<key>NSAlarmKitUsageDescription</key>
-	<string>Luma использует AlarmKit для умного будильника и непрямого метода с коротким звуком, включая сигналы при заблокированном iPhone.</string>
+	<string>Lumenoir uses AlarmKit for the smart alarm and the indirect method: short signals that also sound when your iPhone is locked.</string>
 </dict>
 </plist>

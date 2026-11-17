@@ -4,20 +4,34 @@
   "text_normalization": "CRLF to LF only",
   "binary_normalization": "none",
   "intentional_changes": {
-    "Config/Base.xcconfig": "Version 0.9.7 (23)",
-    "Luma.xcodeproj/project.pbxproj": "New core duration source membership",
-    "scripts/project-graph.json": "Regenerated native graph for new core source",
-    "scripts/check-static.py": "Duration preference, snapshots, backup and interruption invariants",
-    "scripts/check-finite-queue-on-mac.swift": "Duration, relaunch, rollback and deadline integration regressions",
+    "Config/Base.xcconfig": "Version 0.9.8 (27)",
+    "Luma.xcodeproj/project.pbxproj": "0.9.8: regenerated with the new sources, font, images and language folders",
+    "scripts/project-graph.json": "0.9.8: regenerated together with the project",
+    "scripts/check-static.py": "0.9.8: four fonts and the 3-20 second range; earlier invariants kept",
+    "scripts/check-finite-queue-on-mac.swift": "0.9.7: duration, relaunch, rollback and deadline integration regressions. 0.9.8: one more scenario (20 seconds accepted, 21 refused)",
     "Sources/LumaCore/SystemAlarmPlan.swift": "Backward-compatible per-occurrence Stop duration snapshot",
     "Sources/Platform/AppModel.swift": "Persist and apply global preference to all three request kinds",
     "Sources/Platform/CueDiagnostics.swift": "Separate PCM asset length and actual Stop deadline",
-    "Sources/iPhone/AlarmEditor.swift": "Describe configurable duration",
-    "Sources/iPhone/IndirectMethodView.swift": "Describe configurable duration",
-    "Sources/iPhone/SignalReadinessView.swift": "Describe configurable duration",
-    "Sources/iPhone/SettingsView.swift": "3-10 second Stepper and selected-duration descriptions",
-    "Sources/iPhone/NightAudio.swift": "Bounded interruption budget covering ten-second cues",
-    "Sources/iPhone/SystemAlarmService.swift": "Transactional future deadline updates, active-cue preservation and ledger backup"
+    "Sources/iPhone/AlarmEditor.swift": "0.9.8: new design; the same save and delete logic",
+    "Sources/iPhone/IndirectMethodView.swift": "0.9.8: new design; the same calls of the app model",
+    "Sources/iPhone/SignalReadinessView.swift": "0.9.8: new design; the same permission step",
+    "Sources/iPhone/SettingsView.swift": "0.9.8: new design; language row; 3-20 second control; sound library row removed from the page",
+    "Sources/iPhone/NightAudio.swift": "0.9.7: bounded interruption budget. 0.9.8: one line, the lock-screen title follows the chosen language",
+    "Sources/iPhone/SystemAlarmService.swift": "Transactional future deadline updates, active-cue preservation and ledger backup",
+    "Sources/iPhone/DesignSystem.swift": "0.9.8: new design (\"Atelier Night\"); the message card shows the name Lumenoir",
+    "Sources/iPhone/JournalView.swift": "0.9.8: new design; the same save and delete calls",
+    "Sources/iPhone/JournalVoiceComposer.swift": "0.9.8: new design; the same recording calls",
+    "Sources/iPhone/PhoneRootView.swift": "0.9.8: new design; three tabs on one canvas; no introduction screen",
+    "Sources/iPhone/SoundLibraryView.swift": "0.9.8: new design; the library is opened from the sound picker",
+    "Sources/Watch/LumaWatchApp.swift": "0.9.8: one line, the status text is shown in the watch language",
+    "Sources/Watch/WatchCueStore.swift": "0.9.8: two lines, notification title and text are looked up in the watch language",
+    "Config/iOS-Info.plist": "0.9.8: English as the base language, list of languages, Poiret One font; the name Lumenoir under the icon and in the permission texts",
+    "Config/Watch-Info.plist": "0.9.8: English as the base language, list of languages; the name Lumenoir",
+    "Resources/iOSAssets.xcassets/AppIcon.appiconset/AppIcon.png": "0.9.8: the Lumenoir icon, the strict sign the user chose on 17 Nov 2026 (the 0.9.6 icon is kept in V.0.9.6 and V.0.9.7)",
+    "Resources/WatchAssets.xcassets/AppIcon.appiconset/AppIcon.png": "0.9.8: the Lumenoir icon on the watch, the same strict sign",
+    "scripts/generate_project.py": "0.9.8: adds the font and the language folders to the project",
+    "Sources/LumaCore/AlarmSignalDuration.swift": "0.9.8: range 3-20 seconds (was 3-10); the same formula",
+    "Tests/LumaCoreTests/AlarmSignalDurationTests.swift": "0.9.8: tests for the 3-20 second range"
   },
   "new_files": [
     "Sources/LumaCore/AlarmSignalDuration.swift",
@@ -40,21 +54,6 @@
       "sha256": "e52c18e283386a600b406ab70cd2467968652f2f339d374f378ca443daa61577"
     },
     {
-      "path": "Sources/iPhone/DesignSystem.swift",
-      "hash_mode": "lf-text",
-      "sha256": "09d4a84debb3216cf16f02153cba4869bdae196ebd505926129d650619d6abda"
-    },
-    {
-      "path": "Sources/iPhone/JournalView.swift",
-      "hash_mode": "lf-text",
-      "sha256": "5e56dbb3838c6bed77df9b6b9c23ff88994e445c21c16bb8f5977d6904634133"
-    },
-    {
-      "path": "Sources/iPhone/JournalVoiceComposer.swift",
-      "hash_mode": "lf-text",
-      "sha256": "0e725c45bb9263a62a5813414989b7090662017efd186a1ce3754266c449a862"
-    },
-    {
       "path": "Sources/iPhone/LegacyAlarmCleanup.swift",
       "hash_mode": "lf-text",
       "sha256": "94c1ec8d554ae54d0ea39d263c5f1e96c9170e32750bb6a9650452502c5c5532"
@@ -63,16 +62,6 @@
       "path": "Sources/iPhone/LumaApp.swift",
       "hash_mode": "lf-text",
       "sha256": "4498678e24a6119855a9044008c3bac013f6be7d881503d05e0ece303560b537"
-    },
-    {
-      "path": "Sources/iPhone/PhoneRootView.swift",
-      "hash_mode": "lf-text",
-      "sha256": "c12ab81895e3094a2f74a96636bd1b58c5d6bf7f12e96fdc932e8956a096ca5b"
-    },
-    {
-      "path": "Sources/iPhone/SoundLibraryView.swift",
-      "hash_mode": "lf-text",
-      "sha256": "d8a4e847764847891dcd3fa87402e3d5bb8c3b5546a4c2fde6522dd2e9cdcfeb"
     },
     {
       "path": "Sources/iPhone/WatchCueLink.swift",
@@ -185,16 +174,6 @@
       "sha256": "6592c35c5d3e5d07bc1ffe702f77ef6a853bc135e11a1d17c95dd707c4dc5e82"
     },
     {
-      "path": "Sources/Watch/LumaWatchApp.swift",
-      "hash_mode": "lf-text",
-      "sha256": "666ddde2a8b8aca975629b261ad55be8e965e78620f20e9e38db8ead767c1b2e"
-    },
-    {
-      "path": "Sources/Watch/WatchCueStore.swift",
-      "hash_mode": "lf-text",
-      "sha256": "5e5cbddfe1893b58d355b35bf6170d941a4524ae1e77cc154835e5f01381cb89"
-    },
-    {
       "path": "Tests/LumaCoreTests/AlarmKitWaveMigrationTests.swift",
       "hash_mode": "lf-text",
       "sha256": "4e7b80b96a80382f124e7f4399900d35907bf6393f09bf7bf2bfa72dd5cf654b"
@@ -270,11 +249,6 @@
       "sha256": "fa111410c8724bf7b27253ccc81e14ff43949f14917f319e7e74365b36321b74"
     },
     {
-      "path": "Resources/iOSAssets.xcassets/AppIcon.appiconset/AppIcon.png",
-      "hash_mode": "raw",
-      "sha256": "4ee127bb7a7e65108cd6e5e966af7f639d9a441c84b6dba2d8f9ec41fdc0bc35"
-    },
-    {
       "path": "Resources/iOSAssets.xcassets/AppIcon.appiconset/Contents.json",
       "hash_mode": "lf-text",
       "sha256": "9239900ca4c37dc860feb154216409f05d906e26f2d79550e1e8e8b8db6324c7"
@@ -340,11 +314,6 @@
       "sha256": "a331d51864743ebe4e00dd22360b4a538b6b3ac26a6b3eb54094e60a36959a12"
     },
     {
-      "path": "Resources/WatchAssets.xcassets/AppIcon.appiconset/AppIcon.png",
-      "hash_mode": "raw",
-      "sha256": "4ee127bb7a7e65108cd6e5e966af7f639d9a441c84b6dba2d8f9ec41fdc0bc35"
-    },
-    {
       "path": "Resources/WatchAssets.xcassets/AppIcon.appiconset/Contents.json",
       "hash_mode": "lf-text",
       "sha256": "81a9a236c9662c9ff13ef208ce045a13f2b50a2f0917310289c0dc839184966b"
@@ -355,19 +324,9 @@
       "sha256": "a3393322cd7b4c1e0aa93bebe09abaa91ad891290d1225b0b5d10b5c6f216025"
     },
     {
-      "path": "Config/iOS-Info.plist",
-      "hash_mode": "lf-text",
-      "sha256": "fed7e0be89f0b85c0f5d0d77996be0df0fc4b70697dbb4d0dec7b46c87ee2557"
-    },
-    {
       "path": "Config/iOS.entitlements",
       "hash_mode": "lf-text",
       "sha256": "e82a7f6e130b0fe65a40214c15b4116c5245125329c63954d9ccdd9cc80f039e"
-    },
-    {
-      "path": "Config/Watch-Info.plist",
-      "hash_mode": "lf-text",
-      "sha256": "44ef7c0c0ff8b73c0dfcacf92ab134107ab24fe506fe740f8d3683fb3102147b"
     },
     {
       "path": "Config/Watch.entitlements",
@@ -410,11 +369,6 @@
       "sha256": "f22cb64ab8c06a5c16e3f55bdbdc4b4019cf4d90b700c83cacf9a8a47d37ac13"
     },
     {
-      "path": "scripts/generate_project.py",
-      "hash_mode": "lf-text",
-      "sha256": "31ae73d49cd348f395ea56e668018afdb812c5d5c90851c8ddbd1cdb23bf2925"
-    },
-    {
       "path": "scripts/requirements-validation.txt",
       "hash_mode": "lf-text",
       "sha256": "bd40560117191669717bb670fc985eaf62e6556b2a1b50d1ad04933bd8ef8b6b"
@@ -434,5 +388,25 @@
       "hash_mode": "lf-text",
       "sha256": "9d50e3111cc2b17e62e43632802457fc24409bed1f4045908163d94756e0fdba"
     }
-  ]
+  ],
+  "new_files_0.9.8": [
+    "Sources/iPhone/Localization.swift",
+    "Sources/iPhone/LocalizationTable.swift",
+    "Sources/iPhone/NightScene.swift",
+    "Sources/iPhone/NightSkyData.swift",
+    "Sources/iPhone/JournalScene.swift",
+    "Sources/iPhone/SettingsScene.swift",
+    "Sources/Watch/WatchText.swift",
+    "Resources/PoiretOne-Regular.ttf",
+    "Resources/PoiretOne-OFL.txt",
+    "Resources/Localization (en.lproj and ru.lproj for iPhone and Watch)",
+    "Resources/iOSAssets.xcassets (18 image sets of the three paintings)",
+    "scripts/check-localization.py",
+    "scripts/check-engine-unchanged.py",
+    "scripts/make-engine-manifest.py",
+    "scripts/generate_sky_data.py",
+    "scripts/sky-data.json",
+    "Docs/unchanged-since-0.9.7.json"
+  ],
+  "note_0.9.8": "The files listed under \"files\" are still byte-identical to 0.9.6 (text: CRLF to LF only). What 0.9.8 keeps identical to 0.9.7 is recorded separately in Docs/unchanged-since-0.9.7.json."
 }

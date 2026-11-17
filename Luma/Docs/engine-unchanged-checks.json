@@ -1,0 +1,33 @@
+{
+  "base": "0.9.7 (23)",
+  "version": "0.9.8 (27)",
+  "passed": true,
+  "unchanged_files": 75,
+  "changed_on_purpose": {
+    "Config/Base.xcconfig": "Version 0.9.8 (27).",
+    "Config/iOS-Info.plist": "English as the base language, the list of languages, the Poiret One font; the name under the icon and in the permission texts is Lumenoir.",
+    "Config/Watch-Info.plist": "English as the base language, the list of languages; the name Lumenoir.",
+    "Luma.xcodeproj/project.pbxproj": "Regenerated: new source files, font, images and language folders.",
+    "Resources/iOSAssets.xcassets/AppIcon.appiconset/AppIcon.png": "The Lumenoir icon: the strict sign the user chose on 17 Nov 2026 (1024 px, opaque RGB).",
+    "Resources/WatchAssets.xcassets/AppIcon.appiconset/AppIcon.png": "The Lumenoir icon on the watch: the same strict sign (1024 px, opaque RGB).",
+    "scripts/check-finite-queue-on-mac.swift": "Queue harness: one new scenario (20 seconds accepted, 21 refused); the invalid sample 11 became 21.",
+    "scripts/check-static.py": "Expects four fonts and the 3-20 second range.",
+    "scripts/generate_project.py": "Adds the font and the language folders to the project.",
+    "scripts/project-graph.json": "Regenerated together with the project.",
+    "Sources/iPhone/AlarmEditor.swift": "New design; the same save and delete logic; the app is called Lumenoir.",
+    "Sources/iPhone/DesignSystem.swift": "New design (\"Atelier Night\"); the message card shows the name Lumenoir.",
+    "Sources/iPhone/IndirectMethodView.swift": "New design; the same calls of the app model.",
+    "Sources/iPhone/JournalView.swift": "New design; the same save and delete calls; the app is called Lumenoir.",
+    "Sources/iPhone/JournalVoiceComposer.swift": "New design; the same recording calls.",
+    "Sources/iPhone/NightAudio.swift": "One line: the lock-screen title of the night sound is shown in the chosen language.",
+    "Sources/iPhone/PhoneRootView.swift": "New design; three tabs on one canvas; no introduction screen.",
+    "Sources/iPhone/SettingsView.swift": "New design; language row; 3-20 second control; the sound library row is removed from the page; the app is called Lumenoir.",
+    "Sources/iPhone/SignalReadinessView.swift": "New design; the same permission step; the app is called Lumenoir.",
+    "Sources/iPhone/SoundLibraryView.swift": "New design; the library is opened from the sound picker; the app is called Lumenoir.",
+    "Sources/LumaCore/AlarmSignalDuration.swift": "The signal may last 3-20 seconds (was 3-10); the interruption window covers 20 seconds. The formula is the same.",
+    "Sources/Watch/LumaWatchApp.swift": "One line: the status text is shown in the watch language.",
+    "Sources/Watch/WatchCueStore.swift": "Two lines: the title and text of the watch notification are looked up in the watch language.",
+    "Tests/LumaCoreTests/AlarmSignalDurationTests.swift": "Tests for the 3-20 second range."
+  },
+  "failed": []
+}

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Разрешить и обновить</key>
+	<string>Разрешить и обновить</string>
+	<key>Luma</key>
+	<string>Lumenoir</string>
+	<key>Расписание хранится на часах. Для сигнала часы должны быть надеты, разблокированы, а уведомления Luma разрешены в текущем фокусировании.</key>
+	<string>Расписание хранится на часах. Для сигнала часы должны быть надеты, разблокированы, а уведомления Lumenoir разрешены в текущем фокусировании.</string>
+	<key>Короткий сигнал Luma</key>
+	<string>Короткий сигнал Lumenoir</string>
+	<key>Непрямой метод · Luma</key>
+	<string>Непрямой метод · Lumenoir</string>
+	<key>Умный будильник · Luma</key>
+	<string>Умный будильник · Lumenoir</string>
+	<key>Проба AlarmKit · Luma</key>
+	<string>Проба AlarmKit · Lumenoir</string>
+</dict>
+</plist>

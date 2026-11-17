@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>NSHealthShareUsageDescription</key>
+	<string>Lumenoir может показывать сохранённую историю сна в дневнике. Доступ к «Здоровью» необязателен и не нужен для работы будильников.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Микрофон нужен для записи личных голосовых подсказок и заметок о сновидениях. Записи сохраняются на iPhone.</string>
+	<key>NSAlarmKitUsageDescription</key>
+	<string>Lumenoir использует AlarmKit для умного будильника и непрямого метода с коротким звуком, включая сигналы при заблокированном iPhone.</string>
+</dict>
+</plist>

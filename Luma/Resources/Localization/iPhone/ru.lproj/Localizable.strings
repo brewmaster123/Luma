@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Остановить</key>
+	<string>Остановить</string>
+	<key>Остановить сигнал Luma</key>
+	<string>Остановить сигнал Lumenoir</string>
+	<key>Непрямой метод · Luma</key>
+	<string>Непрямой метод · Lumenoir</string>
+	<key>Умный будильник · Luma</key>
+	<string>Умный будильник · Lumenoir</string>
+	<key>Проба AlarmKit · Luma</key>
+	<string>Проба AlarmKit · Lumenoir</string>
+	<key>Luma · тихий ночной дождь</key>
+	<string>Lumenoir · тихий ночной дождь</string>
+</dict>
+</plist>

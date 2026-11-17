@@ -41,6 +41,10 @@
       "errors": []
     },
     {
+      "file": "Sources\\iPhone\\JournalScene.swift",
+      "errors": []
+    },
+    {
       "file": "Sources\\iPhone\\JournalView.swift",
       "errors": []
     },
@@ -53,6 +57,14 @@
       "errors": []
     },
     {
+      "file": "Sources\\iPhone\\Localization.swift",
+      "errors": []
+    },
+    {
+      "file": "Sources\\iPhone\\LocalizationTable.swift",
+      "errors": []
+    },
+    {
       "file": "Sources\\iPhone\\LumaApp.swift",
       "errors": []
     },
@@ -61,7 +73,19 @@
       "errors": []
     },
     {
+      "file": "Sources\\iPhone\\NightScene.swift",
+      "errors": []
+    },
+    {
+      "file": "Sources\\iPhone\\NightSkyData.swift",
+      "errors": []
+    },
+    {
       "file": "Sources\\iPhone\\PhoneRootView.swift",
+      "errors": []
+    },
+    {
+      "file": "Sources\\iPhone\\SettingsScene.swift",
       "errors": []
     },
     {
@@ -193,6 +217,10 @@
       "errors": []
     },
     {
+      "file": "Sources\\Watch\\WatchText.swift",
+      "errors": []
+    },
+    {
       "file": "Tests\\LumaCoreTests\\AlarmKitWaveMigrationTests.swift",
       "errors": []
     },
@@ -278,6 +306,10 @@
     },
     {
       "file": "workflow: Check preserved planner, data and resources",
+      "errors": []
+    },
+    {
+      "file": "workflow: Check that the English version is complete",
       "errors": []
     },
     {

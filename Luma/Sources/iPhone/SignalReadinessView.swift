@@ -1,7 +1,8 @@
 import SwiftUI
 import UIKit
 
-/// Explain the concrete four-second WAV AlarmKit test before scheduling.
+/// "Ночные сигналы": what has to be allowed and checked before signals are put in the queue.
+/// The steps it performs are those of 0.9.7; only the wording and the look are new.
 struct SignalReadinessView: View {
   @EnvironmentObject private var model: AppModel
   @Environment(\.dismiss) private var dismiss
@@ -10,69 +11,70 @@ struct SignalReadinessView: View {
   var onReady: () -> Void = {}
   @State private var working = false
   @State private var error: String?
+
   var body: some View {
-    ScrollView {
-      VStack(alignment: .leading, spacing: 20) {
-        HStack {
-          Image(systemName: "alarm.waves.left.and.right").font(.system(size: 25))
-            .foregroundStyle(LumaStyle.lavender)
-          Spacer()
-          Button { dismiss() } label: {
-            Image(systemName: "xmark").frame(width: 44, height: 44).contentShape(Rectangle())
-          }.buttonStyle(.plain).accessibilityLabel("Закрыть").disabled(working)
+    AtelierSheet(tr("Ночные сигналы"), canClose: !working) {
+      VStack(alignment: .leading, spacing: 13) {
+        step(1, tr("Разрешите будильники"),
+          tr("Умный будильник и непрямой метод работают через системные будильники iPhone. Нужна iOS 26 или новее."))
+        step(2, tr("Оставьте ночной фон"),
+          String(format: tr("Тихий дождь играет между сигналами, чтобы каждый сигнал смолкал сам — сейчас через %@."),
+            L10n.seconds(model.alarmStopSeconds)))
+        step(3, tr("Проверьте с блокировкой"),
+          tr("Запустите пробу через 60 секунд, заблокируйте iPhone и послушайте, затихнет ли сигнал без касаний."))
+      }
+      .padding(.bottom, 14)
+      SheetNote(text: tr("Не закрывайте Lumenoir смахиванием: без приложения сигналы не смолкнут сами. Если сигнал всё же не смолк, нажмите «Остановить»."))
+        .accessibilityIdentifier("signal.alarmkitWaveTest")
+      SheetNote(text: L10n.show(model.systemAlarms.summary))
+        .padding(.top, 8)
+      if let error {
+        Text(L10n.show(error)).font(Atelier.ui(12.5)).foregroundStyle(Atelier.ink.opacity(0.9))
+          .fixedSize(horizontal: false, vertical: true)
+          .padding(.top, 8)
+      }
+      Button {
+        guard !working else { return }
+        working = true
+        Task { @MainActor in
+          defer { working = false }
+          do {
+            if requiresPermission { try await model.preparePhoneSignals(acceptLimitations: true) }
+            onReady(); dismiss()
+          } catch { self.error = error.localizedDescription }
         }
-        Text("AlarmKit · короткий сигнал").font(LumaStyle.font(24, "Medium"))
-        LumaCard {
-          VStack(alignment: .leading, spacing: 18) {
-            step("1", "Разрешите будильники", "Умный будильник и непрямой метод используют AlarmKit. Нужен iPhone с iOS 26 или новее и разрешение на будильники.")
-            step("2", "Тихий фон между сигналами", "Luma включает тихий дождь для ночной аудиоработы. Сигнал останавливается через выбранные в настройках 3–10 секунд, по умолчанию 4. Сам фон не вызывает вибрацию часов.")
-            step("3", "Сначала проверьте с блокировкой", "В настройках есть проба через 60 секунд. Заблокируйте iPhone и проверьте, затих ли сигнал без прикосновений.")
-          }
+      } label: {
+        HStack(spacing: 10) {
+          if working { ProgressView().tint(Atelier.ink) }
+          Text(working ? tr("Подготавливаем…") : continueTitle)
         }
-        Text("Нужен включённый ночной фон. Не закрывайте Luma принудительно. При длительном прерывании аудио очередь снимается. Это проверочная версия: сначала измерьте пробу с блокировкой; если звонок продолжится, нажмите «Остановить».")
-          .font(LumaStyle.font(13)).foregroundStyle(LumaStyle.amber).lineSpacing(4)
-          .accessibilityIdentifier("signal.alarmkitWaveTest")
-        Group {
-          Text("Откройте Luma на Apple Watch и разрешите её уведомления. Часы получают собственное расписание заранее. Проверьте подтверждение очереди в настройках iPhone, звук и вибрацию на вашей паре устройств.")
-            .font(LumaStyle.font(12)).foregroundStyle(LumaStyle.secondary)
-        }
-        Text(model.systemAlarms.summary).font(LumaStyle.font(12)).foregroundStyle(LumaStyle.secondary)
-        if let error { Text(error).font(LumaStyle.font(12)).foregroundStyle(LumaStyle.amber) }
-        Button {
-          if let url = URL(string: UIApplication.openSettingsURLString) { UIApplication.shared.open(url) }
-        } label: {
-          Label("Настройки Luma в iPhone", systemImage: "arrow.up.forward.square")
-            .font(LumaStyle.font(13, "Medium")).frame(minHeight: 44)
-        }.buttonStyle(.plain).foregroundStyle(LumaStyle.lavender)
-        Button {
-          guard !working else { return }
-          working = true
-          Task { @MainActor in
-            defer { working = false }
-            do {
-              if requiresPermission { try await model.preparePhoneSignals(acceptLimitations: true) }
-              onReady(); dismiss()
-            } catch { self.error = error.localizedDescription }
-          }
-        } label: {
-          HStack { if working { ProgressView() }; Text(working ? "Подготавливаем…" : continueTitle) }
-        }.buttonStyle(PrimaryButtonStyle()).disabled(working || !model.systemAlarms.supported)
-          .accessibilityIdentifier("signal.continue")
-      }.padding(24)
-    }.foregroundStyle(LumaStyle.text).background(LumaStyle.background)
-      .presentationDetents([.large]).presentationDragIndicator(.visible)
-      .presentationCornerRadius(28).interactiveDismissDisabled(working)
-      .task { await model.refreshAlarmAccess() }
+      }
+      .buttonStyle(VelvetButtonStyle())
+      .disabled(working || !model.systemAlarms.supported)
+      .padding(.top, 16)
+      .accessibilityIdentifier("signal.continue")
+      Button(tr("Настройки Lumenoir в iPhone")) {
+        if let url = URL(string: UIApplication.openSettingsURLString) { UIApplication.shared.open(url) }
+      }
+      .buttonStyle(VelvetButtonStyle(secondary: true))
+      .padding(.top, 14)
+    }
+    .interactiveDismissDisabled(working)
+    .task { await model.refreshAlarmAccess() }
   }
-  private func step(_ number: String, _ title: String, _ detail: String) -> some View {
+
+  private func step(_ number: Int, _ title: String, _ detail: String) -> some View {
     HStack(alignment: .top, spacing: 12) {
-      Text(number).font(LumaStyle.font(12, "SemiBold"))
-        .foregroundStyle(LumaStyle.lavender).frame(width: 26, height: 26)
-        .background(LumaStyle.lavender.opacity(0.1), in: Circle())
-      VStack(alignment: .leading, spacing: 6) {
-        Text(title).font(LumaStyle.font(14, "SemiBold"))
-        Text(detail).font(LumaStyle.font(12)).foregroundStyle(LumaStyle.secondary)
-      }.fixedSize(horizontal: false, vertical: true)
+      Text("\(number)").font(Atelier.display(15)).foregroundStyle(Atelier.ink)
+        .frame(width: 26, height: 26)
+        .background(Circle().fill(Color(hex: 0x080C19))
+          .overlay(Circle().strokeBorder(Color.black.opacity(0.6), lineWidth: 0.5)))
+        .accessibilityHidden(true)
+      VStack(alignment: .leading, spacing: 2) {
+        Text(title).font(Atelier.ui(15)).foregroundStyle(Atelier.ink)
+        Text(detail).font(Atelier.ui(13)).lineSpacing(4).foregroundStyle(Color(hex: 0xB9B4C6))
+      }
+      .fixedSize(horizontal: false, vertical: true)
     }
   }
 }

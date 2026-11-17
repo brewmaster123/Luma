@@ -105,7 +105,7 @@ for n in [4,8,15]:
             check(max(map(abs,samples[-100:]))<peak*0.01, 'Base sound has a smooth quiet tail')
 for name in ['iOS']:
     info=plistlib.loads((ROOT/f'Config/{name}-Info.plist').read_bytes())
-    check(len(info['UIAppFonts'])==3 and all((ROOT/'Resources'/f).exists() for f in info['UIAppFonts']), f'Bundled Cyrillic fonts: {name}')
+    check(len(info['UIAppFonts'])==4 and 'PoiretOne-Regular.ttf' in info['UIAppFonts'] and all((ROOT/'Resources'/f).exists() for f in info['UIAppFonts']), f'Bundled Cyrillic fonts: {name}')
     ent=plistlib.loads((ROOT/f'Config/{name}.entitlements').read_bytes())
     check('com.apple.developer.usernotifications.time-sensitive' not in ent, f'Ordinary notification capabilities: {name}')
 for path in ['scripts/check-on-mac.sh', 'Sources/LumaCore/RealtimeREMEngine.swift',
@@ -203,16 +203,16 @@ duration=(ROOT/'Sources/LumaCore/AlarmSignalDuration.swift').read_text()
 plan=(ROOT/'Sources/LumaCore/SystemAlarmPlan.swift').read_text()
 model=(ROOT/'Sources/Platform/AppModel.swift').read_text()
 settings=(ROOT/'Sources/iPhone/SettingsView.swift').read_text()
-check('defaultSeconds = 4' in duration and 'range = 3...10' in duration,
-      'AlarmKit Stop preference supports integer 3-10 seconds with four as default')
-check('min(10, max(0, delta))' in duration and 'recoveryDelay = max(8, remaining + 4)' in duration
+check('defaultSeconds = 4' in duration and 'range = 3...20' in duration,
+      'AlarmKit Stop preference supports integer 3-20 seconds with four as default')
+check('min(20, max(0, delta))' in duration and 'recoveryDelay = max(8, remaining + 4)' in duration
       and 'leaseDelay = recoveryDelay + 2' in duration and 'window.leaseDelay' in night,
-      'Interruption grace and execution lease are bounded and cover ten-second Stop')
+      'Interruption grace and execution lease are bounded and cover twenty-second Stop')
 check('stopAfterSeconds: Int?' in plan and 'TimeInterval(stopDurationSeconds)' in plan,
       'Each occurrence snapshots its deadline; old records decode to four seconds')
 check(model.count('stopAfterSeconds: alarmStopSeconds') == 3 and 'UserDefaults.standard.set(seconds' in model,
       'Smart, indirect and probe requests share the persisted duration preference')
-check('Stepper(value:' in settings and 'in: AlarmSignalDuration.range' in settings,
+check('AlarmSignalDuration.range' in settings and 'model.setAlarmStopSeconds(' in settings,
       'Settings exposes the bounded duration control')
 check('try updateFutureStopDurations' in service and 'record.fireAt > threshold' in service
       and '!observedDeliveries.contains' in service and 'ledger = previous; throw error' in service,

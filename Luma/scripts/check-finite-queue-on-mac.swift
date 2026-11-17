@@ -125,6 +125,24 @@ private func require(_ condition: @autoclosure () -> Bool, _ message: String) th
         let restarted = f.service(); try await restarted.bootstrap()
         try require(restarted.ledger.records.map(\.stopDurationSeconds) == [10, 10, 10], "Duration lost on relaunch")
       }),
+      // 0.9.8: the range is 3-20 seconds.
+      ("twenty-second duration is accepted for every kind and twenty-one is refused", { f in
+        let s = f.service()
+        let requests = [SystemAlarmKind.smart, .indirect, .probe].enumerated().map {
+          f.request(key: "kind.\($0.offset)", kind: $0.element)
+        }
+        _ = try await s.reconcile(requests, activeOwners: Set(requests.map(\.ownerID)))
+        let ids = s.ledger.records.map(\.id), times = s.ledger.records.map(\.fireAt)
+        try s.setFutureStopDuration(20)
+        try require(s.ledger.records.map(\.id) == ids && s.ledger.records.map(\.fireAt) == times,
+          "Twenty seconds changed native identity or cadence")
+        try require(s.ledger.records.allSatisfy { $0.stopDurationSeconds == 20 }, "Twenty seconds not applied")
+        var rejected = false
+        do { try s.setFutureStopDuration(21) } catch { rejected = true }
+        try require(rejected && s.ledger.records.allSatisfy { $0.stopDurationSeconds == 20 },
+          "Twenty-one seconds accepted")
+        try require(f.backend.adds == 3 && f.backend.queue.count == 3, "Duration rescheduled native alarms")
+      }),
       ("duration reconciliation reuses accepted UUID", { f in
         let s = f.service(); var r = f.request(stopAfterSeconds: 10)
         _ = try await s.reconcile([r], activeOwners: [r.ownerID])
@@ -179,7 +197,7 @@ private func require(_ condition: @autoclosure () -> Bool, _ message: String) th
         let planning = Task { @MainActor in try await s.reconcile([r], activeOwners: [r.ownerID]) }
         await f.backend.waitForAdd()
         var rejected = 0
-        for duration in [2, 11, 10] {
+        for duration in [2, 21, 10] {
           do { try s.setFutureStopDuration(duration) } catch { rejected += 1 }
         }
         f.backend.releaseAdd(); _ = try await planning.value

@@ -1,61 +1,97 @@
 {
-  "version": "0.9.7",
-  "build": 23,
-  "base": "0.9.6 (22), reference No. 1",
-  "at_utc": "2026-11-13T07:45:23.532954+00:00",
-  "directory": "C:\\Users\\Admin\\Desktop\\Luma\\V.0.9.7",
-  "implementation": "Configurable per-occurrence AlarmKit Stop duration, default 4 / integer 3-10; existing real audio runtime and Watch transport retained",
-  "checks": {
-    "structural_checks_passed": 155,
-    "grammar_inputs_passed": 75,
+  "version": "0.9.8",
+  "build": 27,
+  "base_functions": "0.9.7 (23)",
+  "base_design": "Design Experiments/Atelier-Night-Prototype-06",
+  "reference": "0.9.6 (22), reference No. 1, immutable",
+  "at_local": "2026-11-17",
+  "directory": "C:\\Users\\Admin\\Desktop\\Luma\\V.0.9.8",
+  "implementation": "0.9.7 signal engine unchanged; new interface layer (Atelier Night); English with an in-app language choice; signal duration 3-20 s; sound library row removed from the Settings page; the app is called Lumenoir and has the strict Lumenoir icon",
+  "revision_2026_11_16_evening": {
+    "scope": "design and text only, at the user's request; signal engine untouched",
+    "settings_order": "Alarm signal first, right under the clouds (heading 218 pt, card 254 pt, as in Prototype 06); Language is its own section between Help & devices and Data",
+    "translation": "read through; 11 individual phrases corrected (10 in LocalizationTable.swift, 1 in iPhone en.lproj/InfoPlist.strings); the rest unchanged",
+    "mockup": "Design Experiments/Atelier-Night-Prototype-08",
+    "local_checks_rerun": "all six passed with the same counts"
+  },
+  "revision_2026_11_17": {
+    "scope": "on the user's command: what was shown only in previews since 16 Nov evening, plus one new row; design and text only, signal engine untouched (77 files still identical to 0.9.7, the same 22 changed on purpose)",
+    "settings_clouds": "clouds under the house from Design Experiments/Atelier-Night-Prototype-11 (accepted by the user): a dense mirrored bank (SettingsCloudFill*, mask SettingsFillMask), the low cloud over the first card (SettingsCloudLow*), a still indigo body behind the list; drawn from strips laid out once (SettingsDriftBand) so no two copies join on screen; six images added to iOSAssets.xcassets, byte-identical to the mockup's",
+    "translation": "second read (preview 12): 7 phrases in LocalizationTable.swift and 'Journal' capitalised in iPhone en.lproj/InfoPlist.strings; the rest unchanged",
+    "contact_row": "Help & devices, third row: 'Контакты разработчиков' / 'Contact the developers'; opens tg://resolve?domain=arty_brew, falling back to https://t.me/arty_brew; Luma sends nothing itself",
+    "language_rule": "the user's rule for this and every later version: every change in all app languages, literary and natural for a native speaker; written into the workspace AGENTS.md and this version's AGENTS.md",
+    "mockup": "Design Experiments/Atelier-Night-Prototype-13",
+    "local_checks_rerun": "all six passed",
+    "engine_manifest_regenerated": "scripts/make-engine-manifest.py read 0.9.7 only; added files 56 -> 68 (the twelve new image files)",
+    "independent_read_through": "the changed Swift was read by a second reviewer without a compiler: no definite compile error; tree-sitter parse clean; strip coverage, mirrored drift direction, warm-circle position and the Telegram fallback reasoned through and found right; not a substitute for compilation or a device"
+  },
+  "revision_2026_11_17_evening": {
+    "scope": "on the user's command: the name Lumenoir and the strict Lumenoir icon; outward appearance only ('functionality must not be touched under any circumstances'); no signal-engine file changed",
+    "icon": "Resources/iOSAssets.xcassets and Resources/WatchAssets.xcassets AppIcon.png replaced by a byte copy of Design Experiments/Brand-Name-and-Logo-01/logo/lumenoir-icon-plain-1024.png (1024 px, opaque RGB); the cloud version was rejected by the user",
+    "display_name": "CFBundleDisplayName Lumenoir on iPhone (was 'Luma Lab') and Watch (was 'Luma')",
+    "texts": "every name a person sees says Lumenoir in Russian and English: interface texts edited in the 0.9.8 interface files and LocalizationTable.swift; engine messages renamed on their way to the screen (L10n.renamed, WatchText.renamed); system-drawn texts via en.lproj values and new ru.lproj entries; permission texts in InfoPlist.strings and iOS-Info.plist",
+    "internal_names_kept": "folders, Xcode targets, LumaCore, bundle ID com.sevchlenko.luma, Application Support/Luma, UserDefaults keys",
+    "manifests": "make-engine-manifest.py (0.9.7 read only): 75 unchanged, 24 changed (+2 icons), 68 added; preserved-sources.json: both icons moved to intentional changes, 70 preserved",
+    "check_localization_extended": "fails if an English text, a .strings value or a name under the icon says Luma, or if a system text that still says Luma lacks a Russian Lumenoir entry",
+    "mockup": "Design Experiments/Atelier-Night-Prototype-14",
+    "local_checks_rerun": "all six passed",
+    "independent_read_through": "not done for this revision: text literals and one replacement function only"
+  },
+  "checks_on_this_computer": {
+    "platform": "Windows, no Swift toolchain",
+    "structural_checks_passed": 167,
+    "grammar_inputs_passed": 83,
     "Python_tests_executed": 13,
     "Python_test_failures": 0,
-    "preserved_inputs_verified": 82,
-    "core_XCTest_methods_present": 128,
-    "native_queue_scenarios_present": 33,
-    "native_audio_cases_present": 8,
-    "core_XCTest_executed": 128,
-    "native_queue_scenarios_passed": 33,
-    "historical_original_files": 1493,
-    "reference_files_verified_deep": 411,
-    "core_XCTest_failures": 0,
-    "native_audio_cases_passed": 8
+    "preserved_inputs_identical_to_0_9_6": 70,
+    "files_identical_to_0_9_7": 75,
+    "files_changed_on_purpose_since_0_9_7": 24,
+    "files_added_since_0_9_7": 68,
+    "interface_texts_with_English": 200,
+    "engine_texts_with_English": 172,
+    "translation_table_entries": 359,
+    "translation_rules": 20,
+    "core_XCTest_methods_present": 130,
+    "independent_read_through_of_new_Swift": "finished on 2026-11-16: no definite compile error found (checked against iOS 17/18 SDK knowledge, not iOS 26); five small changes made from its remarks, then all six local checks rerun and passed; not a substitute for compilation"
+  },
+  "not_verified": {
+    "swift_compiled": false,
+    "core_XCTest_executed": false,
+    "AVFoundation_matrix_executed": false,
+    "queue_harness_executed": false,
+    "iPhone_build": false,
+    "Watch_build": false,
+    "IPA_generated": false,
+    "physical_device_tests_executed": false,
+    "locked_Stop_20_seconds_confirmed": false,
+    "lproj_folder_references_in_bundle_confirmed": false,
+    "app_icon_and_name_on_device_confirmed": false
   },
   "native_CI": {
-    "status": "success",
-    "branch": "luma/0.9.7-signal-duration",
-    "uploaded": true,
-    "run_url": "https://github.com/brewmaster123/Luma/actions/runs/43386887821",
-    "tested_commit": "0f20e7f9888effad5a1ad2e0d89d4eea93eed3b6",
-    "core_passed": true,
-    "AVFoundation_matrix_passed": true,
-    "queue_harness_passed": true,
-    "iPhone_build_passed": true,
-    "Watch_build_passed": true,
-    "IPA_generated": true,
-    "IPA_artifact_url": "https://github.com/brewmaster123/Luma/actions/runs/43386887821/artifacts/14019242094",
-    "IPA_SHA256": "4b54e387158d634cfc406b9ef7b82c85e464ddd497412a4005b76b05fa9cf54a",
-    "verified_log_archive_SHA256": "61fe458d8735fa320feea646b484216c84cebed674874373a21c21b218a3447b",
-    "repository_upload_explicitly_authorized": true,
-    "compiler_fixes_required": false
+    "status": "not run",
+    "reason": "The user said on 16 Nov 2026 that he builds on GitHub himself; the agent did not open GitHub or push anything",
+    "how_to": "Luma/Docs/BUILD_ON_GITHUB.md"
   },
-  "physical_device_tests_executed": false,
-  "locked_Stop_new_duration_confirmed": false,
-  "production_ready": false,
-  "reference_0_9_6_user_accepted": true,
-  "data_compatibility": "Schema 3 retained; optional field + separate UserDefaults; one-time ledger backup; AppArchive/LocalStore unchanged",
-  "local_IPA": "dist/Luma-0.9.7-build23-unsigned.ipa",
-  "known_limitations": [
-    "New 3-10 second acoustic timing requires physical iPhone validation; CI is not an acoustic measurement",
+  "data_compatibility": "Bundle ID, signing team, AppArchive/LocalStore, journal, recordings and the schema-3 alarm ledger are unchanged. New UserDefaults key com.sevchlenko.luma.interfaceLanguage.v1 stores only the interface language. Durations above 10 s read as 4 s in 0.9.7 and 0.9.6.",
+  "V_0_9_7_untouched": {
+    "matches_its_own_source_list": true,
+    "files_in_that_list": 102,
+    "files_modified_on_2026_11_16": 0
+  },
+  "historical_audit": {
+    "files_checked": 1493,
+    "passed": false,
+    "caused_by_this_work": false,
+    "differences": [
+      "V.0.9.6/Luma/.validation-tools/ci-repo/.git/logs/refs/remotes/origin/HEAD: GitHub Desktop appended service lines again, last write 2026-11-15 12:33; reference sources intact; not restored (needs the user's explicit instruction)",
+      "AGENTS.md (workspace root): updated on 2026-11-15 on the user's instruction",
+      "IPA files/v 0.9.7.ipa: added by the user on 2026-11-13"
+    ]
+  },
+  "known_risks": [
+    "New interface code has never been compiled; the first GitHub build may report errors",
+    "A 20-second signal needs a 26-second background lease; iOS grants about 30 seconds; the margin is unmeasured",
+    "Texts drawn by the system follow the iPhone language, not the language chosen in the app",
     "Existing force-quit/runtime and Watch Focus/permission limitations remain"
-  ],
-  "reference_audit": {
-    "final_status": "passed",
-    "historical_files": 1493,
-    "reference_files_deep": 411,
-    "archive_IPA_and_metadata_checksums_match": true,
-    "single_GitHub_Desktop_reflog_restored_with_explicit_user_approval": true,
-    "expected_hashes_changed": false,
-    "report": "Luma/Docs/baseline-discrepancy.json"
-  }
+  ]
 }

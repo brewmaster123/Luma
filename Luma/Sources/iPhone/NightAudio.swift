@@ -68,7 +68,7 @@ import MediaPlayer
       until = Date().addingTimeInterval(12 * 3600)
       status = "Тихий дождь включён · до \(until!.formatted(date: .omitted, time: .shortened))"
       MPNowPlayingInfoCenter.default().nowPlayingInfo = [
-        MPMediaItemPropertyTitle: "Luma · тихий ночной дождь",
+        MPMediaItemPropertyTitle: tr("Luma · тихий ночной дождь"),
         MPNowPlayingInfoPropertyIsLiveStream: true,
         MPNowPlayingInfoPropertyPlaybackRate: 1.0]
       monitor?.invalidate()
