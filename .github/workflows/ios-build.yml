@@ -1,4 +1,4 @@
-name: Luma 0.9.8 - Atelier design, English, 3-20 s signal
+name: Lumenoir 0.9.9 - living sheets, sounds, melodies, forest settings
 
 on:
   push:
@@ -55,7 +55,7 @@ jobs:
           set -euo pipefail
           python3 scripts/test-source-integrity.py
           python3 scripts/check-preserved-sources.py
-          # 0.9.8: the signal engine of 0.9.7 is carried over file for file.
+          # 0.9.8/0.9.9: the signal engine of 0.9.7 is carried over file for file (AppModel: three recorded additions).
           python3 scripts/check-engine-unchanged.py
 
       - name: Check that the English version is complete
@@ -123,14 +123,18 @@ jobs:
           test -f "$LUMA_APP/Manrope-Regular.ttf"
           test -f "$LUMA_APP/luma-tone-4.wav"
           test -f "$LUMA_APP/luma-alarm-4.wav"
+          test -f "$LUMA_APP/lumenoir-melody-signature.wav"
+          test -f "$LUMA_APP/lumenoir-melody-moonlit-lullaby.wav"
+          test -f "$LUMA_APP/lumenoir-melody-fireflies.wav"
+          test -f "$LUMA_APP/lumenoir-melody-first-light.wav"
           test -f "$LUMA_APP/PoiretOne-Regular.ttf"
           # System-drawn texts (alarm banner, permission prompts). The interface itself is translated in code,
           # so a missing folder is reported but does not stop the build.
           for strings in en.lproj/Localizable.strings en.lproj/InfoPlist.strings ru.lproj/Localizable.strings ru.lproj/InfoPlist.strings; do
             test -f "$LUMA_APP/$strings" || echo "::warning::$strings is missing from Luma.app"
           done
-          test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$LUMA_APP/Info.plist")" = "0.9.8"
-          test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' "$LUMA_APP/Info.plist")" = "27"
+          test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$LUMA_APP/Info.plist")" = "0.9.9"
+          test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' "$LUMA_APP/Info.plist")" = "28"
           test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleSupportedPlatforms:0' "$LUMA_APP/Info.plist")" = "iPhoneOS"
           /usr/bin/lipo "$LUMA_APP/Luma" -verify_arch arm64
           mkdir -p ../dist/Payload
@@ -152,7 +156,7 @@ jobs:
       - name: Downloadable IPA ZIP
         uses: actions/upload-artifact@v7
         with:
-          name: Luma-0.9.8-unsigned-zip
+          name: Luma-0.9.9-unsigned-zip
           path: dist/Luma-unsigned.ipa
           if-no-files-found: error
           retention-days: 7

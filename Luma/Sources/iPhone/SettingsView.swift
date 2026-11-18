@@ -6,6 +6,8 @@ import SwiftUI
 /// the language has a section of its own lower down (the user's decision, 16 Nov 2026).
 /// "Помощь и устройства" has a third row, "Контакты разработчиков", which opens a chat with the
 /// developers in Telegram (the user's request, 17 Nov 2026).
+/// 0.9.9: the page stands in a living night forest (SettingsScene.swift); the cards themselves,
+/// their places and their order are exactly those of 0.9.8.
 struct SettingsView: View {
   var isActive = true
   @EnvironmentObject private var model: AppModel
@@ -27,6 +29,9 @@ struct SettingsView: View {
   @State private var lockProbe = true
   /// Applied after the language sheet has closed, so the page is rebuilt with no sheet in the way.
   @State private var pendingLanguage: AppLanguage?
+  /// 0.9.9: how far the list is scrolled, for the forest behind it. Held, not observed here,
+  /// so scrolling redraws only the forest.
+  @State private var depth = ForestDepth()
 
   private var signalsBusy: Bool { model.busy || model.systemAlarms.preparing }
 
@@ -47,8 +52,7 @@ struct SettingsView: View {
   }
 
   private var soundName: String {
-    model.state.voices.first(where: { $0.id == model.state.signal.voiceID })?.name
-      ?? tr("Мелодия Lumenoir")
+    SoundShelf.name(model.state.signal.voiceID, voices: model.state.voices)
   }
 
   var body: some View {
@@ -57,19 +61,18 @@ struct SettingsView: View {
     let listTop: CGFloat = 195 * u
     let listHeight: CGFloat = max(200, viewport.bankClipLine - listTop)
     return ZStack(alignment: .topLeading) {
-      SettingsBackScene(isActive: isActive)
+      SettingsBackScene(isActive: isActive, depth: depth)
       list(height: listHeight)
         .frame(width: width, height: listHeight)
         .offset(y: listTop)
+      // 0.9.9: in front of the list, the forest floor; the cards sink into its ferns and mist where the
+      // cloud bank used to be, and the list still ends on the same line.
       SettingsForeScene(isActive: isActive)
-      // The clouds at the foot of the page are the Night screen's own bank, in the same place:
-      // the cards sink into them as the alarm list does on Night.
-      CloudBank(isActive: isActive)
     }
     .frame(width: width, height: viewport.size.height, alignment: .topLeading)
     .foregroundStyle(Atelier.ink)
     .environment(\.atelierLamp, AtelierLamp.warm(at: SettingsLamp.point(viewport)))
-    .sheet(item: $panel, onDismiss: panelClosed) { item in
+    .atelierSheet(item: $panel, onDismiss: panelClosed) { item in
       panelView(item).environmentObject(model)
     }
   }
@@ -96,10 +99,17 @@ struct SettingsView: View {
       // at 218 pt and its card at 254 pt, as in the design (Atelier-Night-Prototype-06), where the clouds
       // in front of the list end just above that heading.
       .padding(EdgeInsets(top: 19, leading: 21, bottom: 46, trailing: 21))
+      .background(GeometryReader { geometry in
+        Color.clear.preference(key: SettingsScrollKey.self,
+          value: -geometry.frame(in: .named("settings.list")).minY)
+      })
+    }
+    .coordinateSpace(name: "settings.list")
+    .onPreferenceChange(SettingsScrollKey.self) { value in
+      if abs(depth.scrolled - value) > 0.5 { depth.scrolled = value }
     }
     .scrollIndicators(.hidden)
-    // The upper edge of the list dissolves: over the sky the cards melt into the night,
-    // under the house they melt under the veil of mist.
+    // The upper edge of the list dissolves into the dark of the forest (0.9.9).
     .mask {
       LinearGradient(stops: [
         .init(color: .clear, location: 0), .init(color: .clear, location: 1 / height),
@@ -458,7 +468,11 @@ struct SettingsView: View {
       ConfirmSheet(title: tr("Выключить ночной фон?"),
         text: tr("Вместе с ним снимется очередь сигналов: без фона они не смогут смолкать сами."),
         yes: tr("Выключить фон"), no: tr("Оставить")) {
-        Task { await model.stopNightAudio() }
+        Task {
+          await model.stopNightAudio()
+          // 0.9.9: the alarms on Night show «пока вне очереди» right away, not only after the app comes back.
+          await model.refreshQueueAfterRainOff()
+        }
       }
     case .cancelAll:
       ConfirmSheet(title: tr("Отменить все сигналы?"),
@@ -551,6 +565,12 @@ struct SettingsChevron: View {
   }
 }
 
+/// 0.9.9: how far the Settings list has been scrolled, read for the forest behind it.
+private struct SettingsScrollKey: PreferenceKey {
+  static let defaultValue: CGFloat = 0
+  static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) { value = nextValue() }
+}
+
 /// The small arrow of a row that leads out of the app (to Telegram), in place of the chevron.
 struct SettingsOutbound: View {
   var body: some View {
@@ -578,7 +598,7 @@ struct SettingsHint: View {
 struct LanguageSheet: View {
   let current: AppLanguage
   let choose: (AppLanguage) -> Void
-  @Environment(\.dismiss) private var dismiss
+  @Environment(\.atelierDismiss) private var dismiss
 
   var body: some View {
     AtelierSheet(tr("Язык")) {
@@ -627,7 +647,7 @@ struct ConfirmSheet: View {
   let yes: String
   var no: String = tr("Отмена")
   let action: () -> Void
-  @Environment(\.dismiss) private var dismiss
+  @Environment(\.atelierDismiss) private var dismiss
 
   var body: some View {
     AtelierSheet(title) {

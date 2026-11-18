@@ -547,16 +547,32 @@ struct CushionPanel: View {
 }
 
 /// The frame every sheet uses: title, close button, content, all on one cushion.
-/// It is shown with the system sheet, so swipe-to-close, the keyboard and VoiceOver behave as usual;
-/// only the background is the app's own.
+/// Since 0.9.9 it is shown as a clear full-screen cover (see `atelierSheet`), not as a system sheet:
+/// on iOS 26 a full-height system sheet paints itself flat grey and hides the living scene.
+/// Here the scene stays visible and moving behind the dim; the cushion rises as in the mock-up,
+/// and it closes with the cross, a tap above it, a swipe down from its top edge or the VoiceOver escape gesture.
+/// The keyboard is still the system's.
 struct AtelierSheet<Content: View>: View {
   let title: String
   var closeLabel: String
   var canClose: Bool
   let content: Content
-  @Environment(\.dismiss) private var dismiss
+  @Environment(\.atelierDismiss) private var dismiss
+  @Environment(\.atelierClosing) private var closing
+  /// Set by the presenter: 1 for a sheet over a main screen, 2 for a sheet opened from that one, and so on.
+  @Environment(\.atelierDepth) private var presentedDepth
+  @Environment(\.accessibilityReduceMotion) private var reduced
+  @ObservedObject private var depths = AtelierSheetDepth.shared
   /// Height of the sheet's content, measured so that a short sheet is only as tall as it needs to be.
   @State private var contentHeight: CGFloat = 360
+  /// The cushion has risen into place (mock-up: 0.42 s rise of 26 pt with a fade, the dim in 0.28 s).
+  @State private var risen = false
+  /// How far the cushion is being pulled down right now. A gesture state, so it springs back by itself
+  /// when the drag ends or is cancelled.
+  @GestureState(resetTransaction: Transaction(animation: .spring(response: 0.3, dampingFraction: 0.85)))
+  private var dragging: CGFloat = 0
+  /// Where the cushion was let go when the swipe closes the sheet; it fades from there.
+  @State private var released: CGFloat = 0
 
   init(_ title: String, canClose: Bool = true, @ViewBuilder content: () -> Content) {
     self.title = title
@@ -565,38 +581,92 @@ struct AtelierSheet<Content: View>: View {
     self.content = content()
   }
 
+  private var shown: Bool { risen && !closing }
+  private var depth: Int { max(1, presentedDepth) }
+  private var pull: CGFloat { dragging + released }
+
   var body: some View {
     GeometryReader { geometry in
       VStack(spacing: 0) {
         Color.clear
           .contentShape(Rectangle())
-          .onTapGesture { if canClose { dismiss() } }
+          .onTapGesture { close() }
+          .gesture(pullToClose)
           .accessibilityHidden(true)
-        ScrollView {
-          sheetBody
-            .background(GeometryReader { inner in
-              Color.clear.preference(key: AtelierSheetHeightKey.self, value: inner.size.height)
-            })
+        ScrollViewReader { proxy in
+          ScrollView {
+            sheetBody
+              // A sheet's content can bring a part of itself into view (an explanation it has just opened).
+              .environment(\.atelierScroll, proxy)
+              .background(GeometryReader { inner in
+                Color.clear.preference(key: AtelierSheetHeightKey.self, value: inner.size.height)
+              })
+          }
+          .scrollBounceBehavior(.basedOnSize)
+          .scrollIndicators(.hidden)
         }
-        .scrollBounceBehavior(.basedOnSize)
-        .scrollIndicators(.hidden)
         .frame(height: max(120, min(contentHeight, geometry.size.height * 0.9)))
         .background(CushionPanel())
         .onPreferenceChange(AtelierSheetHeightKey.self) { height in
           if abs(height - contentHeight) > 0.5 { contentHeight = height }
         }
+        .offset(y: pull + (shown ? 0 : 26))
+        .scaleEffect(shown ? 1 : 0.985, anchor: .bottom)
+        .opacity(shown ? 1 : 0)
       }
       .padding(.horizontal, 12)
       .padding(.bottom, 14)
       .frame(width: geometry.size.width, height: geometry.size.height)
     }
+    // The layers under the sheet stay visible, but VoiceOver must not wander onto them.
+    .background(AtelierModalMarker())
+    .background {
+      // The mock-up's dim: radial-gradient(130% 62% at 50% 0, #070b17 at 40 %, #03060f at 85 % by 78 %).
+      // A sheet opened from another adds only a light veil, so stacked sheets do not sink the scene into black.
+      LinearGradient(stops: [
+        .init(color: Color(hex: 0x070B17).opacity(depth == 1 ? 0.40 : 0.18), location: 0),
+        .init(color: Color(hex: 0x03060F).opacity(depth == 1 ? 0.85 : 0.42), location: 0.48),
+        .init(color: Color(hex: 0x03060F).opacity(depth == 1 ? 0.85 : 0.42), location: 1)
+      ], startPoint: .top, endPoint: .bottom)
+      .opacity(shown ? 1 - min(0.5, pull / 500) : 0)
+      .ignoresSafeArea()
+      .accessibilityHidden(true)
+    }
     .foregroundStyle(Atelier.body)
     .font(Atelier.ui(15))
     .environment(\.atelierLamp, AtelierLamp())
-    .lumaMessages()
-    .presentationDetents([.large])
-    .presentationDragIndicator(.hidden)
+    .lumaMessages(depth: depth)
+    .accessibilityAddTraits(.isModal)
+    .accessibilityAction(.escape) { close() }
+    .animation(reduced ? nil : (shown ? .timingCurve(0.2, 0.85, 0.25, 1, duration: 0.42) : .easeIn(duration: 0.22)),
+      value: shown)
+    .onAppear {
+      depths.opened(depth)
+      risen = true
+    }
+    .onDisappear { depths.closed(depth) }
     .presentationBackground(.clear)
+  }
+
+  private func close() {
+    guard canClose else { return }
+    dismiss()
+  }
+
+  private var pullToClose: some Gesture {
+    DragGesture(minimumDistance: 8, coordinateSpace: .global)
+      .updating($dragging) { drag, state, _ in
+        state = canClose ? max(0, drag.translation.height) : 0
+      }
+      .onEnded { drag in
+        guard canClose else { return }
+        if drag.translation.height > 110 || drag.predictedEndTranslation.height > 260 {
+          var quiet = Transaction()
+          quiet.disablesAnimations = true
+          withTransaction(quiet) { released = max(0, drag.translation.height) }
+          dismiss()
+        }
+      }
   }
 
   private var sheetBody: some View {
@@ -620,6 +690,48 @@ struct AtelierSheet<Content: View>: View {
     }
     .padding(EdgeInsets(top: 30, leading: 26, bottom: 28, trailing: 26))
     .frame(maxWidth: .infinity, alignment: .leading)
+    .overlay(alignment: .top) {
+      // The cushion's upper edge is its handle: a swipe down from here closes the sheet. It lies in the
+      // empty top margin and scrolls away with the content, so it never covers a control of a scrolled sheet.
+      Color.clear.frame(height: 28).contentShape(Rectangle())
+        .gesture(pullToClose)
+        .accessibilityHidden(true)
+    }
+  }
+}
+
+/// 0.9.9: a sheet is a clear cover, so the screen it was opened from stays in the window behind it.
+/// For VoiceOver the cover must still be a closed room. The marker finds the cover's own container among
+/// the window's views and marks it modal: VoiceOver then ignores its siblings (the screen and any sheet
+/// below). It draws nothing and takes no touches. This is UIKit's own way of making a presented view modal;
+/// hiding the screen from SwiftUI instead could hide the sheets presented from it as well.
+private struct AtelierModalMarker: UIViewRepresentable {
+  func makeUIView(context: Context) -> MarkerView { MarkerView() }
+  func updateUIView(_ view: MarkerView, context: Context) {}
+
+  final class MarkerView: UIView {
+    override init(frame: CGRect) {
+      super.init(frame: frame)
+      isUserInteractionEnabled = false
+      isAccessibilityElement = false
+      backgroundColor = .clear
+    }
+
+    required init?(coder: NSCoder) { nil }
+
+    override func didMoveToWindow() {
+      super.didMoveToWindow()
+      guard window != nil else { return }
+      DispatchQueue.main.async { [weak self] in self?.markContainer() }
+    }
+
+    private func markContainer() {
+      guard let window else { return }
+      var view: UIView = self
+      while let parent = view.superview, parent !== window { view = parent }
+      // `view` is now the cover's own container, a direct child of the window.
+      if view !== self, view.superview === window { view.accessibilityViewIsModal = true }
+    }
   }
 }
 
@@ -627,6 +739,189 @@ private struct AtelierSheetHeightKey: PreferenceKey {
   static let defaultValue: CGFloat = 0
   static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
     value = max(value, nextValue())
+  }
+}
+
+// MARK: - How sheets are shown
+
+/// Closes the sheet it is given to, with the cushion's own fade instead of the system slide.
+/// Sheet views call it exactly as they used to call `dismiss()`.
+struct AtelierDismissAction {
+  var close: @MainActor () -> Void = {}
+  @MainActor func callAsFunction() { close() }
+}
+
+private struct AtelierDismissKey: EnvironmentKey {
+  static let defaultValue = AtelierDismissAction()
+}
+
+private struct AtelierClosingKey: EnvironmentKey {
+  static let defaultValue = false
+}
+
+private struct AtelierDepthKey: EnvironmentKey {
+  static let defaultValue = 0
+}
+
+private struct AtelierScrollKey: EnvironmentKey {
+  static let defaultValue: ScrollViewProxy? = nil
+}
+
+extension EnvironmentValues {
+  var atelierDismiss: AtelierDismissAction {
+    get { self[AtelierDismissKey.self] }
+    set { self[AtelierDismissKey.self] = newValue }
+  }
+  /// True while a sheet is fading out, just before the cover is removed.
+  var atelierClosing: Bool {
+    get { self[AtelierClosingKey.self] }
+    set { self[AtelierClosingKey.self] = newValue }
+  }
+  /// How many sheets are open under this view: 0 on the main screens, 1 inside the first sheet, and so on.
+  var atelierDepth: Int {
+    get { self[AtelierDepthKey.self] }
+    set { self[AtelierDepthKey.self] = newValue }
+  }
+  /// The scroll of the sheet a view sits in (nil outside a sheet).
+  var atelierScroll: ScrollViewProxy? {
+    get { self[AtelierScrollKey.self] }
+    set { self[AtelierScrollKey.self] = newValue }
+  }
+}
+
+/// Which sheet is on top. Only the topmost layer shows the app's message card,
+/// now that the layers underneath are visible through the sheets.
+final class AtelierSheetDepth: ObservableObject {
+  static let shared = AtelierSheetDepth()
+  @Published private(set) var top = 0
+
+  func opened(_ depth: Int) { if depth > top { top = depth } }
+  func closed(_ depth: Int) { if depth <= top { top = max(0, depth - 1) } }
+}
+
+/// How long the cushion takes to fade away before the cover is removed.
+private let atelierFadeOut: TimeInterval = 0.22
+
+/// Presents a sheet bound to a flag.
+private struct AtelierSheetPresenter<Sheet: View>: ViewModifier {
+  @Binding var isPresented: Bool
+  let onDismiss: (() -> Void)?
+  let sheet: () -> Sheet
+  /// How many sheets lie under the place this one is shown from; the new sheet is one deeper.
+  @Environment(\.atelierDepth) private var depth
+  @State private var shown = false
+  @State private var closing = false
+
+  func body(content: Content) -> some View {
+    content
+      .fullScreenCover(isPresented: $shown, onDismiss: onDismiss) {
+        sheet()
+          .environment(\.atelierDismiss, AtelierDismissAction { isPresented = false })
+          .environment(\.atelierClosing, closing)
+          .environment(\.atelierDepth, depth + 1)
+          .presentationBackground(.clear)
+      }
+      .onChange(of: isPresented, initial: true) { _, wanted in
+        if wanted { present() } else { fadeOut() }
+      }
+      .onChange(of: shown) { _, now in
+        // Removed by the system rather than by us: keep the flag in step.
+        if !now, !closing, isPresented { isPresented = false }
+      }
+  }
+
+  private func present() {
+    guard !shown, !closing else { return }
+    var quiet = Transaction()
+    quiet.disablesAnimations = true
+    withTransaction(quiet) { shown = true }
+  }
+
+  private func fadeOut() {
+    guard shown, !closing else { return }
+    closing = true
+    DispatchQueue.main.asyncAfter(deadline: .now() + atelierFadeOut) {
+      var quiet = Transaction()
+      quiet.disablesAnimations = true
+      withTransaction(quiet) { shown = false }
+      // `closing` stays set until the cover is really gone, so the change of `shown` above
+      // is not mistaken for a system dismissal.
+      DispatchQueue.main.async {
+        closing = false
+        if isPresented { present() }
+      }
+    }
+  }
+}
+
+/// Presents a sheet bound to an item.
+private struct AtelierItemSheetPresenter<Item: Identifiable, Sheet: View>: ViewModifier {
+  @Binding var item: Item?
+  let onDismiss: (() -> Void)?
+  let sheet: (Item) -> Sheet
+  /// How many sheets lie under the place this one is shown from; the new sheet is one deeper.
+  @Environment(\.atelierDepth) private var depth
+  @State private var shown: Item?
+  @State private var closing = false
+
+  func body(content: Content) -> some View {
+    content
+      .fullScreenCover(item: $shown, onDismiss: onDismiss) { value in
+        sheet(value)
+          .environment(\.atelierDismiss, AtelierDismissAction { item = nil })
+          .environment(\.atelierClosing, closing)
+          .environment(\.atelierDepth, depth + 1)
+          .presentationBackground(.clear)
+      }
+      .onChange(of: item?.id, initial: true) { _, _ in update() }
+      .onChange(of: shown?.id) { _, now in
+        if now == nil, !closing, item != nil { item = nil }
+      }
+  }
+
+  private func update() {
+    if let wanted = item {
+      if shown == nil { present(wanted) }
+      else if shown?.id != wanted.id { fadeOut() }
+    } else {
+      fadeOut()
+    }
+  }
+
+  private func present(_ value: Item) {
+    guard !closing else { return }
+    var quiet = Transaction()
+    quiet.disablesAnimations = true
+    withTransaction(quiet) { shown = value }
+  }
+
+  private func fadeOut() {
+    guard shown != nil, !closing else { return }
+    closing = true
+    DispatchQueue.main.asyncAfter(deadline: .now() + atelierFadeOut) {
+      var quiet = Transaction()
+      quiet.disablesAnimations = true
+      withTransaction(quiet) { shown = nil }
+      DispatchQueue.main.async {
+        closing = false
+        // Another item was asked for while this one was fading: show it now that the cover is gone.
+        if let next = item, shown == nil { present(next) }
+      }
+    }
+  }
+}
+
+extension View {
+  /// Every cushion is shown through here instead of `.sheet`: a full-screen cover with a clear background,
+  /// so the screen behind stays visible and alive. Same arguments and the same `onDismiss` timing as `.sheet`.
+  func atelierSheet<Sheet: View>(isPresented: Binding<Bool>, onDismiss: (() -> Void)? = nil,
+    @ViewBuilder content: @escaping () -> Sheet) -> some View {
+    modifier(AtelierSheetPresenter(isPresented: isPresented, onDismiss: onDismiss, sheet: content))
+  }
+
+  func atelierSheet<Item: Identifiable, Sheet: View>(item: Binding<Item?>, onDismiss: (() -> Void)? = nil,
+    @ViewBuilder content: @escaping (Item) -> Sheet) -> some View {
+    modifier(AtelierItemSheetPresenter(item: item, onDismiss: onDismiss, sheet: content))
   }
 }
 
@@ -728,12 +1023,16 @@ struct ToastView: View {
 /// A message from the app (an error or a note). Shown on a small cushion over whatever is on screen,
 /// including an open sheet, so it is never left waiting behind one.
 struct LumaMessageCard: View {
+  /// 0 on the main screens, 1 in the first sheet and so on. Only the topmost layer shows the card,
+  /// because the layers under a sheet now stay visible through it.
+  var depth = 0
   @EnvironmentObject private var model: AppModel
+  @ObservedObject private var depths = AtelierSheetDepth.shared
 
   var body: some View {
     ZStack {
       // The note about a test signal is shown by Settings as a countdown, not as a card.
-      if let message = model.message, L10n.probeNoticeDelay(message) == nil {
+      if depth == depths.top, let message = model.message, L10n.probeNoticeDelay(message) == nil {
         Color.black.opacity(0.5).ignoresSafeArea()
           .contentShape(Rectangle())
           .onTapGesture { }
@@ -759,8 +1058,8 @@ struct LumaMessageCard: View {
 
 extension View {
   /// Lets the app's messages appear over this view.
-  func lumaMessages() -> some View {
-    overlay { LumaMessageCard() }
+  func lumaMessages(depth: Int = 0) -> some View {
+    overlay { LumaMessageCard(depth: depth) }
   }
 }
 

@@ -383,7 +383,9 @@ import Foundation
   }
 
   func importMelody(_ url: URL) async {
-    guard !busy, !hasPlan, !nightAudio.enabled, !audio.recording else { message = "Добавляйте мелодии между сеансами."; return }
+    // 0.9.9: no longer refused while the quiet rain plays. Import is file work only (CueAudioImporter
+    // uses no audio session) and touches neither the queue nor any alarm's sound.
+    guard !busy, !hasPlan, !audio.recording else { message = "Добавляйте мелодии между сеансами."; return }
     busy = true; defer { busy = false }
     do { addSoundClip(try await audio.importSound(from: url)) } catch { message = error.localizedDescription }
   }
@@ -409,6 +411,30 @@ import Foundation
       if audio.playbackID == id { audio.stopPlayback() }
       try FileManager.default.removeItem(at: url)
     } catch { message = error.localizedDescription }
+  }
+
+  /// 0.9.9: a sound in the library can be renamed. Only the name changes: the files are named by id
+  /// and the AlarmKit copy by its content, so no signal and no queue is touched.
+  @discardableResult func renameVoice(_ id: UUID, to input: String) -> Bool {
+    let name = String(input.trimmingCharacters(in: .whitespacesAndNewlines).prefix(60))
+    guard !name.isEmpty, let i = state.voices.firstIndex(where: { $0.id == id }) else { return false }
+    guard state.voices[i].name != name else { return true }
+    let old = state
+    state.voices[i].name = name
+    guard save() else { state = old; return false }
+    return true
+  }
+
+  /// 0.9.9: the Lumenoir melodies are installed as ordinary library sounds with fixed ids,
+  /// so the unchanged engine prepares them like any imported melody. Unlike a new recording
+  /// or import, an installed melody does not become the default sound.
+  @discardableResult func addBuiltInSound(_ clip: VoiceClip) -> Bool {
+    guard !busy else { return false }
+    guard !state.voices.contains(where: { $0.id == clip.id }) else { return true }
+    let old = state
+    state.voices.append(clip)
+    guard save() else { state = old; return false }
+    return true
   }
 
   private func systemAlarmRequests() throws -> [SystemAlarmRequest] {

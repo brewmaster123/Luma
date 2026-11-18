@@ -49,8 +49,8 @@ struct JournalView: View {
     .frame(width: width, height: viewport.size.height, alignment: .topLeading)
     .foregroundStyle(Atelier.ink)
     .environment(\.atelierLamp, AtelierLamp.pearl(at: JournalLayout.stone(viewport)))
-    .sheet(item: $dream) { DreamEditor(dream: $0).environmentObject(model) }
-    .sheet(item: $session) { item in
+    .atelierSheet(item: $dream) { DreamEditor(dream: $0).environmentObject(model) }
+    .atelierSheet(item: $session) { item in
       SessionFeedbackView(session: item,
         feedback: model.state.feedback.first(where: { $0.sessionID == item.id }))
         .environmentObject(model)
@@ -274,7 +274,7 @@ struct AtelierTextArea: View {
 /// "Каким был ваш сон?": text, voice notes, or both.
 struct DreamEditor: View {
   @EnvironmentObject private var model: AppModel
-  @Environment(\.dismiss) private var dismiss
+  @Environment(\.atelierDismiss) private var dismiss
   @State var dream: DreamEntry
   @State private var deleting = false
   @State private var createdClips: [JournalVoice] = []
@@ -349,7 +349,7 @@ struct DreamEditor: View {
 /// Feedback on a night session recorded by an earlier version.
 struct SessionFeedbackView: View {
   @EnvironmentObject private var model: AppModel
-  @Environment(\.dismiss) private var dismiss
+  @Environment(\.atelierDismiss) private var dismiss
   let session: NightSession
   @State private var feedback: SessionFeedback
   @State private var deleting = false

@@ -214,6 +214,18 @@
 			path = "AlarmKitSoundBuilder.swift";
 			sourceTree = "<group>";
 		};
+		F5AF40A91858E8E24029FC82 = {
+			isa = "PBXFileReference";
+			lastKnownFileType = "sourcecode.swift";
+			path = "AudioFilePicker.swift";
+			sourceTree = "<group>";
+		};
+		B6B11B2AFA27775D101437F8 = {
+			isa = "PBXFileReference";
+			lastKnownFileType = "sourcecode.swift";
+			path = "BuiltInMelodies.swift";
+			sourceTree = "<group>";
+		};
 		94DC8AA705F082731DABDCA6 = {
 			isa = "PBXFileReference";
 			lastKnownFileType = "sourcecode.swift";
@@ -316,6 +328,12 @@
 			path = "SignalReadinessView.swift";
 			sourceTree = "<group>";
 		};
+		608B7011648BB0CF2F447570 = {
+			isa = "PBXFileReference";
+			lastKnownFileType = "sourcecode.swift";
+			path = "SmartAlarmFollowUp.swift";
+			sourceTree = "<group>";
+		};
 		F4817C4BC996DE3BEC79A493 = {
 			isa = "PBXFileReference";
 			lastKnownFileType = "sourcecode.swift";
@@ -340,6 +358,8 @@
 				"8DE81E5353C11E33D2765DDC",
 				"85C513C3A45E9C2A7C08B9DD",
 				"6537B6F02A7208C02546A8AF",
+				"F5AF40A91858E8E24029FC82",
+				"B6B11B2AFA27775D101437F8",
 				"94DC8AA705F082731DABDCA6",
 				"35785E208BBA03C69FD14ED6",
 				"1DA47523E8546942AAD2F78F",
@@ -357,6 +377,7 @@
 				"7E510AAB8307DAC7159E2D84",
 				"DAAB7B546565E422B592345E",
 				"E0FFE0A743BB237B9FBF6ED1",
+				"608B7011648BB0CF2F447570",
 				"F4817C4BC996DE3BEC79A493",
 				"45D8A4D4A0188B973433D9AE",
 				"0B18AD13622967FCFC3CEB82",
@@ -466,6 +487,30 @@
 			path = "luma-night-rain.wav";
 			sourceTree = "<group>";
 		};
+		C05222F2B3FA5140C9807EEB = {
+			isa = "PBXFileReference";
+			lastKnownFileType = "audio.wav";
+			path = "lumenoir-melody-signature.wav";
+			sourceTree = "<group>";
+		};
+		68674922A283FAEAB5CC8257 = {
+			isa = "PBXFileReference";
+			lastKnownFileType = "audio.wav";
+			path = "lumenoir-melody-moonlit-lullaby.wav";
+			sourceTree = "<group>";
+		};
+		19190570D89CBF100939D68D = {
+			isa = "PBXFileReference";
+			lastKnownFileType = "audio.wav";
+			path = "lumenoir-melody-fireflies.wav";
+			sourceTree = "<group>";
+		};
+		956C9BB4AECA6E734525F41E = {
+			isa = "PBXFileReference";
+			lastKnownFileType = "audio.wav";
+			path = "lumenoir-melody-first-light.wav";
+			sourceTree = "<group>";
+		};
 		B49DFA96DC432321F3489288 = {
 			isa = "PBXFileReference";
 			lastKnownFileType = "folder";
@@ -505,6 +550,10 @@
 				"EC7D3D3EBE7FB16E9172BF49",
 				"8CF4BF41879BAAE186550AC7",
 				"3733C562D87AFB5436971575",
+				"C05222F2B3FA5140C9807EEB",
+				"68674922A283FAEAB5CC8257",
+				"19190570D89CBF100939D68D",
+				"956C9BB4AECA6E734525F41E",
 				"B49DFA96DC432321F3489288",
 				"E987859BD839E0B6832BA17F",
 				"24ED6A67343AFB476BFAC6B8",
@@ -848,6 +897,14 @@
 			isa = "PBXBuildFile";
 			fileRef = "6537B6F02A7208C02546A8AF";
 		};
+		056D493E16414D6559061126 = {
+			isa = "PBXBuildFile";
+			fileRef = "F5AF40A91858E8E24029FC82";
+		};
+		FCF41BB76F31550DDB161C1A = {
+			isa = "PBXBuildFile";
+			fileRef = "B6B11B2AFA27775D101437F8";
+		};
 		D14C3DD57402626D370CF561 = {
 			isa = "PBXBuildFile";
 			fileRef = "94DC8AA705F082731DABDCA6";
@@ -916,6 +973,10 @@
 			isa = "PBXBuildFile";
 			fileRef = "E0FFE0A743BB237B9FBF6ED1";
 		};
+		2CF4AB39734CC2FFE9DF8A1B = {
+			isa = "PBXBuildFile";
+			fileRef = "608B7011648BB0CF2F447570";
+		};
 		97F29B2BAE34D3B0F4E790DA = {
 			isa = "PBXBuildFile";
 			fileRef = "F4817C4BC996DE3BEC79A493";
@@ -960,6 +1021,8 @@
 				"027AF4E38A3C8BED8ED4BFB6",
 				"721C56B085E24BD026BC52AF",
 				"6FDAFFD20355BEFC0730F239",
+				"056D493E16414D6559061126",
+				"FCF41BB76F31550DDB161C1A",
 				"D14C3DD57402626D370CF561",
 				"A0B6248FE883DD6744B39130",
 				"E9F08F81A64A689F9E43AAD4",
@@ -977,6 +1040,7 @@
 				"2D96FB0D31E166CBDD0156A4",
 				"5EAAB8D26D4BBFE7A79A5FCD",
 				"02BEC4C07F72C8DFCA65AFFF",
+				"2CF4AB39734CC2FFE9DF8A1B",
 				"97F29B2BAE34D3B0F4E790DA",
 				"A9A2B03B13B753795BA46F82",
 				"AA01DE845E0F0A2C00CD6E1D",
@@ -1130,6 +1194,22 @@
 			isa = "PBXBuildFile";
 			fileRef = "8CF4BF41879BAAE186550AC7";
 		};
+		E407409F49C2DCB23EDA2D02 = {
+			isa = "PBXBuildFile";
+			fileRef = "C05222F2B3FA5140C9807EEB";
+		};
+		02AB4C0385E41E4053CD7D13 = {
+			isa = "PBXBuildFile";
+			fileRef = "68674922A283FAEAB5CC8257";
+		};
+		5EF39DA55A0A8A49942C9BED = {
+			isa = "PBXBuildFile";
+			fileRef = "19190570D89CBF100939D68D";
+		};
+		23F3E637F8A135F4E1C5ECC6 = {
+			isa = "PBXBuildFile";
+			fileRef = "956C9BB4AECA6E734525F41E";
+		};
 		D153A79FC299DDEC19683A07 = {
 			isa = "PBXBuildFile";
 			fileRef = "3733C562D87AFB5436971575";
@@ -1156,6 +1236,10 @@
 				"85D85180E7D726A1F55F874F",
 				"8D93108AF3CBCCB5EF88F47F",
 				"052DD7456C87BB0EEA4B4C7D",
+				"E407409F49C2DCB23EDA2D02",
+				"02AB4C0385E41E4053CD7D13",
+				"5EF39DA55A0A8A49942C9BED",
+				"23F3E637F8A135F4E1C5ECC6",
 				"D153A79FC299DDEC19683A07",
 				"9355044A6075E4A05984FBE2",
 				"7A4370ED0CA34D4EC02551BD",

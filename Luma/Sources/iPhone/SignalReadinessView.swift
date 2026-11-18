@@ -5,7 +5,7 @@ import UIKit
 /// The steps it performs are those of 0.9.7; only the wording and the look are new.
 struct SignalReadinessView: View {
   @EnvironmentObject private var model: AppModel
-  @Environment(\.dismiss) private var dismiss
+  @Environment(\.atelierDismiss) private var dismiss
   let continueTitle: String
   var requiresPermission = true
   var onReady: () -> Void = {}

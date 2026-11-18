@@ -61,15 +61,15 @@ struct IndirectMethodCard: View {
       }
     }
     .frame(width: viewport.size.width, height: viewport.size.height)
-    .sheet(isPresented: $choosingInterval) {
+    .atelierSheet(isPresented: $choosingInterval) {
       IndirectIntervalSheet().environmentObject(model)
     }
-    .sheet(isPresented: $showingInfo) {
+    .atelierSheet(isPresented: $showingInfo) {
       IndirectHelpSheet(doNotShowAgain: .constant(false), startMode: false,
         continueAction: {}, cancelAction: {})
         .environmentObject(model)
     }
-    .sheet(isPresented: $showingHelp, onDismiss: {
+    .atelierSheet(isPresented: $showingHelp, onDismiss: {
       // A swipe or cancellation never sets this intent. Consume it exactly once.
       guard helpContinuationPending else { return }
       helpContinuationPending = false
@@ -87,7 +87,7 @@ struct IndirectMethodCard: View {
       })
       .environmentObject(model)
     }
-    .sheet(isPresented: $showReadiness, onDismiss: {
+    .atelierSheet(isPresented: $showReadiness, onDismiss: {
       guard readyToStart else { return }
       readyToStart = false
       requestStart()
@@ -172,6 +172,9 @@ struct IndirectMethodCard: View {
       Task { @MainActor in
         defer { startInFlight = false }
         await model.stopIndirectMethod()
+        // The person ended the session: an alarm that is ringing now must not start a new one.
+        if !model.indirectRunning { SmartAlarmFollowUp.shared.userEndedSession() }
+        await quietRainAfterSession()
       }
     } else if skipStartHelp {
       prepareStart()
@@ -179,6 +182,72 @@ struct IndirectMethodCard: View {
       doNotShowAgain = false
       helpContinuationPending = false
       showingHelp = true
+    }
+  }
+
+  /// «Завершить сеанс» also switches the quiet rain off, unless something still needs it.
+  /// The rain only keeps Lumenoir awake so that queued signals fall silent by themselves, and switching it off
+  /// always takes the whole AlarmKit queue with it (NightAudio.stopSafely → disarmForRuntimeLoss).
+  /// So it stays on for a signal or an alarm due before the rain's own twelve-hour end, or for a cancellation
+  /// that is not confirmed yet. Anything later would lose its queue at that end anyway, and is queued again
+  /// the next time the rain starts (a session, the Settings switch or saving an alarm).
+  /// Same model call as the Settings switch «Тихий дождь»; the signal engine is not changed.
+  @MainActor private func quietRainAfterSession() async {
+    guard !model.indirectRunning, !model.busy, model.nightAudio.enabled else { return }
+    let hold = Self.rainHold(model)
+    if !hold.queueInUse && !hold.alarmAhead {
+      await model.stopNightAudio()
+      // Later alarms show «пока вне очереди» again rather than looking armed.
+      await model.refreshQueueAfterRainOff()
+    } else if hold.alarmAhead {
+      if model.message == nil {
+        ToastCenter.shared.show(tr("Сеанс завершён. Тихий дождь играет дальше: его ждёт будильник."))
+      }
+    } else {
+      // Only a signal that is sounding or a test that is waiting holds the rain (or a cancellation that
+      // is not confirmed yet). Once they are over, the rain goes off too. This runs on its own, so the
+      // session button is free again at once.
+      Self.quietRainLater(model, mark: model.nightAudio.until)
+    }
+  }
+
+  /// What still needs the quiet rain: something in the signal queue before the rain's own end,
+  /// and an enabled smart alarm due before that end.
+  @MainActor private static func rainHold(_ model: AppModel) -> (queueInUse: Bool, alarmAhead: Bool) {
+    let ledger = model.systemAlarms.ledger
+    let now = Date()
+    let rainEnd = max(now, model.nightAudio.until ?? now)
+    // A smart alarm, a test signal, a signal sounding now or an unconfirmed cancellation.
+    let queueInUse = ledger.records.contains { $0.fireAt <= rainEnd }
+      || !(ledger.cancelledOwners ?? []).isEmpty
+      || ledger.cancelAllRequested == true
+    // An enabled smart alarm due before the rain ends needs it even before it is queued.
+    let alarmAhead = model.state.alarms.contains { ($0.next(after: now) ?? .distantFuture) <= rainEnd }
+    return (queueInUse, alarmAhead)
+  }
+
+  /// Waits until the last of the near signals has fallen silent, then switches the rain off if nothing
+  /// holds it any more. Gives up if a session starts, the rain is switched off or started anew meanwhile
+  /// (`until` changes), and after a few tries.
+  @MainActor private static func quietRainLater(_ model: AppModel, mark: Date?) {
+    Task { @MainActor in
+      for _ in 0..<3 {
+        let now = Date()
+        let lastStop = model.systemAlarms.ledger.records
+          .filter { $0.fireAt <= now.addingTimeInterval(60) }
+          .map(\.stopAt).max() ?? now
+        let wait = min(120, max(3, lastStop.timeIntervalSince(now) + 2))
+        try? await Task.sleep(nanoseconds: UInt64(wait * 1_000_000_000))
+        guard !model.indirectRunning, model.nightAudio.enabled, model.nightAudio.until == mark else { return }
+        if model.busy { continue }
+        let hold = rainHold(model)
+        if hold.alarmAhead { return }
+        if !hold.queueInUse {
+          await model.stopNightAudio()
+          await model.refreshQueueAfterRainOff()
+          return
+        }
+      }
     }
   }
 
@@ -202,7 +271,7 @@ struct IndirectMethodCard: View {
 /// `startMode`: shown before a session starts (with "do not show again"); otherwise it is plain help.
 private struct IndirectHelpSheet: View {
   @EnvironmentObject private var model: AppModel
-  @Environment(\.dismiss) private var dismiss
+  @Environment(\.atelierDismiss) private var dismiss
   @Binding var doNotShowAgain: Bool
   var startMode: Bool
   let continueAction: () -> Void
@@ -273,7 +342,7 @@ struct RoundMarkToggleStyle: ToggleStyle {
 
 private struct IndirectIntervalSheet: View {
   @EnvironmentObject private var model: AppModel
-  @Environment(\.dismiss) private var dismiss
+  @Environment(\.atelierDismiss) private var dismiss
   @State private var minutes = 30
   @State private var saving = false
 
@@ -330,7 +399,7 @@ private struct IndirectIntervalSheet: View {
 /// Help for the Smart alarm heading.
 struct SmartAlarmHelp: View {
   @EnvironmentObject private var model: AppModel
-  @Environment(\.dismiss) private var dismiss
+  @Environment(\.atelierDismiss) private var dismiss
 
   var body: some View {
     AtelierSheet(tr("Умный будильник")) {
@@ -339,6 +408,7 @@ struct SmartAlarmHelp: View {
         SheetPoint(text: String(format: tr("Сигнал длится %@. Длительность меняется в настройках."),
           L10n.seconds(model.alarmStopSeconds)))
         SheetPoint(text: tr("Будильников может быть несколько, у каждого свои дни недели."))
+        SheetPoint(text: tr("По желанию после будильника сам начнётся сеанс непрямого метода: переключатель — в окне будильника."))
         SheetPoint(text: tr("Перед ночью проверьте звук с заблокированным iPhone."))
       }
       Button(tr("Понятно")) { dismiss() }

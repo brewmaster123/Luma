@@ -1,8 +1,107 @@
 import SwiftUI
 
+/// 0.9.9: the small sign that opens the explanation of «Непрямой метод после будильника»: a thin ring with an «i»,
+/// in the pearl and lamp-warm tones of the screen. It stands apart from the words, before the switch, so it never
+/// reads as punctuation after them; it glows faintly while the explanation is open.
+private struct FollowInfoSign: View {
+  var open: Bool
+  let action: () -> Void
+
+  var body: some View {
+    Button(action: action) {
+      ZStack {
+        Circle().fill(open ? Color(hex: 0xFFE2BA).opacity(0.16) : Color.clear)
+        Circle().strokeBorder((open ? Atelier.ink : Atelier.dim).opacity(open ? 0.85 : 0.55), lineWidth: 0.9)
+        Text("i").font(Atelier.display(14)).foregroundStyle(open ? Atelier.ink : Atelier.dim)
+          .offset(y: -0.5)
+      }
+      .frame(width: 21, height: 21)
+      .shadow(color: Color(hex: 0xFFC98A).opacity(open ? 0.35 : 0), radius: 5)
+      .frame(width: 34, height: 44)
+      .contentShape(Rectangle())
+    }
+    .buttonStyle(.plain)
+    .accessibilityLabel(tr("Как это работает"))
+    .accessibilityValue(open ? tr("Пояснение открыто") : tr("Пояснение скрыто"))
+  }
+}
+
+/// 0.9.9: the optional session of the indirect method after this alarm. Off by default.
+/// The same sunk well as the sound row above it, with the app's own switch. The explanation is hidden
+/// (the user, 18 Nov 2026, evening: right under the name it read as a description of the smart alarm itself):
+/// a small «i» in a ring, apart from the words and just before the switch, or a tap on the name opens it inside
+/// the same well, and closes it again. A view of its own inside the sheet's cushion, so that it can reach the
+/// sheet's scroll: on a small iPhone the opened explanation is scrolled into view.
+private struct FollowSwitchRow: View {
+  @Binding var on: Bool
+  var saving: Bool
+  @State private var open = false
+  @Environment(\.accessibilityReduceMotion) private var reduceMotion
+  @Environment(\.atelierScroll) private var sheetScroll
+
+  private static let helpID = "alarm.followHelp"
+
+  var body: some View {
+    VStack(alignment: .leading, spacing: 0) {
+      HStack(spacing: 10) {
+        Button { toggleHelp() } label: {
+          HStack(spacing: 11) {
+            Image(systemName: "moon.zzz").font(.system(size: 15, weight: .light))
+              .foregroundStyle(on ? Atelier.ink : Atelier.off)
+              .frame(width: 20)
+            Text(tr("Непрямой метод после будильника")).font(Atelier.ui(15)).foregroundStyle(Atelier.ink)
+              .multilineTextAlignment(.leading)
+              .fixedSize(horizontal: false, vertical: true)
+            Spacer(minLength: 0)
+          }
+          .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityHidden(true)
+        FollowInfoSign(open: open) { toggleHelp() }
+        Toggle(tr("Непрямой метод после будильника"), isOn: $on)
+          .labelsHidden()
+          .toggleStyle(AtelierToggleStyle())
+          .disabled(saving)
+          .accessibilityHint(tr("Когда будильник отзвучит, сам начнётся сеанс непрямого метода."))
+          // VoiceOver meets the switch, which names the feature, before the sign that explains it.
+          .accessibilitySortPriority(1)
+      }
+      .padding(.leading, 14).padding(.trailing, 8)
+      .frame(minHeight: 52)
+      .accessibilityElement(children: .contain)
+      if open {
+        Rectangle().fill(Atelier.ink.opacity(0.07)).frame(height: 1)
+          .padding(.horizontal, 14)
+        Text(tr("Когда будильник отзвучит, сам начнётся сеанс непрямого метода — с текущим интервалом и звуком. Нужен включённый тихий дождь. Сеанс идёт, пока вы не нажмёте «Завершить сеанс», а сигналы звучат, пока играет дождь, — до 12 часов с его включения."))
+          .font(Atelier.ui(12)).lineSpacing(3.5).foregroundStyle(Atelier.note)
+          .fixedSize(horizontal: false, vertical: true)
+          .padding(EdgeInsets(top: 10, leading: 14, bottom: 13, trailing: 14))
+          .id(Self.helpID)
+          .transition(.opacity)
+      }
+    }
+    .background(AtelierWell())
+    .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+    .padding(.top, 10)
+  }
+
+  /// Opens or closes the explanation. When it opens near the lower edge of the sheet, the sheet scrolls so
+  /// that it is seen; the scroll waits one turn, until the text is laid out.
+  private func toggleHelp() {
+    let animation: Animation? = reduceMotion ? nil : .easeInOut(duration: 0.28)
+    withAnimation(animation) { open.toggle() }
+    guard open, let sheetScroll else { return }
+    DispatchQueue.main.async {
+      // No anchor: the sheet moves only if the explanation is not fully seen, and only as far as needed.
+      withAnimation(animation) { sheetScroll.scrollTo(Self.helpID) }
+    }
+  }
+}
+
 struct AlarmEditor: View {
   @EnvironmentObject private var model: AppModel
-  @Environment(\.dismiss) private var dismiss
+  @Environment(\.atelierDismiss) private var dismiss
   @State var alarm: LumaAlarm
   @State private var confirmDelete = false
   @State private var saving = false
@@ -10,6 +109,14 @@ struct AlarmEditor: View {
   @State private var showReadiness = false
   @State private var readyToSave = false
   @State private var choosingSound = false
+  /// 0.9.9: «Непрямой метод после будильника». Off unless the person switched it on for this alarm.
+  /// Read once, when the editor is made, so coming back from a nested sheet never undoes a change.
+  @State private var followIndirect: Bool
+
+  init(alarm: LumaAlarm) {
+    _alarm = State(initialValue: alarm)
+    _followIndirect = State(initialValue: SmartAlarmFollowUpPreference.isOn(alarm.id))
+  }
 
   private func saveAlarm() {
     guard !saving else { return }
@@ -21,8 +128,11 @@ struct AlarmEditor: View {
       alarm.onceAt = Calendar.current.nextDate(after: Date().addingTimeInterval(10),
         matching: DateComponents(hour: alarm.hour, minute: alarm.minute), matchingPolicy: .nextTime)
         ?? Date().addingTimeInterval(3600)
-      if await model.saveAlarm(alarm) { dismiss() }
-      else {
+      if await model.saveAlarm(alarm) {
+        // Written only once the alarm itself is saved, so a refused save changes nothing.
+        SmartAlarmFollowUpPreference.set(alarm.id, followIndirect)
+        dismiss()
+      } else {
         saveError = model.message ?? "Не удалось сохранить будильник."
         // The text is shown here, in the sheet; it does not need a second showing.
         model.message = nil
@@ -61,13 +171,13 @@ struct AlarmEditor: View {
         editorButtons
       }
     }
-    .sheet(isPresented: $showReadiness, onDismiss: {
+    .atelierSheet(isPresented: $showReadiness, onDismiss: {
       if readyToSave { readyToSave = false; saveAlarm() }
     }) {
       SignalReadinessView(continueTitle: tr("Сохранить будильник")) { readyToSave = true }
         .environmentObject(model)
     }
-    .sheet(isPresented: $choosingSound) {
+    .atelierSheet(isPresented: $choosingSound) {
       SoundPickerSheet(selection: $alarm.signal.voiceID).environmentObject(model)
     }
     .interactiveDismissDisabled(saving)
@@ -98,6 +208,7 @@ struct AlarmEditor: View {
       .font(Atelier.ui(11.6)).foregroundStyle(Atelier.faint)
       .padding(.top, 8)
     soundRow
+    FollowSwitchRow(on: $followIndirect, saving: saving)
   }
 
   @ViewBuilder private var editorButtons: some View {
@@ -132,6 +243,9 @@ struct AlarmEditor: View {
     Button(tr("Удалить")) {
       Task {
         await model.deleteAlarm(alarm.id)
+        if !model.state.alarms.contains(where: { $0.id == alarm.id }) {
+          SmartAlarmFollowUpPreference.set(alarm.id, false)
+        }
         dismiss()
       }
     }
@@ -164,7 +278,7 @@ struct AlarmEditor: View {
 
   /// The sound of this alarm (the same list as in Settings).
   private var soundRow: some View {
-    let name = model.state.voices.first(where: { $0.id == alarm.signal.voiceID })?.name ?? tr("Мелодия Lumenoir")
+    let name = SoundShelf.name(alarm.signal.voiceID, voices: model.state.voices)
     return Button { choosingSound = true } label: {
       HStack(spacing: 12) {
         Text(tr("Звук")).font(Atelier.ui(15)).foregroundStyle(Atelier.ink)

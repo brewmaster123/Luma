@@ -1,7 +1,7 @@
 {
-  "version": "0.9.8 (27)",
+  "version": "0.9.9 (28)",
   "kind": "project-input-sha256-with-explicit-modes",
-  "note": "Current 0.9.8 repository inputs after native result documentation; tested application inputs are separately matched to 30ea0d5 in Luma/Docs/tested-input-match.json.",
+  "note": "Current 0.9.9 project inputs (18 Nov 2026), not yet built on GitHub. The same rule as the 0.9.8 manifest: the reports the checks write in Luma/Docs are not listed; the 0.9.8 build records, moved to Luma/Docs/history-0.9.8, are.",
   "files": [
     {
       "path": ".gitattributes",
@@ -16,37 +16,37 @@
     {
       "path": "AGENTS.md",
       "hash_mode": "lf-text",
-      "sha256": "fabb9cde2e44b8ddeca96246bc1876345303b11b9ffbd9d2523c63ba26a3229f"
+      "sha256": "850c7f477cde84e8fed63c388fc25aa0d49e14a5285d72f8afaa9f618603b42e"
     },
     {
       "path": "CHANGELOG.md",
       "hash_mode": "lf-text",
-      "sha256": "fe70470f3293dbc76f4a560acfe2dfa208f132b96322c832bab4d5d4f8d305b5"
+      "sha256": "4e593d9a5368a1a86113ea29a9071bcf20f08075515e65354be3eee2bfec80ed"
     },
     {
       "path": "DEVELOPMENT_STATUS.md",
       "hash_mode": "lf-text",
-      "sha256": "96e358727c1b530ae8de2a41320ac510b0b5eaf9d8516584fb07a1e48d59e2dd"
+      "sha256": "d0a14a8834e43352b933a2c4df16a4817d2c874a84448d7c428882c7217579f7"
     },
     {
       "path": "PROGRESS.json",
       "hash_mode": "lf-text",
-      "sha256": "2802db921938f2c9a6fb6f012616d31ccafe2e974396874a60aef36415baf597"
+      "sha256": "9351b52cda2c0a70eba0818cea32328a22f02fb0efea298f91435c88e3908e8e"
     },
     {
       "path": "README.md",
       "hash_mode": "lf-text",
-      "sha256": "ca705a792c1c2932de155452999d34512f07d71e02c1d339098e61ddd7c0c535"
+      "sha256": "b3504e6e353b51f2fbadfcd551d12e7ef13ca60867d493674a80d6cebeef56b8"
     },
     {
       "path": "verification.json",
       "hash_mode": "lf-text",
-      "sha256": "899b66c7b789fcc72bca2a29ca820c4ee251272e658d3e208b6f93ddde94ff31"
+      "sha256": "90fd4c62b670f60ff94146fc78f8b9fd5b146e2ab3bee08468b2a8908facd82d"
     },
     {
       "path": ".github/workflows/ios-build.yml",
       "hash_mode": "lf-text",
-      "sha256": "f5113441298279f71c75baffff7e4685dd56ede1dbf7bf52ab341ce71090c426"
+      "sha256": "1630fb477042fee5a1337d789d9fa4e9e798b480a37260ae909d58f044f28a71"
     },
     {
       "path": "Luma/Package.swift",
@@ -56,7 +56,7 @@
     {
       "path": "Luma/Config/Base.xcconfig",
       "hash_mode": "lf-text",
-      "sha256": "20e1fdebbb9abeea8b1ae05b7537011b47cd42012126d0350ccdf83a2151e4e8"
+      "sha256": "6c9039167eaa674b47f3d0fa7125008fe003e42e0975986c41fc5a80939e574c"
     },
     {
       "path": "Luma/Config/Watch-Info.plist",
@@ -86,7 +86,7 @@
     {
       "path": "Luma/Docs/BUILD_ON_GITHUB.md",
       "hash_mode": "lf-text",
-      "sha256": "edcec11b85d63cf5adac5e001404da5bd3abf905f7113fa8faba2511a9ff72d2"
+      "sha256": "2c764300df8e3badb5b5c5b25fff5b654abca2bf901448ddadc7562993631a5c"
     },
     {
       "path": "Luma/Docs/CI_AUDIO_HASH_FIX.md",
@@ -101,12 +101,12 @@
     {
       "path": "Luma/Docs/DESIGN_AND_LANGUAGE.md",
       "hash_mode": "lf-text",
-      "sha256": "7c4c07c69d06acd30c7f0a9bbc6d11812badfee70815297a8b5fb6120b5c9876"
+      "sha256": "0b8a29a8c4e64c7dc6947ea6006bc39c26bd5dcd216b11d640c5501807fd1138"
     },
     {
       "path": "Luma/Docs/DEVICE_TESTS.md",
       "hash_mode": "lf-text",
-      "sha256": "babf950beb46cb036b03eebcf426217afcd245ebde8e50e4244c4f5fc68483cd"
+      "sha256": "546184abf639af0c288c3bc27d1994afe157109f89c67b9bbab9c3813bea3980"
     },
     {
       "path": "Luma/Docs/SIGNAL_DURATION.md",
@@ -131,7 +131,7 @@
     {
       "path": "Luma/Docs/unchanged-since-0.9.7.json",
       "hash_mode": "lf-text",
-      "sha256": "f7515a2f8c71548b55e6a8319a571470605cab733200d0ee3e94676acdf27c5e"
+      "sha256": "3d084c07ef34ac543fb2d239b83339654ebc08912c086e7cceafad90a86e88bf"
     },
     {
       "path": "Luma/Docs/history-0.9.7/IPA_VALIDATION.json",
@@ -229,9 +229,59 @@
       "sha256": "aa182dd86eb38ecbbf6f7bf9cd6394aac5b1244172999466718139bac99781ef"
     },
     {
+      "path": "Luma/Docs/history-0.9.8/IPA_VALIDATION.json",
+      "hash_mode": "lf-text",
+      "sha256": "e2d351bda44ffcd8718fafc1f184cd963aeac80585b3bcba21ef1ce78711b1f7"
+    },
+    {
+      "path": "Luma/Docs/history-0.9.8/NATIVE_BUILD_2026-11-17.md",
+      "hash_mode": "lf-text",
+      "sha256": "5de1e6105d3ee1b8c3671de71d67a8a75a68cf18919dcc740665c14c7bf81876"
+    },
+    {
+      "path": "Luma/Docs/history-0.9.8/README.md",
+      "hash_mode": "lf-text",
+      "sha256": "c050e801ec86c7d9836eb6b03fa2b800b36a1d553a404c8f35efacc80701347f"
+    },
+    {
+      "path": "Luma/Docs/history-0.9.8/artifact-download-verification.json",
+      "hash_mode": "lf-text",
+      "sha256": "c5045076e847eb0aecb7dda464776c42252e36ffb4a3f562e3c176cbc856bfcc"
+    },
+    {
+      "path": "Luma/Docs/history-0.9.8/build-history-audit.json",
+      "hash_mode": "lf-text",
+      "sha256": "da5eb3f08f53ca02f0e9c4cb9fe417f86d4770860fdc9a89594ed000f9941663"
+    },
+    {
+      "path": "Luma/Docs/history-0.9.8/native-ci-artifacts.json",
+      "hash_mode": "lf-text",
+      "sha256": "d30f2c937800ffd3411cdab0435a2fa23b2707ea3109175ce23ecfdb4511e04c"
+    },
+    {
+      "path": "Luma/Docs/history-0.9.8/native-ci-first-run.json",
+      "hash_mode": "lf-text",
+      "sha256": "1e4d6223bc757f6ad43b049b250f9fe9509d2d6c89a6a474f87e7b400a7af33f"
+    },
+    {
+      "path": "Luma/Docs/history-0.9.8/native-ci-jobs.json",
+      "hash_mode": "lf-text",
+      "sha256": "5158e5eb5725ee2737c93c1baa26706e61d4e0db4d324c1239b6ce7d200cb7ee"
+    },
+    {
+      "path": "Luma/Docs/history-0.9.8/native-ci-validation.json",
+      "hash_mode": "lf-text",
+      "sha256": "d8874afdcec5733efe0abe8dc5091267e63270dfb6691bb5de5216f54ec9bb5d"
+    },
+    {
+      "path": "Luma/Docs/history-0.9.8/tested-input-match.json",
+      "hash_mode": "lf-text",
+      "sha256": "09531ff284ee3b733fdc5a4d533fa1087055b60de700af26232aa91aef4286b7"
+    },
+    {
       "path": "Luma/Luma.xcodeproj/project.pbxproj",
       "hash_mode": "lf-text",
-      "sha256": "9db45f4d002b70cb19d17e448ae538148a81a93f44c4823c89181c497b4035e3"
+      "sha256": "844fa6ea921ae4f3c3faedc94bb6aeae40709008a2ee2e661757feefa60abb18"
     },
     {
       "path": "Luma/Luma.xcodeproj/xcshareddata/xcschemes/Luma Watch.xcscheme",
@@ -309,6 +359,26 @@
       "sha256": "37d5345466972ded506efae43555eaf71e22e015b5a37ac93aa0fb99c9299826"
     },
     {
+      "path": "Luma/Resources/lumenoir-melody-fireflies.wav",
+      "hash_mode": "raw",
+      "sha256": "2087748cb7792a576d5ce6564d0fc2d3a0ba0546f72ef17463bb439c77f3803d"
+    },
+    {
+      "path": "Luma/Resources/lumenoir-melody-first-light.wav",
+      "hash_mode": "raw",
+      "sha256": "48a1bdef3586277fcf497e8460e41415012c19fbe1a0d9bc80c234774ef9260c"
+    },
+    {
+      "path": "Luma/Resources/lumenoir-melody-moonlit-lullaby.wav",
+      "hash_mode": "raw",
+      "sha256": "e368e4a1b56842f8383e208b27fbbed6b12c31f1e3224f8f0fc197966bbdd75e"
+    },
+    {
+      "path": "Luma/Resources/lumenoir-melody-signature.wav",
+      "hash_mode": "raw",
+      "sha256": "660ed749baed2a5d9ecd572ca1cb5d8e97f79c41cfcf47c92f1b9323f8e74e9a"
+    },
+    {
       "path": "Luma/Resources/Localization/Watch/en.lproj/Localizable.strings",
       "hash_mode": "lf-text",
       "sha256": "d52711e98ad24d422884f25069ae0ed14d665833b22d25dda3d811feca8814c5"
@@ -367,6 +437,116 @@
       "path": "Luma/Resources/iOSAssets.xcassets/AppIcon.appiconset/Contents.json",
       "hash_mode": "lf-text",
       "sha256": "9239900ca4c37dc860feb154216409f05d906e26f2d79550e1e8e8b8db6324c7"
+    },
+    {
+      "path": "Luma/Resources/iOSAssets.xcassets/ForestFlowersL.imageset/Contents.json",
+      "hash_mode": "lf-text",
+      "sha256": "df2f18d51f33d856db49de8d8b5601665531225f8d92f83843f58b9e9814e065"
+    },
+    {
+      "path": "Luma/Resources/iOSAssets.xcassets/ForestFlowersL.imageset/ForestFlowersL.png",
+      "hash_mode": "raw",
+      "sha256": "d41b745c37d0913fd92b86dccdfba721d73f5b3dcaf715ed2032d96ae4d733ce"
+    },
+    {
+      "path": "Luma/Resources/iOSAssets.xcassets/ForestFlowersR.imageset/Contents.json",
+      "hash_mode": "lf-text",
+      "sha256": "f9a5e0f31bd61ba96a3c5b4eda1ed914626c4b6c2a9d83a41e0837bacf3fdf25"
+    },
+    {
+      "path": "Luma/Resources/iOSAssets.xcassets/ForestFlowersR.imageset/ForestFlowersR.png",
+      "hash_mode": "raw",
+      "sha256": "8cfa000003d5f02e881988be0f183752bffb27c767517e45466ff6e816deef75"
+    },
+    {
+      "path": "Luma/Resources/iOSAssets.xcassets/ForestFore.imageset/Contents.json",
+      "hash_mode": "lf-text",
+      "sha256": "354750d524d420e917d04162f4c78ab4d83a1b4d52e2c79a26c4d4ea27bb30c9"
+    },
+    {
+      "path": "Luma/Resources/iOSAssets.xcassets/ForestFore.imageset/ForestFore.png",
+      "hash_mode": "raw",
+      "sha256": "a167d37419de834041855f205bd282a6e1573f7a20bf5dfa52a0f58c5cf300f5"
+    },
+    {
+      "path": "Luma/Resources/iOSAssets.xcassets/ForestLantern.imageset/Contents.json",
+      "hash_mode": "lf-text",
+      "sha256": "7bced1836fe91d2de47f8af4c5b3ecbc59cf8260d292a23ebf0f07c3c094255d"
+    },
+    {
+      "path": "Luma/Resources/iOSAssets.xcassets/ForestLantern.imageset/ForestLantern.png",
+      "hash_mode": "raw",
+      "sha256": "c8f3c1f64286a600387a4dc5572c7a6ec4c565f004a2102afd01f705f59c260c"
+    },
+    {
+      "path": "Luma/Resources/iOSAssets.xcassets/ForestLeavesA.imageset/Contents.json",
+      "hash_mode": "lf-text",
+      "sha256": "c49e5f9a3a9c26fbea5863f8f4fedd540456d7e1ab567d8e1b0ef5bd83ca97e0"
+    },
+    {
+      "path": "Luma/Resources/iOSAssets.xcassets/ForestLeavesA.imageset/ForestLeavesA.png",
+      "hash_mode": "raw",
+      "sha256": "54f66d4d98e0ad703dc2d38e3a74157c083555a882f1a891131d4b39238a4298"
+    },
+    {
+      "path": "Luma/Resources/iOSAssets.xcassets/ForestLeavesB.imageset/Contents.json",
+      "hash_mode": "lf-text",
+      "sha256": "8638bf015e2e2b55bc632499f431cf2d65fa3f882e702868c54ccd2fff48e152"
+    },
+    {
+      "path": "Luma/Resources/iOSAssets.xcassets/ForestLeavesB.imageset/ForestLeavesB.png",
+      "hash_mode": "raw",
+      "sha256": "60ede104546e8b4f96d67ee02bcefdeadace82af6e823ebb01c0fc4ee8272efc"
+    },
+    {
+      "path": "Luma/Resources/iOSAssets.xcassets/ForestLeavesC.imageset/Contents.json",
+      "hash_mode": "lf-text",
+      "sha256": "62c0bcd8bf468fe9829f55a138c5387160a123b989052fcccae1f09212c6951e"
+    },
+    {
+      "path": "Luma/Resources/iOSAssets.xcassets/ForestLeavesC.imageset/ForestLeavesC.png",
+      "hash_mode": "raw",
+      "sha256": "2f491e60e142db9b080aecec479578458c6590b0161d3179016dc5ae952682db"
+    },
+    {
+      "path": "Luma/Resources/iOSAssets.xcassets/ForestLight.imageset/Contents.json",
+      "hash_mode": "lf-text",
+      "sha256": "88ce2586acc9ec1f3064bcd68f5d62e65f4c74dbbbc6bc2e18151bd14727ec83"
+    },
+    {
+      "path": "Luma/Resources/iOSAssets.xcassets/ForestLight.imageset/ForestLight.jpg",
+      "hash_mode": "raw",
+      "sha256": "48d7bdc824c2a15a1c5d25d7a2853681a911de6bdf4f516f6071f22cebd86f1f"
+    },
+    {
+      "path": "Luma/Resources/iOSAssets.xcassets/ForestMist.imageset/Contents.json",
+      "hash_mode": "lf-text",
+      "sha256": "7b917400c2f900db4b8bc44027a7e9e1a19690c38d631ba0e18c07ec25adc010"
+    },
+    {
+      "path": "Luma/Resources/iOSAssets.xcassets/ForestMist.imageset/ForestMist.png",
+      "hash_mode": "raw",
+      "sha256": "5d3bcd22f414da134e190361973308bc260eb4ed707c3e4bbc9db4c3604a15d3"
+    },
+    {
+      "path": "Luma/Resources/iOSAssets.xcassets/ForestPlate.imageset/Contents.json",
+      "hash_mode": "lf-text",
+      "sha256": "392cae0d1b3847afa491ffa8101d76b788f73d06c7a097681e5c6b51bee5d3c0"
+    },
+    {
+      "path": "Luma/Resources/iOSAssets.xcassets/ForestPlate.imageset/ForestPlate.jpg",
+      "hash_mode": "raw",
+      "sha256": "1b4425bd7890826d97c0da439a1a39b0088228163cf6e4b3cf9009c34c657079"
+    },
+    {
+      "path": "Luma/Resources/iOSAssets.xcassets/ForestVines.imageset/Contents.json",
+      "hash_mode": "lf-text",
+      "sha256": "ba53f75b770f2305d9a2583d55174a96cf561f38e4964505d720b28d1eb5e0ac"
+    },
+    {
+      "path": "Luma/Resources/iOSAssets.xcassets/ForestVines.imageset/ForestVines.jpg",
+      "hash_mode": "raw",
+      "sha256": "df874144580133af1777559605e2740912fda53b0d05c6b21d1ec5e49fc66412"
     },
     {
       "path": "Luma/Resources/iOSAssets.xcassets/JournalGlow.imageset/Contents.json",
@@ -469,146 +649,6 @@
       "sha256": "a9fc6ae26c54f0d4f6e141ae4c49094d24bcde73160881d590d47fb2702dc344"
     },
     {
-      "path": "Luma/Resources/iOSAssets.xcassets/SettingsBase.imageset/Contents.json",
-      "hash_mode": "lf-text",
-      "sha256": "6976c5fa96cfe5a867243be22ad78e258a67f0cd3a224f6a24c1c002d2cafbf1"
-    },
-    {
-      "path": "Luma/Resources/iOSAssets.xcassets/SettingsBase.imageset/SettingsBase.png",
-      "hash_mode": "raw",
-      "sha256": "3361a29f9a7086555dc95d536b960556adf554c557cc4eb09b61a8c1c028a5a4"
-    },
-    {
-      "path": "Luma/Resources/iOSAssets.xcassets/SettingsCloudFillCool.imageset/Contents.json",
-      "hash_mode": "lf-text",
-      "sha256": "86a48afbcd69365bbfacbc58cd85aa82feed85e74575244cd931b596d685a948"
-    },
-    {
-      "path": "Luma/Resources/iOSAssets.xcassets/SettingsCloudFillCool.imageset/SettingsCloudFillCool.png",
-      "hash_mode": "raw",
-      "sha256": "085d35118b7257ae4683027944c258ac8c5782e46a18fa331c19cfca94ff8808"
-    },
-    {
-      "path": "Luma/Resources/iOSAssets.xcassets/SettingsCloudFillWarm.imageset/Contents.json",
-      "hash_mode": "lf-text",
-      "sha256": "9085f5af3811e9d279a4bce1aa3dadeba651a02783c4d866903f6f931ffa37cd"
-    },
-    {
-      "path": "Luma/Resources/iOSAssets.xcassets/SettingsCloudFillWarm.imageset/SettingsCloudFillWarm.png",
-      "hash_mode": "raw",
-      "sha256": "2587284b1624fbea8f0c3842d701f76fb34c48a8b65de9d7308f12c417693929"
-    },
-    {
-      "path": "Luma/Resources/iOSAssets.xcassets/SettingsCloudLowCool.imageset/Contents.json",
-      "hash_mode": "lf-text",
-      "sha256": "e4b859c06e2e467b4ae9726914ebf21d860a9220865bd02a942ad9a8c7eafe00"
-    },
-    {
-      "path": "Luma/Resources/iOSAssets.xcassets/SettingsCloudLowCool.imageset/SettingsCloudLowCool.png",
-      "hash_mode": "raw",
-      "sha256": "68c1c54069a20a5e6b02511958693d16e06388a28b2f57a68ce4b44ddbda1354"
-    },
-    {
-      "path": "Luma/Resources/iOSAssets.xcassets/SettingsCloudLowWarm.imageset/Contents.json",
-      "hash_mode": "lf-text",
-      "sha256": "ad31eaa30ef0f9e136bb48568de050259b79394f2d8ab9707bb8869afbaa4b46"
-    },
-    {
-      "path": "Luma/Resources/iOSAssets.xcassets/SettingsCloudLowWarm.imageset/SettingsCloudLowWarm.png",
-      "hash_mode": "raw",
-      "sha256": "42f62db93858f84d184fadb1ea2fc384a945e73886cbbd1f8a24e1529304f959"
-    },
-    {
-      "path": "Luma/Resources/iOSAssets.xcassets/SettingsFillMask.imageset/Contents.json",
-      "hash_mode": "lf-text",
-      "sha256": "27e6ec4e497b1bc9c5f208b35c9bb0e5b3c34c4e4f6f4f21263dcf6ddf9a7997"
-    },
-    {
-      "path": "Luma/Resources/iOSAssets.xcassets/SettingsFillMask.imageset/SettingsFillMask.png",
-      "hash_mode": "raw",
-      "sha256": "df07d40a445fcd02718ee52331ffe7aaedd6700249cf6c75e18bc6705d4ef329"
-    },
-    {
-      "path": "Luma/Resources/iOSAssets.xcassets/SettingsFrontMask.imageset/Contents.json",
-      "hash_mode": "lf-text",
-      "sha256": "e5168e557794d93ff7ca257e49f2844b4f4a228671a70982d409ad4cf00cb5c4"
-    },
-    {
-      "path": "Luma/Resources/iOSAssets.xcassets/SettingsFrontMask.imageset/SettingsFrontMask.png",
-      "hash_mode": "raw",
-      "sha256": "0e1ff0d7c914e24807991a95185256e8330a42731057029cd0ff3b98ca290aa3"
-    },
-    {
-      "path": "Luma/Resources/iOSAssets.xcassets/SettingsHouse.imageset/Contents.json",
-      "hash_mode": "lf-text",
-      "sha256": "355125d7292946339866fc6b99c8f7d290c000884b9cbafcb019f3f62543868d"
-    },
-    {
-      "path": "Luma/Resources/iOSAssets.xcassets/SettingsHouse.imageset/SettingsHouse.png",
-      "hash_mode": "raw",
-      "sha256": "d4c8b42298b2c5ff678ffc33bf0da1f30b72b04b3a51783b2f9139d199c8bd88"
-    },
-    {
-      "path": "Luma/Resources/iOSAssets.xcassets/SettingsRidgeCool.imageset/Contents.json",
-      "hash_mode": "lf-text",
-      "sha256": "dd9c7b46156a2169256661258096f8dc6907c5227ab6e3b02a16c6998524e475"
-    },
-    {
-      "path": "Luma/Resources/iOSAssets.xcassets/SettingsRidgeCool.imageset/SettingsRidgeCool.png",
-      "hash_mode": "raw",
-      "sha256": "e21f61ab15928cb9537bdf03ee2c05c0e363e2c0ef11f96494c949726b8e6a69"
-    },
-    {
-      "path": "Luma/Resources/iOSAssets.xcassets/SettingsRidgeHaze.imageset/Contents.json",
-      "hash_mode": "lf-text",
-      "sha256": "957905ecc978550ece4e72b912cbf29ab7efdc2e82a313175731e5068348fd63"
-    },
-    {
-      "path": "Luma/Resources/iOSAssets.xcassets/SettingsRidgeHaze.imageset/SettingsRidgeHaze.png",
-      "hash_mode": "raw",
-      "sha256": "b5af6f7f8d175a9e5e3061c7f771c4a05ce37ac086db3416c806e47e9d3f2c0f"
-    },
-    {
-      "path": "Luma/Resources/iOSAssets.xcassets/SettingsRidgeWarm.imageset/Contents.json",
-      "hash_mode": "lf-text",
-      "sha256": "025b4aa30dc555d23f862debd8e7c28a5c1474e042f42df247797255dff11a0c"
-    },
-    {
-      "path": "Luma/Resources/iOSAssets.xcassets/SettingsRidgeWarm.imageset/SettingsRidgeWarm.png",
-      "hash_mode": "raw",
-      "sha256": "e5d93ca132fc7f3b79caab9d49ada32c08a7e0024da1bb6dc90fdf348bf40b9d"
-    },
-    {
-      "path": "Luma/Resources/iOSAssets.xcassets/SettingsVeil.imageset/Contents.json",
-      "hash_mode": "lf-text",
-      "sha256": "a56ebd6223d7e81ac1d2ba508e8a9576978b9abfa068ac1d02a8bc653d0ffce3"
-    },
-    {
-      "path": "Luma/Resources/iOSAssets.xcassets/SettingsVeil.imageset/SettingsVeil.png",
-      "hash_mode": "raw",
-      "sha256": "fa44ee47f7cee2b164a76b3d28a69ff15cf3aa2f3073b3508a802d39966243bb"
-    },
-    {
-      "path": "Luma/Resources/iOSAssets.xcassets/SettingsVeilStrip.imageset/Contents.json",
-      "hash_mode": "lf-text",
-      "sha256": "b754735786e55792ec87be1426501aecfc915201a8d99c34030007846823bddb"
-    },
-    {
-      "path": "Luma/Resources/iOSAssets.xcassets/SettingsVeilStrip.imageset/SettingsVeilStrip.png",
-      "hash_mode": "raw",
-      "sha256": "708f13f5352edfe1364588b1e0e0e44e95c9711117397ea6015368dc0b53ae0b"
-    },
-    {
-      "path": "Luma/Resources/iOSAssets.xcassets/SettingsWindowGlow.imageset/Contents.json",
-      "hash_mode": "lf-text",
-      "sha256": "591d31913e6a0a00a6d24e7326f317d833a02a59c7a76411eee1c6c6e64429e5"
-    },
-    {
-      "path": "Luma/Resources/iOSAssets.xcassets/SettingsWindowGlow.imageset/SettingsWindowGlow.png",
-      "hash_mode": "raw",
-      "sha256": "3fe8c6dd25c01247a9a13b9c435f601e2e1a0c9067654e08aa0c651b9dd672eb"
-    },
-    {
       "path": "Luma/Sources/LumaCore/AcousticFeatures.swift",
       "hash_mode": "lf-text",
       "sha256": "56dc961def8e779f756abdd8e2bf96beecb0ae3d4954918142de41f602f6efdd"
@@ -706,7 +746,7 @@
     {
       "path": "Luma/Sources/Platform/AppModel.swift",
       "hash_mode": "lf-text",
-      "sha256": "a7d591db0040267a911be766f5a0d46397ac56c6e3c874b5138576eb61a4462e"
+      "sha256": "0e063b98c696d8f6583d50881461d09a8e029870210b875b2ad85736ce0e63c8"
     },
     {
       "path": "Luma/Sources/Platform/CueDiagnostics.swift",
@@ -751,7 +791,7 @@
     {
       "path": "Luma/Sources/iPhone/AlarmEditor.swift",
       "hash_mode": "lf-text",
-      "sha256": "b56e6a569977b29997f63d69ae4fed87372e3a47afc914d70e948e9f00b54fd0"
+      "sha256": "6087059ca9f3d2309b0e049effbb442f0623fc260c0fe8fbef834b4425ddbafd"
     },
     {
       "path": "Luma/Sources/iPhone/AlarmKitScheduler.swift",
@@ -764,6 +804,16 @@
       "sha256": "9b81914e2c6cb2997268687e5eb4fce1a0a1f44bf0a39bb13f199907bbcba559"
     },
     {
+      "path": "Luma/Sources/iPhone/AudioFilePicker.swift",
+      "hash_mode": "lf-text",
+      "sha256": "450b63e9608e0c83299525a488ed4ab96f2113ffaf6623cb255b71308e5aa73c"
+    },
+    {
+      "path": "Luma/Sources/iPhone/BuiltInMelodies.swift",
+      "hash_mode": "lf-text",
+      "sha256": "ffa65eb637dceb3e707f5f98a88d3e383ef1b5f33013ed6d84e4fb0534704759"
+    },
+    {
       "path": "Luma/Sources/iPhone/CueAudioImporter.swift",
       "hash_mode": "lf-text",
       "sha256": "e52c18e283386a600b406ab70cd2467968652f2f339d374f378ca443daa61577"
@@ -771,12 +821,12 @@
     {
       "path": "Luma/Sources/iPhone/DesignSystem.swift",
       "hash_mode": "lf-text",
-      "sha256": "31ab70fbe387b1ef147f3b61ce724403565e40c854cb9c9090a966223e900bf1"
+      "sha256": "46cbba1ea5b23ce9b1dde50157bafd398ea81eca5d1f9125b6812fe1089894de"
     },
     {
       "path": "Luma/Sources/iPhone/IndirectMethodView.swift",
       "hash_mode": "lf-text",
-      "sha256": "c25bae9bf58058b856398a3deeb907ab55a19a2811a11bc4128fa5661938cc6e"
+      "sha256": "54b23820b01997dd42fff4f9017999ee3ae0a8c6aa26ff23a4c3d1d9902a5798"
     },
     {
       "path": "Luma/Sources/iPhone/JournalScene.swift",
@@ -786,7 +836,7 @@
     {
       "path": "Luma/Sources/iPhone/JournalView.swift",
       "hash_mode": "lf-text",
-      "sha256": "750621fa147e50296a71d713c90e3567e2ce7a3f702386203559d46f9b81fd12"
+      "sha256": "c7e586a8d3d92d642a8c932a00b1ad7ea1994033912bca2eef598028129362b8"
     },
     {
       "path": "Luma/Sources/iPhone/JournalVoiceComposer.swift",
@@ -806,7 +856,7 @@
     {
       "path": "Luma/Sources/iPhone/LocalizationTable.swift",
       "hash_mode": "lf-text",
-      "sha256": "5f302626ec7204097a964e90b459e9e93b78e45dd7ab33e55826c86950c9d281"
+      "sha256": "c611991854700f242f15ec26a373c307f98a6bceaa79c41c0ffa8ddaa4ad9f28"
     },
     {
       "path": "Luma/Sources/iPhone/LumaApp.swift",
@@ -831,27 +881,32 @@
     {
       "path": "Luma/Sources/iPhone/PhoneRootView.swift",
       "hash_mode": "lf-text",
-      "sha256": "d4d4411d86d98d774f022f821495f2032ec91b126af0777953ac224c8ffe982f"
+      "sha256": "6ff735f542790f0b0d6471b2b247846059f758ea6856d309e71645ec622960ad"
     },
     {
       "path": "Luma/Sources/iPhone/SettingsScene.swift",
       "hash_mode": "lf-text",
-      "sha256": "5b9e85302b334cc0b94148351e38b5587abeabbe909435f2e4a1a408a3e9934e"
+      "sha256": "e73d6bc45908b24dade34e812fa75477838e145b9294e01ca8c683550100b6a1"
     },
     {
       "path": "Luma/Sources/iPhone/SettingsView.swift",
       "hash_mode": "lf-text",
-      "sha256": "7653036e3ea851e5636342b15290f33581b21623beada3a2ab6bbb9a0ef607a7"
+      "sha256": "7fb88c70c012104e511841639957d0cbb7e95ff71bedf288dd3f73cf0b032088"
     },
     {
       "path": "Luma/Sources/iPhone/SignalReadinessView.swift",
       "hash_mode": "lf-text",
-      "sha256": "b08debe79991dd8d2f46ad78ed4a719b892586b335905c7dc7709942bc864383"
+      "sha256": "330d8aa13fb5c362a8b948d0a5a47fc5f56372adc060c45e09aa6b645970663d"
+    },
+    {
+      "path": "Luma/Sources/iPhone/SmartAlarmFollowUp.swift",
+      "hash_mode": "lf-text",
+      "sha256": "a44fe70a4146877f4066a15385aebf361a3665935558c461ac6d8f56cd08cfbd"
     },
     {
       "path": "Luma/Sources/iPhone/SoundLibraryView.swift",
       "hash_mode": "lf-text",
-      "sha256": "efb53da4f5e2405cc6cbf71ef6d31d89f8e858145043cbc0ce4b5e00dd5ff5d9"
+      "sha256": "f1dd37c8e8119ec96475d8e2d3972855c7226ea97fca193662419e079b161a77"
     },
     {
       "path": "Luma/Sources/iPhone/SystemAlarmService.swift",
@@ -956,7 +1011,7 @@
     {
       "path": "Luma/scripts/check-engine-unchanged.py",
       "hash_mode": "lf-text",
-      "sha256": "1c00b16bb436129544f35ac1edd4085f858cd50342f29c0db1c0406a50e4fa33"
+      "sha256": "b044f9ccbf54dc3c16eac9529437f5948c82ad83c6fac07a6bc4eb7fc2b8c81d"
     },
     {
       "path": "Luma/scripts/check-finite-queue-on-mac.sh",
@@ -996,12 +1051,12 @@
     {
       "path": "Luma/scripts/check-static.py",
       "hash_mode": "lf-text",
-      "sha256": "7590f3022747fc9f918f2f2cf3847d5db7a1e70996a1b3351cece79e343ebc64"
+      "sha256": "1a4b3f8a1acaf1df657a3b3b99925a0ca6ae74e73a110a6e268cc0fd04e6c5af"
     },
     {
       "path": "Luma/scripts/generate_project.py",
       "hash_mode": "lf-text",
-      "sha256": "4bead469910871e97d6302225269c969709cdeee5e54d60a271eb15fca989434"
+      "sha256": "85bc69d335eddd9bd22d7de6ae2de2b8396463dbaf645d71b9b7c7eebde93d10"
     },
     {
       "path": "Luma/scripts/generate_sky_data.py",
@@ -1011,12 +1066,12 @@
     {
       "path": "Luma/scripts/make-engine-manifest.py",
       "hash_mode": "lf-text",
-      "sha256": "c1432b7e2f79c3626dd7c34c467f4428d94a318cfa0ca5b6dbe9bb85029ba515"
+      "sha256": "9f2f0a14391589ddc4bc58a9369a562c3876d2cf5f504a9a21cca0eb01b5b376"
     },
     {
       "path": "Luma/scripts/project-graph.json",
       "hash_mode": "lf-text",
-      "sha256": "2b741de615c33010d27ba526493fe78c9f8011d69215d85515f833abacfb46f7"
+      "sha256": "63431c5c8e32d2c3baa7dbbcca2d692e40358db7a7a1e878209f4607b72a0bd5"
     },
     {
       "path": "Luma/scripts/requirements-validation.txt",

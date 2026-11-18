@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "ForestPlate.jpg",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

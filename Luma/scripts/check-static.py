@@ -180,6 +180,34 @@ while position + 8 <= len(raw):
     chunks.append(tag); position += 8 + size + (size & 1)
 check(position == len(raw) and not ({b'smpl',b'plst'} & set(chunks)),
       'Dedicated WAV is complete and contains no embedded sampler/playlist loops')
+# 0.9.9: the four Lumenoir melodies (the default «Мелодия Lumenoir» and three more) are four-second phrases in exactly the format of luma-alarm-4.wav.
+# They reach AlarmKit through the same path as an imported melody, so they must be complete cues that
+# start and end in silence, fade before the four seconds end and are as loud as the standard melody.
+MELODIES = ['lumenoir-melody-signature.wav', 'lumenoir-melody-moonlit-lullaby.wav', 'lumenoir-melody-fireflies.wav',
+            'lumenoir-melody-first-light.wav']
+for melody in MELODIES:
+    path = ROOT/'Resources'/melody
+    check(path.is_file(), 'Built-in melody present: %s' % melody)
+    if not path.is_file():
+        continue
+    with wave.open(str(path), 'rb') as cue:
+        check(cue.getnframes() == 88200 and cue.getframerate() == 22050 and cue.getnchannels() == 1
+              and cue.getsampwidth() == 2, '%s is four-second mono PCM16 at 22,050 Hz' % melody)
+        samples = struct.unpack('<%dh' % cue.getnframes(), cue.readframes(cue.getnframes()))
+    data = path.read_bytes()
+    position = 12; tags = []
+    while position + 8 <= len(data):
+        tag, size = data[position:position+4], struct.unpack_from('<I', data, position+4)[0]
+        tags.append(tag); position += 8 + size + (size & 1)
+    check(data[:4] == b'RIFF' and data[8:12] == b'WAVE' and position == len(data) and tags == [b'fmt ', b'data'],
+          '%s has only the fmt and data chunks' % melody)
+    peak = max(abs(s) for s in samples)
+    tail = samples[int(3.75 * 22050):]
+    tail_rms = (sum(s * s for s in tail) / len(tail)) ** 0.5
+    check(not any(samples[:1102]) and not any(samples[-441:]),
+          '%s: the first 50 ms and the last 20 ms are silence' % melody)
+    check(4116 <= peak <= 13045 and tail_rms <= peak * 0.01,
+          '%s: peak between -18 and -8 dBFS, faded out before the cue ends' % melody)
 check('updateApplicationContext' in (ROOT/'Sources/iPhone/WatchCueLink.swift').read_text(), 'Watch receives a full plan in advance, not a phone-lock-dependent mirrored notification')
 check('HKWorkoutSession' not in active, 'No live workout mirroring dependency')
 ui='\n'.join(p.read_text() for p in (ROOT/'Sources/iPhone').glob('*.swift'))
@@ -193,6 +221,7 @@ for target_id in root['targets']:
     if objects[target_id]['name']=='Luma':
         check('luma-alarm-4.wav' in bundled, 'Four-second AlarmKit WAV included on iPhone')
         check({'luma-tone-4.wav','luma-night-rain.wav'} <= set(bundled), 'Preview and genuine sleep audio bundled on iPhone')
+        check(set(MELODIES) <= set(bundled), 'The four Lumenoir melodies are bundled on iPhone')
 check('generic/platform=watchOS' in workflow and '-scheme "Luma Watch"' in workflow, 'CI builds the Watch target')
 check('test -d "$LUMA_APP/Watch/Luma Watch.app"' in workflow, 'IPA packaging requires companion app')
 night=(ROOT/'Sources/iPhone/NightAudio.swift').read_text()

@@ -1,17 +1,15 @@
 {
-  "version": "0.9.8 (27)",
-  "stage": "Native CI passed first try: 130 XCTest, 8 audio cases, 34 queue cases, iPhone/Watch builds and unsigned IPA. No application source fixes.",
-  "base_functions": "0.9.7 (23), carried over file for file",
-  "base_design": "Design Experiments/Atelier-Night-Prototype-06, approved by the user on 16 Nov 2026",
-  "final_mockup": "Design Experiments/Atelier-Night-Prototype-14",
+  "version": "0.9.9 (28)",
+  "date": "2026-11-18",
+  "stage": "Written and checked locally (structure, grammar, engine manifest, preserved sources, localization, melody files) and read through by independent reviewers; not yet built on GitHub, not compiled, not on a device.",
+  "base": "V.0.9.8 (27), now an archive",
+  "base_functions": "0.9.7 (23); AppModel.swift has three recorded additions (renameVoice, addBuiltInSound, importMelody allowed while the quiet rain plays), pinned by hash under engine_changed",
+  "request": "18 Nov 2026: rain off with the session, sheets over the living scene, Files import, voice delete and rename, sound groups, three 4-second Lumenoir melodies, optional indirect method after a smart alarm (off by default), living forest Settings",
+  "final_mockup": "Design Experiments/Atelier-Night-Prototype-15",
   "app_name": "Lumenoir (internal project name Luma)",
-  "CI_run": 44076006890,
-  "swift_compiled": true,
+  "swift_compiled": false,
   "device_tested": false,
   "production_ready": false,
-  "twenty_second_signal_physical_validation": false,
   "reference": "0.9.6 (22), immutable",
-  "tested_commit": "30ea0d50b7bd9e2299877fe414692f8e56db2783",
-  "IPA_generated": true,
-  "IPA_artifact_url": "https://github.com/brewmaster123/Luma/actions/runs/44076006890/artifacts/14325557397"
+  "IPA_generated": false
 }

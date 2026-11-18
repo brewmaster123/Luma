@@ -50,6 +50,12 @@ struct PhoneRootView: View {
     .task {
       // No introduction screen: the stored "seen" flag is set the way its button used to set it.
       if model.showOnboarding { model.completeIntroduction() }
+      // 0.9.9: the optional «Непрямой метод после будильника» watches the signal queue from here on.
+      SmartAlarmFollowUp.shared.attach(model)
+      // 0.9.9: the Lumenoir melodies join the sound library (once; a missing file is restored).
+      // A short pause lets the launch put the signal queue in order first.
+      try? await Task.sleep(nanoseconds: 1_500_000_000)
+      await BuiltInMelodies.installIfNeeded(model)
     }
     .onChange(of: model.message) { _, text in
       // A test signal has been queued. Settings counts the seconds itself; a long test also gets a short note.
@@ -59,7 +65,7 @@ struct PhoneRootView: View {
         toasts.show(String(format: tr("Сигнал через %@. Заблокируйте iPhone."), L10n.seconds(delay)))
       }
     }
-    .sheet(isPresented: $model.showSignalMigration) {
+    .atelierSheet(isPresented: $model.showSignalMigration) {
       SignalReadinessView(continueTitle: tr("Включить сохранённые сигналы"))
         .environmentObject(model)
     }
@@ -169,7 +175,7 @@ struct NightView: View {
     .frame(width: viewport.size.width, height: viewport.size.height, alignment: .topLeading)
     .foregroundStyle(Atelier.ink)
     .environment(\.atelierLamp, AtelierLamp.warm(at: moonPoint))
-    .sheet(item: $signalAction, onDismiss: {
+    .atelierSheet(item: $signalAction, onDismiss: {
       guard let action = preparedAction else { return }
       preparedAction = nil
       Task { await perform(action) }
@@ -177,8 +183,8 @@ struct NightView: View {
       SignalReadinessView(continueTitle: tr("Включить будильник")) { preparedAction = action }
         .environmentObject(model)
     }
-    .sheet(item: $alarm) { AlarmEditor(alarm: $0).environmentObject(model) }
-    .sheet(isPresented: $showingAlarmHelp) { SmartAlarmHelp().environmentObject(model) }
+    .atelierSheet(item: $alarm) { AlarmEditor(alarm: $0).environmentObject(model) }
+    .atelierSheet(isPresented: $showingAlarmHelp) { SmartAlarmHelp().environmentObject(model) }
   }
 
   private var alarmDivider: some View {

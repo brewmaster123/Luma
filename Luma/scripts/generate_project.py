@@ -39,7 +39,7 @@ for folder, title in [("Sources/LumaCore", "Core"), ("Sources/Platform", "Servic
 
 resource_children = []
 for filename, kind in [("iOSAssets.xcassets", "folder.assetcatalog"), ("WatchAssets.xcassets", "folder.assetcatalog"),
-                       ("PrivacyInfo.xcprivacy", "text.xml")] + [(f"Manrope-{style}.ttf", "file") for style in ["Regular", "Medium", "SemiBold"]] + [("PoiretOne-Regular.ttf", "file")] + [(f"luma-tone-{n}.wav", "audio.wav") for n in [4,8,15]] + [("luma-alarm-4.wav", "audio.wav"), ("luma-night-rain.wav", "audio.wav")] + [(f"Localization/{device}/{language}.lproj", "folder") for device in ["iPhone", "Watch"] for language in ["en", "ru"]]:
+                       ("PrivacyInfo.xcprivacy", "text.xml")] + [(f"Manrope-{style}.ttf", "file") for style in ["Regular", "Medium", "SemiBold"]] + [("PoiretOne-Regular.ttf", "file")] + [(f"luma-tone-{n}.wav", "audio.wav") for n in [4,8,15]] + [("luma-alarm-4.wav", "audio.wav"), ("luma-night-rain.wav", "audio.wav")] + [(f"lumenoir-melody-{slug}.wav", "audio.wav") for slug in ["signature", "moonlit-lullaby", "fireflies", "first-light"]] + [(f"Localization/{device}/{language}.lproj", "folder") for device in ["iPhone", "Watch"] for language in ["en", "ru"]]:
     path = "Resources/" + filename
     refs[path] = obj(path, "PBXFileReference", lastKnownFileType=kind, path=filename, sourceTree="<group>")
     resource_children.append(refs[path])
@@ -97,7 +97,7 @@ def resources_phase(key, paths):
 phone_sources = sources_phase("phone.sources", ["Sources/LumaCore/", "Sources/Platform/", "Sources/iPhone/"])
 watch_sources = sources_phase("watch.sources", ["Sources/LumaCore/", "Sources/Watch/"])
 fonts = [f"Resources/Manrope-{s}.ttf" for s in ["Regular", "Medium", "SemiBold"]] + ["Resources/PoiretOne-Regular.ttf"]
-tones = [f"Resources/luma-tone-{n}.wav" for n in [4,8,15]] + ["Resources/luma-alarm-4.wav"]
+tones = [f"Resources/luma-tone-{n}.wav" for n in [4,8,15]] + ["Resources/luma-alarm-4.wav"] + [f"Resources/lumenoir-melody-{slug}.wav" for slug in ["signature", "moonlit-lullaby", "fireflies", "first-light"]]
 # 0.9.8: each bundle carries en.lproj and ru.lproj as plain folders (system-rendered strings only:
 # permission prompts, the AlarmKit alert, Watch labels). The app's own interface is translated in code.
 phone_strings = [f"Resources/Localization/iPhone/{language}.lproj" for language in ["en", "ru"]]

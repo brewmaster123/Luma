@@ -29,6 +29,14 @@
       "errors": []
     },
     {
+      "file": "Sources\\iPhone\\AudioFilePicker.swift",
+      "errors": []
+    },
+    {
+      "file": "Sources\\iPhone\\BuiltInMelodies.swift",
+      "errors": []
+    },
+    {
       "file": "Sources\\iPhone\\CueAudioImporter.swift",
       "errors": []
     },
@@ -94,6 +102,10 @@
     },
     {
       "file": "Sources\\iPhone\\SignalReadinessView.swift",
+      "errors": []
+    },
+    {
+      "file": "Sources\\iPhone\\SmartAlarmFollowUp.swift",
       "errors": []
     },
     {

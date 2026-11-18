@@ -111,7 +111,8 @@ enum LumaEnglish {
     ("Один раз, в ближайшее выбранное время", "Just once, when this time next comes around."),
     ("Повтор в выбранные дни", "Repeats on the days you choose."),
     ("Звук", "Sound"),
-    ("Мелодия Lumenoir", "Lumenoir melody"),
+    // 0.9.9: now the name of one melody among titled ones (Moonlit Lullaby, First Light), so it is titled too.
+    ("Мелодия Lumenoir", "Lumenoir Melody"),
     ("Длительность сигнала задаётся в настройках. Перед ночью проверьте звук с заблокированным iPhone.",
       "How long the signal lasts is set in Settings. Before bed, test the sound with your iPhone locked."),
     ("Сохранить будильник", "Save alarm"),
@@ -287,6 +288,61 @@ enum LumaEnglish {
     ("Запись завершится сама через 28 секунд.", "Recording stops on its own after 28 seconds."),
     ("Начать запись", "Start recording"),
 
+    // 0.9.9: sounds in three groups, renaming, deleting with a confirmation, adding from Files
+    ("Мелодии Lumenoir", "Lumenoir melodies"),
+    ("Ваш голос", "Your voice"),
+    ("Записей пока нет.", "No recordings yet."),
+    ("Файлов пока нет.", "No files yet."),
+    ("Добавить из файлов", "Add from Files"),
+    ("Готово", "Done"),
+    ("Переименовать", "Rename"),
+    ("Звук добавлен", "Sound added"),
+    ("Удалить звук?", "Delete this sound?"),
+    ("«%@» исчезнет с iPhone. Вернуть его будет нельзя.",
+      "“%@” will be removed from this iPhone. This can’t be undone."),
+    ("Будильники с этим звуком перейдут на мелодию Lumenoir: %@.",
+      "Alarms that use it will switch to the Lumenoir melody: %@."),
+    ("Основным звуком снова станет мелодия Lumenoir.", "The Lumenoir melody will be your main sound again."),
+    ("Пока идёт сеанс непрямого метода, звуки не добавить. Завершите сеанс на экране «Ночь».",
+      "Sounds can’t be added during an indirect-method session. End the session on the Night screen first."),
+    ("Пока идёт сеанс непрямого метода, звуки не удалить. Завершите сеанс на экране «Ночь».",
+      "Sounds can’t be deleted during an indirect-method session. End the session on the Night screen first."),
+    ("Пока играет тихий дождь, голос не записать. Выключите дождь в «Настройках», запишите подсказку и включите его снова — будильники вернутся в очередь.",
+      "You can’t record while the quiet rain is playing. Turn the rain off in Settings, record your cue, then turn it back on — your alarms will be queued again."),
+    ("Подождите: предыдущее действие ещё не закончено.", "One moment — the previous action hasn’t finished yet."),
+    ("Будильники %@ уже переведены на мелодию Lumenoir.", "The alarms at %@ already use the Lumenoir melody."),
+    ("Не удалось удалить звук.", "The sound couldn’t be deleted."),
+    ("Будильник %@ не удалось перевести на мелодию Lumenoir.", "The alarm at %@ couldn’t be switched to the Lumenoir melody."),
+    ("Выключите этот будильник — после этого звук можно будет удалить.",
+      "Turn that alarm off — then this sound can be deleted."),
+
+    // 0.9.9: the plain three-tone sound, the default until 0.9.9, keeps its place under a name of its own
+    ("Ровный тон", "Steady Tone"),
+    ("простой ровный сигнал", "a plain, steady signal"),
+    // 0.9.9: the three Lumenoir melodies and a few words on each
+    ("Лунная колыбельная", "Moonlit Lullaby"),
+    ("Светлячки", "Fireflies"),
+    ("Первый луч", "First Light"),
+    ("музыкальная шкатулка, тихо и нежно", "a music box, soft and tender"),
+    ("звонкие капли, легко и светло", "ringing drops, light and bright"),
+    ("тёплые колокола, ясно и спокойно", "warm bells, clear and calm"),
+
+    // 0.9.9: the indirect method after a smart alarm (optional, off by default)
+    ("Непрямой метод после будильника", "Indirect method after the alarm"),
+    ("Как это работает", "How it works"),
+    ("Пояснение открыто", "Explanation shown"),
+    ("Пояснение скрыто", "Explanation hidden"),
+    ("Когда будильник отзвучит, сам начнётся сеанс непрямого метода.",
+      "Once the alarm has finished, an indirect-method session starts by itself."),
+    ("Когда будильник отзвучит, сам начнётся сеанс непрямого метода — с текущим интервалом и звуком. Нужен включённый тихий дождь. Сеанс идёт, пока вы не нажмёте «Завершить сеанс», а сигналы звучат, пока играет дождь, — до 12 часов с его включения.",
+      "Once the alarm has finished, an indirect-method session starts by itself, with your current interval and sound. The quiet rain needs to be on. The session runs until you tap “End session”, and its signals play for as long as the rain does — up to 12 hours from when it was turned on."),
+    ("По желанию после будильника сам начнётся сеанс непрямого метода: переключатель — в окне будильника.",
+      "If you like, an indirect-method session can begin by itself after an alarm — switch it on when you edit the alarm."),
+
+    // 0.9.9: «Завершить сеанс» also switches the quiet rain off, unless an alarm still needs it
+    ("Сеанс завершён. Тихий дождь играет дальше: его ждёт будильник.",
+      "Session ended. The quiet rain stays on for your alarm."),
+
     // Shown by iOS itself. The Russian keys are the engine's own texts and keep the old name;
     // ru.lproj/Localizable.strings gives iOS the Russian with Lumenoir.
     ("Luma · тихий ночной дождь", "Lumenoir · quiet night rain"),
@@ -314,7 +370,10 @@ enum LumaEnglish {
     ("AlarmKit не принял будильник.", "iOS didn’t accept the alarm."),
     ("Не удалось сохранить будильник.", "The alarm couldn’t be saved."),
     ("Сначала завершите сеанс.", "End the session first."),
-    ("Добавляйте мелодии между сеансами.", "Add melodies between sessions, with the night sound off."),
+    // 0.9.9: melodies can now be added while the night sound plays, so the English no longer asks to turn it off.
+    ("Добавляйте мелодии между сеансами.", "Add melodies between sessions."),
+    ("Непрямой метод после будильника не начат: ночной фон не возобновился.",
+      "The indirect method didn’t start after the alarm: the night sound didn’t resume."),
     ("Завершите сеанс и выберите другой звук в будильниках с этой дорожкой.",
       "End the session and choose another sound for the alarms that use this one."),
     ("Хранилище недоступно.", "Storage is unavailable."),
