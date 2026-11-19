@@ -4,19 +4,19 @@
   "text_normalization": "CRLF to LF only",
   "binary_normalization": "none",
   "intentional_changes": {
-    "Config/Base.xcconfig": "Version 0.9.8 (27)",
+    "Config/Base.xcconfig": "Version 1.0 (29)",
     "Luma.xcodeproj/project.pbxproj": "0.9.8: regenerated with the new sources, font, images and language folders",
     "scripts/project-graph.json": "0.9.8: regenerated together with the project",
-    "scripts/check-static.py": "0.9.8: four fonts and the 3-20 second range; earlier invariants kept",
+    "scripts/check-static.py": "0.9.8: four fonts and the 3-20 second range; earlier invariants kept. 1.0: the night background must be 20 s of silent PCM16 in the same format; the signal volume is checked",
     "scripts/check-finite-queue-on-mac.swift": "0.9.7: duration, relaunch, rollback and deadline integration regressions. 0.9.8: one more scenario (20 seconds accepted, 21 refused)",
     "Sources/LumaCore/SystemAlarmPlan.swift": "Backward-compatible per-occurrence Stop duration snapshot",
-    "Sources/Platform/AppModel.swift": "Persist and apply global preference to all three request kinds",
+    "Sources/Platform/AppModel.swift": "Persist and apply global preference to all three request kinds. 1.0: the signal volume preference",
     "Sources/Platform/CueDiagnostics.swift": "Separate PCM asset length and actual Stop deadline",
     "Sources/iPhone/AlarmEditor.swift": "0.9.8: new design; the same save and delete logic",
     "Sources/iPhone/IndirectMethodView.swift": "0.9.8: new design; the same calls of the app model",
     "Sources/iPhone/SignalReadinessView.swift": "0.9.8: new design; the same permission step",
-    "Sources/iPhone/SettingsView.swift": "0.9.8: new design; language row; 3-20 second control; sound library row removed from the page",
-    "Sources/iPhone/NightAudio.swift": "0.9.7: bounded interruption budget. 0.9.8: one line, the lock-screen title follows the chosen language",
+    "Sources/iPhone/SettingsView.swift": "0.9.8: new design; language row; 3-20 second control; sound library row removed from the page. 1.0: no night-background volume slider; the row is called Silence; a signal volume row",
+    "Sources/iPhone/NightAudio.swift": "0.9.7: bounded interruption budget. 0.9.8: one line, the lock-screen title follows the chosen language. 1.0: the night background is silent, so the media volume no longer has to be above zero; its texts say night sound / silence instead of quiet rain",
     "Sources/iPhone/SystemAlarmService.swift": "Transactional future deadline updates, active-cue preservation and ledger backup",
     "Sources/iPhone/DesignSystem.swift": "0.9.8: new design (\"Atelier Night\"); the message card shows the name Lumenoir",
     "Sources/iPhone/JournalView.swift": "0.9.8: new design; the same save and delete calls",
@@ -31,22 +31,22 @@
     "Resources/WatchAssets.xcassets/AppIcon.appiconset/AppIcon.png": "0.9.8: the Lumenoir icon on the watch, the same strict sign",
     "scripts/generate_project.py": "0.9.8: adds the font and the language folders to the project",
     "Sources/LumaCore/AlarmSignalDuration.swift": "0.9.8: range 3-20 seconds (was 3-10); the same formula",
-    "Tests/LumaCoreTests/AlarmSignalDurationTests.swift": "0.9.8: tests for the 3-20 second range"
+    "Tests/LumaCoreTests/AlarmSignalDurationTests.swift": "0.9.8: tests for the 3-20 second range",
+    "Sources/iPhone/AlarmKitSoundBuilder.swift": "1.0: the signal volume, 20-100 % (50 % by default, the user's request of 19 Nov 2026), scales the four-second AlarmKit copy and is part of its hash; at 100 % the name and the bytes are those of 0.9.9",
+    "Resources/luma-night-rain.wav": "1.0: the night background is silence (all-zero PCM16, 22,050 Hz mono, 20 s, the same name and format), at the user's request of 19 Nov 2026",
+    "scripts/check-audio-on-mac.swift": "1.0: one more case, the 100 % and 50 % copies of the signal volume; the earlier cases unchanged"
   },
   "new_files": [
     "Sources/LumaCore/AlarmSignalDuration.swift",
-    "Tests/LumaCoreTests/AlarmSignalDurationTests.swift"
+    "Tests/LumaCoreTests/AlarmSignalDurationTests.swift",
+    "Sources/LumaCore/AlarmSignalVolume.swift",
+    "Tests/LumaCoreTests/AlarmSignalVolumeTests.swift"
   ],
   "files": [
     {
       "path": "Sources/iPhone/AlarmKitScheduler.swift",
       "hash_mode": "lf-text",
       "sha256": "1a66a4da3dc0444b179054248d06dde9700199ad8240f69671d6d572462d7386"
-    },
-    {
-      "path": "Sources/iPhone/AlarmKitSoundBuilder.swift",
-      "hash_mode": "lf-text",
-      "sha256": "9b81914e2c6cb2997268687e5eb4fce1a0a1f44bf0a39bb13f199907bbcba559"
     },
     {
       "path": "Sources/iPhone/CueAudioImporter.swift",
@@ -264,11 +264,6 @@
       "sha256": "9c2784e108846aede7bf3a607e9db2babef5deadc717fa43c8952832df9d70c9"
     },
     {
-      "path": "Resources/luma-night-rain.wav",
-      "hash_mode": "raw",
-      "sha256": "760775a7bb5e76e04c74795daa436aefbd2442058b7e9aba3fec08829b0030d9"
-    },
-    {
       "path": "Resources/luma-tone-15.wav",
       "hash_mode": "raw",
       "sha256": "beaed8a9c5145968990b619fa8dcd48e6530c6f6ea961c4d4ac3a4f40a157387"
@@ -337,11 +332,6 @@
       "path": "scripts/check-audio-on-mac.sh",
       "hash_mode": "lf-text",
       "sha256": "a325a577ca340f7fbbe927fb109768a3e65d5b596d794150292a7ef015a2aa47"
-    },
-    {
-      "path": "scripts/check-audio-on-mac.swift",
-      "hash_mode": "lf-text",
-      "sha256": "bafc862af15e07a24028daf1522c3de00ced0e6037c440497f646d5fc356cf1b"
     },
     {
       "path": "scripts/check-finite-queue-on-mac.sh",

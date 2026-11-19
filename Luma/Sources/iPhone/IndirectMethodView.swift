@@ -191,7 +191,7 @@ struct IndirectMethodCard: View {
   /// So it stays on for a signal or an alarm due before the rain's own twelve-hour end, or for a cancellation
   /// that is not confirmed yet. Anything later would lose its queue at that end anyway, and is queued again
   /// the next time the rain starts (a session, the Settings switch or saving an alarm).
-  /// Same model call as the Settings switch «Тихий дождь»; the signal engine is not changed.
+  /// Same model call as the Settings switch «Тишина» (until 1.0 «Тихий дождь»); the signal engine is not changed.
   @MainActor private func quietRainAfterSession() async {
     guard !model.indirectRunning, !model.busy, model.nightAudio.enabled else { return }
     let hold = Self.rainHold(model)
@@ -201,7 +201,7 @@ struct IndirectMethodCard: View {
       await model.refreshQueueAfterRainOff()
     } else if hold.alarmAhead {
       if model.message == nil {
-        ToastCenter.shared.show(tr("Сеанс завершён. Тихий дождь играет дальше: его ждёт будильник."))
+        ToastCenter.shared.show(tr("Сеанс завершён. Ночной фон остаётся включённым: его ждёт будильник."))
       }
     } else {
       // Only a signal that is sounding or a test that is waiting holds the rain (or a cancellation that
@@ -289,7 +289,7 @@ private struct IndirectHelpSheet: View {
         SheetPoint(text: tr("Перед первой ночью проверьте сигнал с заблокированным iPhone."))
       }
       .padding(.bottom, 16)
-      SheetNote(text: tr("Во время сеанса играет тихий фон — он нужен, чтобы сигналы вовремя смолкали. Сигналы ставятся заранее: до 60 на ближайшие 12 часов."))
+      SheetNote(text: tr("Во время сеанса беззвучно работает ночной фон — он нужен, чтобы сигналы вовремя смолкали. Сигналы ставятся заранее: до 60 на ближайшие 12 часов."))
       if let until = model.systemAlarms.queueUntil {
         SheetNote(text: String(format: tr("Сейчас сигналы в очереди до %@."), L10n.dateTime(until)))
           .padding(.top, 8)

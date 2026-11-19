@@ -1,7 +1,7 @@
 {
  "schema": 2,
  "base": "0.9.7 (23)",
- "version": "0.9.9 (28)",
+ "version": "1.0 (29)",
  "text_normalization": "CRLF to LF only",
  "binary_normalization": "none",
  "unchanged": [
@@ -44,11 +44,6 @@
    "path": "Resources/luma-alarm-4.wav",
    "hash_mode": "raw",
    "sha256": "9c2784e108846aede7bf3a607e9db2babef5deadc717fa43c8952832df9d70c9"
-  },
-  {
-   "path": "Resources/luma-night-rain.wav",
-   "hash_mode": "raw",
-   "sha256": "760775a7bb5e76e04c74795daa436aefbd2442058b7e9aba3fec08829b0030d9"
   },
   {
    "path": "Resources/luma-tone-15.wav",
@@ -111,11 +106,6 @@
    "sha256": "a325a577ca340f7fbbe927fb109768a3e65d5b596d794150292a7ef015a2aa47"
   },
   {
-   "path": "scripts/check-audio-on-mac.swift",
-   "hash_mode": "lf-text",
-   "sha256": "bafc862af15e07a24028daf1522c3de00ced0e6037c440497f646d5fc356cf1b"
-  },
-  {
    "path": "scripts/check-finite-queue-on-mac.sh",
    "hash_mode": "lf-text",
    "sha256": "21b58cdae2e6402771dd3ec3697d19631ad062848d745a18696f8ba7bf69e6f6"
@@ -154,11 +144,6 @@
    "path": "Sources/iPhone/AlarmKitScheduler.swift",
    "hash_mode": "lf-text",
    "sha256": "1a66a4da3dc0444b179054248d06dde9700199ad8240f69671d6d572462d7386"
-  },
-  {
-   "path": "Sources/iPhone/AlarmKitSoundBuilder.swift",
-   "hash_mode": "lf-text",
-   "sha256": "9b81914e2c6cb2997268687e5eb4fce1a0a1f44bf0a39bb13f199907bbcba559"
   },
   {
    "path": "Sources/iPhone/CueAudioImporter.swift",
@@ -380,34 +365,58 @@
   {
    "path": "Sources/Platform/AppModel.swift",
    "hash_mode": "lf-text",
-   "sha256": "0e063b98c696d8f6583d50881461d09a8e029870210b875b2ad85736ce0e63c8",
+   "sha256": "0203710dda48917b8cfcae24e9cfd56d557a7b5eb2e2696f2df60a90f7c92308",
    "base_sha256": "a7d591db0040267a911be766f5a0d46397ac56c6e3c874b5138576eb61a4462e",
-   "reason": "0.9.9, three small additions recorded under \"engine_changed\": renameVoice (only the name of a sound changes), addBuiltInSound (a Lumenoir melody joins the sound list without becoming the chosen sound), and importMelody no longer refuses while the quiet rain plays (importing is file work only). Signals, the queue, the stop deadlines and the night sound are untouched."
+   "reason": "0.9.9, three small additions recorded under \"engine_changed\": renameVoice (only the name of a sound changes), addBuiltInSound (a Lumenoir melody joins the sound list without becoming the chosen sound), and importMelody no longer refuses while the quiet rain plays (importing is file work only). Signals, the queue, the stop deadlines and the night sound are untouched. 1.0: the signal volume (alarmVolumePercent, setAlarmVolume): the chosen sound is rendered at the new level first, the level is stored, and the queue is rebuilt the usual way, so waiting signals get the new copy; nothing else changes."
+  },
+  {
+   "path": "Sources/iPhone/AlarmKitSoundBuilder.swift",
+   "hash_mode": "lf-text",
+   "sha256": "412bb644f3d51ca6f8523a42b5d71d29d31b46b0ba94bb7f54b92bb6eb147286",
+   "base_sha256": "9b81914e2c6cb2997268687e5eb4fce1a0a1f44bf0a39bb13f199907bbcba559",
+   "reason": "1.0 (the user's request, 19 Nov 2026: the signal is too loud): a volume level, 20-100 % (AlarmSignalVolume, 50 % by default), scales the four-second AlarmKit copy and is part of its hash. At 100 % the name and the bytes are exactly those of 0.9.9. Conversion, fade, format, file protection and validation are unchanged. Pinned under \"engine_changed\"."
+  },
+  {
+   "path": "Resources/luma-night-rain.wav",
+   "hash_mode": "raw",
+   "sha256": "d0b0f80488216d7ff74ee065632c40359df9b4c3ed3f4c7ac403837b4298f57a",
+   "base_sha256": "760775a7bb5e76e04c74795daa436aefbd2442058b7e9aba3fec08829b0030d9",
+   "reason": "1.0 (the user's request, 19 Nov 2026): the night sound is silence instead of rain. Same name and format (RIFF fmt+data, PCM16, mono, 22,050 Hz, 20 s), every sample zero. Pinned under \"engine_changed\"."
+  },
+  {
+   "path": "Sources/iPhone/NightAudio.swift",
+   "hash_mode": "lf-text",
+   "sha256": "a53ae307d784c520be465ba708c2ff99b699ce8b6fd1c1bec19132fb500cb184",
+   "base_sha256": "3af97162c1be97470a578d5ff41e6aa47412e7ef4f599a305b9ed2a07167a597",
+   "reason": "One line: the lock-screen title of the night sound is shown in the chosen language. 1.0 (the user's request, 19 Nov 2026: the night sound is silence): the media volume no longer has to be above zero, since nothing is heard; its status lines and lock-screen title say \"night sound\" / \"silence\" instead of \"quiet rain\"; the diagnostic line says silent. The player, its loop, the session, interruptions, the lease and the Stop path are unchanged. Pinned under \"engine_changed\"."
   }
  ],
  "changed": {
-  "Config/Base.xcconfig": "Version 0.9.9 (28).",
+  "Config/Base.xcconfig": "Version 1.0 (29).",
   "Config/iOS-Info.plist": "English as the base language, the list of languages, the Poiret One font; the name under the icon and in the permission texts is Lumenoir.",
   "Config/Watch-Info.plist": "English as the base language, the list of languages; the name Lumenoir.",
-  "Luma.xcodeproj/project.pbxproj": "Regenerated: new source files, font, images and language folders.",
+  "Luma.xcodeproj/project.pbxproj": "Regenerated: new source files, font, images and language folders; 1.0: AlarmSignalVolume.swift.",
   "Resources/iOSAssets.xcassets/AppIcon.appiconset/AppIcon.png": "The Lumenoir icon: the strict sign the user chose on 17 Nov 2026 (1024 px, opaque RGB).",
+  "Resources/luma-night-rain.wav": "1.0 (the user's request, 19 Nov 2026): the night sound is silence instead of rain. Same name and format (RIFF fmt+data, PCM16, mono, 22,050 Hz, 20 s), every sample zero. Pinned under \"engine_changed\".",
   "Resources/WatchAssets.xcassets/AppIcon.appiconset/AppIcon.png": "The Lumenoir icon on the watch: the same strict sign (1024 px, opaque RGB).",
+  "scripts/check-audio-on-mac.swift": "1.0: one more case: a sound prepared at 100 % keeps the 0.9.9 name, at 50 % it is a separate copy scaled by 10 dB with the same zero endpoints. The code of the earlier cases is unchanged; they now run at the stored or default level (50 % on a fresh runner).",
   "scripts/check-finite-queue-on-mac.swift": "Queue harness: one new scenario (20 seconds accepted, 21 refused); the invalid sample 11 became 21.",
-  "scripts/check-static.py": "Expects four fonts and the 3-20 second range; 0.9.9: checks the format of the four Lumenoir melodies.",
+  "scripts/check-static.py": "Expects four fonts and the 3-20 second range; 0.9.9: checks the format of the four Lumenoir melodies; 1.0: the night background must be 20 s of silent PCM16 in the same format (was: non-silent rain), and the signal volume is checked.",
   "scripts/generate_project.py": "Adds the font and the language folders to the project; 0.9.9: the four Lumenoir melodies.",
   "scripts/project-graph.json": "Regenerated together with the project.",
-  "Sources/iPhone/AlarmEditor.swift": "New design; the same save and delete logic; the app is called Lumenoir; 0.9.9: the optional switch \"Indirect method after the alarm\" (a UI-only preference, off by default).",
+  "Sources/iPhone/AlarmEditor.swift": "New design; the same save and delete logic; the app is called Lumenoir; 0.9.9: the optional switch \"Indirect method after the alarm\" (a UI-only preference, off by default); 1.0: its explanation says \"night sound\" instead of \"quiet rain\".",
+  "Sources/iPhone/AlarmKitSoundBuilder.swift": "1.0 (the user's request, 19 Nov 2026: the signal is too loud): a volume level, 20-100 % (AlarmSignalVolume, 50 % by default), scales the four-second AlarmKit copy and is part of its hash. At 100 % the name and the bytes are exactly those of 0.9.9. Conversion, fade, format, file protection and validation are unchanged. Pinned under \"engine_changed\".",
   "Sources/iPhone/DesignSystem.swift": "New design (\"Atelier Night\"); the message card shows the name Lumenoir; 0.9.9: every sheet is a clear full-screen cover, so the living scene stays visible behind it (iOS 26 paints a full-height sheet grey).",
-  "Sources/iPhone/IndirectMethodView.swift": "New design; the same calls of the app model; 0.9.9: \"End session\" also switches the quiet rain off (the Settings switch's own call) unless an alarm or a signal still needs it.",
+  "Sources/iPhone/IndirectMethodView.swift": "New design; the same calls of the app model; 0.9.9: \"End session\" also switches the quiet rain off (the Settings switch's own call) unless an alarm or a signal still needs it; 1.0: two texts say \"night sound\" instead of \"quiet rain\".",
   "Sources/iPhone/JournalView.swift": "New design; the same save and delete calls; the app is called Lumenoir; 0.9.9: shown as clear covers.",
   "Sources/iPhone/JournalVoiceComposer.swift": "New design; the same recording calls.",
-  "Sources/iPhone/NightAudio.swift": "One line: the lock-screen title of the night sound is shown in the chosen language.",
+  "Sources/iPhone/NightAudio.swift": "One line: the lock-screen title of the night sound is shown in the chosen language. 1.0 (the user's request, 19 Nov 2026: the night sound is silence): the media volume no longer has to be above zero, since nothing is heard; its status lines and lock-screen title say \"night sound\" / \"silence\" instead of \"quiet rain\"; the diagnostic line says silent. The player, its loop, the session, interruptions, the lease and the Stop path are unchanged. Pinned under \"engine_changed\".",
   "Sources/iPhone/PhoneRootView.swift": "New design; three tabs on one canvas; no introduction screen; 0.9.9: sheets as clear covers, the Lumenoir melodies are installed and the optional indirect method after an alarm is attached at launch.",
-  "Sources/iPhone/SettingsView.swift": "New design; language row; 3-20 second control; the sound library row is removed from the page; the app is called Lumenoir; 0.9.9: the living forest behind the same cards.",
-  "Sources/iPhone/SignalReadinessView.swift": "New design; the same permission step; the app is called Lumenoir; 0.9.9: shown as a clear cover.",
-  "Sources/iPhone/SoundLibraryView.swift": "New design; the library is opened from the sound picker; the app is called Lumenoir; 0.9.9: three groups, the Lumenoir melodies, adding from Files through the system document picker, deleting with a confirmation, renaming.",
+  "Sources/iPhone/SettingsView.swift": "New design; language row; 3-20 second control; the sound library row is removed from the page; the app is called Lumenoir; 0.9.9: the living forest behind the same cards; 1.0: the night sound is silence, so its volume slider is gone and its row is called \"Silence\"; the signal card has a \"Volume\" row (20-100 %, half as loud by default).",
+  "Sources/iPhone/SignalReadinessView.swift": "New design; the same permission step; the app is called Lumenoir; 0.9.9: shown as a clear cover; 1.0: the night-sound step says it is silent.",
+  "Sources/iPhone/SoundLibraryView.swift": "New design; the library is opened from the sound picker; the app is called Lumenoir; 0.9.9: three groups, the Lumenoir melodies, adding from Files through the system document picker, deleting with a confirmation, renaming; 1.0: the recording refusal says \"night sound\" instead of \"quiet rain\".",
   "Sources/LumaCore/AlarmSignalDuration.swift": "The signal may last 3-20 seconds (was 3-10); the interruption window covers 20 seconds. The formula is the same.",
-  "Sources/Platform/AppModel.swift": "0.9.9, three small additions recorded under \"engine_changed\": renameVoice (only the name of a sound changes), addBuiltInSound (a Lumenoir melody joins the sound list without becoming the chosen sound), and importMelody no longer refuses while the quiet rain plays (importing is file work only). Signals, the queue, the stop deadlines and the night sound are untouched.",
+  "Sources/Platform/AppModel.swift": "0.9.9, three small additions recorded under \"engine_changed\": renameVoice (only the name of a sound changes), addBuiltInSound (a Lumenoir melody joins the sound list without becoming the chosen sound), and importMelody no longer refuses while the quiet rain plays (importing is file work only). Signals, the queue, the stop deadlines and the night sound are untouched. 1.0: the signal volume (alarmVolumePercent, setAlarmVolume): the chosen sound is rendered at the new level first, the level is stored, and the queue is rebuilt the usual way, so waiting signals get the new copy; nothing else changes.",
   "Sources/Watch/LumaWatchApp.swift": "One line: the status text is shown in the watch language.",
   "Sources/Watch/WatchCueStore.swift": "Two lines: the title and text of the watch notification are looked up in the watch language.",
   "Tests/LumaCoreTests/AlarmSignalDurationTests.swift": "Tests for the 3-20 second range."
@@ -481,7 +490,9 @@
   "Sources/iPhone/NightSkyData.swift",
   "Sources/iPhone/SettingsScene.swift",
   "Sources/iPhone/SmartAlarmFollowUp.swift",
-  "Sources/Watch/WatchText.swift"
+  "Sources/LumaCore/AlarmSignalVolume.swift",
+  "Sources/Watch/WatchText.swift",
+  "Tests/LumaCoreTests/AlarmSignalVolumeTests.swift"
  ],
  "removed": []
 }

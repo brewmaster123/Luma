@@ -5,6 +5,9 @@
 importing while the quiet rain plays). It is listed under "engine_changed" with its reason and is pinned to its
 new content, so any other edit of it still fails this check.
 
+1.0 (the user's request, 19 Nov 2026): the signal volume (AlarmKitSoundBuilder.swift, AppModel.swift) and the
+silent night sound (Resources/luma-night-rain.wav, NightAudio.swift). These files are pinned the same way.
+
 The signal engine of 0.9.7 (alarms, the queue, the night sound, storage, the Watch plan) is carried
 into 0.9.8 file for file. Docs/unchanged-since-0.9.7.json lists those files with their SHA-256;
 this check fails if one of them has been edited, and if a file changed on purpose is missing.
@@ -51,8 +54,9 @@ def main():
         elif digest(path, item['hash_mode']) != item['sha256']:
             failed.append(item['path'] + ' (changed after its recorded engine change)')
         pinned[item['path']] = item
-    # The files that make the signals work must be among the unchanged ones. Only AppModel.swift may instead be
-    # a recorded, pinned engine change (0.9.9: three small additions; see its reason in the manifest).
+    # The files that make the signals work must be among the unchanged ones. Only AppModel.swift (0.9.9) and
+    # AlarmKitSoundBuilder.swift (1.0, the signal volume) may instead be recorded, pinned engine changes.
+    may_change = {'Sources/Platform/AppModel.swift', 'Sources/iPhone/AlarmKitSoundBuilder.swift'}
     unchanged = {item['path'] for item in manifest['unchanged']}
     for relative in ['Sources/Platform/AppModel.swift', 'Sources/iPhone/SystemAlarmService.swift',
                      'Sources/iPhone/AlarmKitScheduler.swift', 'Sources/iPhone/AlarmKitSoundBuilder.swift',
@@ -60,7 +64,7 @@ def main():
                      'Sources/Platform/PhoneAudio.swift', 'Sources/Platform/LocalStore.swift',
                      'Sources/iPhone/WatchCueLink.swift', 'Sources/LumaCore/WatchCuePlan.swift',
                      'Sources/iPhone/LumaApp.swift']:
-        allowed = relative == 'Sources/Platform/AppModel.swift' and relative in pinned
+        allowed = relative in may_change and relative in pinned
         if relative not in unchanged and not allowed:
             failed.append(relative + ' (must be recorded as unchanged)')
     report = {'base': manifest['base'], 'version': manifest['version'], 'passed': not failed,

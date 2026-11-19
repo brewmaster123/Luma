@@ -8,6 +8,8 @@ import SwiftUI
 /// developers in Telegram (the user's request, 17 Nov 2026).
 /// 0.9.9: the page stands in a living night forest (SettingsScene.swift); the cards themselves,
 /// their places and their order are exactly those of 0.9.8.
+/// 1.0 (the user's request, 19 Nov 2026): the night sound is silence, so its card has no volume slider
+/// and its row is called «Тишина»; the signal card gains «Громкость», 20–100 %, half as loud by default.
 struct SettingsView: View {
   var isActive = true
   @EnvironmentObject private var model: AppModel
@@ -165,6 +167,10 @@ struct SettingsView: View {
           + String(format: tr("От %@ до %@ секунд."),
             "\(AlarmSignalDuration.range.lowerBound)", "\(AlarmSignalDuration.range.upperBound)"))
           .padding(.top, -4)
+        AtelierDivider()
+        SettingsRow(title: tr("Громкость")) { volumeStepper }
+        SettingsHint(text: tr("100 % — прежняя громкость, 50 % — вдвое тише. Общий уровень задаёт сам iPhone: «Настройки» → «Звуки, тактильные сигналы»."))
+          .padding(.top, -4)
         quickProbeButton
           .padding(.top, 4).padding(.bottom, 14)
       }
@@ -193,6 +199,36 @@ struct SettingsView: View {
     .padding(.trailing, -6)
     .accessibilityElement(children: .contain)
     .accessibilityIdentifier("alarm-stop-duration")
+  }
+
+  /// 1.0: the level of the signal in steps of 10 %, within AlarmSignalVolume.range. Buttons, not a slider:
+  /// every change renders the sound again and replaces the waiting signals, so it happens once per tap.
+  private var volumeStepper: some View {
+    let range = AlarmSignalVolume.range
+    let step = AlarmSignalVolume.step
+    let value: Int = model.alarmVolumePercent
+    return HStack(spacing: 4) {
+      PebbleButton(sign: .minus, size: 30, target: 38, label: tr("Тише")) {
+        Task { await model.setAlarmVolume(value - step) }
+      }
+      .disabled(signalsBusy || value <= range.lowerBound)
+      Text(percentText(value)).font(Atelier.ui(15)).monospacedDigit()
+        .foregroundStyle(Atelier.ink)
+        .frame(minWidth: 42)
+        .accessibilityLabel(String(format: tr("%@ процентов"), "\(value)"))
+      PebbleButton(sign: .plus, size: 30, target: 38, label: tr("Громче")) {
+        Task { await model.setAlarmVolume(value + step) }
+      }
+      .disabled(signalsBusy || value >= range.upperBound)
+    }
+    .padding(.trailing, -6)
+    .accessibilityElement(children: .contain)
+    .accessibilityIdentifier("alarm-signal-volume")
+  }
+
+  /// "50 %" in Russian (a no-break space before the sign), "50%" in English.
+  private func percentText(_ value: Int) -> String {
+    language.language == .english ? "\(value)%" : "\(value)\u{00A0}%"
   }
 
   /// "Проба через 3 секунды". While its signal is waiting or sounding, the button counts for itself.
@@ -233,25 +269,20 @@ struct SettingsView: View {
     return AtelierCard {
       VStack(alignment: .leading, spacing: 0) {
         // The engine's own status line is shown when it says more than "off".
-        SettingsRow(symbol: "cloud.rain", title: tr("Тихий дождь"),
+        // 1.0: the background is silence, so the row is «Тишина» and there is no volume to set.
+        SettingsRow(symbol: "moon.stars", title: tr("Тишина"),
           detail: status == "Ночной фон выключен" ? nil : L10n.show(status)) {
-          Toggle(tr("Тихий дождь"), isOn: Binding(get: { enabled }, set: { rainToggled($0) }))
+          Toggle(tr("Тишина"), isOn: Binding(get: { enabled }, set: { rainToggled($0) }))
             .labelsHidden()
             .toggleStyle(AtelierToggleStyle())
             .disabled(model.busy)
+            .accessibilityHint(tr("Фон, которого не слышно. Без него сигналы не смолкнут сами."))
             .accessibilityIdentifier("settings.rain")
         }
-        AtelierDivider()
-        VStack(alignment: .leading, spacing: 2) {
-          Text(tr("Громкость дождя")).font(Atelier.ui(15)).foregroundStyle(Atelier.ink)
-          AtelierSlider(value: Binding(get: { Double(model.nightAudio.volume) },
-            set: { model.nightAudio.volume = Float($0) }), range: 0.08...0.6,
-            label: tr("Громкость дождя"))
-        }
-        .padding(.top, 10).padding(.bottom, 6)
         SettingsHint(text: enabled
-          ? tr("Играет между сигналами, чтобы они смолкали сами.")
+          ? tr("Его не слышно: он лишь не даёт Lumenoir уснуть, чтобы сигналы смолкали сами.")
           : tr("Фон выключен: сигналы сняты, без него они не смолкнут сами."))
+          .padding(.top, -4)
       }
     }
     .padding(.bottom, 12)
@@ -476,7 +507,7 @@ struct SettingsView: View {
       }
     case .cancelAll:
       ConfirmSheet(title: tr("Отменить все сигналы?"),
-        text: tr("Будильники выключатся, а сеанс непрямого метода завершится. Ночной фон продолжит играть, пока вы его не выключите."),
+        text: tr("Будильники выключатся, а сеанс непрямого метода завершится. Ночной фон останется включённым, пока вы его не выключите."),
         yes: tr("Отменить сигналы"), no: tr("Оставить")) {
         Task { @MainActor in
           await model.stopAllSystemAlarms()

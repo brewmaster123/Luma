@@ -73,7 +73,7 @@ private struct FollowSwitchRow: View {
       if open {
         Rectangle().fill(Atelier.ink.opacity(0.07)).frame(height: 1)
           .padding(.horizontal, 14)
-        Text(tr("Когда будильник отзвучит, сам начнётся сеанс непрямого метода — с текущим интервалом и звуком. Нужен включённый тихий дождь. Сеанс идёт, пока вы не нажмёте «Завершить сеанс», а сигналы звучат, пока играет дождь, — до 12 часов с его включения."))
+        Text(tr("Когда будильник отзвучит, сам начнётся сеанс непрямого метода — с текущим интервалом и звуком. Нужен включённый ночной фон. Сеанс идёт, пока вы не нажмёте «Завершить сеанс», а сигналы звучат, пока работает фон, — до 12 часов с его включения."))
           .font(Atelier.ui(12)).lineSpacing(3.5).foregroundStyle(Atelier.note)
           .fixedSize(horizontal: false, vertical: true)
           .padding(EdgeInsets(top: 10, leading: 14, bottom: 13, trailing: 14))

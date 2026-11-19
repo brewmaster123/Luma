@@ -17,6 +17,12 @@
 			path = "AlarmSignalDuration.swift";
 			sourceTree = "<group>";
 		};
+		7C2F2D9E2826E939BFD8B912 = {
+			isa = "PBXFileReference";
+			lastKnownFileType = "sourcecode.swift";
+			path = "AlarmSignalVolume.swift";
+			sourceTree = "<group>";
+		};
 		4670571C5E80FD03FFEB0958 = {
 			isa = "PBXFileReference";
 			lastKnownFileType = "sourcecode.swift";
@@ -112,6 +118,7 @@
 			children = (
 				"682DE1125CDA0A2F77E98CD8",
 				"401C71BDE171234F61712832",
+				"7C2F2D9E2826E939BFD8B912",
 				"4670571C5E80FD03FFEB0958",
 				"11243E79560A1B4C66C6423B",
 				"8C4AD6B797268FBD924DEA60",
@@ -793,6 +800,10 @@
 			isa = "PBXBuildFile";
 			fileRef = "401C71BDE171234F61712832";
 		};
+		2AF2A9A48BB9E8391F09820F = {
+			isa = "PBXBuildFile";
+			fileRef = "7C2F2D9E2826E939BFD8B912";
+		};
 		07A604C338A35D51D0028240 = {
 			isa = "PBXBuildFile";
 			fileRef = "4670571C5E80FD03FFEB0958";
@@ -995,6 +1006,7 @@
 			files = (
 				"B4216FCCFC74B86FE9291531",
 				"4699382D3403318FEE6BCBB5",
+				"2AF2A9A48BB9E8391F09820F",
 				"07A604C338A35D51D0028240",
 				"057A1FA6B42B3D7B4B3AC06A",
 				"448A71044ED81F7C234C3E1B",
@@ -1054,6 +1066,10 @@
 		E7467902F14C775549A06B62 = {
 			isa = "PBXBuildFile";
 			fileRef = "401C71BDE171234F61712832";
+		};
+		077C15BE10BF6E9035BB49B1 = {
+			isa = "PBXBuildFile";
+			fileRef = "7C2F2D9E2826E939BFD8B912";
 		};
 		0976C025407BA96B6D504A5F = {
 			isa = "PBXBuildFile";
@@ -1133,6 +1149,7 @@
 			files = (
 				"7E2F1B80873CEE91F74D512C",
 				"E7467902F14C775549A06B62",
+				"077C15BE10BF6E9035BB49B1",
 				"0976C025407BA96B6D504A5F",
 				"60AA3112C01E96416A7EECC2",
 				"5399402597BD67D067E413E6",

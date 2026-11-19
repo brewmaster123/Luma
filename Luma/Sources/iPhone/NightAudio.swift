@@ -4,9 +4,12 @@ import Combine
 import UIKit
 import MediaPlayer
 
-/// Real, user-visible sleep audio. This is not silence inside an AlarmKit sound.
+/// The night background. 1.0: at the user's request (19 Nov 2026) it is silence, not rain: the same
+/// file name and format, all-zero samples, so nothing is heard and there is nothing to set the volume of.
+/// It is still a real AVAudioPlayer loop in an active playback session, never silence inside an AlarmKit sound.
 /// Background playback provides runtime while it actually plays; interruptions,
 /// termination and force quit still require device validation and disarming.
+/// 1.0: the media volume no longer has to be above zero: a sound nobody hears needs no volume.
 @MainActor final class NightAudio: NSObject, ObservableObject, AVAudioPlayerDelegate {
   @Published private(set) var enabled = false
   @Published private(set) var status = "Ночной фон выключен"
@@ -24,8 +27,7 @@ import MediaPlayer
   private var protectedStopDeadline: Date?
   private var stopping = false
   var ready: Bool {
-    enabled && !stopping && !interrupted && player?.isPlaying == true
-      && AVAudioSession.sharedInstance().outputVolume > 0 && (until ?? .distantPast) > Date()
+    enabled && !stopping && !interrupted && player?.isPlaying == true && (until ?? .distantPast) > Date()
   }
   override init() {
     super.init()
@@ -52,9 +54,8 @@ import MediaPlayer
   func start() throws {
     if ready { return }
     guard !enabled else { throw AppError.message("Ночной фон прерван. Остановите его и включите заново.") }
-    guard AVAudioSession.sharedInstance().outputVolume > 0,
-      let url = Bundle.main.url(forResource: "luma-night-rain", withExtension: "wav") else {
-      throw AppError.message("Поднимите громкость мультимедиа iPhone перед включением ночного фона.")
+    guard let url = Bundle.main.url(forResource: "luma-night-rain", withExtension: "wav") else {
+      throw AppError.message("Ночной фон не начал воспроизведение.")
     }
     let session = AVAudioSession.sharedInstance()
     try session.setCategory(.playback, mode: .default, options: [.mixWithOthers])
@@ -66,9 +67,9 @@ import MediaPlayer
       player = next; enabled = true; interrupted = false
       protectedStopDeadline = nil
       until = Date().addingTimeInterval(12 * 3600)
-      status = "Тихий дождь включён · до \(until!.formatted(date: .omitted, time: .shortened))"
+      status = "Ночной фон включён · до \(until!.formatted(date: .omitted, time: .shortened))"
       MPNowPlayingInfoCenter.default().nowPlayingInfo = [
-        MPMediaItemPropertyTitle: tr("Luma · тихий ночной дождь"),
+        MPMediaItemPropertyTitle: tr("Luma · ночная тишина"),
         MPNowPlayingInfoPropertyIsLiveStream: true,
         MPNowPlayingInfoPropertyPlaybackRate: 1.0]
       monitor?.invalidate()
@@ -78,7 +79,7 @@ import MediaPlayer
           if !self.ready { await self.stopSafely("Ночной фон закончился или прерван; очередь снята") }
         }
       }
-      CueDiagnostics.event("night_audio_started", detail: "Audible rain; no Watch haptic; 12h maximum")
+      CueDiagnostics.event("night_audio_started", detail: "Silent night background; no Watch haptic; 12h maximum")
     } catch {
       try? session.setActive(false, options: .notifyOthersOnDeactivation); throw error
     }
@@ -133,7 +134,7 @@ import MediaPlayer
         guard player?.play() == true else { throw AppError.message("Фон не возобновился") }
         interrupted = false; recovery?.cancel(); recovery = nil
         protectedStopDeadline = nil
-        status = "Тихий дождь включён"
+        status = "Ночной фон включён"
         CueDiagnostics.event("night_audio_resumed")
       } catch { await stopSafely("Не удалось возобновить ночной фон") }
     }

@@ -7,8 +7,13 @@ enum AlarmKitSoundBuilder {
   static let frameCount: AVAudioFramePosition = 88200
   /// Cache a separate, faded PCM copy. Never modify a voice or diary original,
   /// and never substitute the default system sound on a conversion error.
-  static func prepare(source: URL, directory override: URL? = nil) throws -> String {
-    if override == nil, let bundled = Bundle.main.url(forResource: "luma-tone-4", withExtension: "wav"),
+  /// 1.0: `volumePercent` is the level of AlarmSignalVolume (20–100 %, the stored setting by default).
+  /// At 100 % the name and the bytes are exactly those of 0.9.9; any other level is its own copy.
+  static func prepare(source: URL, directory override: URL? = nil,
+    volumePercent: Int = AlarmSignalVolume.current()) throws -> String {
+    let volume = AlarmSignalVolume.validated(volumePercent)
+    if override == nil, volume == AlarmSignalVolume.unityPercent,
+      let bundled = Bundle.main.url(forResource: "luma-tone-4", withExtension: "wav"),
       source.standardizedFileURL == bundled.standardizedFileURL {
       guard let alarm = Bundle.main.url(forResource: "luma-alarm-4", withExtension: "wav"),
         valid(alarm) else { throw AppError.message("Р’ СЃР±РѕСЂРєРµ РЅРµ РЅР°Р№РґРµРЅ С‡РµС‚С‹СЂС‘С…СЃРµРєСѓРЅРґРЅС‹Р№ WAV РґР»СЏ AlarmKit.") }
@@ -20,7 +25,11 @@ enum AlarmKitSoundBuilder {
     }
     let data = try Data(contentsOf: source)
     var hasher = SHA256()
-    hasher.update(data: Data("luma-alarmkit-wave-4s-fade-v4".utf8)); hasher.update(data: data)
+    hasher.update(data: Data("luma-alarmkit-wave-4s-fade-v4".utf8))
+    if volume != AlarmSignalVolume.unityPercent {
+      hasher.update(data: Data("luma-alarmkit-volume-\(volume)".utf8))
+    }
+    hasher.update(data: data)
     let digest = hasher.finalize().map { String(format: "%02x", $0) }.joined()
     let name = "luma-ak4-\(digest).wav"
     let folder: URL
@@ -44,7 +53,7 @@ enum AlarmKitSoundBuilder {
       try? FileManager.default.removeItem(at: temporary)
       try? FileManager.default.removeItem(at: faded)
     }
-    try renderFade(from: temporary, to: faded)
+    try renderFade(from: temporary, to: faded, level: AlarmSignalVolume.gain(volume))
     guard valid(faded) else { throw AppError.message("РќРµ СѓРґР°Р»РѕСЃСЊ РїРѕРґРіРѕС‚РѕРІРёС‚СЊ С‡РµС‚С‹СЂС‘С…СЃРµРєСѓРЅРґРЅС‹Р№ Р·РІСѓРє.") }
     if FileManager.default.fileExists(atPath: target.path) { try FileManager.default.removeItem(at: target) }
     try FileManager.default.moveItem(at: faded, to: target)
@@ -76,7 +85,7 @@ enum AlarmKitSoundBuilder {
     return try FileManager.default.url(for: .libraryDirectory, in: .userDomainMask,
       appropriateFor: nil, create: false).appendingPathComponent("Sounds").appendingPathComponent(name)
   }
-  private static func renderFade(from source: URL, to target: URL) throws {
+  private static func renderFade(from source: URL, to target: URL, level: Double = 1) throws {
     let input = try AVAudioFile(forReading: source, commonFormat: .pcmFormatFloat32, interleaved: false)
     guard input.length == frameCount, input.processingFormat.sampleRate == sampleRate,
       input.processingFormat.channelCount == 1, !input.processingFormat.isInterleaved,
@@ -108,6 +117,11 @@ enum AlarmKitSoundBuilder {
     buffer.frameLength = AVAudioFrameCount(position)
     guard (0..<position).allSatisfy({ samples[$0].isFinite }) else {
       throw AppError.message("Р’ РєРѕСЂРѕС‚РєРѕРј Р·РІСѓРєРµ РѕР±РЅР°СЂСѓР¶РµРЅС‹ РЅРµРґРѕРїСѓСЃС‚РёРјС‹Рµ РѕС‚СЃС‡С‘С‚С‹.")
+    }
+    // 1.0: the chosen signal volume. It is never above 1, so nothing can clip, and zeros stay
+    // zeros, so the fade below finds the same end of the content.
+    if level != 1 {
+      for i in 0..<position { samples[i] = Float(Double(samples[i]) * level) }
     }
     // Fade the end of the actual content, before any padding on a short voice.
     var end = Int(buffer.frameLength)

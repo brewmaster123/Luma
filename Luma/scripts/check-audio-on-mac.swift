@@ -1,5 +1,6 @@
 import Foundation
 import AVFoundation
+import CryptoKit
 import Darwin
 
 private struct AudioCheckFailure: Error, CustomStringConvertible {
@@ -83,6 +84,7 @@ struct AudioImportCheck {
         cases += 1
       }
     }
+    try checkVolume(directory)
     let bad = directory.appendingPathComponent("invalid.mp3")
     try Data("invalid audio".utf8).write(to: bad)
     var rejected = false
@@ -90,6 +92,38 @@ struct AudioImportCheck {
     catch { rejected = true }
     try require(rejected, "Invalid input must be rejected without a default sound fallback")
     print("PASS: \(cases) audio matrix cases plus invalid-input rejection. No physical-device claim.")
+  }
+  /// 1.0: the signal volume. 100 % keeps the 0.9.9 file name and level; 50 % is its own copy,
+  /// 10 dB quieter, with the same zero endpoints. The levels are passed explicitly, so the result
+  /// does not depend on what the runner has stored.
+  static func checkVolume(_ directory: URL) throws {
+    let source = directory.appendingPathComponent("volume-source.wav")
+    try writeTone(source, seconds: 4.0, sampleRate: 22050, channels: 1, bits: 16)
+    let sounds = directory.appendingPathComponent("VolumeSounds")
+    let full = try AlarmKitSoundBuilder.prepare(source: source, directory: sounds, volumePercent: 100)
+    let half = try AlarmKitSoundBuilder.prepare(source: source, directory: sounds, volumePercent: 50)
+    let sourceBytes = try Data(contentsOf: source)
+    var hasher = SHA256()
+    hasher.update(data: Data("luma-alarmkit-wave-4s-fade-v4".utf8))
+    hasher.update(data: sourceBytes)
+    let unity = "luma-ak4-" + hasher.finalize().map { String(format: "%02x", $0) }.joined() + ".wav"
+    try require(full == unity, "Volume: 100 % must keep the 0.9.9 cache name")
+    try require(half != full && half.hasPrefix("luma-ak4-") && half.hasSuffix(".wav"),
+      "Volume: 50 % must be a separate WAV copy")
+    try require(AlarmKitSoundBuilder.valid(sounds.appendingPathComponent(half)), "Volume: invalid 50 % copy")
+    let loud = try readMonoFloat(sounds.appendingPathComponent(full))
+    let quiet = try readMonoFloat(sounds.appendingPathComponent(half))
+    try require(loud.count == 88200 && quiet.count == 88200, "Volume: both copies must be 4 seconds")
+    try require(quiet[0] == 0 && quiet[88199] == 0, "Volume: fade endpoints must stay zero")
+    let loudPeak = loud.map { abs($0) }.max() ?? 0
+    let quietPeak = quiet.map { abs($0) }.max() ?? 0
+    let ratio = Double(quietPeak / max(loudPeak, .leastNonzeroMagnitude))
+    let expected = AlarmSignalVolume.gain(50)
+    try require(loudPeak > 0.05 && abs(ratio - expected) < 0.01,
+      "Volume: 50 % must scale the copy by \(expected), got \(ratio)")
+    let again = try AlarmKitSoundBuilder.prepare(source: source, directory: sounds, volumePercent: 50)
+    try require(again == half, "Volume: the 50 % cache name changed")
+    print("PASS: volume 100 % keeps the 0.9.9 copy; 50 % is a separate copy at \(ratio) of its peak")
   }
   static func readMonoFloat(_ url: URL) throws -> [Float] {
     let file = try AVAudioFile(forReading: url, commonFormat: .pcmFormatFloat32, interleaved: false)

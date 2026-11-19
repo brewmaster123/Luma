@@ -13,6 +13,8 @@ import Foundation
   @Published private(set) var alarmPermissionSummary = "Проверяем системные будильники…"
   @Published private(set) var alarmPermissionReady = false
   @Published private(set) var alarmStopSeconds = AlarmSignalDuration.defaultSeconds
+  /// 1.0: the level of the AlarmKit signal, 20–100 % (AlarmSignalVolume); 50 % unless the person chose another.
+  @Published private(set) var alarmVolumePercent = AlarmSignalVolume.defaultPercent
   @Published var message: String?
   @Published var showOnboarding = false
   @Published var showSignalMigration = false
@@ -37,6 +39,7 @@ import Foundation
   init() {
     alarmStopSeconds = AlarmSignalDuration.validated(
       UserDefaults.standard.object(forKey: AlarmSignalDuration.preferenceKey) as? Int)
+    alarmVolumePercent = AlarmSignalVolume.current()
     do {
       let local = try LocalStore()
       archive = try local.load()
@@ -90,6 +93,23 @@ import Foundation
       alarmStopSeconds = seconds
       return true
     } catch { message = error.localizedDescription; return false }
+  }
+  /// 1.0: a new signal volume. The chosen sound is rendered at the new level first, so a failure
+  /// changes nothing. The level is part of the AlarmKit file name, so the next queue pass replaces
+  /// every waiting signal with the new copy (reconcile compares the names); a signal that is already
+  /// sounding keeps its sound and its Stop deadline.
+  @discardableResult func setAlarmVolume(_ percent: Int) async -> Bool {
+    guard AlarmSignalVolume.validated(percent) == percent, percent != alarmVolumePercent,
+      !busy, !systemAlarms.preparing else { return false }
+    busy = true; defer { busy = false }
+    do {
+      _ = try AlarmKitSoundBuilder.prepare(source: audio.soundURL(state.signal.systemAlarmSignal, clips: state.voices),
+        volumePercent: percent)
+    } catch { message = error.localizedDescription; return false }
+    UserDefaults.standard.set(percent, forKey: AlarmSignalVolume.preferenceKey)
+    alarmVolumePercent = percent
+    await rebuildAlarms()
+    return true
   }
   var indirectRunning: Bool { systemAlarms.indirectSession != nil }
   var stateTitle: String { "Ночь начинается с вас" }

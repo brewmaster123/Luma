@@ -10,11 +10,6 @@
       "unchanged": true
     },
     {
-      "path": "Sources/iPhone/AlarmKitSoundBuilder.swift",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
       "path": "Sources/iPhone/CueAudioImporter.swift",
       "hash_mode": "lf-text",
       "unchanged": true
@@ -230,11 +225,6 @@
       "unchanged": true
     },
     {
-      "path": "Resources/luma-night-rain.wav",
-      "hash_mode": "raw",
-      "unchanged": true
-    },
-    {
       "path": "Resources/luma-tone-15.wav",
       "hash_mode": "raw",
       "unchanged": true
@@ -301,11 +291,6 @@
     },
     {
       "path": "scripts/check-audio-on-mac.sh",
-      "hash_mode": "lf-text",
-      "unchanged": true
-    },
-    {
-      "path": "scripts/check-audio-on-mac.swift",
       "hash_mode": "lf-text",
       "unchanged": true
     },

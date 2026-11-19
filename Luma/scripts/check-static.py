@@ -220,13 +220,15 @@ for target_id in root['targets']:
     bundled=[files[objects[item]['fileRef']].name for phase in resources for item in phase['files']]
     if objects[target_id]['name']=='Luma':
         check('luma-alarm-4.wav' in bundled, 'Four-second AlarmKit WAV included on iPhone')
-        check({'luma-tone-4.wav','luma-night-rain.wav'} <= set(bundled), 'Preview and genuine sleep audio bundled on iPhone')
+        check({'luma-tone-4.wav','luma-night-rain.wav'} <= set(bundled), 'Preview audio and the silent night background bundled on iPhone')
         check(set(MELODIES) <= set(bundled), 'The four Lumenoir melodies are bundled on iPhone')
 check('generic/platform=watchOS' in workflow and '-scheme "Luma Watch"' in workflow, 'CI builds the Watch target')
 check('test -d "$LUMA_APP/Watch/Luma Watch.app"' in workflow, 'IPA packaging requires companion app')
 night=(ROOT/'Sources/iPhone/NightAudio.swift').read_text()
 check('next.numberOfLoops = -1' in night and 'luma-night-rain' in night and 'MPNowPlayingInfoCenter' in night,
-      'User-visible genuine sleep audio, with lock-screen Stop controls')
+      'A real looping night-background player, with lock-screen Stop controls')
+check('outputVolume' not in night and 'Тихий дождь' not in night,
+      '1.0: the silent night background does not depend on the media volume and is not called rain')
 check('onStopRequested' in night and 'disarmForRuntimeLoss' in service, 'Runtime loss attempts durable queue cancellation')
 duration=(ROOT/'Sources/LumaCore/AlarmSignalDuration.swift').read_text()
 plan=(ROOT/'Sources/LumaCore/SystemAlarmPlan.swift').read_text()
@@ -243,6 +245,20 @@ check(model.count('stopAfterSeconds: alarmStopSeconds') == 3 and 'UserDefaults.s
       'Smart, indirect and probe requests share the persisted duration preference')
 check('AlarmSignalDuration.range' in settings and 'model.setAlarmStopSeconds(' in settings,
       'Settings exposes the bounded duration control')
+volume=(ROOT/'Sources/LumaCore/AlarmSignalVolume.swift').read_text()
+check('defaultPercent = 50' in volume and 'unityPercent = 100' in volume and 'range = 20...100' in volume
+      and 'step = 10' in volume and '"luma.alarmkit.signal-volume.v1"' in volume,
+      '1.0: the signal volume is 20-100 % in steps of 10, half as loud (50 %) by default')
+check('volumePercent: Int = AlarmSignalVolume.current()' in sound and 'volume == AlarmSignalVolume.unityPercent' in sound
+      and '"luma-alarmkit-volume-\\(volume)"' in sound and 'level: AlarmSignalVolume.gain(volume)' in sound,
+      '1.0: the volume is baked into the AlarmKit copy and named in its hash; 100 % keeps the 0.9.9 copy')
+check('func setAlarmVolume(' in model and 'AlarmSignalVolume.preferenceKey' in model and 'alarmVolumePercent = AlarmSignalVolume.current()' in model,
+      '1.0: the app model stores the signal volume and re-queues the waiting signals')
+check('AlarmSignalVolume.range' in settings and 'model.setAlarmVolume(' in settings
+      and 'Громкость дождя' not in settings and 'nightAudio.volume' not in settings,
+      '1.0: Settings sets the signal volume; the night-background volume slider is gone')
+check('checkVolume(directory)' in (ROOT/'scripts/check-audio-on-mac.swift').read_text(),
+      '1.0: the audio harness checks the 100 % and 50 % copies')
 check('try updateFutureStopDurations' in service and 'record.fireAt > threshold' in service
       and '!observedDeliveries.contains' in service and 'ledger = previous; throw error' in service,
       'Future deadline updates preserve current deliveries and roll back on persistence failure')
@@ -250,10 +266,21 @@ check('alarms-before-duration-setting.json' in service and '!FileManager.default
       'Original ledger receives a non-overwritten recovery copy before persistence')
 check('self.systemAlarms.currentStopDeadline' in model and 'onAlertObserved?(record.stopAt)' in service,
       'Audio interruption receives the current deadline even during queue preparation')
+# 1.0 (the user's request, 19 Nov 2026): the night background is silence. Same name and format as the
+# rain it replaced: RIFF with only fmt and data, PCM16, mono, 22,050 Hz, exactly 20 s, every sample zero.
+night_wav=(ROOT/'Resources/luma-night-rain.wav').read_bytes()
+chunk_tags=[]
+offset=12
+while offset+8<=len(night_wav):
+    tag,size=struct.unpack('<4sI',night_wav[offset:offset+8])
+    chunk_tags.append(tag); offset+=8+size+(size&1)
+check(night_wav[:4]==b'RIFF' and night_wav[8:12]==b'WAVE' and chunk_tags==[b'fmt ',b'data'] and offset==len(night_wav),
+      'Night background is a plain WAV with only fmt and data chunks')
 with wave.open(str(ROOT/'Resources/luma-night-rain.wav'),'rb') as w:
-    samples=struct.unpack('<'+'h'*w.getnframes(),w.readframes(w.getnframes()))
-    check(w.getnframes()/w.getframerate()==20 and max(map(abs,samples))>1000,
-          'Sleep resource is twenty seconds of non-silent PCM audio')
+    frames=w.readframes(w.getnframes())
+    check(w.getnchannels()==1 and w.getsampwidth()==2 and w.getframerate()==22050 and w.getnframes()==441000
+          and len(frames)==882000 and not any(frames),
+          'Night background is twenty seconds of silent PCM16 audio (1.0)')
 watch=(ROOT/'Sources/Watch/WatchCueStore.swift').read_text()
 check('UNNotificationRequest(' in watch and 'repeats: false' in watch and 'content.sound = .default' in watch, 'Watch owns independent one-shot cues using a supported system sound')
 check('shouldReplace' in watch and 'pendingNotificationRequests' in watch and 'revision' in watch,
