@@ -10,10 +10,15 @@ import MediaPlayer
 /// Background playback provides runtime while it actually plays; interruptions,
 /// termination and force quit still require device validation and disarming.
 /// 1.0: the media volume no longer has to be above zero: a sound nobody hears needs no volume.
+/// 1.0 (the user, 19 Nov 2026): it switches itself on and off (NightBackgroundPolicy.swift; there is no switch in
+/// Settings any more) and one run lasts up to 16 hours instead of 12. A run can be lengthened (`extend`) without
+/// a restart. The AlarmKit queue itself still looks 12 hours ahead and is topped up every minute while this plays.
 @MainActor final class NightAudio: NSObject, ObservableObject, AVAudioPlayerDelegate {
   @Published private(set) var enabled = false
   @Published private(set) var status = "Ночной фон выключен"
   @Published private(set) var until: Date?
+  /// 1.0: the longest one run may last from now (was 12 hours).
+  static let longest: TimeInterval = 16 * 3600
   @Published var volume: Float = 0.18 { didSet { player?.volume = min(0.6, max(0.08, volume)) } }
   var onStopRequested: (() async throws -> Void)?
   var onCheckAlarms: (() async -> Void)?
@@ -53,7 +58,7 @@ import MediaPlayer
   }
   func start() throws {
     if ready { return }
-    guard !enabled else { throw AppError.message("Ночной фон прерван. Остановите его и включите заново.") }
+    guard !enabled else { throw AppError.message("Ночной фон сейчас прерван. Повторите через несколько секунд.") }
     guard let url = Bundle.main.url(forResource: "luma-night-rain", withExtension: "wav") else {
       throw AppError.message("Ночной фон не начал воспроизведение.")
     }
@@ -66,7 +71,7 @@ import MediaPlayer
       guard next.prepareToPlay(), next.play() else { throw AppError.message("Ночной фон не начал воспроизведение.") }
       player = next; enabled = true; interrupted = false
       protectedStopDeadline = nil
-      until = Date().addingTimeInterval(12 * 3600)
+      until = Date().addingTimeInterval(Self.longest)
       status = "Ночной фон включён · до \(until!.formatted(date: .omitted, time: .shortened))"
       MPNowPlayingInfoCenter.default().nowPlayingInfo = [
         MPMediaItemPropertyTitle: tr("Luma · ночная тишина"),
@@ -79,10 +84,20 @@ import MediaPlayer
           if !self.ready { await self.stopSafely("Ночной фон закончился или прерван; очередь снята") }
         }
       }
-      CueDiagnostics.event("night_audio_started", detail: "Silent night background; no Watch haptic; 12h maximum")
+      CueDiagnostics.event("night_audio_started", detail: "Silent night background; no Watch haptic; 16h maximum")
     } catch {
       try? session.setActive(false, options: .notifyOthersOnDeactivation); throw error
     }
+  }
+  /// 1.0: lengthens the run that is playing now (never shortens it), at most 16 hours from now. Nothing is
+  /// restarted: the player, the session and the queue go on exactly as they are.
+  func extend(to deadline: Date) {
+    guard ready, let current = until, deadline.timeIntervalSince1970.isFinite else { return }
+    let next = min(deadline, Date().addingTimeInterval(Self.longest))
+    guard next > current else { return }
+    until = next
+    status = "Ночной фон включён · до \(next.formatted(date: .omitted, time: .shortened))"
+    CueDiagnostics.event("night_audio_extended", detail: "until=\(next.timeIntervalSince1970)")
   }
   /// Finish a short Stop operation if AlarmKit interrupts the playing audio.
   /// This bounded assertion does not schedule future background launches.

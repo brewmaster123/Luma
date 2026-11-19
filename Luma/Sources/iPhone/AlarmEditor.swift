@@ -73,7 +73,7 @@ private struct FollowSwitchRow: View {
       if open {
         Rectangle().fill(Atelier.ink.opacity(0.07)).frame(height: 1)
           .padding(.horizontal, 14)
-        Text(tr("Когда будильник отзвучит, сам начнётся сеанс непрямого метода — с текущим интервалом и звуком. Нужен включённый ночной фон. Сеанс идёт, пока вы не нажмёте «Завершить сеанс», а сигналы звучат, пока работает фон, — до 12 часов с его включения."))
+        Text(tr("Когда будильник отзвучит, сам начнётся сеанс непрямого метода — с текущим интервалом и звуком. Сеанс идёт, пока вы не нажмёте «Завершить сеанс», но не дольше 16 часов."))
           .font(Atelier.ui(12)).lineSpacing(3.5).foregroundStyle(Atelier.note)
           .fixedSize(horizontal: false, vertical: true)
           .padding(EdgeInsets(top: 10, leading: 14, bottom: 13, trailing: 14))
@@ -112,10 +112,30 @@ struct AlarmEditor: View {
   /// 0.9.9: «Непрямой метод после будильника». Off unless the person switched it on for this alarm.
   /// Read once, when the editor is made, so coming back from a nested sheet never undoes a change.
   @State private var followIndirect: Bool
+  /// 1.0: the volume note before saving an alarm with the follow-up on; only «Понятно» goes on to the save.
+  @State private var showVolumeNote = false
+  @State private var volumeNoteAccepted = false
 
   init(alarm: LumaAlarm) {
     _alarm = State(initialValue: alarm)
     _followIndirect = State(initialValue: SmartAlarmFollowUpPreference.isOn(alarm.id))
+  }
+
+  /// 1.0: an alarm with «Непрямой метод после будильника» first shows the volume note (unless the person
+  /// ticked «Больше не показывать»); then the same path as before: readiness if needed, then the save.
+  private func saveTapped() {
+    guard !saving, !showVolumeNote, !showReadiness else { return }
+    if followIndirect && !SmartAlarmVolumeNotePreference.skipped {
+      volumeNoteAccepted = false
+      showVolumeNote = true
+    } else {
+      continueSave()
+    }
+  }
+
+  private func continueSave() {
+    if alarm.enabled && !model.systemAlarms.acceptedLimitations { showReadiness = true }
+    else { saveAlarm() }
   }
 
   private func saveAlarm() {
@@ -124,6 +144,7 @@ struct AlarmEditor: View {
     saveError = nil
     Task { @MainActor in
       defer { saving = false }
+      await NightBackgroundPolicy.shared.settled()
       // Recalculate after returning from Settings, so a stale draft is not armed in the past.
       alarm.onceAt = Calendar.current.nextDate(after: Date().addingTimeInterval(10),
         matching: DateComponents(hour: alarm.hour, minute: alarm.minute), matchingPolicy: .nextTime)
@@ -177,6 +198,14 @@ struct AlarmEditor: View {
       SignalReadinessView(continueTitle: tr("Сохранить будильник")) { readyToSave = true }
         .environmentObject(model)
     }
+    .atelierSheet(isPresented: $showVolumeNote, onDismiss: {
+      // The cross, a tap above or a swipe go back to the editor; nothing is saved.
+      guard volumeNoteAccepted else { return }
+      volumeNoteAccepted = false
+      continueSave()
+    }) {
+      VolumeNoteSheet { volumeNoteAccepted = true }
+    }
     .atelierSheet(isPresented: $choosingSound) {
       SoundPickerSheet(selection: $alarm.signal.voiceID).environmentObject(model)
     }
@@ -219,10 +248,7 @@ struct AlarmEditor: View {
         .fixedSize(horizontal: false, vertical: true)
         .padding(.top, 10)
     }
-    Button(tr("Сохранить будильник")) {
-      if alarm.enabled && !model.systemAlarms.acceptedLimitations { showReadiness = true }
-      else { saveAlarm() }
-    }
+    Button(tr("Сохранить будильник")) { saveTapped() }
     .buttonStyle(VelvetButtonStyle())
     .disabled(saving)
     .padding(.top, 16)
@@ -294,5 +320,35 @@ struct AlarmEditor: View {
     }
     .buttonStyle(.plain)
     .padding(.top, 14)
+  }
+}
+
+/// 1.0 (the user, 19 Nov 2026): before an alarm with «Непрямой метод после будильника» is saved, a short
+/// reminder that the volume set with the side buttons must not be all the way down. «Больше не показывать»
+/// is kept only together with «Понятно»; the cross, a tap above or a swipe go back to the editor unsaved.
+private struct VolumeNoteSheet: View {
+  @Environment(\.atelierDismiss) private var dismiss
+  let onContinue: () -> Void
+  @State private var doNotShowAgain = false
+  @State private var continuing = false
+
+  var body: some View {
+    AtelierSheet(tr("Громкость iPhone")) {
+      SheetLead(text: tr("Не убавляйте громкость кнопками сбоку iPhone до нуля — оставьте хотя бы немного."))
+      Toggle(isOn: $doNotShowAgain) { Text(tr("Больше не показывать")) }
+        .toggleStyle(RoundMarkToggleStyle())
+        .accessibilityIdentifier("alarm.volumeNote.skip")
+      Button(tr("Понятно")) {
+        guard !continuing else { return }
+        continuing = true
+        if doNotShowAgain { SmartAlarmVolumeNotePreference.skip() }
+        onContinue()
+        dismiss()
+      }
+      .buttonStyle(VelvetButtonStyle())
+      .disabled(continuing)
+      .padding(.top, 8)
+      .accessibilityIdentifier("alarm.volumeNote.continue")
+    }
   }
 }

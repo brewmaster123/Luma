@@ -8,8 +8,8 @@ import Foundation
 ///
 /// The English is written for a native reader, not word for word. A few words are kept the same
 /// everywhere: signal (сигнал), alarm (будильник), cue (подсказка), session (сеанс),
-/// night sound (ночной фон), test (проба), queue (очередь). 1.0: the night sound is silence
-/// (тишина), so the row that switches it on is called «Тишина» / "Silence".
+/// night sound (ночной фон), test (проба), queue (очередь). 1.0: the night sound is silence and switches
+/// itself on and off, so Settings no longer has a row for it.
 /// Read through again on 16 Nov 2026 and once more on 17 Nov 2026; the translation stays as it was,
 /// only a few phrases that read as translated were corrected (list: Docs/DESIGN_AND_LANGUAGE.md,
 /// "Проверка перевода"). Every new text gets its English here in the same change, written as a native
@@ -26,7 +26,14 @@ enum LumaEnglish {
   static let russianUpdates: [String: String] = [
     "Длительность сигнала: 3–10 с, по умолчанию 4. Проверьте остановку на iPhone.":
       "Длительность сигнала: 3–20 с, по умолчанию 4. Проверьте остановку на iPhone.",
-    "Выберите длительность от 3 до 10 секунд.": "Выберите длительность от 3 до 20 секунд."
+    "Выберите длительность от 3 до 10 секунд.": "Выберите длительность от 3 до 20 секунд.",
+    // 1.0: there is no switch for the night sound any more; it turns itself on and off.
+    "Остановите ночной фон перед записью.":
+      "Не получилось начать запись: ещё работает ночной фон. Попробуйте через несколько секунд.",
+    "Завершите запись или ночной фон перед прослушиванием.":
+      "Прослушать пока нельзя: идёт запись или работает ночной фон. Попробуйте через несколько секунд.",
+    "Включите тихий ночной фон: он нужен для выполнения остановки AlarmKit после блокировки.":
+      "Ночной фон ещё не включился, поэтому сигналы не поставлены. Повторите через несколько секунд."
   ]
 
   static let table: [String: String] = Dictionary(
@@ -127,7 +134,7 @@ enum LumaEnglish {
     ("Разрешите будильники", "Allow alarms"),
     ("Умный будильник и непрямой метод работают через системные будильники iPhone. Нужна iOS 26 или новее.",
       "The smart alarm and the indirect method work through your iPhone’s system alarms. iOS 26 or later is required."),
-    ("Оставьте ночной фон", "Keep the night sound on"),
+    ("Ночной фон включается сам", "The night sound turns on by itself"),
     ("Его не слышно: он лишь не даёт Lumenoir уснуть, чтобы каждый сигнал смолкал сам — сейчас через %@.",
       "You won’t hear it: it simply keeps Lumenoir awake so that each signal can fall silent on its own — currently after %@."),
     ("Проверьте с блокировкой", "Test with the screen locked"),
@@ -227,19 +234,7 @@ enum LumaEnglish {
     ("Сигнал через %@…", "Signal in %@…"),
     ("Звучит · осталось %@ с", "Sounding · %@ s left"),
     ("Сигнал через %@. Заблокируйте iPhone.", "Signal in %@. Lock your iPhone."),
-    ("Ночной фон", "Night sound"),
-    // 1.0: the night sound is silence; there is no volume to set any more
-    ("Тишина", "Silence"),
-    ("Фон, которого не слышно. Без него сигналы не смолкнут сами.",
-      "A background you can’t hear. Without it, signals can’t stop on their own."),
-    ("Его не слышно: он лишь не даёт Lumenoir уснуть, чтобы сигналы смолкали сами.",
-      "You won’t hear it: it simply keeps Lumenoir awake so that signals can fall silent on their own."),
-    ("Фон выключен: сигналы сняты, без него они не смолкнут сами.",
-      "Night sound is off, so no signals are queued: without it they couldn’t stop on their own."),
-    ("Выключить ночной фон?", "Turn off the night sound?"),
-    ("Вместе с ним снимется очередь сигналов: без фона они не смогут смолкать сами.",
-      "The signal queue will go with it: without the night sound, signals can’t stop on their own."),
-    ("Выключить фон", "Turn it off"),
+    // 1.0: the night sound is silence and switches itself on and off; Settings has no section for it.
     ("Оставить", "Not now"),
     ("Проверка", "Testing"),
     ("Проба с блокировкой", "Lock Screen test"),
@@ -253,8 +248,8 @@ enum LumaEnglish {
     ("Журнал проверки", "Test log"),
     ("Отменить все сигналы", "Cancel all signals"),
     ("Отменить все сигналы?", "Cancel all signals?"),
-    ("Будильники выключатся, а сеанс непрямого метода завершится. Ночной фон останется включённым, пока вы его не выключите.",
-      "Your alarms will be turned off and the indirect-method session will end. The night sound will stay on until you turn it off."),
+    ("Будильники выключатся, а сеанс непрямого метода завершится.",
+      "Your alarms will be turned off and the indirect-method session will end."),
     ("Отменить сигналы", "Cancel signals"),
     ("Все сигналы отменены", "All signals are off"),
     ("Помощь и устройства", "Help & devices"),
@@ -317,8 +312,17 @@ enum LumaEnglish {
       "Sounds can’t be added during an indirect-method session. End the session on the Night screen first."),
     ("Пока идёт сеанс непрямого метода, звуки не удалить. Завершите сеанс на экране «Ночь».",
       "Sounds can’t be deleted during an indirect-method session. End the session on the Night screen first."),
-    ("Пока включён ночной фон, голос не записать. Выключите его в «Настройках», запишите подсказку и включите снова — будильники вернутся в очередь.",
-      "You can’t record while the night sound is on. Turn it off in Settings, record your cue, then turn it back on — your alarms will be queued again."),
+    // 1.0: recording and listening never take queued alarms away
+    ("Пока впереди будильник или сигнал, запись и прослушивание недоступны. Они станут доступны после него или если выключить будильник.",
+      "Recording and listening aren’t available while an alarm or a signal is still to come. They will be once it has passed, or if you switch the alarm off."),
+    ("Пока идёт сеанс непрямого метода, запись и прослушивание недоступны.",
+      "Recording and listening aren’t available during an indirect-method session."),
+    ("Не получилось начать запись: ещё работает ночной фон. Попробуйте через несколько секунд.",
+      "Couldn’t start recording: the night sound is still running. Try again in a few seconds."),
+    ("Прослушать пока нельзя: идёт запись или работает ночной фон. Попробуйте через несколько секунд.",
+      "You can’t listen just now: a recording is under way or the night sound is running. Try again in a few seconds."),
+    ("Ночной фон ещё не включился, поэтому сигналы не поставлены. Повторите через несколько секунд.",
+      "The night sound hasn’t started yet, so no signals were queued. Try again in a few seconds."),
     ("Подождите: предыдущее действие ещё не закончено.", "One moment — the previous action hasn’t finished yet."),
     ("Будильники %@ уже переведены на мелодию Lumenoir.", "The alarms at %@ already use the Lumenoir melody."),
     ("Не удалось удалить звук.", "The sound couldn’t be deleted."),
@@ -344,14 +348,14 @@ enum LumaEnglish {
     ("Пояснение скрыто", "Explanation hidden"),
     ("Когда будильник отзвучит, сам начнётся сеанс непрямого метода.",
       "Once the alarm has finished, an indirect-method session starts by itself."),
-    ("Когда будильник отзвучит, сам начнётся сеанс непрямого метода — с текущим интервалом и звуком. Нужен включённый ночной фон. Сеанс идёт, пока вы не нажмёте «Завершить сеанс», а сигналы звучат, пока работает фон, — до 12 часов с его включения.",
-      "Once the alarm has finished, an indirect-method session starts by itself, with your current interval and sound. The night sound needs to be on. The session runs until you tap “End session”, and its signals play for as long as the night sound runs — up to 12 hours from when it was turned on."),
+    ("Когда будильник отзвучит, сам начнётся сеанс непрямого метода — с текущим интервалом и звуком. Сеанс идёт, пока вы не нажмёте «Завершить сеанс», но не дольше 16 часов.",
+      "Once the alarm has finished, an indirect-method session starts by itself, with your current interval and sound. It runs until you tap “End session”, for up to 16 hours."),
+    // 1.0: before such an alarm is saved, a short note about the volume of the side buttons
+    ("Громкость iPhone", "iPhone volume"),
+    ("Не убавляйте громкость кнопками сбоку iPhone до нуля — оставьте хотя бы немного.",
+      "Don’t turn the volume all the way down with the buttons on the side of your iPhone — keep it at least a little up."),
     ("По желанию после будильника сам начнётся сеанс непрямого метода: переключатель — в окне будильника.",
       "If you like, an indirect-method session can begin by itself after an alarm — switch it on when you edit the alarm."),
-
-    // 0.9.9: «Завершить сеанс» also switches the night sound off, unless an alarm still needs it
-    ("Сеанс завершён. Ночной фон остаётся включённым: его ждёт будильник.",
-      "Session ended. The night sound stays on for your alarm."),
 
     // Shown by iOS itself. The Russian keys are the engine's own texts and keep the old name;
     // ru.lproj/Localizable.strings gives iOS the Russian with Lumenoir.
@@ -441,8 +445,8 @@ enum LumaEnglish {
     ("Ночной фон включён", "Night sound is on"),
     ("Аудиосистема перезапущена; включите ночной фон заново",
       "The audio system restarted; turn the night sound on again"),
-    ("Ночной фон прерван. Остановите его и включите заново.",
-      "The night sound was interrupted. Turn it off and on again."),
+    ("Ночной фон сейчас прерван. Повторите через несколько секунд.",
+      "The night sound is interrupted right now. Try again in a few seconds."),
     ("Ночной фон не начал воспроизведение.", "The night sound didn’t start playing."),
     ("Ночной фон закончился или прерван; очередь снята",
       "The night sound ended or was interrupted; the queue was removed"),

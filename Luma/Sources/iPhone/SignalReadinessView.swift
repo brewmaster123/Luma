@@ -17,7 +17,7 @@ struct SignalReadinessView: View {
       VStack(alignment: .leading, spacing: 13) {
         step(1, tr("Разрешите будильники"),
           tr("Умный будильник и непрямой метод работают через системные будильники iPhone. Нужна iOS 26 или новее."))
-        step(2, tr("Оставьте ночной фон"),
+        step(2, tr("Ночной фон включается сам"),
           String(format: tr("Его не слышно: он лишь не даёт Lumenoir уснуть, чтобы каждый сигнал смолкал сам — сейчас через %@."),
             L10n.seconds(model.alarmStopSeconds)))
         step(3, tr("Проверьте с блокировкой"),
@@ -39,7 +39,10 @@ struct SignalReadinessView: View {
         Task { @MainActor in
           defer { working = false }
           do {
-            if requiresPermission { try await model.preparePhoneSignals(acceptLimitations: true) }
+            if requiresPermission {
+              await NightBackgroundPolicy.shared.settled()
+              try await model.preparePhoneSignals(acceptLimitations: true)
+            }
             onReady(); dismiss()
           } catch { self.error = error.localizedDescription }
         }

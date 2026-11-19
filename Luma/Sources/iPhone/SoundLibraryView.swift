@@ -350,9 +350,6 @@ struct SoundLibrarySheet: View {
     if model.hasPlan {
       return tr("Пока идёт сеанс непрямого метода, звуки не добавить. Завершите сеанс на экране «Ночь».")
     }
-    if recordingVoice && model.nightAudio.enabled {
-      return tr("Пока включён ночной фон, голос не записать. Выключите его в «Настройках», запишите подсказку и включите снова — будильники вернутся в очередь.")
-    }
     if model.busy || audio.recording { return tr("Подождите: предыдущее действие ещё не закончено.") }
     return nil
   }
@@ -459,10 +456,8 @@ struct SoundLibrarySheet: View {
     deleting = true
     defer { deleting = false }
     if audio.playing { audio.stopPlayback() }
-    // Saving an enabled alarm prepares its signals, and that switches the quiet rain on if it was off.
-    // Deleting a sound is no reason for the rain: if it was off, it goes off again at the end, through
-    // the same call as the Settings switch. Without the rain those alarms were not in the queue anyway.
-    let rainWasOn = model.nightAudio.enabled
+    // Saving an enabled alarm prepares its signals, and that switches the night background on if it was off.
+    // 1.0: whether it stays on afterwards is up to NightBackgroundPolicy, as everywhere else.
     let wasCommon = model.state.signal.voiceID == clip.id
     // Alarms with this sound move to «Мелодия Lumenoir» (the plain tone only if the melody is missing).
     let fallback = BuiltInMelodies.fallback(model)
@@ -473,6 +468,8 @@ struct SoundLibrarySheet: View {
     for original in order {
       guard var alarm = model.state.alarms.first(where: { $0.id == original.id }) else { continue }
       alarm.signal.voiceID = fallback
+      // 1.0: never meet a night background that the policy is switching off at this moment.
+      await NightBackgroundPolicy.shared.settled()
       guard await model.saveAlarm(alarm) else {
         var text = L10n.show(model.message ?? "Не удалось сохранить будильник.")
         model.message = nil
@@ -488,7 +485,6 @@ struct SoundLibrarySheet: View {
           text += "\n" + String(format: tr("Будильники %@ уже переведены на мелодию Lumenoir."), Self.times(moved))
         }
         problem = text
-        await settleRain(wasOn: rainWasOn)
         return
       }
       moved.append(alarm)
@@ -501,7 +497,6 @@ struct SoundLibrarySheet: View {
       signal.voiceID = fallback
       model.updateSignal(signal)
     }
-    await settleRain(wasOn: rainWasOn)
     // Success is read from the sound list itself; a message of the signal queue that arrives meanwhile
     // stays for the app's own message card.
     if model.state.voices.contains(where: { $0.id == clip.id }) {
@@ -511,19 +506,12 @@ struct SoundLibrarySheet: View {
     }
     confirming = nil
   }
-
-  /// Puts the quiet rain back the way it was before the deletion, if saving an alarm switched it on.
-  /// Afterwards the alarms on Night show «пока вне очереди» once more instead of looking armed.
-  @MainActor private func settleRain(wasOn: Bool) async {
-    guard !wasOn, model.nightAudio.enabled, !model.hasPlan else { return }
-    await model.stopNightAudio()
-    await model.refreshQueueAfterRainOff()
-  }
 }
 
 /// "Подсказка голосом": records up to 28 seconds for use as a signal.
 struct VoiceRecorderView: View {
   @ObservedObject var audio: PhoneAudio
+  @EnvironmentObject private var model: AppModel
   @Environment(\.atelierDismiss) private var dismiss
   @State private var name = tr("Моя подсказка")
   @State private var error: String?
@@ -568,7 +556,12 @@ struct VoiceRecorderView: View {
           audio.finishRecording()
         } else {
           starting = true
-          Task {
+          Task { @MainActor in
+            if let refusal = await NightBackgroundPolicy.shared.stepAside() {
+              self.error = refusal
+              starting = false
+              return
+            }
             do { try await audio.startRecording(name: name) } catch {
               self.error = error.localizedDescription
             }

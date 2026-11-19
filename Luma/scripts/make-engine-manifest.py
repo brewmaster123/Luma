@@ -35,7 +35,9 @@ REASONS = {
         '1.0 (the user\'s request, 19 Nov 2026: the night sound is silence): the media volume no longer has to be '
         'above zero, since nothing is heard; its status lines and lock-screen title say "night sound" / "silence" '
         'instead of "quiet rain"; the diagnostic line says silent. The player, its loop, the session, '
-        'interruptions, the lease and the Stop path are unchanged. Pinned under "engine_changed".',
+        'interruptions, the lease and the Stop path are unchanged. Pinned under "engine_changed". '
+        '1.0, second request of 19 Nov 2026: one run lasts up to 16 hours (was 12) and can be lengthened '
+        'without a restart (extend); the message for an interrupted background says to try again shortly.',
     'Sources/Watch/WatchCueStore.swift':
         'Two lines: the title and text of the watch notification are looked up in the watch language.',
     'Sources/Watch/LumaWatchApp.swift': 'One line: the status text is shown in the watch language.',
@@ -44,27 +46,32 @@ REASONS = {
         'full-screen cover, so the living scene stays visible behind it (iOS 26 paints a full-height sheet grey).',
     'Sources/iPhone/PhoneRootView.swift':
         'New design; three tabs on one canvas; no introduction screen; 0.9.9: sheets as clear covers, '
-        'the Lumenoir melodies are installed and the optional indirect method after an alarm is attached at launch.',
+        'the Lumenoir melodies are installed and the optional indirect method after an alarm is attached at launch; '
+        '1.0: the night-background policy is attached there too, and the alarm switches wait for it.',
     'Sources/iPhone/IndirectMethodView.swift':
         'New design; the same calls of the app model; 0.9.9: "End session" also switches the quiet rain off '
         '(the Settings switch\'s own call) unless an alarm or a signal still needs it; '
-        '1.0: two texts say "night sound" instead of "quiet rain".',
+        '1.0: two texts say "night sound" instead of "quiet rain"; the night sound switches itself off after '
+        'the session (NightBackgroundPolicy) instead of the 0.9.9 helpers here.',
     'Sources/iPhone/AlarmEditor.swift':
         'New design; the same save and delete logic; the app is called Lumenoir; 0.9.9: the optional switch '
         '"Indirect method after the alarm" (a UI-only preference, off by default); '
-        '1.0: its explanation says "night sound" instead of "quiet rain".',
+        '1.0: its explanation says the session lasts at most 16 hours; saving an alarm with the switch on '
+        'first shows a short note about the side-button volume, with "Do not show again" (UI-only key).',
     'Sources/iPhone/SignalReadinessView.swift':
         'New design; the same permission step; the app is called Lumenoir; 0.9.9: shown as a clear cover; '
-        '1.0: the night-sound step says it is silent.',
+        '1.0: the night-sound step says it is silent and turns on by itself.',
     'Sources/iPhone/SettingsView.swift':
         'New design; language row; 3-20 second control; the sound library row is removed from the page; '
         'the app is called Lumenoir; 0.9.9: the living forest behind the same cards; 1.0: the night sound is '
         'silence, so its volume slider is gone and its row is called "Silence"; the signal card has a '
-        '"Volume" row (20-100 %, half as loud by default).',
+        '"Volume" row (20-100 %, half as loud by default); then the whole night-sound section was removed: '
+        'the background switches itself on and off.',
     'Sources/iPhone/SoundLibraryView.swift':
         'New design; the library is opened from the sound picker; the app is called Lumenoir; 0.9.9: three groups, '
         'the Lumenoir melodies, adding from Files through the system document picker, deleting with a confirmation, '
-        'renaming; 1.0: the recording refusal says "night sound" instead of "quiet rain".',
+        'renaming; 1.0: recording a voice cue is refused while an alarm needs the night sound (NightBackgroundPolicy) '
+        'instead of sending the person to a Settings switch; deleting waits for the policy to settle.',
     'Sources/iPhone/JournalView.swift':
         'New design; the same save and delete calls; the app is called Lumenoir; 0.9.9: shown as clear covers.',
     'Sources/Platform/AppModel.swift':
@@ -79,21 +86,25 @@ REASONS = {
         'The Lumenoir icon: the strict sign the user chose on 17 Nov 2026 (1024 px, opaque RGB).',
     'Resources/WatchAssets.xcassets/AppIcon.appiconset/AppIcon.png':
         'The Lumenoir icon on the watch: the same strict sign (1024 px, opaque RGB).',
-    'Sources/iPhone/JournalVoiceComposer.swift': 'New design; the same recording calls.',
+    'Sources/iPhone/JournalVoiceComposer.swift':
+        'New design; the same recording calls; 1.0: recording and listening are refused while an alarm needs the '
+        'night sound, otherwise an unneeded night sound is switched off first (NightBackgroundPolicy).',
     'Config/Base.xcconfig': 'Version 1.0 (29).',
     'Config/iOS-Info.plist':
         'English as the base language, the list of languages, the Poiret One font; '
         'the name under the icon and in the permission texts is Lumenoir.',
     'Config/Watch-Info.plist': 'English as the base language, the list of languages; the name Lumenoir.',
     'Luma.xcodeproj/project.pbxproj':
-        'Regenerated: new source files, font, images and language folders; 1.0: AlarmSignalVolume.swift.',
+        'Regenerated: new source files, font, images and language folders; 1.0: AlarmSignalVolume.swift '
+        'and NightBackgroundPolicy.swift.',
     'scripts/project-graph.json': 'Regenerated together with the project.',
     'scripts/generate_project.py':
         'Adds the font and the language folders to the project; 0.9.9: the four Lumenoir melodies.',
     'scripts/check-static.py':
         'Expects four fonts and the 3-20 second range; 0.9.9: checks the format of the four Lumenoir melodies; '
         '1.0: the night background must be 20 s of silent PCM16 in the same format (was: non-silent rain), '
-        'and the signal volume is checked.',
+        'and the signal volume is checked; then the 16-hour run, the policy that switches the background '
+        'itself, Settings without the switch, and the volume note.',
     'scripts/check-audio-on-mac.swift':
         '1.0: one more case: a sound prepared at 100 % keeps the 0.9.9 name, at 50 % it is a separate copy '
         'scaled by 10 dB with the same zero endpoints. The code of the earlier cases is unchanged; they now run at the '

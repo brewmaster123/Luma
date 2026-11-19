@@ -299,6 +299,12 @@
 			path = "NightAudio.swift";
 			sourceTree = "<group>";
 		};
+		80453B1CEA55FE445134C3D4 = {
+			isa = "PBXFileReference";
+			lastKnownFileType = "sourcecode.swift";
+			path = "NightBackgroundPolicy.swift";
+			sourceTree = "<group>";
+		};
 		BCF96D4F48590553A155FFA5 = {
 			isa = "PBXFileReference";
 			lastKnownFileType = "sourcecode.swift";
@@ -378,6 +384,7 @@
 				"6B07D93F521EF9FA1D764134",
 				"8064301C3357AAFEAEF3276D",
 				"820F72C0989F5A6A81436240",
+				"80453B1CEA55FE445134C3D4",
 				"BCF96D4F48590553A155FFA5",
 				"A975BB02BBDF881E252B3401",
 				"403BEDE476C142E4B1D47D58",
@@ -960,6 +967,10 @@
 			isa = "PBXBuildFile";
 			fileRef = "820F72C0989F5A6A81436240";
 		};
+		E22137679C6F7AA31A8D9138 = {
+			isa = "PBXBuildFile";
+			fileRef = "80453B1CEA55FE445134C3D4";
+		};
 		CE4FBAAC78EA92A786FF393A = {
 			isa = "PBXBuildFile";
 			fileRef = "BCF96D4F48590553A155FFA5";
@@ -1046,6 +1057,7 @@
 				"448AD490112366C37B5B7899",
 				"99390F7C8CDA897EF47EAF6A",
 				"7A64E4FDC5C20AC86FCFE949",
+				"E22137679C6F7AA31A8D9138",
 				"CE4FBAAC78EA92A786FF393A",
 				"35ACE5CED41C3B5E9F96E463",
 				"642465F74203C24BB8D0D84D",

@@ -20,18 +20,18 @@
   },
   "checks_on_this_computer": {
     "platform": "Windows, no Swift toolchain",
-    "structural_checks_passed": 203,
-    "grammar_inputs_passed": 88,
+    "structural_checks_passed": 208,
+    "grammar_inputs_passed": 89,
     "Python_tests_executed": 13,
     "Python_test_failures": 0,
     "preserved_inputs_identical_to_0_9_6": 67,
     "files_identical_to_0_9_7": 71,
     "files_changed_on_purpose_since_0_9_7": 28,
-    "files_added_since_0_9_7": 71,
-    "interface_texts_with_English": 231,
-    "engine_texts_with_English": 181,
-    "translation_table_entries": 400,
-    "independent_read_through": "two adversarially verified review rounds on 19 Nov 2026 (compile simulation of the core module, tests, audio harness and app; the night flow; texts; docs against code): no compile or behaviour defect found; the confirmed documentation findings were fixed. Not a substitute for compilation"
+    "files_added_since_0_9_7": 72,
+    "interface_texts_with_English": 225,
+    "engine_texts_with_English": 182,
+    "translation_table_entries": 397,
+    "independent_read_through": "two adversarially verified review rounds on 19 Nov 2026 (compile simulation of the core module, tests, audio harness and app; the night flow; texts; docs against code): no compile or behaviour defect found; the confirmed documentation findings were fixed. Not a substitute for compilation; after the second request: a 4-reader map, a 3-lens review with adversarial verification (3 confirmed findings fixed) and a re-check of the fixes; no compile error found. Not a substitute for compilation"
   },
   "verified_by_native_CI": {
     "swift_compiled": false,
@@ -46,7 +46,8 @@
     "that 50 % sounds about half as loud as 100 % through AlarmKit",
     "the «Ровный тон» copy in Library/Sounds as an AlarmKit sound",
     "the iOS 27 Alarms and Timers volume slider with third-party alarms",
-    "battery use of the silent background over a night"
+    "battery use of the silent background over a night",
+    "the automatic switching of the night background on a real iPhone over a night, and after a restart"
   ],
   "device_tested": false,
   "production_ready": false,
@@ -220,5 +221,12 @@
       "at_utc": "2026-11-17T11:51:43.736085+00:00",
       "current_build_historical_audit": "Luma/Docs/build-history-audit.json; one automatic GitHub Desktop reflog append; no source/resource/archive changes; no restoration or expected-hash changes"
     }
+  },
+  "request_2026_11_19_second": {
+    "night_background_automatic": "no Settings section any more; NightBackgroundPolicy.swift switches it on (only on screen, when a session or an enabled alarm within 16 h needs it), lengthens it (NightAudio.extend) and switches it off when nothing in the current run needs it; a session ends by itself after 16 h",
+    "sixteen_hours": "NightAudio.longest = 16 h (was 12); the AlarmKit queue horizon (12 h, 60 signals) unchanged, topped up every minute",
+    "volume_note": "saving an alarm with «Непрямой метод после будильника» first shows «Громкость iPhone» with «Больше не показывать» (key com.sevchlenko.luma.smartAlarm.volumeNote.skip.v1)",
+    "recording": "recording and listening never take queued alarms away: refused while an alarm or a signal needs the background",
+    "mockup": "Design Experiments/Atelier-Night-Prototype-17"
   }
 }

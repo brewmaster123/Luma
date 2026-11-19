@@ -73,7 +73,12 @@ enum L10n {
   /// in English the message is translated, and the old name Luma becomes Lumenoir.
   static func show(_ raw: String) -> String {
     var text = repair(raw)
-    if let current = LumaEnglish.russianUpdates[text] { text = current }
+    if let current = LumaEnglish.russianUpdates[text] {
+      text = current
+    } else if let match = LumaEnglish.russianUpdates.first(where: { text.hasSuffix(": " + $0.key) }) {
+      // 1.0: an engine message behind a prefix ("Очередь сигналов: …") is brought up to date in Russian too.
+      text = String(text.dropLast(match.key.count)) + match.value
+    }
     guard isEnglish else { return renamed(text) }
     if let direct = LumaEnglish.table[text] { return renamed(direct) }
     for rule in LumaEnglish.rules {

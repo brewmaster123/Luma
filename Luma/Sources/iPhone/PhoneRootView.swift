@@ -52,6 +52,8 @@ struct PhoneRootView: View {
       if model.showOnboarding { model.completeIntroduction() }
       // 0.9.9: the optional «Непрямой метод после будильника» watches the signal queue from here on.
       SmartAlarmFollowUp.shared.attach(model)
+      // 1.0: the silent night background switches itself on and off; there is no switch in Settings.
+      NightBackgroundPolicy.shared.attach(model)
       // 0.9.9: the Lumenoir melodies join the sound library (once; a missing file is restored).
       // A short pause lets the launch put the signal queue in order first.
       try? await Task.sleep(nanoseconds: 1_500_000_000)
@@ -154,6 +156,7 @@ struct NightView: View {
   }
 
   private func perform(_ action: SignalAction) async {
+    await NightBackgroundPolicy.shared.settled()
     switch action { case .enable(let id): await model.toggleAlarm(id) }
   }
 
@@ -291,7 +294,14 @@ struct NightView: View {
       .accessibilityIdentifier("alarm.edit.\(item.id.uuidString)")
       Toggle(tr("Включить будильник"),
         isOn: Binding(get: { item.enabled }, set: { _ in
-          if item.enabled { Task { await model.toggleAlarm(item.id) } }
+          if item.enabled {
+            Task {
+              await NightBackgroundPolicy.shared.settled()
+              await model.toggleAlarm(item.id)
+              // 1.0: an alarm switched off may leave the night background with nothing to wait for.
+              NightBackgroundPolicy.shared.lookSoon()
+            }
+          }
           else { prepare(.enable(item.id)) }
         }))
         .labelsHidden()

@@ -32,9 +32,19 @@ enum SmartAlarmFollowUpPreference {
   }
 }
 
+/// 1.0 (the user, 19 Nov 2026): the short note shown when an alarm with «Непрямой метод после будильника» is
+/// saved — the volume set with the side buttons must not be all the way down. It is shown on every such save
+/// until the person ticks «Больше не показывать». A UI-only preference like the one above; older versions
+/// ignore it.
+enum SmartAlarmVolumeNotePreference {
+  static let key = "com.sevchlenko.luma.smartAlarm.volumeNote.skip.v1"
+  static var skipped: Bool { UserDefaults.standard.bool(forKey: key) }
+  static func skip() { UserDefaults.standard.set(true, forKey: key) }
+}
+
 /// When a smart alarm with the option on has rung and fallen silent, starts a session of the indirect
 /// method with the current interval and sound, through the same model call as «Начать сеанс».
-/// The session then runs until «Завершить сеанс», like any other.
+/// The session then runs until «Завершить сеанс», like any other (1.0: at most 16 hours).
 ///
 /// Nothing about how alarms ring and stop changes. The coordinator only watches the signal ledger:
 /// a smart signal that leaves the queue as "handled" has rung and stopped (by itself or by Stop).
@@ -56,6 +66,10 @@ enum SmartAlarmFollowUpPreference {
   /// When the person last ended a session with «Завершить сеанс». An alarm that had already begun
   /// to ring by then does not start a new session: the person has just said the night's practice is over.
   private var sessionEndedAt: Date?
+
+  /// 1.0: while a start is waiting or under way, the night background must not be switched off
+  /// (NightBackgroundPolicy asks this).
+  var holdsNightBackground: Bool { pending != nil || working }
 
   /// Called by «Завершить сеанс» once the session has really ended.
   func userEndedSession() {
@@ -121,18 +135,10 @@ enum SmartAlarmFollowUpPreference {
     working = true
     defer { working = false }
     CueDiagnostics.event("smart_followup_start_attempt", record: waiting.record)
-    // The rain's own end changes only when the rain is really started anew. If it was stopped in the
-    // few moments before the start and the start switched it on again, that was not the person's wish:
-    // the session and the rain are taken back (the rain through its own safe stop).
-    let rainMark = model.nightAudio.until
+    // 1.0: the background switches itself on and off now (NightBackgroundPolicy), and it may be lengthened
+    // while it plays, so its end is no longer a sign of a restart against the person's wish: the 0.9.9
+    // take-back is gone.
     await model.requestIndirectMethodStart()
-    if model.nightAudio.until != rainMark {
-      CueDiagnostics.event("smart_followup_reverted_rain_restart", record: waiting.record)
-      if model.indirectRunning { await model.stopIndirectMethod() }
-      await model.stopNightAudio()
-      await model.refreshQueueAfterRainOff()
-      return
-    }
     CueDiagnostics.event(model.indirectRunning ? "smart_followup_started" : "smart_followup_failed",
       record: waiting.record)
   }

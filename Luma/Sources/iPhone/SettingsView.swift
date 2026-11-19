@@ -8,8 +8,9 @@ import SwiftUI
 /// developers in Telegram (the user's request, 17 Nov 2026).
 /// 0.9.9: the page stands in a living night forest (SettingsScene.swift); the cards themselves,
 /// their places and their order are exactly those of 0.9.8.
-/// 1.0 (the user's request, 19 Nov 2026): the night sound is silence, so its card has no volume slider
-/// and its row is called «Тишина»; the signal card gains «Громкость», 20–100 %, half as loud by default.
+/// 1.0 (the user's request, 19 Nov 2026): the signal card gains «Громкость», 20–100 %, half as loud by default.
+/// The night sound is silence and switches itself on and off (NightBackgroundPolicy.swift), so the page has
+/// no «Ночной фон» section any more: nothing here can switch it off by accident.
 struct SettingsView: View {
   var isActive = true
   @EnvironmentObject private var model: AppModel
@@ -18,7 +19,7 @@ struct SettingsView: View {
   @Environment(\.openURL) private var openURL
 
   private enum Panel: String, Identifiable {
-    case language, sound, readiness, rainOff, cancelAll, wipe
+    case language, sound, readiness, cancelAll, wipe
     var id: String { rawValue }
   }
 
@@ -85,7 +86,6 @@ struct SettingsView: View {
     ScrollView {
       VStack(alignment: .leading, spacing: 0) {
         section(tr("Сигнал будильника")) { signalCard }
-        section(tr("Ночной фон")) { rainCard }
         section(tr("Проверка")) { checkCard }
         section(tr("Помощь и устройства")) { helpCard }
         section(tr("Язык")) { languageCard }
@@ -263,31 +263,6 @@ struct SettingsView: View {
     return String(format: tr("Звучит · осталось %@ с"), "\(left)")
   }
 
-  private var rainCard: some View {
-    let enabled: Bool = model.nightAudio.enabled
-    let status: String = model.nightAudio.status
-    return AtelierCard {
-      VStack(alignment: .leading, spacing: 0) {
-        // The engine's own status line is shown when it says more than "off".
-        // 1.0: the background is silence, so the row is «Тишина» and there is no volume to set.
-        SettingsRow(symbol: "moon.stars", title: tr("Тишина"),
-          detail: status == "Ночной фон выключен" ? nil : L10n.show(status)) {
-          Toggle(tr("Тишина"), isOn: Binding(get: { enabled }, set: { rainToggled($0) }))
-            .labelsHidden()
-            .toggleStyle(AtelierToggleStyle())
-            .disabled(model.busy)
-            .accessibilityHint(tr("Фон, которого не слышно. Без него сигналы не смолкнут сами."))
-            .accessibilityIdentifier("settings.rain")
-        }
-        SettingsHint(text: enabled
-          ? tr("Его не слышно: он лишь не даёт Lumenoir уснуть, чтобы сигналы смолкали сами.")
-          : tr("Фон выключен: сигналы сняты, без него они не смолкнут сами."))
-          .padding(.top, -4)
-      }
-    }
-    .padding(.bottom, 12)
-  }
-
   private var checkCard: some View {
     let report: String = L10n.show(model.systemAlarms.lastStopReport)
     return AtelierCard {
@@ -422,17 +397,6 @@ struct SettingsView: View {
 
   // MARK: What the controls do (the same calls as in 0.9.7)
 
-  private func rainToggled(_ on: Bool) {
-    if !on {
-      panel = .rainOff
-    } else if model.systemAlarms.acceptedLimitations {
-      Task { await model.enableNightAudio() }
-    } else {
-      readinessWantsProbe = false
-      panel = .readiness
-    }
-  }
-
   private func probeTapped(delay: TimeInterval) {
     probeDelay = delay
     if model.systemAlarms.acceptedLimitations {
@@ -446,7 +410,10 @@ struct SettingsView: View {
   private func startProbe() {
     lockProbe = probeDelay > 10
     let delay = probeDelay
-    Task { await model.testSystemAlarm(after: delay) }
+    Task {
+      await NightBackgroundPolicy.shared.settled()
+      await model.testSystemAlarm(after: delay)
+    }
   }
 
   /// "Контакты разработчиков": a private chat with @arty_brew in Telegram. The Telegram app opens the chat
@@ -495,22 +462,14 @@ struct SettingsView: View {
           : (model.systemAlarms.acceptedLimitations ? tr("Понятно") : tr("Разрешить сигналы")),
         requiresPermission: readinessWantsProbe || !model.systemAlarms.acceptedLimitations
       ) { readyToProbe = readinessWantsProbe }
-    case .rainOff:
-      ConfirmSheet(title: tr("Выключить ночной фон?"),
-        text: tr("Вместе с ним снимется очередь сигналов: без фона они не смогут смолкать сами."),
-        yes: tr("Выключить фон"), no: tr("Оставить")) {
-        Task {
-          await model.stopNightAudio()
-          // 0.9.9: the alarms on Night show «пока вне очереди» right away, not only after the app comes back.
-          await model.refreshQueueAfterRainOff()
-        }
-      }
     case .cancelAll:
       ConfirmSheet(title: tr("Отменить все сигналы?"),
-        text: tr("Будильники выключатся, а сеанс непрямого метода завершится. Ночной фон останется включённым, пока вы его не выключите."),
+        text: tr("Будильники выключатся, а сеанс непрямого метода завершится."),
         yes: tr("Отменить сигналы"), no: tr("Оставить")) {
         Task { @MainActor in
           await model.stopAllSystemAlarms()
+          // 1.0: with nothing left to wait for, the night background goes off by itself.
+          NightBackgroundPolicy.shared.lookSoon()
           if model.message == nil { ToastCenter.shared.show(tr("Все сигналы отменены")) }
         }
       }

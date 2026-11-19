@@ -45,9 +45,15 @@ struct JournalVoiceComposer: View {
     let seconds = audio.playbackID == clip.id ? audio.playbackSeconds : clip.duration
     return HStack(spacing: 6) {
       Button {
-        do {
-          if playing { audio.stopPlayback() } else { try audio.playJournal(clip) }
-        } catch { self.error = error.localizedDescription }
+        if playing { audio.stopPlayback(); return }
+        Task { @MainActor in
+          // 1.0: listening cannot share the audio with the night background; it is refused while an alarm needs it.
+          if let refusal = await NightBackgroundPolicy.shared.stepAside() {
+            self.error = refusal
+            return
+          }
+          do { try audio.playJournal(clip) } catch { self.error = error.localizedDescription }
+        }
       } label: {
         Image(systemName: playing ? "stop.fill" : "play.fill").font(.system(size: 11))
       }
@@ -91,6 +97,10 @@ struct JournalVoiceComposer: View {
             guard !model.hasPlan else {
               throw AppError.message(
                 tr("Сначала завершите ночной сеанс: пока он идёт, запись недоступна."))
+            }
+            // 1.0: recording cannot share the audio with the night background; it is refused while an alarm needs it.
+            if let refusal = await NightBackgroundPolicy.shared.stepAside() {
+              throw AppError.message(refusal)
             }
             try await audio.startJournalRecording { clip in clips.append(clip); created(clip) }
           } catch { self.error = error.localizedDescription }

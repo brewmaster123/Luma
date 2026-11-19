@@ -259,6 +259,21 @@ check('AlarmSignalVolume.range' in settings and 'model.setAlarmVolume(' in setti
       '1.0: Settings sets the signal volume; the night-background volume slider is gone')
 check('checkVolume(directory)' in (ROOT/'scripts/check-audio-on-mac.swift').read_text(),
       '1.0: the audio harness checks the 100 % and 50 % copies')
+policy=(ROOT/'Sources/iPhone/NightBackgroundPolicy.swift').read_text()
+check('static let longest: TimeInterval = 16 * 3600' in night and 'addingTimeInterval(Self.longest)' in night
+      and '12 * 3600' not in night and 'func extend(to deadline: Date)' in night,
+      '1.0: one run of the night background lasts up to 16 hours and can be lengthened without a restart')
+check('nightAudio' not in settings and 'settings.rain' not in settings and 'rainOff' not in settings,
+      '1.0: Settings has no switch for the night background')
+check('NightBackgroundPolicy.shared.attach(model)' in (ROOT/'Sources/iPhone/PhoneRootView.swift').read_text()
+      and 'func nightBackgroundNeeded(' in policy and 'func stepAside()' in policy
+      and 'holdsNightBackground' in policy and 'await model.stopNightAudio()' in policy
+      and 'try await model.preparePhoneSignals()' in policy,
+      '1.0: the night background switches itself on and off through the same model calls')
+editor=(ROOT/'Sources/iPhone/AlarmEditor.swift').read_text()
+check('SmartAlarmVolumeNotePreference.skipped' in editor and 'VolumeNoteSheet' in editor
+      and 'RoundMarkToggleStyle()' in editor,
+      '1.0: saving an alarm with the indirect method after it shows the volume note, with «Больше не показывать»')
 check('try updateFutureStopDurations' in service and 'record.fireAt > threshold' in service
       and '!observedDeliveries.contains' in service and 'ledger = previous; throw error' in service,
       'Future deadline updates preserve current deliveries and roll back on persistence failure')
